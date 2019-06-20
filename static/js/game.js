@@ -61,13 +61,22 @@
             this.game = gameObj;
             this.game.load.image("logo_dogma", "static/img/DOGMA_logo.png");
             this.game.load.image("logo_isb", "static/img/ISB_Logo.png");
+            
+            this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");
+            this.game.load.image("nt_adenine_basic", "static/img/nucleotide/adenine/Adenine_basic@3x.png");
+            this.game.load.image("nt_adenine_hbonds", "static/img/nucleotide/adenine/Adenine_Hbonds@3x.png");
+
+            this.game.load.image("nt_thymine_backbone", "static/img/nucleotide/thymine/Thymine_Backbone@3x.png");
+            this.game.load.image("nt_thymine_basic", "static/img/nucleotide/thymine/Thymine_basic@3x.png");
+            this.game.load.image("nt_thymine_hbonds", "static/img/nucleotide/thymine/Thymine_Hbonds@3x.png");
             this.scorekeeping = new GameScore(this.game);
         }
 
         create() {
             this.graphics = this.game.add.graphics();
-            let logoDogma = this.game.add.image(75, 30, "logo_dogma").setScale(0.15);
-            let logoISB = this.game.add.image(300, 22, "logo_isb").setScale(0.15);
+            this.game.add.image(75, 30, "logo_dogma").setScale(0.15);
+            this.game.add.image(300, 22, "logo_isb").setScale(0.15);
+            
             this.graphics.fillStyle(0xF1F1F2, 1.0);
             this.graphics.fillRect(0, 100, 360, 640);
 
@@ -149,10 +158,41 @@
     class Nucleotide {
         /**
          * 
+         * @param {Object} game The game object
          * @param {String} rep The representation of the nucleotide. Choose from A, T
+         * @param {String} type The type of the nucleotide. Choose from basic, hbonds, backbone
          */
-        constructor (rep) {
+        constructor (game, rep, type) {
+            this.allNucleotides = {
+                "A": {
+                    shortname: "adenine",
+                    color: 0xf49232,
+                },
+                "T": {
+                    shortname: "thymine",
+                    color: 0x31ace0,
+                }
+            }
+
+            this.game = game;
             this.rep = rep;
+            this.type = type;
+            this.imgObj = null;
+        }
+
+        getObject() {
+            if (this.imgObj !== null) {
+                return this.imgObj;
+            }
+            return this.game.add.image(0, 0, "nt_" + this.getShortName() + "_" + this.type);
+        }
+
+        getShortName() {
+            return this.allNucleotides[this.rep].shortname;
+        }
+
+        getColor() {
+            return this.allNucleotides[this.rep].color;
         }
     }
 
