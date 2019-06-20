@@ -141,6 +141,12 @@
             this.inputVertPath.draw(this.gameObj.graphics);
             let numVertPathPts = 7;
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts).slice(0, numVertPathPts - 1);
+            this.outputVertPath = new Phaser.Curves.Path(275, 420);
+            this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
+            this.outputVertPath.draw(this.gameObj.graphics);
+            this.outputRowPath = new Phaser.Curves.Path(155, 710);
+            this.outputRowPath.lineTo(340, 710);
+            this.outputRowPath.draw(this.gameObj.graphics);
         }
 
         setPositions(animate=true) {
