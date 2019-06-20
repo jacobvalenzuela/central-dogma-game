@@ -114,6 +114,7 @@
             }
             
             this.positionManager = new PositionManager(this, this.nucleotides);
+            this.positionManager.setPositions(false);
 
             this.scorekeeping.start();
         }
@@ -123,22 +124,55 @@
         constructor (gameObj, levelNucleotides) {
             this.gameObj = gameObj;
             this.game = gameObj.game;
-            this.levelNucleotides = levelNucleotides;
+            this.levelNucleotides = Array.from(levelNucleotides);
             this.inputRowPath = new Phaser.Curves.Path(320, 125);
             this.inputRowPath.lineTo(40, 125);
             this.inputRowPath.lineTo(40, 140);
             this.inputRowPath.lineTo(165, 140);
             this.inputRowPath.draw(this.gameObj.graphics);
             this.initRectPathPts = this.inputRowPath.getSpacedPoints(30);
-            for (let i = 0; i < this.initRectPathPts.length; i++) {
-                let x = this.initRectPathPts[i].x;
-                let y = this.initRectPathPts[i].y;
-                levelNucleotides[i].setPosition(x, y);
-                levelNucleotides[i].setVisible(true);
+            // for (let i = 0; i < this.initRectPathPts.length; i++) {
+            //     let x = this.initRectPathPts[i].x;
+            //     let y = this.initRectPathPts[i].y;
+            //     levelNucleotides[i].setPosition(x, y);
+            //     levelNucleotides[i].setVisible(true);
+            // }
+            this.inputVertPath = new Phaser.Curves.Path(182, 147);
+            this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
+            this.inputVertPath.draw(this.gameObj.graphics);
+            let numVertPathPts = 7;
+            this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts).slice(0, numVertPathPts - 1);
+        }
+
+        setPositions(animate=true) {
+            let initVertPathPts = this.initVertPathPts.reverse();
+            for (let i = 0; i < initVertPathPts.length; i++) {
+                let x = initVertPathPts[i].x;
+                let y = initVertPathPts[i].y;
+                let nucleotide = this.levelNucleotides[i];
+                nucleotide.setPosition(x, y);
+                nucleotide.setVisible(true);
+                nucleotide.setDisplay("nucleotide");
+                let scale = (initVertPathPts.length * 0.05) - (0.05 * i);
+                //console.log(scale)
+                nucleotide.getObject().setScale(scale);
             }
+            let initRectPathPts = this.initRectPathPts.reverse();
+            for (let i = 0; i < initRectPathPts.length; i++) {
+                let x = initRectPathPts[i].x;
+                let y = initRectPathPts[i].y;
+                let nucleotide = this.levelNucleotides[initVertPathPts.length + i];
+                nucleotide.setPosition(x, y);
+                nucleotide.setVisible(true);
+            }
+        }
+
+        next() {
+
         }
     }
 
+    
     class GameScore {
         constructor (game) {
             this.game = game;
