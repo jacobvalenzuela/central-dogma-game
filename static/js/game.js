@@ -46,7 +46,10 @@
                 }
             }
             this.scorekeeping = null;
+            this.levels = levels;
+            this.level = 0;
             this.objects = {};
+            this.nucleotides = [];
         }
 
         bindFn(fn) {
@@ -101,10 +104,38 @@
             this.game.add.text(200, 53, "Accuracy", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
-                this.game.add.text(293, 53, "Score", 
+            this.game.add.text(293, 53, "Score", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
+            let nucleotides = this.levels[this.level].ntSequence;
+            for (let i = 0; i < nucleotides.length; i++) {
+                let nucleotide = new Nucleotide(this.game, nucleotides[i], "basic");
+                this.nucleotides.push(nucleotide);
+            }
+            
+            this.positionManager = new PositionManager(this, this.nucleotides);
+
             this.scorekeeping.start();
+        }
+    }
+
+    class PositionManager {
+        constructor (gameObj, levelNucleotides) {
+            this.gameObj = gameObj;
+            this.game = gameObj.game;
+            this.levelNucleotides = levelNucleotides;
+            this.inputRowPath = new Phaser.Curves.Path(320, 125);
+            this.inputRowPath.lineTo(40, 125);
+            this.inputRowPath.lineTo(40, 140);
+            this.inputRowPath.lineTo(165, 140);
+            this.inputRowPath.draw(this.gameObj.graphics);
+            this.initRectPathPts = this.inputRowPath.getSpacedPoints(30);
+            for (let i = 0; i < this.initRectPathPts.length; i++) {
+                let x = this.initRectPathPts[i].x;
+                let y = this.initRectPathPts[i].y;
+                levelNucleotides[i].setPosition(x, y);
+                levelNucleotides[i].setVisible(true);
+            }
         }
     }
 
@@ -178,13 +209,46 @@
             this.rep = rep;
             this.type = type;
             this.imgObj = null;
+            this.squareObj = null;
+            this.display = "rectangle"; // rectangle or nucleotide
         }
 
         getObject() {
-            if (this.imgObj !== null) {
+            if (this.imgObj === null) {
+                this.imgObj = this.game.add.image(0, 0, "nt_" + this.getShortName() + "_" + this.type);
+                this.squareObj = this.game.add.rectangle(0, 0, 10, 10, this.getColor());
+                this.imgObj.setVisible(false);
+                this.squareObj.setVisible(false);
+            }
+            if (this.display == "rectangle") {
+                return this.squareObj;
+            } else {
                 return this.imgObj;
             }
-            return this.game.add.image(0, 0, "nt_" + this.getShortName() + "_" + this.type);
+        }
+
+        setDisplay(type) {
+            if (["rectangle", "nucleotide"].indexOf(type) < 0) {
+                throw new Error("Invalid display type! " + type);
+            }
+            this.display = type;
+            if (type == "rectangle") {
+                this.squareObj.setVisible(this.imgObj.visible);
+                this.imgObj.setVisible(false);
+                this.squareObj.setPosition(this.imgObj.x, this.imgObj.y);
+            } else {
+                this.imgObj.setVisible(this.squareObj.visible);
+                this.squareObj.setVisible(false);
+                this.imgObj.setPosition(this.squareObj.x, this.squareObj.y);
+            }
+        }
+
+        setVisible(visible) {
+            this.getObject().setVisible(visible);
+        }
+
+        setPosition(x, y) {
+            this.getObject().setPosition(x, y);
         }
 
         getShortName() {
