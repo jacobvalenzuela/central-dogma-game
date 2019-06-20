@@ -116,6 +116,11 @@
             this.positionManager = new PositionManager(this, this.nucleotides);
             this.positionManager.setPositions(false);
 
+            let that = this;
+            setInterval(function () {
+                that.positionManager.next();
+            }, 1500);
+
             this.scorekeeping.start();
         }
     }
@@ -131,12 +136,6 @@
             this.inputRowPath.lineTo(165, 140);
             this.inputRowPath.draw(this.gameObj.graphics);
             this.initRectPathPts = this.inputRowPath.getSpacedPoints(30);
-            // for (let i = 0; i < this.initRectPathPts.length; i++) {
-            //     let x = this.initRectPathPts[i].x;
-            //     let y = this.initRectPathPts[i].y;
-            //     levelNucleotides[i].setPosition(x, y);
-            //     levelNucleotides[i].setVisible(true);
-            // }
             this.inputVertPath = new Phaser.Curves.Path(182, 147);
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
             this.inputVertPath.draw(this.gameObj.graphics);
@@ -145,30 +144,91 @@
         }
 
         setPositions(animate=true) {
-            let initVertPathPts = this.initVertPathPts.reverse();
+            let initVertPathPts = this.initVertPathPts.slice().reverse();
             for (let i = 0; i < initVertPathPts.length; i++) {
                 let x = initVertPathPts[i].x;
                 let y = initVertPathPts[i].y;
                 let nucleotide = this.levelNucleotides[i];
-                nucleotide.setPosition(x, y);
-                nucleotide.setVisible(true);
+                if (!nucleotide) {
+                    continue;
+                }
                 nucleotide.setDisplay("nucleotide");
+                nucleotide.setVisible(true);
+                if (animate) {
+                    this._animatePosition(nucleotide, x, y);
+                } else {
+                    nucleotide.setPosition(x, y);
+                }
                 let scale = (initVertPathPts.length * 0.05) - (0.05 * i);
-                //console.log(scale)
                 nucleotide.getObject().setScale(scale);
             }
-            let initRectPathPts = this.initRectPathPts.reverse();
+            let initRectPathPts = this.initRectPathPts.slice().reverse();
             for (let i = 0; i < initRectPathPts.length; i++) {
                 let x = initRectPathPts[i].x;
                 let y = initRectPathPts[i].y;
                 let nucleotide = this.levelNucleotides[initVertPathPts.length + i];
-                nucleotide.setPosition(x, y);
+                if (!nucleotide) {
+                    continue;
+                }
+                if (animate) {
+                    this._animatePosition(nucleotide, x, y);
+                } else {
+                    nucleotide.setPosition(x, y);
+                }
                 nucleotide.setVisible(true);
             }
         }
 
-        next() {
+        _animatePosition(nucleotide, x, y) {
+            let fromX = nucleotide.getObject().x;
+            let toX = x;
+            let fromY = nucleotide.getObject().y;
+            let toY = y;
+            if (Math.abs(fromX - toX) < 1 && Math.abs(fromY - toY) < 1) {
+                nucleotide.setPosition(toX, toY);
+            } else {
+                let that = this;
+                this.game.time.addEvent({
+                    delay: 40,
+                    callback: function () {
+                        let midX = (fromX + toX) / 2;
+                        let midY = (fromY + toY) / 2;
+                        nucleotide.setPosition(midX, midY);
+                        that._animatePosition(nucleotide, x, y);
+                    },
+                    loop: false
+                });
+            }
+        }
 
+        _fadeOut(nucleotide) {
+            let currentAlpha = nucleotide.getObject().alpha;
+            let newAlpha = currentAlpha / 1.5;
+            if (newAlpha > 5) {
+                nucleotide.getObject().clearAlpha();
+                nucleotide.setVisible(false);
+            } else {
+                nucleotide.getObject().setAlpha(newAlpha);
+                let that = this;
+                this.game.time.addEvent({
+                    delay: 40,
+                    callback: function () {
+                        that._fadeOut(nucleotide);
+                    },
+                    loop: false
+                });
+            }
+        }
+
+        next() {
+            let removed = this.levelNucleotides[0];
+            if (removed) {
+                this._animatePosition(removed, removed.getObject().x - 40, removed.getObject().y + 130);
+                this._fadeOut(removed);
+                //removed.setVisible(false);
+            }
+            this.levelNucleotides = this.levelNucleotides.slice(1, this.levelNucleotides.length);
+            this.setPositions(true);
         }
     }
 
@@ -265,15 +325,21 @@
             if (["rectangle", "nucleotide"].indexOf(type) < 0) {
                 throw new Error("Invalid display type! " + type);
             }
+            if (this.squareObj === null || this.imgObj === null) {
+                this.getObject();
+            }
+            if (this.display == type) {
+                return this.getObject();
+            }
             this.display = type;
-            if (type == "rectangle") {
+            if (type == "rectangle") { // want squareObj
                 this.squareObj.setVisible(this.imgObj.visible);
-                this.imgObj.setVisible(false);
                 this.squareObj.setPosition(this.imgObj.x, this.imgObj.y);
-            } else {
+                this.imgObj.setVisible(false);
+            } else { // want imgObj
                 this.imgObj.setVisible(this.squareObj.visible);
-                this.squareObj.setVisible(false);
                 this.imgObj.setPosition(this.squareObj.x, this.squareObj.y);
+                this.squareObj.setVisible(false);
             }
         }
 
@@ -295,7 +361,8 @@
     }
 
     window.game = new Game([
-        {
+        { 
+            // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
         }
     ]);
