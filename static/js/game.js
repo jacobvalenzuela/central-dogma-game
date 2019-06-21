@@ -50,6 +50,12 @@
             this.level = 0;
             this.objects = {};
             this.nucleotides = [];
+            this.ntButtons = [];
+            this.btnLocations = {
+                0: [310, 420],
+                1: [310, 490]
+            }
+            this.ntBtnsEnabled = true;
         }
 
         bindFn(fn) {
@@ -116,12 +122,40 @@
             this.positionManager = new PositionManager(this, this.nucleotides);
             this.positionManager.setPositions(false);
 
-            let that = this;
-            setInterval(function () {
-                that.positionManager.next();
-            }, 1500);
+            this.makeNTBtn("T");
+            this.makeNTBtn("A");
 
             this.scorekeeping.start();
+        }
+
+        makeNTBtn(type) {
+            let nt = new Nucleotide(this.game, type, "basic");
+            nt.setDisplay("nucleotide");
+            nt.setVisible(true);
+            nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
+            nt.getObject().setScale(0.18);
+            nt.getObject().setInteractive();
+            nt.getObject().on("pointerup", this.bindFn(this.onNTBtnClick));
+            this.ntButtons.push(nt);
+        }
+
+        onNTBtnClick(image, pointer, localX, localY) {
+            if (!this.ntBtnsEnabled) {
+                return;
+            }
+            let clickedNT = image.getData("nucleotide");
+            let headNT = this.positionManager.getHeadNucleotide();
+            if (clickedNT.validMatchWith(headNT)) {
+                this.ntBtnsEnabled = false;
+                let cloned = clickedNT.clone();
+                cloned.setDisplay("nucleotide");
+                cloned.setPosition(clickedNT.getObject().x, clickedNT.getObject().y);
+                cloned.setVisible(true);
+                cloned.getObject().setScale(0.18);
+                this.positionManager.addToDNAOutput(cloned);
+            } else {
+                console.log("INVALID")
+            }
         }
     }
 
@@ -130,6 +164,7 @@
             this.gameObj = gameObj;
             this.game = gameObj.game;
             this.levelNucleotides = Array.from(levelNucleotides);
+            this.selectedNucleotides = [];
             this.inputRowPath = new Phaser.Curves.Path(320, 125);
             this.inputRowPath.lineTo(40, 125);
             this.inputRowPath.lineTo(40, 140);
@@ -141,12 +176,14 @@
             this.inputVertPath.draw(this.gameObj.graphics);
             let numVertPathPts = 7;
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts).slice(0, numVertPathPts - 1);
-            this.outputVertPath = new Phaser.Curves.Path(275, 420);
+            this.outputVertPath = new Phaser.Curves.Path(225, 480);
             this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
             this.outputVertPath.draw(this.gameObj.graphics);
+            this.outputVertPathPts = this.outputVertPath.getPoints(5);
             this.outputRowPath = new Phaser.Curves.Path(155, 710);
-            this.outputRowPath.lineTo(340, 710);
+            this.outputRowPath.lineTo(370, 710);
             this.outputRowPath.draw(this.gameObj.graphics);
+            this.outputRowPathPts = this.outputRowPath.getPoints(17);
         }
 
         setPositions(animate=true) {
@@ -183,15 +220,50 @@
                 }
                 nucleotide.setVisible(true);
             }
+            let selectedNucleotides = this.selectedNucleotides.slice().reverse();
+            let outputVertPathPts = this.outputVertPathPts.slice(2, this.outputVertPathPts.length);
+            for (let i = 0; i < outputVertPathPts.length; i++) {
+                let nucleotide = selectedNucleotides[i];
+                if (!nucleotide) {
+                    continue;
+                }
+                let x = outputVertPathPts[i].x;
+                let y = outputVertPathPts[i].y;
+                if (animate) {
+                    this._animatePosition(nucleotide, x, y);
+                } else {
+                    nucleotide.setPosition(x, y);
+                }
+                let scale = (outputVertPathPts.length * 0.05) - (0.05 * i);
+                nucleotide.getObject().setScale(scale);
+            }
+            let outputRectPathsPts = this.outputRowPathPts.slice();
+            for (let i = 0; i < outputRectPathsPts.length; i++) {
+                let nucleotide = selectedNucleotides[outputVertPathPts.length + i];
+                if (!nucleotide) {
+                    continue;
+                }
+                let x = outputRectPathsPts[i].x;
+                let y = outputRectPathsPts[i].y;
+                nucleotide.setDisplay("rectangle");
+                if (animate) {
+                    this._animatePosition(nucleotide, x, y);
+                } else {
+                    nucleotide.setPosition(x, y);
+                }
+            }
         }
 
-        _animatePosition(nucleotide, x, y) {
+        _animatePosition(nucleotide, x, y, callback=null) {
             let fromX = nucleotide.getObject().x;
             let toX = x;
             let fromY = nucleotide.getObject().y;
             let toY = y;
             if (Math.abs(fromX - toX) < 1 && Math.abs(fromY - toY) < 1) {
                 nucleotide.setPosition(toX, toY);
+                if (callback != null) {
+                    callback(nucleotide);
+                }
             } else {
                 let that = this;
                 this.game.time.addEvent({
@@ -200,7 +272,7 @@
                         let midX = (fromX + toX) / 2;
                         let midY = (fromY + toY) / 2;
                         nucleotide.setPosition(midX, midY);
-                        that._animatePosition(nucleotide, x, y);
+                        that._animatePosition(nucleotide, x, y, callback);
                     },
                     loop: false
                 });
@@ -235,6 +307,28 @@
             }
             this.levelNucleotides = this.levelNucleotides.slice(1, this.levelNucleotides.length);
             this.setPositions(true);
+        }
+
+        getHeadNucleotide() {
+            if (this.levelNucleotides.length) {
+                return this.levelNucleotides[0];
+            }
+            return null;
+        }
+
+        addToDNAOutput(nucleotide) {
+            this.selectedNucleotides.push(nucleotide);
+            nucleotide.getObject().setScale(0.3);
+            let firstPoint = this.outputVertPathPts[0];
+            let secPoint = this.outputVertPathPts[1];
+            let point = this.outputVertPathPts[2];
+            nucleotide.setPosition(firstPoint.x, firstPoint.y);
+            let that = this;
+            this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
+                that.next();
+                that._animatePosition(nucleotide, point.x, point.y);
+                that.gameObj.ntBtnsEnabled = true;
+            });
         }
     }
 
@@ -298,10 +392,12 @@
                 "A": {
                     shortname: "adenine",
                     color: 0xf49232,
+                    matches: ["T"],
                 },
                 "T": {
                     shortname: "thymine",
                     color: 0x31ace0,
+                    matches: ["A"],
                 }
             }
 
@@ -319,6 +415,8 @@
                 this.squareObj = this.game.add.rectangle(0, 0, 10, 10, this.getColor());
                 this.imgObj.setVisible(false);
                 this.squareObj.setVisible(false);
+                this.imgObj.setData("nucleotide", this);
+                this.squareObj.setData("nucleotide", this);
             }
             if (this.display == "rectangle") {
                 return this.squareObj;
@@ -363,6 +461,14 @@
 
         getColor() {
             return this.allNucleotides[this.rep].color;
+        }
+
+        validMatchWith(other) {
+            return this.allNucleotides[this.rep].matches.indexOf(other.rep) >= 0;
+        }
+
+        clone() {
+            return new Nucleotide(this.game, this.rep, this.type);
         }
     }
 
