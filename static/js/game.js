@@ -176,7 +176,7 @@
             this.inputVertPath.draw(this.gameObj.graphics);
             let numVertPathPts = 7;
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts).slice(0, numVertPathPts - 1);
-            this.outputVertPath = new Phaser.Curves.Path(225, 480);
+            this.outputVertPath = new Phaser.Curves.Path(245, 450);
             this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
             this.outputVertPath.draw(this.gameObj.graphics);
             this.outputVertPathPts = this.outputVertPath.getPoints(5);
