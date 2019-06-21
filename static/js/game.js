@@ -165,6 +165,8 @@
             this.game = gameObj.game;
             this.levelNucleotides = Array.from(levelNucleotides);
             this.selectedNucleotides = [];
+
+            this.gameObj.graphics.lineStyle(1, 0x6c757d, 0.6);
             this.inputRowPath = new Phaser.Curves.Path(320, 125);
             this.inputRowPath.lineTo(40, 125);
             this.inputRowPath.lineTo(40, 140);
