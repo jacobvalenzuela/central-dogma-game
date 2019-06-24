@@ -134,7 +134,7 @@
             nt.setDisplay("nucleotide");
             nt.setVisible(true);
             nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
-            nt.getObject().setScale(0.18);
+            nt.getObject().setScale(0.25);
             nt.getObject().setInteractive();
             nt.getObject().on("pointerup", this.bindFn(this.onNTBtnClick));
             this.ntButtons.push(nt);
