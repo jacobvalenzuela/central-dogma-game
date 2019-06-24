@@ -165,15 +165,27 @@
             this.gameObj = gameObj;
             this.game = gameObj.game;
             this.levelNucleotides = Array.from(levelNucleotides);
+            this.compLevelNucleotides = [];
+            let paddingComp = 8;
+            for (let i = 0; i < paddingComp; i++) {
+                this.compLevelNucleotides.push(null);
+            }
+            for (let i = 0; i < this.levelNucleotides.length; i++) {
+                let nucleotide = this.levelNucleotides[i];
+                let newcleotide = new Nucleotide(this.game, nucleotide.matches[0], "basic");
+                this.compLevelNucleotides.push(newcleotide);
+            }
             this.selectedNucleotides = [];
 
             this.gameObj.graphics.lineStyle(1, 0x6c757d, 0.6);
-            this.inputRowPath = new Phaser.Curves.Path(320, 125);
-            this.inputRowPath.lineTo(40, 125);
-            this.inputRowPath.lineTo(40, 140);
-            this.inputRowPath.lineTo(165, 140);
+            this.inputRowPath = new Phaser.Curves.Path(0, 140);
+            this.inputRowPath.lineTo(175, 140);
             this.inputRowPath.draw(this.gameObj.graphics);
-            this.initRectPathPts = this.inputRowPath.getSpacedPoints(30);
+            this.initRectPathPts = this.inputRowPath.getSpacedPoints(13);
+            this.inputComplRowPath = new Phaser.Curves.Path(0, 126);
+            this.inputComplRowPath.lineTo(363.46153846153845, 126);
+            this.inputComplRowPath.draw(this.gameObj.graphics);
+            this.inputCompRectPathPts = this.inputComplRowPath.getSpacedPoints(27);
             this.inputVertPath = new Phaser.Curves.Path(182, 147);
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
             this.inputVertPath.draw(this.gameObj.graphics);
@@ -190,6 +202,21 @@
         }
 
         setPositions(animate=true) {
+            let inputCompRectPathPts = this.inputCompRectPathPts.slice().reverse();
+            for (let i = 0; i < inputCompRectPathPts.length; i++) {
+                let x = inputCompRectPathPts[i].x;
+                let y = inputCompRectPathPts[i].y;
+                let nucleotide = this.compLevelNucleotides[i];
+                if (!nucleotide) {
+                    continue;
+                }
+                nucleotide.setVisible(true);
+                if (animate) {
+                    this._animatePosition(nucleotide, x, y);
+                } else {
+                    nucleotide.setPosition(x, y);
+                }
+            }
             let initVertPathPts = this.initVertPathPts.slice().reverse();
             for (let i = 0; i < initVertPathPts.length; i++) {
                 let x = initVertPathPts[i].x;
@@ -349,6 +376,7 @@
                 });
             }
             this.levelNucleotides = this.levelNucleotides.slice(1, this.levelNucleotides.length);
+            this.compLevelNucleotides = this.compLevelNucleotides.slice(1, this.compLevelNucleotides.length);
             this.setPositions(true);
         }
 
@@ -467,6 +495,7 @@
             this.imgObj = null;
             this.squareObj = null;
             this.display = "rectangle"; // rectangle or nucleotide
+            this.matches = this.allNucleotides[rep].matches;
         }
 
         getObject() {
