@@ -165,6 +165,10 @@
             if (!this.ntBtnsEnabled) {
                 return;
             }
+            let leftButtonDown = pointer.leftButtonDown();
+            if (!leftButtonDown) {
+                return;
+            }
             let x = pointer.x;
             let y = pointer.y;
             let angle = image.angle;
@@ -182,8 +186,8 @@
             if (!startedDragging) {
                 return;
             }
-            let forwardButtonDown = pointer.leftButtonDown();
-            if (!forwardButtonDown) {
+            let leftButtonDown = pointer.leftButtonDown();
+            if (!leftButtonDown) {
                 return;
             }
             let imgX = image.getData("pointerStartX");
