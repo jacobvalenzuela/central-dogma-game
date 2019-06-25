@@ -162,16 +162,24 @@
         }
 
         onDragNTBtnStart (input, pointer, image) {
+            if (!this.ntBtnsEnabled) {
+                return;
+            }
             let x = pointer.x;
             let y = pointer.y;
             let angle = image.angle;
             image.setData("pointerStartX", x);
             image.setData("pointerStartY", y);
             image.setData("startAngle", angle);
+            image.setData("startedDragging", true);
         }
 
         onDragNTBtn (input, pointer, image, x, y) {
             if (!this.ntBtnsEnabled) {
+                return;
+            }
+            let startedDragging = image.getData("startedDragging");
+            if (!startedDragging) {
                 return;
             }
             let imgX = image.getData("pointerStartX");
@@ -184,6 +192,10 @@
         }
 
         onDragNTBtnEnd (input, pointer, image) {
+            let startedDragging = image.getData("startedDragging");
+            if (!startedDragging) {
+                return;
+            }
             let angle = image.angle;
             console.log(angle);
             if (!this.ntBtnsEnabled) {
@@ -203,6 +215,7 @@
                 this.positionManager.doRejectNT(cloned);
             }
             image.setAngle(0);
+            image.startedDragging = false;
         }
     }
 
