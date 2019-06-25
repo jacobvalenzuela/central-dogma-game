@@ -204,11 +204,11 @@
             if (!startedDragging) {
                 return;
             }
-            let angle = image.angle;
-            console.log(angle);
             if (!this.ntBtnsEnabled) {
                 return;
             }
+            let angle = image.angle;
+            console.log(angle);
             let clickedNT = image.getData("nucleotide");
             let headNT = this.positionManager.getHeadNucleotide();
             let cloned = clickedNT.clone();
