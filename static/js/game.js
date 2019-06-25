@@ -114,6 +114,24 @@
             this.game.add.text(293, 53, "Score", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
+            this.game.add.text(4, 105, "5'", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+            
+            this.game.add.text(4, 150, "3'", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+
+            this.game.add.text(345, 105, "3'", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+
+            this.game.add.text(4, 630, "5'", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+
+            this.game.add.text(230, 440, "5'", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+
+            this.game.add.text(340, 690, "3'", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+
             let nucleotides = this.levels[this.level].ntSequence;
             for (let i = 0; i < nucleotides.length; i++) {
                 let nucleotide = new Nucleotide(this.game, nucleotides[i], "basic");
