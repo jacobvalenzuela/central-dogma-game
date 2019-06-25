@@ -102,6 +102,12 @@
             this.graphics.fillStyle(0xFDE8E9, 1.0);
             this.graphics.fillRect(270, 50, 75, 45);
 
+            this.graphics.fillStyle(0xfffaa8, 1.0);
+            this.graphics.fillCircle(80, 490, 50);
+
+            this.graphics.fillStyle(0xfffaa8, 1.0);
+            this.graphics.fillCircle(210, 534, 47);
+
             this.game.add.text(18, 53, "Sequence NTs", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
