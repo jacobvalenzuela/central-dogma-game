@@ -52,8 +52,8 @@
             this.nucleotides = [];
             this.ntButtons = [];
             this.btnLocations = {
-                0: [310, 420],
-                1: [310, 490]
+                0: [310, 350],
+                1: [310, 440]
             }
             this.ntBtnsEnabled = true;
         }
@@ -154,11 +154,38 @@
             nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
             nt.getObject().setScale(0.25);
             nt.getObject().setInteractive();
-            nt.getObject().on("pointerup", this.bindFn(this.onNTBtnClick));
+            this.game.input.setDraggable(nt.getObject());
+            this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
+            this.game.input.on("drag", this.bindFn(this.onDragNTBtn));
+            this.game.input.on("dragend", this.bindFn(this.onDragNTBtnEnd));
             this.ntButtons.push(nt);
         }
 
-        onNTBtnClick(image, pointer, localX, localY) {
+        onDragNTBtnStart (input, pointer, image) {
+            let x = pointer.x;
+            let y = pointer.y;
+            let angle = image.angle;
+            image.setData("pointerStartX", x);
+            image.setData("pointerStartY", y);
+            image.setData("startAngle", angle);
+        }
+
+        onDragNTBtn (input, pointer, image, x, y) {
+            if (!this.ntBtnsEnabled) {
+                return;
+            }
+            let imgX = image.getData("pointerStartX");
+            let imgY = image.getData("pointerStartY");
+            let pointerX = x;
+            let pointerY = y;
+            let distance = Math.sqrt(Math.pow(pointerX - imgX, 2) + Math.pow(pointerY - imgY, 2));
+            let startAngle = image.getData("startAngle");
+            image.setAngle(startAngle + distance);
+        }
+
+        onDragNTBtnEnd (input, pointer, image) {
+            let angle = image.angle;
+            console.log(angle);
             if (!this.ntBtnsEnabled) {
                 return;
             }
@@ -175,6 +202,7 @@
             } else {
                 this.positionManager.doRejectNT(cloned);
             }
+            image.setAngle(0);
         }
     }
 
