@@ -182,6 +182,10 @@
             if (!startedDragging) {
                 return;
             }
+            let forwardButtonDown = pointer.leftButtonDown();
+            if (!forwardButtonDown) {
+                return;
+            }
             let imgX = image.getData("pointerStartX");
             let imgY = image.getData("pointerStartY");
             let pointerX = x;
