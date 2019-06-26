@@ -52,8 +52,8 @@
             this.nucleotides = [];
             this.ntButtons = [];
             this.btnLocations = {
-                0: [310, 350],
-                1: [310, 440]
+                0: [310, 400],
+                1: [310, 450]
             }
             this.ntBtnsEnabled = true;
         }
@@ -129,7 +129,7 @@
             this.game.add.text(345, 105, "3'", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
-            this.game.add.text(4, 630, "5'", 
+            this.game.add.text(4, 530, "5'", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
             this.game.add.text(230, 440, "5'", 
@@ -158,7 +158,7 @@
             nt.setDisplay("nucleotide");
             nt.setVisible(true);
             nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
-            nt.getObject().setScale(0.25);
+            nt.getObject().setScale(0.15);
             nt.getObject().setInteractive();
             this.game.input.setDraggable(nt.getObject());
             this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
@@ -261,13 +261,19 @@
             this.inputCompRectPathPts = this.inputComplRowPath.getSpacedPoints(27);
             this.inputVertPath = new Phaser.Curves.Path(182, 147);
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
-            this.inputVertPath.draw(this.gameObj.graphics);
+            // this.inputVertPath.draw(this.gameObj.graphics);
             let numVertPathPts = 7;
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts).slice(0, numVertPathPts - 1);
+            this.inputVertPathDispl = new Phaser.Curves.Path(182, 147);
+            this.inputVertPathDispl.cubicBezierTo(-30, 640, 280, 320, -80, 440);
+            this.inputVertPathDispl.draw(this.gameObj.graphics);
             this.outputVertPath = new Phaser.Curves.Path(245, 450);
             this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
-            this.outputVertPath.draw(this.gameObj.graphics);
+            // this.outputVertPath.draw(this.gameObj.graphics);
             this.outputVertPathPts = this.outputVertPath.getPoints(5);
+            this.outputVertPathDispl = new Phaser.Curves.Path(285, 500);
+            this.outputVertPathDispl.cubicBezierTo(145, 710, 250, 600, 130, 670);
+            this.outputVertPathDispl.draw(this.gameObj.graphics);
             this.outputRowPath = new Phaser.Curves.Path(155, 710);
             this.outputRowPath.lineTo(370, 710);
             this.outputRowPath.draw(this.gameObj.graphics);
