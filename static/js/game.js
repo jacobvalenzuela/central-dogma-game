@@ -102,11 +102,9 @@
             this.graphics.fillStyle(0xFDE8E9, 1.0);
             this.graphics.fillRect(270, 50, 75, 45);
 
-            this.graphics.fillStyle(0xfffaa8, 1.0);
-            this.graphics.fillCircle(80, 490, 50);
+            this.leftHighlightCir = this.game.add.circle(80, 490, 50, 0xfffaa8, 0);
 
-            this.graphics.fillStyle(0xfffaa8, 1.0);
-            this.graphics.fillCircle(210, 534, 47);
+            this.rightHighlightCir = this.game.add.circle(210, 534, 47, 0xfffaa8, 0);
 
             this.game.add.text(18, 53, "Sequence NTs", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
@@ -491,6 +489,14 @@
         }
 
         next() {
+            let relHead = this.getHeadNucleotide();
+            if (relHead) {
+                this.gameObj.leftHighlightCir.setFillStyle(0xfffaa8, 1);
+                this.gameObj.rightHighlightCir.setFillStyle(0xfffaa8, 1);
+            } else {
+                this.gameObj.leftHighlightCir.setFillStyle(0xfffaa8, 0);
+                this.gameObj.rightHighlightCir.setFillStyle(0xfffaa8, 0);
+            }
             let head = this.levelNucleotides[0];
             if (head) {
                 this.removeHeadNucleotide();
