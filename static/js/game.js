@@ -151,6 +151,8 @@
             this.makeNTBtn("A");
 
             this.scorekeeping.start();
+
+            this.positionManager.start();
         }
 
         makeNTBtn(type) {
@@ -235,15 +237,34 @@
 
     class PositionManager {
         constructor (gameObj, levelNucleotides) {
+            this.autoMoveTimer = null;
+            this.pathPointsFactor = 60;
             this.gameObj = gameObj;
             this.game = gameObj.game;
-            this.levelNucleotides = Array.from(levelNucleotides);
+            this.levelNucleotides = [];
+            for (let i = 0; i < levelNucleotides.length * this.pathPointsFactor; i++) {
+                let prevIdx = Math.floor((i - 1) / this.pathPointsFactor);
+                let currIdx = Math.floor(i / this.pathPointsFactor);
+                let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
+                if (currIdx === nextIdx) {
+                    this.levelNucleotides.push(null);
+                    continue;
+                }
+                this.levelNucleotides.push(levelNucleotides[currIdx]);
+            }
             this.compLevelNucleotides = [];
-            let paddingComp = 8;
+            let paddingComp = 8 * this.pathPointsFactor;
             for (let i = 0; i < paddingComp; i++) {
                 this.compLevelNucleotides.push(null);
             }
             for (let i = 0; i < this.levelNucleotides.length; i++) {
+                let prevIdx = Math.floor((i - 1) / this.pathPointsFactor);
+                let currIdx = Math.floor(i / this.pathPointsFactor);
+                let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
+                if (currIdx === nextIdx) {
+                    this.compLevelNucleotides.push(null);
+                    continue;
+                }
                 let nucleotide = this.levelNucleotides[i];
                 let newcleotide = new Nucleotide(this.game, nucleotide.matches[0], "basic");
                 this.compLevelNucleotides.push(newcleotide);
@@ -254,30 +275,30 @@
             this.inputRowPath = new Phaser.Curves.Path(0, 140);
             this.inputRowPath.lineTo(175, 140);
             this.inputRowPath.draw(this.gameObj.graphics);
-            this.initRectPathPts = this.inputRowPath.getSpacedPoints(13);
+            this.initRectPathPts = this.inputRowPath.getSpacedPoints(13 * this.pathPointsFactor);
             this.inputComplRowPath = new Phaser.Curves.Path(0, 126);
             this.inputComplRowPath.lineTo(363.46153846153845, 126);
             this.inputComplRowPath.draw(this.gameObj.graphics);
-            this.inputCompRectPathPts = this.inputComplRowPath.getSpacedPoints(27);
+            this.inputCompRectPathPts = this.inputComplRowPath.getSpacedPoints(27 * this.pathPointsFactor);
             this.inputVertPath = new Phaser.Curves.Path(182, 147);
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
             // this.inputVertPath.draw(this.gameObj.graphics);
-            let numVertPathPts = 7;
-            this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts).slice(0, numVertPathPts - 1);
+            let numVertPathPts = 7 * this.pathPointsFactor;
+            this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
             this.inputVertPathDispl = new Phaser.Curves.Path(182, 147);
             this.inputVertPathDispl.cubicBezierTo(-30, 640, 280, 320, -80, 440);
             this.inputVertPathDispl.draw(this.gameObj.graphics);
             this.outputVertPath = new Phaser.Curves.Path(245, 450);
             this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
             // this.outputVertPath.draw(this.gameObj.graphics);
-            this.outputVertPathPts = this.outputVertPath.getPoints(5);
+            this.outputVertPathPts = this.outputVertPath.getPoints(5 * this.pathPointsFactor);
             this.outputVertPathDispl = new Phaser.Curves.Path(285, 500);
             this.outputVertPathDispl.cubicBezierTo(145, 710, 250, 600, 130, 670);
             this.outputVertPathDispl.draw(this.gameObj.graphics);
             this.outputRowPath = new Phaser.Curves.Path(155, 710);
-            this.outputRowPath.lineTo(370, 710);
+            this.outputRowPath.lineTo(400, 710);
             this.outputRowPath.draw(this.gameObj.graphics);
-            this.outputRowPathPts = this.outputRowPath.getPoints(17);
+            this.outputRowPathPts = this.outputRowPath.getPoints(30 * this.pathPointsFactor);
         }
 
         setPositions(animate=true) {
@@ -311,8 +332,9 @@
                 } else {
                     nucleotide.setPosition(x, y);
                 }
-                let scale = (initVertPathPts.length * 0.05) - (0.05 * i);
-                let scalePrev = (initVertPathPts.length * 0.05) - (0.05 * (i + 1));
+                // (0, 3/10) (180, 1/20) len(initVertPathPts)==180
+                let scale = 0.3 - (1/1440) * i;
+                let scalePrev = 0.3 - (1/1440) * (i - 1);
                 if (animate) {
                     nucleotide.getObject().setScale(scalePrev);
                     this._animateScale(nucleotide, scale);
@@ -349,8 +371,10 @@
                 } else {
                     nucleotide.setPosition(x, y);
                 }
-                let scale = (outputVertPathPts.length * 0.05) - (0.05 * i);
-                let scalePrev = (outputVertPathPts.length * 0.05) - (0.05 * (i - 1));
+                let idx = Math.floor(i / this.pathPointsFactor);
+                // (0, 0.2) (299, 0.07) len(outputVertPathPts)=299
+                let scale = 0.2 - (1/2300) * i;
+                let scalePrev = 0.2 - (1/2300) * (i - 1);
                 if (animate) {
                     nucleotide.getObject().setScale(scalePrev);
                     this._animateScale(nucleotide, scale);
@@ -375,6 +399,26 @@
             }
         }
 
+        start() {
+            this.startTimer();
+        }
+
+        startTimer() {
+            let that = this;
+            this.autoMoveTimer = this.game.time.addEvent({
+                delay: 50,
+                callback: function () {that.next();},
+                loop: true
+            });
+        }
+
+        stopTimer() {
+            if (this.autoMoveTimer) {
+                this.autoMoveTimer.remove();
+                this.autoMoveTimer = null;
+            }
+        }
+
         _animatePosition(nucleotide, x, y, callback=null) {
             let fromX = nucleotide.getObject().x;
             let toX = x;
@@ -388,7 +432,7 @@
             } else {
                 let that = this;
                 this.game.time.addEvent({
-                    delay: 40,
+                    delay: 20,
                     callback: function () {
                         let midX = (fromX + toX) / 2;
                         let midY = (fromY + toY) / 2;
@@ -447,44 +491,66 @@
         }
 
         next() {
-            let removed = this.levelNucleotides[0];
-            if (removed) {
-                this._animatePosition(removed, removed.getObject().x - 40, removed.getObject().y + 130);
-                this._fadeOut(removed, function () {
-                    removed.destroy();
-                });
+            let head = this.levelNucleotides[0];
+            if (head) {
+                this.removeHeadNucleotide();
+                console.log("Removed head nucleotide at the very end");
             }
             this.levelNucleotides = this.levelNucleotides.slice(1, this.levelNucleotides.length);
             this.compLevelNucleotides = this.compLevelNucleotides.slice(1, this.compLevelNucleotides.length);
+            this.selectedNucleotides.push(null);
             this.setPositions(true);
+        }
+
+        removeHeadNucleotide() {
+            for (let i = 0; i < this.pathPointsFactor; i++) {
+                let removed = this.levelNucleotides[i];
+                if (removed) {
+                    this.levelNucleotides[i] = null;
+                    this._animatePosition(removed, removed.getObject().x - 40, removed.getObject().y + 130);
+                    this._fadeOut(removed, function () {
+                        removed.destroy();
+                    });
+                    break;
+                }
+            }
         }
 
         getHeadNucleotide() {
             if (this.levelNucleotides.length) {
-                return this.levelNucleotides[0];
+                for (let i = 0; i < this.pathPointsFactor; i++) {
+                    if (this.levelNucleotides[i] != null) {
+                        return this.levelNucleotides[i];
+                    }
+                }
             }
             return null;
         }
 
         addToDNAOutput(nucleotide) {
-            this.selectedNucleotides.push(nucleotide);
             nucleotide.getObject().setScale(0.3);
             let firstPoint = this.outputVertPathPts[0];
-            let secPoint = this.outputVertPathPts[1];
-            let point = this.outputVertPathPts[2];
+            let secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
+            let point = this.outputVertPathPts[2 * this.pathPointsFactor];
             nucleotide.setPosition(firstPoint.x, firstPoint.y);
+            // this.stopTimer();
             let that = this;
             this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
-                that.next();
                 that._animatePosition(nucleotide, point.x, point.y);
+                that.selectedNucleotides.push(nucleotide);
+                for (let i = 0; i < (that.pathPointsFactor * 2); i++) {
+                    that.selectedNucleotides.push(null);
+                }
+                // that.startTimer();
                 that.gameObj.ntBtnsEnabled = true;
+                that.removeHeadNucleotide();
             });
         }
 
         doRejectNT(nucleotide) {
             nucleotide.getObject().setScale(0.3);
             let firstPoint = this.outputVertPathPts[0];
-            let secPoint = this.outputVertPathPts[1];
+            let secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
             nucleotide.setPosition(firstPoint.x, firstPoint.y);
             this.gameObj.camera.flash(300, 255, 30, 30);
             this.gameObj.camera.shake(400, 0.01);
@@ -632,6 +698,9 @@
         }
 
         validMatchWith(other) {
+            if (!other) {
+                return false;
+            }
             return this.allNucleotides[this.rep].matches.indexOf(other.rep) >= 0;
         }
 
