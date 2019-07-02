@@ -45,17 +45,8 @@
                     create: this.bindFn(this.create),
                 }
             }
-            this.scorekeeping = null;
             this.levels = levels;
             this.level = 0;
-            this.objects = {};
-            this.nucleotides = [];
-            this.ntButtons = [];
-            this.btnLocations = {
-                0: [310, 400],
-                1: [310, 450]
-            }
-            this.ntBtnsEnabled = true;
         }
 
         bindFn(fn) {
@@ -78,10 +69,29 @@
             this.game.load.image("nt_thymine_backbone", "static/img/nucleotide/thymine/Thymine_Backbone@3x.png");
             this.game.load.image("nt_thymine_basic", "static/img/nucleotide/thymine/Thymine_basic@3x.png");
             this.game.load.image("nt_thymine_hbonds", "static/img/nucleotide/thymine/Thymine_Hbonds@3x.png");
-            this.scorekeeping = new GameScore(this.game);
         }
 
         create() {
+            let singleLvl = new LevelStage(this, this.level);
+        }
+    }
+
+    class LevelStage {
+        constructor(gameObj, lvlNum) {
+            this.gameObj = gameObj;
+            this.game = this.gameObj.game;
+            this.level = lvlNum;
+            this.scorekeeping = null;
+            this.objects = {};
+            this.nucleotides = [];
+            this.ntButtons = [];
+            this.btnLocations = {
+                0: [310, 400],
+                1: [310, 450]
+            }
+            this.ntBtnsEnabled = true;
+            this.scorekeeping = new GameScore(this.game);
+
             this.camera = this.game.cameras.cameras[0];
             this.graphics = this.game.add.graphics();
             this.game.add.image(75, 30, "logo_dogma").setScale(0.15);
@@ -136,13 +146,13 @@
             this.game.add.text(340, 690, "3'", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
-            let nucleotides = this.levels[this.level].ntSequence;
+            let nucleotides = this.gameObj.levels[this.level].ntSequence;
             for (let i = 0; i < nucleotides.length; i++) {
-                let nucleotide = new Nucleotide(this.game, nucleotides[i], "basic");
+                let nucleotide = new Nucleotide(this, nucleotides[i], "basic");
                 this.nucleotides.push(nucleotide);
             }
             
-            this.positionManager = new PositionManager(this, this.nucleotides);
+            this.positionManager = new PositionManager(this);
             this.positionManager.setPositions(false);
 
             this.makeNTBtn("T");
@@ -153,8 +163,16 @@
             this.positionManager.start();
         }
 
+        bindFn(fn) {
+            let clas = this;
+            return function (...args) {
+                let event = this;
+                fn.bind(clas, event, ...args)();
+            };
+        }
+
         makeNTBtn(type) {
-            let nt = new Nucleotide(this.game, type, "basic");
+            let nt = new Nucleotide(this, type, "basic");
             nt.setDisplay("nucleotide");
             nt.setVisible(true);
             nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
@@ -234,13 +252,14 @@
     }
 
     class PositionManager {
-        constructor (gameObj, levelNucleotides) {
+        constructor (level) {
             this.autoMoveTimer = null;
             this.pathPointsFactor = 60;
-            this.gameObj = gameObj;
-            this.game = gameObj.game;
+            this.level = level;
+            this.gameObj = level.gameObj;
+            this.game = level.gameObj.game;
             this.levelNucleotides = [];
-            for (let i = 0; i < levelNucleotides.length * this.pathPointsFactor; i++) {
+            for (let i = 0; i < this.level.nucleotides.length * this.pathPointsFactor; i++) {
                 let prevIdx = Math.floor((i - 1) / this.pathPointsFactor);
                 let currIdx = Math.floor(i / this.pathPointsFactor);
                 let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
@@ -248,7 +267,7 @@
                     this.levelNucleotides.push(null);
                     continue;
                 }
-                this.levelNucleotides.push(levelNucleotides[currIdx]);
+                this.levelNucleotides.push(this.level.nucleotides[currIdx]);
             }
             this.compLevelNucleotides = [];
             let paddingComp = 8 * this.pathPointsFactor;
@@ -264,38 +283,38 @@
                     continue;
                 }
                 let nucleotide = this.levelNucleotides[i];
-                let newcleotide = new Nucleotide(this.game, nucleotide.matches[0], "basic");
+                let newcleotide = new Nucleotide(this.level, nucleotide.matches[0], "basic");
                 this.compLevelNucleotides.push(newcleotide);
             }
             this.selectedNucleotides = [];
 
-            this.gameObj.graphics.lineStyle(1, 0x6c757d, 0.6);
+            this.level.graphics.lineStyle(1, 0x6c757d, 0.6);
             this.inputRowPath = new Phaser.Curves.Path(0, 140);
             this.inputRowPath.lineTo(175, 140);
-            this.inputRowPath.draw(this.gameObj.graphics);
+            this.inputRowPath.draw(this.level.graphics);
             this.initRectPathPts = this.inputRowPath.getSpacedPoints(13 * this.pathPointsFactor);
             this.inputComplRowPath = new Phaser.Curves.Path(0, 126);
             this.inputComplRowPath.lineTo(363.46153846153845, 126);
-            this.inputComplRowPath.draw(this.gameObj.graphics);
+            this.inputComplRowPath.draw(this.level.graphics);
             this.inputCompRectPathPts = this.inputComplRowPath.getSpacedPoints(27 * this.pathPointsFactor);
             this.inputVertPath = new Phaser.Curves.Path(182, 147);
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
-            // this.inputVertPath.draw(this.gameObj.graphics);
+            // this.inputVertPath.draw(this.level.graphics);
             let numVertPathPts = 7 * this.pathPointsFactor;
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
             this.inputVertPathDispl = new Phaser.Curves.Path(182, 147);
             this.inputVertPathDispl.cubicBezierTo(-30, 640, 280, 320, -80, 440);
-            this.inputVertPathDispl.draw(this.gameObj.graphics);
+            this.inputVertPathDispl.draw(this.level.graphics);
             this.outputVertPath = new Phaser.Curves.Path(245, 450);
             this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
-            // this.outputVertPath.draw(this.gameObj.graphics);
+            // this.outputVertPath.draw(this.level.graphics);
             this.outputVertPathPts = this.outputVertPath.getPoints(5 * this.pathPointsFactor);
             this.outputVertPathDispl = new Phaser.Curves.Path(285, 500);
             this.outputVertPathDispl.cubicBezierTo(145, 710, 250, 600, 130, 670);
-            this.outputVertPathDispl.draw(this.gameObj.graphics);
+            this.outputVertPathDispl.draw(this.level.graphics);
             this.outputRowPath = new Phaser.Curves.Path(155, 710);
             this.outputRowPath.lineTo(400, 710);
-            this.outputRowPath.draw(this.gameObj.graphics);
+            this.outputRowPath.draw(this.level.graphics);
             this.outputRowPathPts = this.outputRowPath.getPoints(30 * this.pathPointsFactor);
         }
 
@@ -491,11 +510,11 @@
         next() {
             let relHead = this.getHeadNucleotide();
             if (relHead) {
-                this.gameObj.leftHighlightCir.setFillStyle(0xfffaa8, 1);
-                this.gameObj.rightHighlightCir.setFillStyle(0xfffaa8, 1);
+                this.level.leftHighlightCir.setFillStyle(0xfffaa8, 1);
+                this.level.rightHighlightCir.setFillStyle(0xfffaa8, 1);
             } else {
-                this.gameObj.leftHighlightCir.setFillStyle(0xfffaa8, 0);
-                this.gameObj.rightHighlightCir.setFillStyle(0xfffaa8, 0);
+                this.level.leftHighlightCir.setFillStyle(0xfffaa8, 0);
+                this.level.rightHighlightCir.setFillStyle(0xfffaa8, 0);
             }
             let head = this.levelNucleotides[0];
             if (head) {
@@ -548,7 +567,7 @@
                     that.selectedNucleotides.push(null);
                 }
                 // that.startTimer();
-                that.gameObj.ntBtnsEnabled = true;
+                that.level.ntBtnsEnabled = true;
                 that.removeHeadNucleotide();
             });
         }
@@ -558,13 +577,13 @@
             let firstPoint = this.outputVertPathPts[0];
             let secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
             nucleotide.setPosition(firstPoint.x, firstPoint.y);
-            this.gameObj.camera.flash(300, 255, 30, 30);
-            this.gameObj.camera.shake(400, 0.01);
+            this.level.camera.flash(300, 255, 30, 30);
+            this.level.camera.shake(400, 0.01);
             let that = this;
             this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
                 that._fadeOut(nucleotide);
                 that._animatePosition(nucleotide, firstPoint.x, firstPoint.y, function () {
-                    that.gameObj.ntBtnsEnabled = true;
+                    that.level.ntBtnsEnabled = true;
                     nucleotide.destroy();
                 });
             });
@@ -622,11 +641,11 @@
     class Nucleotide {
         /**
          * 
-         * @param {Object} game The game object
+         * @param {Object} level The level object
          * @param {String} rep The representation of the nucleotide. Choose from A, T
          * @param {String} type The type of the nucleotide. Choose from basic, hbonds, backbone
          */
-        constructor (game, rep, type) {
+        constructor (level, rep, type) {
             this.allNucleotides = {
                 "A": {
                     shortname: "adenine",
@@ -640,7 +659,10 @@
                 }
             }
 
-            this.game = game;
+            this.level = level;
+            if (!(this.level instanceof LevelStage)) {
+                debugger
+            }
             this.rep = rep;
             this.type = type;
             this.imgObj = null;
@@ -651,8 +673,8 @@
 
         getObject() {
             if (this.imgObj === null) {
-                this.imgObj = this.game.add.image(0, 0, "nt_" + this.getShortName() + "_" + this.type);
-                this.squareObj = this.game.add.rectangle(0, 0, 10, 10, this.getColor());
+                this.imgObj = this.level.game.add.image(0, 0, "nt_" + this.getShortName() + "_" + this.type);
+                this.squareObj = this.level.game.add.rectangle(0, 0, 10, 10, this.getColor());
                 this.imgObj.setVisible(false);
                 this.squareObj.setVisible(false);
                 this.imgObj.setData("nucleotide", this);
@@ -711,7 +733,7 @@
         }
 
         clone() {
-            return new Nucleotide(this.game, this.rep, this.type);
+            return new Nucleotide(this.level, this.rep, this.type);
         }
 
         destroy() {
