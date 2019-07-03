@@ -60,7 +60,16 @@
         preload(gameObj) {
             this.game = gameObj;
             this.game.load.image("logo_dogma", "static/img/DOGMA_logo.png");
+            this.game.load.spritesheet(
+                "logo_dogma_intro",
+                "static/img/DOGMA_logo_intro.png",
+                {
+                    frameWidth: 600,
+                    frameHeight: 360
+                }
+            );
             this.game.load.image("logo_isb", "static/img/ISB_Logo.png");
+            this.game.load.image("play_btn", "static/img/playBtn.png");
             
             this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");
             this.game.load.image("nt_adenine_basic", "static/img/nucleotide/adenine/Adenine_basic@3x.png");
@@ -72,7 +81,128 @@
         }
 
         create() {
+            // let singleLvl = new LevelStage(this, this.level);
+            let titleScreen = new TitleScreen(this);
+        }
+
+        startGame() {
             let singleLvl = new LevelStage(this, this.level);
+        }
+    }
+
+    class TitleScreen {
+        constructor(gameObj) {
+            this.gameObj = gameObj;
+            this.game = gameObj.game;
+            this.camera = this.game.cameras.cameras[0];
+            this.graphics = this.game.add.graphics();
+            
+            this.graphics.fillStyle(0xF1F1F2, 1.0);
+            this.graphics.fillRect(0, 0, 360, 740);
+            let isblogo = this.game.add.image(190, 320, "logo_isb").setScale(0.35);
+
+            let dogmaLogo = this.game.add.sprite(175, 280, "logo_dogma_intro", 0).setScale(0.75);
+
+            this.playBtn = this.game.add.image(190, 500, "play_btn").setScale(0.30).setAlpha(0).setInteractive();
+
+            this.game.input.on("pointerup", this.bindFn(this.onPlayClick));
+
+            let that = this;
+            this.game.time.addEvent({
+                delay: 2000,
+                callback: function () {
+                    that.fadeOut(isblogo, function () {
+                        that.game.anims.create({
+                            key: "logo_dogma_anim",
+                            frames: that.game.anims.generateFrameNumbers("logo_dogma_intro", null),
+                            frameRate: 30,
+                            repeat: 0,
+                            delay: 500
+                        });
+                        dogmaLogo.anims.play("logo_dogma_anim");
+                        that.game.time.addEvent({
+                            delay: 2000,
+                            callback: function () {
+                                that.fadeIn(that.playBtn);
+                            },
+                            loop: false
+                        });
+                    });
+                },
+                loop: false
+            });
+        }
+
+        fadeIn(image, callback=null) {
+            let currentAlpha = image.alpha;
+            if (currentAlpha == 0) {
+                currentAlpha = 0.0001;
+            }
+            let newAlpha = currentAlpha * 1.5;
+            console.log(newAlpha)
+            if (newAlpha > 0.999) {
+                image.clearAlpha();
+                if (callback != null) {
+                    callback(image);
+                }
+            } else {
+                image.setVisible(true);
+                image.setAlpha(newAlpha);
+                let that = this;
+                this.game.time.addEvent({
+                    delay: 40,
+                    callback: function () {
+                        that.fadeIn(image, callback);
+                    },
+                    loop: false
+                });
+            }
+        }
+
+        fadeOut(image, callback=null) {
+            let currentAlpha = image.alpha;
+            let newAlpha = currentAlpha / 1.5;
+            if (newAlpha < 0.001) {
+                image.clearAlpha();
+                image.setVisible(false);
+                if (callback != null) {
+                    callback(image);
+                }
+            } else {
+                image.setAlpha(newAlpha);
+                let that = this;
+                this.game.time.addEvent({
+                    delay: 40,
+                    callback: function () {
+                        that.fadeOut(image, callback);
+                    },
+                    loop: false
+                });
+            }
+        }
+
+        onPlayClick(input, pointer, imgs) {
+            if (!imgs) {
+                return;
+            }
+            let img = imgs[0];
+            if (img != this.playBtn) {
+                return;
+            }
+            this.destroy();
+            this.gameObj.startGame();
+        }
+
+        destroy() {
+            this.graphics.destroy();
+        }
+
+        bindFn(fn) {
+            let clas = this;
+            return function (...args) {
+                let event = this;
+                fn.bind(clas, event, ...args)();
+            };
         }
     }
 
@@ -660,9 +790,9 @@
             }
 
             this.level = level;
-            if (!(this.level instanceof LevelStage)) {
-                debugger
-            }
+            // if (!(this.level instanceof LevelStage)) {
+            //     debugger
+            // }
             this.rep = rep;
             this.type = type;
             this.imgObj = null;
