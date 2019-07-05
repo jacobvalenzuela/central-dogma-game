@@ -100,12 +100,16 @@
             this.graphics.fillStyle(0xF1F1F2, 1.0);
             this.graphics.fillRect(0, 0, 360, 740);
             let isblogo = this.game.add.image(190, 320, "logo_isb").setScale(0.35);
+            this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.20).setAlpha(0);
 
             let dogmaLogo = this.game.add.sprite(175, 280, "logo_dogma_intro", 0).setScale(0.75);
 
             this.playBtn = this.game.add.image(190, 500, "play_btn").setScale(0.30).setAlpha(0).setInteractive();
 
-            this.game.input.on("pointerup", this.bindFn(this.onPlayClick));
+            this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClick));
+            this.playBtn.addListener("pointerdown", this.bindFn(this.onPlayClickHold));
+            this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClickRelease));
+            this.playBtn.addListener("dragend", this.bindFn(this.onPlayClickRelease));
 
             let that = this;
             this.game.time.addEvent({
@@ -124,6 +128,7 @@
                             delay: 2000,
                             callback: function () {
                                 that.fadeIn(that.playBtn);
+                                that.fadeIn(that.isblogo);
                             },
                             loop: false
                         });
@@ -181,20 +186,33 @@
             }
         }
 
-        onPlayClick(input, pointer, imgs) {
-            if (!imgs) {
-                return;
-            }
-            let img = imgs[0];
+        onPlayClick(img) {
             if (img != this.playBtn) {
                 return;
             }
-            this.destroy();
-            this.gameObj.startGame();
+            let that = this;
+            this.fadeOut(this.playBtn, function () {
+                that.destroy();
+                that.gameObj.startGame();
+            });
+        }
+
+        onPlayClickHold(img) {
+            if (img != this.playBtn) {
+                return;
+            }
+            this.playBtn.setScale(0.25);
+        }
+
+        onPlayClickRelease(img) {
+            this.playBtn.setScale(0.30);
         }
 
         destroy() {
             this.graphics.destroy();
+            this.playBtn.destroy();
+            this.isblogo.destroy();
+            this.game.scene.restart();
         }
 
         bindFn(fn) {
