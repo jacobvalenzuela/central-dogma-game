@@ -264,6 +264,10 @@
                     delay: 75 * i,
                     callback: function () {
                         let lvlBtn = that.add.image(x, y, "nt_adenine_basic").setScale(0.20).setInteractive();
+                        lvlBtn.setData("level", i);
+                        lvlBtn.addListener("pointerup", that.bindFn(that.onLvlClick));
+                        lvlBtn.addListener("pointerdown", that.bindFn(that.lvlPointerDown));
+                        lvlBtn.addListener("pointerup", that.bindFn(that.lvlPointerRelease));
 
                         let xtxt = x - 18;
                         let ytxt = y - 30;
@@ -273,6 +277,37 @@
                     loop: false
                 });
             }
+        }
+
+        onLvlClick(img) {
+            let level = img.getData("level");
+            this.camera.fadeOut(600);
+
+            let that = this;
+            this.time.addEvent({
+                delay: 600,
+                loop: false,
+                callback: function () {
+                    that.scene.stop("titlescreen");
+                    that.scene.start("level" + level);
+                }
+            });
+        }
+
+        lvlPointerDown(img) {
+            img.setScale(0.15);
+        }
+
+        lvlPointerRelease(img) {
+            img.setScale(0.20);
+        }
+
+        bindFn(fn) {
+            let clas = this;
+            return function (...args) {
+                let event = this;
+                fn.bind(clas, event, ...args)();
+            };
         }
 
         fadeIn(callback=null) {
