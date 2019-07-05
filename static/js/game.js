@@ -80,7 +80,9 @@
             this.game.load.image("nt_thymine_hbonds", "static/img/nucleotide/thymine/Thymine_Hbonds@3x.png");
 
             this.game.scene.add("listlevels", ListLevels, false, {levels: this.levels});
-            this.game.scene.add("level1", LevelStage, false, {gameObj: this, lvlNum: 0});
+            for (let i = 0; i < this.levels.length; i++) {
+                this.game.scene.add("level" + i, LevelStage, false, {gameObj: this, lvlNum: i});
+            }
         }
 
         create() {
@@ -156,7 +158,6 @@
                 currentAlpha = 0.0001;
             }
             let newAlpha = currentAlpha * 1.5;
-            console.log(newAlpha)
             if (newAlpha > 0.999) {
                 image.clearAlpha();
                 if (callback != null) {
@@ -241,10 +242,37 @@
 
             this.graphics = this.add.graphics();
 
-            this.graphics.fillStyle(0x9BDBF5, 0.5);
+            this.graphics.fillStyle(0x9BDBF5, 0.75);
             this.graphics.fillRect(30, 100, 300, 600);
 
-            this.fadeIn();
+            this.add.text(18, 53, "Choose a level", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '24pt', color: '#000'});
+
+            let that = this;
+            this.fadeIn(function () {
+                that.populateLevels();
+            });
+        }
+
+        populateLevels() {
+            for (let i = 0; i < this.levels.length; i++) {
+                let x = 80 + 100 * (i % 3);
+                let y = 150 + 100 * Math.floor(i / 3);
+
+                let that = this;
+                this.time.addEvent({
+                    delay: 75 * i,
+                    callback: function () {
+                        let lvlBtn = that.add.image(x, y, "nt_adenine_basic").setScale(0.20).setInteractive();
+
+                        let xtxt = x - 18;
+                        let ytxt = y - 30;
+                        that.add.text(xtxt, ytxt, i + 1, 
+                            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '35pt', color: '#fff', stroke: '#000', strokeThickness: 10});        
+                    },
+                    loop: false
+                });
+            }
         }
 
         fadeIn(callback=null) {
@@ -256,7 +284,7 @@
             if (newAlpha > 0.999) {
                 this.camera.clearAlpha();
                 if (callback != null) {
-                    callback(image);
+                    callback();
                 }
             } else {
                 this.camera.setAlpha(newAlpha);
@@ -432,7 +460,6 @@
                 return;
             }
             let angle = image.angle;
-            console.log(angle);
             let clickedNT = image.getData("nucleotide");
             let headNT = this.positionManager.getHeadNucleotide();
             let cloned = clickedNT.clone();
@@ -946,6 +973,27 @@
         { 
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
-        }
+        },
+        {
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+        },
+        {
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+        },
+        {
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+        },
+        {
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+        },
+        {
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+        },
+        {
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+        },
+        {
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+        },
     ]);
 })();
