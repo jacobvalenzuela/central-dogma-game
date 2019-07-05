@@ -81,6 +81,7 @@
 
             this.game.scene.add("listlevels", ListLevels, false, {levels: this.levels});
             for (let i = 0; i < this.levels.length; i++) {
+                this.game.scene.add("levelpre" + i, PreLevelStage, false, {gameObj: this, lvlNum: i});
                 this.game.scene.add("level" + i, LevelStage, false, {gameObj: this, lvlNum: i});
             }
         }
@@ -289,7 +290,7 @@
                 loop: false,
                 callback: function () {
                     that.scene.stop("titlescreen");
-                    that.scene.start("level" + level);
+                    that.scene.start("levelpre" + level);
                 }
             });
         }
@@ -328,6 +329,57 @@
                     delay: 40,
                     callback: function () {
                         that.fadeIn(callback);
+                    },
+                    loop: false
+                });
+            }
+        }
+    }
+
+    class PreLevelStage extends Phaser.Scene {
+        constructor (config) {
+            super(config);
+        }
+
+        init(data) {
+            this.camera = this.cameras.main;
+            this.graphics = this.add.graphics();
+
+            this.graphics.fillStyle(0x000, 1.0);
+            this.graphics.fillRect(0, 0, 360, 740);
+
+            this.add.text(120, 250, "Level " + (data.lvlNum + 1), 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '30pt', color: '#fff'});
+
+            this.scene.launch("level" + data.lvlNum);
+            this.scene.moveAbove("level" + data.lvlNum, "levelpre" + data.lvlNum);
+
+            let that = this;
+            this.time.addEvent({
+                delay: 3000,
+                loop: false,
+                callback: function () {
+                    that.fadeOut();
+                }
+            });
+        }
+
+        fadeOut(callback=null) {
+            let currentAlpha = this.camera.alpha;
+            let newAlpha = currentAlpha / 1.5;
+            console.log(newAlpha)
+            if (newAlpha < 0.001) {
+                this.camera.setAlpha(0);
+                if (callback != null) {
+                    callback();
+                }
+            } else {
+                this.camera.setAlpha(newAlpha);
+                let that = this;
+                this.time.addEvent({
+                    delay: 40,
+                    callback: function () {
+                        that.fadeOut(callback);
                     },
                     loop: false
                 });
@@ -421,9 +473,16 @@
             this.makeNTBtn("T");
             this.makeNTBtn("A");
 
-            this.scorekeeping.start();
+            let that = this;
+            this.time.addEvent({
+                delay: 5000,
+                loop: false,
+                callback: function () {
+                    that.scorekeeping.start();
 
-            this.positionManager.start();
+                    that.positionManager.start();
+                }
+            });
         }
 
         bindFn(fn) {
