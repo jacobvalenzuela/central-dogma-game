@@ -78,22 +78,33 @@
             this.game.load.image("nt_thymine_backbone", "static/img/nucleotide/thymine/Thymine_Backbone@3x.png");
             this.game.load.image("nt_thymine_basic", "static/img/nucleotide/thymine/Thymine_basic@3x.png");
             this.game.load.image("nt_thymine_hbonds", "static/img/nucleotide/thymine/Thymine_Hbonds@3x.png");
+
+            this.game.scene.add("level1", LevelStage, false, {gameObj: this, lvlNum: 0});
         }
 
         create() {
+            this.game.scene.add("titlescreen", TitleScreen, true, {
+                "gameObj": this
+            });
+
             // let singleLvl = new LevelStage(this, this.level);
-            let titleScreen = new TitleScreen(this);
+            // let titleScreen = new TitleScreen(this);
         }
 
         startGame() {
-            let singleLvl = new LevelStage(this, this.level);
+            // let singleLvl = new LevelStage(this, this.level);
+            
         }
     }
 
-    class TitleScreen {
-        constructor(gameObj) {
-            this.gameObj = gameObj;
-            this.game = gameObj.game;
+    class TitleScreen extends Phaser.Scene {
+        constructor (config) {
+            super(config);
+        }
+
+        init(data) {
+            this.gameObj = data.gameObj;
+            this.game = this;
             this.camera = this.game.cameras.cameras[0];
             this.graphics = this.game.add.graphics();
             
@@ -192,8 +203,7 @@
             }
             let that = this;
             this.fadeOut(this.playBtn, function () {
-                that.destroy();
-                that.gameObj.startGame();
+                that.scene.start("level1");
             });
         }
 
@@ -208,13 +218,6 @@
             this.playBtn.setScale(0.30);
         }
 
-        destroy() {
-            this.graphics.destroy();
-            this.playBtn.destroy();
-            this.isblogo.destroy();
-            this.game.scene.restart();
-        }
-
         bindFn(fn) {
             let clas = this;
             return function (...args) {
@@ -224,11 +227,15 @@
         }
     }
 
-    class LevelStage {
-        constructor(gameObj, lvlNum) {
-            this.gameObj = gameObj;
-            this.game = this.gameObj.game;
-            this.level = lvlNum;
+    class LevelStage extends Phaser.Scene {
+        constructor (config) {
+            super(config);
+        }
+
+        init(data) {
+            this.gameObj = data.gameObj;
+            this.game = this;
+            this.level = data.lvlNum;
             this.scorekeeping = null;
             this.objects = {};
             this.nucleotides = [];
