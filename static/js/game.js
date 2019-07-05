@@ -79,6 +79,7 @@
             this.game.load.image("nt_thymine_basic", "static/img/nucleotide/thymine/Thymine_basic@3x.png");
             this.game.load.image("nt_thymine_hbonds", "static/img/nucleotide/thymine/Thymine_Hbonds@3x.png");
 
+            this.game.scene.add("listlevels", ListLevels, false, {levels: this.levels});
             this.game.scene.add("level1", LevelStage, false, {gameObj: this, lvlNum: 0});
         }
 
@@ -202,9 +203,9 @@
                 return;
             }
             let that = this;
-            this.fadeOut(this.playBtn, function () {
-                that.scene.start("level1");
-            });
+            this.fadeOut(this.playBtn);
+            this.scene.launch("listlevels");
+            this.scene.moveAbove("titlescreen", "listlevels");
         }
 
         onPlayClickHold(img) {
@@ -224,6 +225,50 @@
                 let event = this;
                 fn.bind(clas, event, ...args)();
             };
+        }
+    }
+
+    class ListLevels extends Phaser.Scene {
+        constructor (config) {
+            super(config);
+        }
+
+        init(data) {
+            this.camera = this.cameras.main;
+            this.camera.setAlpha(0);
+
+            this.levels = data.levels;
+
+            this.graphics = this.add.graphics();
+
+            this.graphics.fillStyle(0x9BDBF5, 0.5);
+            this.graphics.fillRect(30, 100, 300, 600);
+
+            this.fadeIn();
+        }
+
+        fadeIn(callback=null) {
+            let currentAlpha = this.camera.alpha;
+            if (currentAlpha == 0) {
+                currentAlpha = 0.0001;
+            }
+            let newAlpha = currentAlpha * 1.5;
+            if (newAlpha > 0.999) {
+                this.camera.clearAlpha();
+                if (callback != null) {
+                    callback(image);
+                }
+            } else {
+                this.camera.setAlpha(newAlpha);
+                let that = this;
+                this.time.addEvent({
+                    delay: 40,
+                    callback: function () {
+                        that.fadeIn(callback);
+                    },
+                    loop: false
+                });
+            }
         }
     }
 
