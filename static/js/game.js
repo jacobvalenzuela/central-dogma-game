@@ -79,6 +79,14 @@
             this.game.load.image("nt_thymine_basic", "static/img/nucleotide/thymine/Thymine_basic@3x.png");
             this.game.load.image("nt_thymine_hbonds", "static/img/nucleotide/thymine/Thymine_Hbonds@3x.png");
 
+            this.game.load.image("nt_cytosine_backbone", "static/img/nucleotide/cytosine/Cytosine_Backbone@3x.png");
+            this.game.load.image("nt_cytosine_basic", "static/img/nucleotide/cytosine/Cytosine_basic@3x.png");
+            this.game.load.image("nt_cytosine_hbonds", "static/img/nucleotide/cytosine/Cytosine_Hbonds@3x.png");
+
+            this.game.load.image("nt_guanine_backbone", "static/img/nucleotide/guanine/Guanine_Backbone@3x.png");
+            this.game.load.image("nt_guanine_basic", "static/img/nucleotide/guanine/Guanine_basic@3x.png");
+            this.game.load.image("nt_guanine_hbonds", "static/img/nucleotide/guanine/Guanine_Hbonds@3x.png");
+
             this.game.scene.add("listlevels", ListLevels, false, {levels: this.levels});
             for (let i = 0; i < this.levels.length; i++) {
                 this.game.scene.add("levelpre" + i, PreLevelStage, false, {gameObj: this, lvlNum: i});
@@ -402,7 +410,9 @@
             this.ntButtons = [];
             this.btnLocations = {
                 0: [310, 400],
-                1: [310, 450]
+                1: [310, 450],
+                2: [310, 500],
+                3: [310, 550]
             }
             this.ntBtnsEnabled = true;
             this.scorekeeping = new GameScore(this.game);
@@ -470,8 +480,13 @@
             this.positionManager = new PositionManager(this);
             this.positionManager.setPositions(false);
 
-            this.makeNTBtn("T");
-            this.makeNTBtn("A");
+            let optbtns = this.gameObj.levels[this.level].controls;
+            if (!optbtns) {
+                optbtns = ["T", "A", "G", "C"];
+            }
+            for (let i = 0; i < optbtns.length; i++) {
+                this.makeNTBtn(optbtns[i]);
+            }
 
             let that = this;
             this.time.addEvent({
@@ -977,7 +992,17 @@
                     shortname: "thymine",
                     color: 0x31ace0,
                     matches: ["A"],
-                }
+                },
+                "C": {
+                    shortname: "cytosine",
+                    color: 0xc71489,
+                    matches: ["G"],
+                },
+                "G": {
+                    shortname: "guanine",
+                    color: 0x26b11e,
+                    matches: ["C"],
+                },
             }
 
             this.level = level;
@@ -1066,28 +1091,30 @@
     window.game = new Game([
         { 
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
-            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
+            "controls": ["T", "A"],
         },
         {
-            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+            "ntSequence": "CGCGCGCGGGGCCGCGCGGCCCCGGGCCGCGGCGCGCGCGCGCGCGCGCGGCCCCGCGCGCGGCCGCGCGCGCGCGGCGCGCGCGCGCGCGCGCGG",
+            "controls": ["G", "C"],
         },
         {
-            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
         },
         {
-            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
         },
         {
-            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
         },
         {
-            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
         },
         {
-            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
         },
         {
-            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT"
+            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
         },
     ]);
 })();
