@@ -274,14 +274,20 @@
                     callback: function () {
                         let lvlBtn = that.add.image(x, y, "nt_adenine_basic").setScale(0.20).setInteractive();
                         lvlBtn.setData("level", i);
-                        lvlBtn.addListener("pointerup", that.bindFn(that.onLvlClick));
-                        lvlBtn.addListener("pointerdown", that.bindFn(that.lvlPointerDown));
-                        lvlBtn.addListener("pointerup", that.bindFn(that.lvlPointerRelease));
 
                         let xtxt = x - 18;
                         let ytxt = y - 30;
-                        that.add.text(xtxt, ytxt, i + 1, 
-                            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '35pt', color: '#fff', stroke: '#000', strokeThickness: 10});        
+                        let txt = that.add.text(xtxt, ytxt, i + 1, 
+                            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '35pt', color: '#fff', stroke: '#000', strokeThickness: 10});  
+                        
+                        if (that.levels[i].unlocked) {
+                            lvlBtn.addListener("pointerup", that.bindFn(that.onLvlClick));
+                            lvlBtn.addListener("pointerdown", that.bindFn(that.lvlPointerDown));
+                            lvlBtn.addListener("pointerup", that.bindFn(that.lvlPointerRelease));
+                        } else {
+                            lvlBtn.setAlpha(0.50);
+                            txt.setAlpha(0.75);
+                        }
                     },
                     loop: false
                 });
@@ -1093,13 +1099,16 @@
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
             "controls": ["T", "A"],
+            "unlocked": true,
         },
         {
             "ntSequence": "CGCGCGCGGGGCCGCGCGGCCCCGGGCCGCGGCGCGCGCGCGCGCGCGCGGCCCCGCGCGCGGCCGCGCGCGCGCGGCGCGCGCGCGCGCGCGCGG",
             "controls": ["G", "C"],
+            "unlocked": true,
         },
         {
-            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
+            "ntSequence": "TAGTTACTAGGAGAGGTCATTTATAGGTTAGTCACTTCAGGCCTAGAAGAGATACATAGCACTTGGAGGACAGCGAAAAACAAATTTCACGGCATG",
+            "unlocked": true,
         },
         {
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
