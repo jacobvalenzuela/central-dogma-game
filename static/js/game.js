@@ -88,6 +88,9 @@
             this.game.load.image("nt_guanine_basic", "static/img/nucleotide/guanine/Guanine_basic@3x.png");
             this.game.load.image("nt_guanine_hbonds", "static/img/nucleotide/guanine/Guanine_Hbonds@3x.png");
 
+            this.game.load.image("errortide_purine", "static/img/errortide/purine_error.png");
+            this.game.load.image("errortide_pyrimidine", "static/img/errortide/pyrimidine_error.png");
+
             this.game.scene.add("listlevels", ListLevels, false, {levels: this.levels});
             for (let i = 0; i < this.levels.length; i++) {
                 this.game.scene.add("levelpre" + i, PreLevelStage, false, {gameObj: this, lvlNum: i});
@@ -520,7 +523,7 @@
             nt.setDisplay("nucleotide");
             nt.setVisible(true);
             nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
-            nt.getObject().setScale(0.15);
+            nt.setScale(0.15);
             nt.getObject().setInteractive();
             this.game.input.setDraggable(nt.getObject());
             this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
@@ -582,13 +585,17 @@
             cloned.setDisplay("nucleotide");
             cloned.setPosition(clickedNT.getObject().x, clickedNT.getObject().y);
             cloned.setVisible(true);
-            cloned.getObject().setScale(0.18);
+            cloned.setScale(0.18);
             this.ntBtnsEnabled = false;
-            if (clickedNT.validMatchWith(headNT)) {
-                this.positionManager.addToDNAOutput(cloned);
-            } else {
-                this.positionManager.doRejectNT(cloned);
+            // if (clickedNT.validMatchWith(headNT)) {
+            //     this.positionManager.addToDNAOutput(cloned);
+            // } else {
+            //     this.positionManager.doRejectNT(cloned);
+            // }
+            if (!clickedNT.validMatchWith(headNT)) {
+                cloned.setError(true);
             }
+            this.positionManager.addToDNAOutput(cloned);
             image.setAngle(0);
             image.startedDragging = false;
         }
@@ -700,10 +707,10 @@
                 let scale = 0.3 - (1/1440) * i;
                 let scalePrev = 0.3 - (1/1440) * (i - 1);
                 if (animate) {
-                    nucleotide.getObject().setScale(scalePrev);
+                    nucleotide.setScale(scalePrev);
                     this._animateScale(nucleotide, scale);
                 } else {
-                    nucleotide.getObject().setScale(scale);
+                    nucleotide.setScale(scale);
                 }
             }
             let initRectPathPts = this.initRectPathPts.slice().reverse();
@@ -740,10 +747,10 @@
                 let scale = 0.2 - (1/2300) * i;
                 let scalePrev = 0.2 - (1/2300) * (i - 1);
                 if (animate) {
-                    nucleotide.getObject().setScale(scalePrev);
+                    nucleotide.setScale(scalePrev);
                     this._animateScale(nucleotide, scale);
                 } else {
-                    nucleotide.getObject().setScale(scale);
+                    nucleotide.setScale(scale);
                 }
             }
             let outputRectPathsPts = this.outputRowPathPts.slice();
@@ -815,7 +822,7 @@
                 fromScale = nucleotide.getObject().scaleX;
             }
             if (Math.abs(fromScale - toScale) < 0.001) {
-                nucleotide.getObject().setScale(scale);
+                nucleotide.setScale(scale);
                 if (callback != null) {
                     callback(nucleotide);
                 }
@@ -825,7 +832,7 @@
                     delay: 40,
                     callback: function () {
                         let midScale = (fromScale + toScale) / 2;
-                        nucleotide.getObject().setScale(midScale);
+                        nucleotide.setScale(midScale);
                         that._animateScale(nucleotide, scale, callback);
                     },
                 });
@@ -838,11 +845,13 @@
             if (newAlpha > 5) {
                 nucleotide.getObject().clearAlpha();
                 nucleotide.setVisible(false);
+                nucleotide.updateErrorDisplay();
                 if (callback != null) {
                     callback(nucleotide);
                 }
             } else {
                 nucleotide.getObject().setAlpha(newAlpha);
+                nucleotide.updateErrorDisplay();
                 let that = this;
                 this.game.time.addEvent({
                     delay: 40,
@@ -900,11 +909,15 @@
         }
 
         addToDNAOutput(nucleotide) {
-            nucleotide.getObject().setScale(0.3);
+            nucleotide.setScale(0.3);
             let firstPoint = this.outputVertPathPts[0];
             let secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
             let point = this.outputVertPathPts[2 * this.pathPointsFactor];
             nucleotide.setPosition(firstPoint.x, firstPoint.y);
+            if (nucleotide.errorNT) {
+                this.level.camera.flash(300, 255, 30, 30);
+                this.level.camera.shake(400, 0.01);
+            }
             // this.stopTimer();
             let that = this;
             this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
@@ -915,12 +928,14 @@
                 }
                 // that.startTimer();
                 that.level.ntBtnsEnabled = true;
-                that.removeHeadNucleotide();
+                if (!nucleotide.errorNT) {
+                    that.removeHeadNucleotide();
+                }
             });
         }
 
         doRejectNT(nucleotide) {
-            nucleotide.getObject().setScale(0.3);
+            nucleotide.setScale(0.3);
             let firstPoint = this.outputVertPathPts[0];
             let secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
             nucleotide.setPosition(firstPoint.x, firstPoint.y);
@@ -998,21 +1013,25 @@
                     shortname: "adenine",
                     color: 0xf49232,
                     matches: ["T"],
+                    classification: "purine",
                 },
                 "T": {
                     shortname: "thymine",
                     color: 0x31ace0,
                     matches: ["A"],
+                    classification: "pyrimidine",
                 },
                 "C": {
                     shortname: "cytosine",
                     color: 0xc71489,
                     matches: ["G"],
+                    classification: "pyrimidine",
                 },
                 "G": {
                     shortname: "guanine",
                     color: 0x26b11e,
                     matches: ["C"],
+                    classification: "purine",
                 },
             }
 
@@ -1026,6 +1045,7 @@
             this.squareObj = null;
             this.display = "rectangle"; // rectangle or nucleotide
             this.matches = this.allNucleotides[rep].matches;
+            this.errorNT = false; // is an error NT and should show red BG
         }
 
         getObject() {
@@ -1036,6 +1056,15 @@
                 this.squareObj.setVisible(false);
                 this.imgObj.setData("nucleotide", this);
                 this.squareObj.setData("nucleotide", this);
+                this.imgObj.setDepth(5);
+                this.squareObj.setDepth(5);
+                
+                this.imgObjErr = this.level.game.add.image(0, 0, "errortide_" + this.getClassification());
+                this.squareObjErr = this.level.game.add.rectangle(0, 0, 15, 15, 0xfc0e33);
+                this.imgObjErr.setVisible(false);
+                this.squareObjErr.setVisible(false);
+                this.imgObjErr.setDepth(4);
+                this.squareObjErr.setDepth(4);
             }
             if (this.display == "rectangle") {
                 return this.squareObj;
@@ -1064,14 +1093,54 @@
                 this.imgObj.setPosition(this.squareObj.x, this.squareObj.y);
                 this.squareObj.setVisible(false);
             }
+            this.updateErrorDisplay();
+        }
+
+        updateErrorDisplay() {
+            if (!this.imgObjErr || !this.squareObjErr) {
+                return;
+            }
+            if (!this.errorNT) {
+                this.squareObjErr.setVisible(false);
+                this.imgObjErr.setVisible(false);
+                return;
+            }
+            if (this.display == "rectangle") {
+                this.squareObjErr.setVisible(this.squareObj.visible);
+                this.squareObjErr.setPosition(this.squareObj.x, this.squareObj.y);
+                this.imgObjErr.setVisible(false);
+                this.squareObjErr.setScale(this.squareObj.scale);
+            } else {
+                this.imgObjErr.setVisible(this.imgObj.visible);
+                this.imgObjErr.setPosition(this.imgObj.x, this.imgObj.y);
+                this.squareObjErr.setVisible(false);
+                let scale = this.imgObj.scale;
+                if (scale > 0) {
+                    scale = scale + scale * 0.25;
+                }
+                this.imgObjErr.setScale(scale);
+                this.imgObjErr.setAlpha(this.imgObj.alpha);
+            }
         }
 
         setVisible(visible) {
             this.getObject().setVisible(visible);
+            this.updateErrorDisplay();
         }
 
         setPosition(x, y) {
             this.getObject().setPosition(x, y);
+            this.updateErrorDisplay();
+        }
+
+        setScale(scale) {
+            this.getObject().setScale(scale);
+            this.updateErrorDisplay();
+        }
+
+        setError(errorBool) {
+            this.errorNT = errorBool;
+            this.updateErrorDisplay();
         }
 
         getShortName() {
@@ -1080,6 +1149,10 @@
 
         getColor() {
             return this.allNucleotides[this.rep].color;
+        }
+
+        getClassification() {
+            return this.allNucleotides[this.rep].classification;
         }
 
         validMatchWith(other) {
