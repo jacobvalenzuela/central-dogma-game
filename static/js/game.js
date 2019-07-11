@@ -65,7 +65,8 @@
                 "static/img/DOGMA_logo_intro.png",
                 {
                     frameWidth: 600,
-                    frameHeight: 360
+                    frameHeight: 360,
+                    endFrame: 98,
                 }
             );
             this.game.load.image("logo_isb", "static/img/ISB_Logo.png");
@@ -148,7 +149,7 @@
                         });
                         dogmaLogo.anims.play("logo_dogma_anim");
                         that.game.time.addEvent({
-                            delay: 2000,
+                            delay: 2500,
                             callback: function () {
                                 that.fadeIn(that.playBtn);
                                 that.fadeIn(that.isblogo);
