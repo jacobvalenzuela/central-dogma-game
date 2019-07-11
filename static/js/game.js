@@ -472,7 +472,7 @@
             this.game.add.text(4, 530, "5'", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
-            this.game.add.text(230, 440, "5'", 
+            this.game.add.text(265, 490, "5'", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
             this.game.add.text(340, 690, "3'", 
