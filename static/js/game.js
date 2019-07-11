@@ -35,7 +35,7 @@
     class Game {
         constructor (levels) {
             this.config = {
-                type: Phaser.WEBGL,
+                type: Phaser.CANVAS,
                 canvas: document.getElementsByTagName("canvas")[0],
                 width: 360,
                 height: 740,
@@ -444,9 +444,9 @@
             this.graphics.fillStyle(0xFDE8E9, 1.0);
             this.graphics.fillRect(270, 50, 75, 45);
 
-            this.leftHighlightCir = this.game.add.circle(100, 520, 50, 0xfffaa8, 0);
+            this.leftHighlightCir = this.game.add.circle(80, 490, 50, 0xfffaa8, 0);
 
-            this.rightHighlightCir = this.game.add.circle(230, 564, 47, 0xfffaa8, 0);
+            this.rightHighlightCir = this.game.add.circle(210, 534, 47, 0xfffaa8, 0);
 
             this.game.add.text(18, 53, "Sequence NTs", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
