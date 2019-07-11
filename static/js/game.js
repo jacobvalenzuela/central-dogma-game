@@ -628,6 +628,10 @@
                 let newcleotide = new Nucleotide(this.level, nucleotide.matches[0], "basic");
                 this.compLevelNucleotides.push(newcleotide);
             }
+            for (let i = 0; i < this.pathPointsFactor * 3; i++) {
+                this.levelNucleotides.unshift(null);
+                this.compLevelNucleotides.unshift(null);
+            }
             this.selectedNucleotides = [];
 
             this.level.graphics.lineStyle(1, 0x6c757d, 0.6);
