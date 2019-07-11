@@ -769,7 +769,7 @@
         startTimer() {
             let that = this;
             this.autoMoveTimer = this.game.time.addEvent({
-                delay: 20,
+                delay: 30,
                 callback: function () {that.next();},
                 loop: true
             });
