@@ -90,6 +90,11 @@
             this.game.load.image("errortide_purine", "static/img/errortide/purine_error.png");
             this.game.load.image("errortide_pyrimidine", "static/img/errortide/pyrimidine_error.png");
 
+            this.game.load.image("ntparticle_adenine", "static/img/nucleotide_particle/adenine_particle.png");
+            this.game.load.image("ntparticle_cytosine", "static/img/nucleotide_particle/cytosine_particle.png");
+            this.game.load.image("ntparticle_guanine", "static/img/nucleotide_particle/guanine_particle.png");
+            this.game.load.image("ntparticle_thymine", "static/img/nucleotide_particle/thymine_particle.png");
+
             this.game.scene.add("listlevels", ListLevels, false, {levels: this.levels});
             for (let i = 0; i < this.levels.length; i++) {
                 this.game.scene.add("levelpre" + i, PreLevelStage, false, {gameObj: this, lvlNum: i});
@@ -479,6 +484,29 @@
 
             this.game.add.text(340, 690, "3'", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+            
+            let ntParticleConfig = {
+                x: 150,
+                y: 510,
+                speed: { min: -800, max: 800 },
+                angle: { min: 0, max: 360 },
+                scale: { start: 0.5, end: 0 },
+                blendMode: "SCREEN",
+                active: false,
+                lifespan: 600,
+                gravityY: 800
+            };
+            this.ntparticle = {
+                "adenine": this.add.particles("ntparticle_adenine").createEmitter(ntParticleConfig),
+                "cytosine": this.add.particles("ntparticle_cytosine").createEmitter(ntParticleConfig),
+                "guanine": this.add.particles("ntparticle_guanine").createEmitter(ntParticleConfig),
+                "thymine": this.add.particles("ntparticle_thymine").createEmitter(ntParticleConfig),
+            }
+
+            for (let i = 0; i < Object.keys(this.ntparticle).length; i++) {
+                let nt = Object.keys(this.ntparticle)[i];
+                this.ntparticle[nt].manager.setDepth(10);
+            }
 
             let nucleotides = this.gameObj.levels[this.level].ntSequence;
             for (let i = 0; i < nucleotides.length; i++) {
@@ -593,6 +621,13 @@
             // }
             if (!clickedNT.validMatchWith(headNT)) {
                 cloned.setError(true);
+            } else {
+                let headNTName = headNT.getShortName();
+                let pairNTName = cloned.getShortName();
+                this.ntparticle[headNTName].resume();
+                this.ntparticle[headNTName].explode(50);
+                this.ntparticle[pairNTName].resume();
+                this.ntparticle[pairNTName].explode(50);
             }
             this.positionManager.addToDNAOutput(cloned);
             image.setAngle(0);
@@ -918,6 +953,7 @@
                 this.level.camera.shake(400, 0.02);
             } else {
                 this.level.camera.flash(200, 95, 187, 78);
+                this.level.camera.shake(200, 0.01);
             }
             // this.stopTimer();
             let that = this;
