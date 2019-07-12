@@ -625,9 +625,16 @@
                 let headNTName = headNT.getShortName();
                 let pairNTName = cloned.getShortName();
                 this.ntparticle[headNTName].resume();
-                this.ntparticle[headNTName].explode(50);
                 this.ntparticle[pairNTName].resume();
-                this.ntparticle[pairNTName].explode(50);
+                let that = this;
+                this.ntparticle[headNTName].explode(50);
+                this.game.time.addEvent({
+                    delay: 200,
+                    callback: function () {
+                        that.ntparticle[pairNTName].explode(50);
+                    },
+                    loop: false
+                });
             }
             this.positionManager.addToDNAOutput(cloned);
             image.setAngle(0);
