@@ -66,7 +66,6 @@
                 {
                     frameWidth: 600,
                     frameHeight: 360,
-                    endFrame: 98,
                 }
             );
             this.game.load.image("logo_isb", "static/img/ISB_Logo.png");
@@ -129,7 +128,7 @@
             let isblogo = this.game.add.image(190, 320, "logo_isb").setScale(0.35);
             this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.20).setAlpha(0);
 
-            let dogmaLogo = this.game.add.sprite(175, 280, "logo_dogma_intro", 0).setScale(0.75);
+            let dogmaLogo = this.game.add.sprite(185, 280, "logo_dogma_intro", 0).setScale(0.75);
 
             this.playBtn = this.game.add.image(190, 500, "play_btn").setScale(0.30).setAlpha(0).setInteractive();
 
@@ -140,7 +139,7 @@
 
             let that = this;
             this.game.time.addEvent({
-                delay: 2000,
+                delay: 1000,
                 callback: function () {
                     that.fadeOut(isblogo, function () {
                         that.game.anims.create({
@@ -152,7 +151,7 @@
                         });
                         dogmaLogo.anims.play("logo_dogma_anim");
                         that.game.time.addEvent({
-                            delay: 2500,
+                            delay: 3600,
                             callback: function () {
                                 that.fadeIn(that.playBtn);
                                 that.fadeIn(that.isblogo);
