@@ -624,16 +624,22 @@
             } else {
                 let headNTName = headNT.getShortName();
                 let pairNTName = cloned.getShortName();
-                this.ntparticle[headNTName].resume();
-                this.ntparticle[pairNTName].resume();
                 let that = this;
-                this.ntparticle[headNTName].explode(50);
                 this.game.time.addEvent({
-                    delay: 200,
+                    delay: 100,
+                    loop: false,
                     callback: function () {
-                        that.ntparticle[pairNTName].explode(50);
-                    },
-                    loop: false
+                        that.ntparticle[headNTName].resume();
+                        that.ntparticle[headNTName].explode(50);
+                        that.game.time.addEvent({
+                            delay: 100,
+                            callback: function () {
+                                that.ntparticle[pairNTName].resume();
+                                that.ntparticle[pairNTName].explode(50);
+                            },
+                            loop: false
+                        });
+                    }
                 });
             }
             this.positionManager.addToDNAOutput(cloned);
@@ -958,9 +964,6 @@
             if (nucleotide.errorNT) {
                 this.level.camera.flash(300, 255, 30, 30);
                 this.level.camera.shake(400, 0.02);
-            } else {
-                this.level.camera.flash(200, 95, 187, 78);
-                this.level.camera.shake(200, 0.01);
             }
             // this.stopTimer();
             let that = this;
