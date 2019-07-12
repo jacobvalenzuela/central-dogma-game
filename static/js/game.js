@@ -915,7 +915,9 @@
             nucleotide.setPosition(firstPoint.x, firstPoint.y);
             if (nucleotide.errorNT) {
                 this.level.camera.flash(300, 255, 30, 30);
-                this.level.camera.shake(400, 0.01);
+                this.level.camera.shake(400, 0.02);
+            } else {
+                this.level.camera.flash(200, 95, 187, 78);
             }
             // this.stopTimer();
             let that = this;
