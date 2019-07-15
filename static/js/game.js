@@ -514,7 +514,7 @@
                 this.nucleotides.push(nucleotide);
             }
             
-            this.positionManager = new PositionManager(this);
+            this.positionManager = new PositionManager(this, 30);
             this.positionManager.setPositions(false);
 
             let optbtns = this.gameObj.levels[this.level].controls;
@@ -649,10 +649,11 @@
     }
 
     class PositionManager {
-        constructor (level) {
+        constructor (level, defaultTimerDelay) {
             this.autoMoveTimer = null;
             this.pathPointsFactor = 60;
             this.level = level;
+            this.defaultTimerDelay = defaultTimerDelay;
             this.gameObj = level.gameObj;
             this.game = level.gameObj.game;
             this.levelNucleotides = [];
@@ -750,9 +751,12 @@
                 } else {
                     nucleotide.setPosition(x, y);
                 }
-                // (0, 3/10) (180, 1/20) len(initVertPathPts)==180
-                let scale = 0.3 - (1/1440) * i;
-                let scalePrev = 0.3 - (1/1440) * (i - 1);
+                let modifier = 0;
+                if (i < this.pathPointsFactor * 10) {
+                    modifier = 0.045;
+                }
+                let scale = this.calcInScale(i, modifier);
+                let scalePrev = this.calcInScale(i - 1, modifier);
                 if (animate) {
                     nucleotide.setScale(scalePrev);
                     this._animateScale(nucleotide, scale);
@@ -817,24 +821,46 @@
             }
         }
 
-        start() {
-            this.startTimer();
+        calcInScale(idx, modifier=0) {
+            //  x1 y1    x2   y2
+            // (0, 17/50) (180, 11/100)
+            const x1 = 0;
+            const y1 = 17 / 50 + modifier;
+            const x2 = 180;
+            const y2 = 45 / 500 + modifier;
+            return this.calcExponential(x1, y1, x2, y2, idx);
         }
 
-        startTimer() {
+        calcExponential(x1, y1, x2, y2, x) {
+            x1 = 0; // assuming this is always 0
+            let a = y1;
+            let b = Math.pow(Math.E, Math.log(y2 / y1) / x2);
+            return a * Math.pow(b, x);
+        }
+
+        start() {
+            this.startNTMoveTimer(this.defaultTimerDelay);
+        }
+
+        startNTMoveTimer(delay) {
             let that = this;
             this.autoMoveTimer = this.game.time.addEvent({
-                delay: 30,
+                delay: delay,
                 callback: function () {that.next();},
                 loop: true
             });
         }
 
-        stopTimer() {
+        stopNTMoveTimer() {
             if (this.autoMoveTimer) {
                 this.autoMoveTimer.remove();
                 this.autoMoveTimer = null;
             }
+        }
+
+        updateNTMoveTimer(newDelay) {
+            this.stopNTMoveTimer();
+            this.startNTMoveTimer(newDelay);
         }
 
         _animatePosition(nucleotide, x, y, callback=null) {
@@ -876,7 +902,7 @@
             } else {
                 let that = this;
                 this.game.time.addEvent({
-                    delay: 40,
+                    delay: 10,
                     callback: function () {
                         let midScale = (fromScale + toScale) / 2;
                         nucleotide.setScale(midScale);
@@ -965,7 +991,7 @@
                 this.level.camera.flash(300, 255, 30, 30);
                 this.level.camera.shake(400, 0.02);
             }
-            // this.stopTimer();
+            this.updateNTMoveTimer(50);
             let that = this;
             this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
                 that._animatePosition(nucleotide, point.x, point.y);
@@ -973,7 +999,7 @@
                 for (let i = 0; i < (that.pathPointsFactor * 2); i++) {
                     that.selectedNucleotides.push(null);
                 }
-                // that.startTimer();
+                that.updateNTMoveTimer(that.defaultTimerDelay);
                 that.level.ntBtnsEnabled = true;
                 if (!nucleotide.errorNT) {
                     that.removeHeadNucleotide();
