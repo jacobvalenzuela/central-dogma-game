@@ -451,9 +451,9 @@
             this.graphics.fillStyle(0xFDE8E9, 1.0);
             this.graphics.fillRect(270, 50, 75, 45);
 
-            this.leftHighlightCir = this.game.add.circle(80, 490, 50, 0xfffaa8, 0);
-
-            this.rightHighlightCir = this.game.add.circle(210, 534, 47, 0xfffaa8, 0);
+            this.ntHighlightEllipse = this.game.add.ellipse(140, 510, 230, 125, 0xfffaa8, 1);
+            this.ntHighlightEllipse.setAngle(16);
+            this.ntHighlightEllipse.setAlpha(0);
 
             this.game.add.text(18, 53, "Sequence NTs", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
@@ -940,11 +940,21 @@
         next() {
             let relHead = this.getHeadNucleotide();
             if (relHead) {
-                this.level.leftHighlightCir.setFillStyle(0xfffaa8, 1);
-                this.level.rightHighlightCir.setFillStyle(0xfffaa8, 1);
+                this.level.ntHighlightEllipse.setAlpha(0.90);
+                let ntX = relHead.getObject().x;
+                let ntY = relHead.getObject().y;
+                let hX = this.level.ntHighlightEllipse.x;
+                let hY = this.level.ntHighlightEllipse.y;
+                let pX = ntX;
+                let pY = hY;
+                let s1 = hY - ntY;
+                let s2 = hX - pX;
+                let angle = Math.atan(s1 / s2);
+                angle = angle * (180 / Math.PI);
+                angle = angle / 2;
+                this.level.ntHighlightEllipse.setAngle(angle);
             } else {
-                this.level.leftHighlightCir.setFillStyle(0xfffaa8, 0);
-                this.level.rightHighlightCir.setFillStyle(0xfffaa8, 0);
+                this.level.ntHighlightEllipse.setAlpha(0);
             }
             let head = this.levelNucleotides[0];
             if (head) {
