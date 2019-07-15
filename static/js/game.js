@@ -364,14 +364,21 @@
         }
 
         init(data) {
+            this.level = data.gameObj.levels[data.lvlNum];
+
             this.camera = this.cameras.main;
             this.graphics = this.add.graphics();
 
             this.graphics.fillStyle(0x000, 1.0);
             this.graphics.fillRect(0, 0, 360, 740);
 
-            this.add.text(120, 250, "Level " + (data.lvlNum + 1), 
+            let lvlNumTxt = this.add.text(120, 250, "Level " + (data.lvlNum + 1), 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '30pt', color: '#fff'});
+            lvlNumTxt.setPosition((360 - lvlNumTxt.width) / 2, 250);
+
+            let lvlName = this.add.text(0, 310, this.level.name, 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '20pt', color: '#fff'});
+            lvlName.setPosition((360 - lvlName.width) / 2, 310);
 
             this.scene.launch("level" + data.lvlNum);
             this.scene.moveAbove("level" + data.lvlNum, "levelpre" + data.lvlNum);
@@ -1262,15 +1269,18 @@
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
             "controls": ["T", "A"],
             "unlocked": true,
+            "name": "AT the Beginning",
         },
         {
             "ntSequence": "CGCGCGCGGGGCCGCGCGGCCCCGGGCCGCGGCGCGCGCGCGCGCGCGCGGCCCCGCGCGCGGCCGCGCGCGCGCGGCGCGCGCGCGCGCGCGCGG",
             "controls": ["G", "C"],
             "unlocked": true,
+            "name": "Clash of the Cs and Gs",
         },
         {
             "ntSequence": "TAGTTACTAGGAGAGGTCATTTATAGGTTAGTCACTTCAGGCCTAGAAGAGATACATAGCACTTGGAGGACAGCGAAAAACAAATTTCACGGCATG",
             "unlocked": true,
+            "name": "Mixing it Up",
         },
         {
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
