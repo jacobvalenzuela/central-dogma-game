@@ -505,7 +505,7 @@
 
             for (let i = 0; i < Object.keys(this.ntparticle).length; i++) {
                 let nt = Object.keys(this.ntparticle)[i];
-                this.ntparticle[nt].manager.setDepth(10);
+                this.ntparticle[nt].manager.setDepth(5000);
             }
 
             let nucleotides = this.gameObj.levels[this.level].ntSequence;
@@ -744,6 +744,7 @@
                 if (!nucleotide) {
                     continue;
                 }
+                nucleotide.getObject().setDepth(2999 - i);
                 nucleotide.setDisplay("nucleotide");
                 nucleotide.setVisible(true);
                 if (animate) {
@@ -1129,15 +1130,15 @@
                 this.squareObj.setVisible(false);
                 this.imgObj.setData("nucleotide", this);
                 this.squareObj.setData("nucleotide", this);
-                this.imgObj.setDepth(5);
-                this.squareObj.setDepth(5);
+                this.imgObj.setDepth(500);
+                this.squareObj.setDepth(500);
                 
                 this.imgObjErr = this.level.game.add.image(0, 0, "errortide_" + this.getClassification());
                 this.squareObjErr = this.level.game.add.rectangle(0, 0, 15, 15, 0xfc0e33);
                 this.imgObjErr.setVisible(false);
                 this.squareObjErr.setVisible(false);
-                this.imgObjErr.setDepth(4);
-                this.squareObjErr.setDepth(4);
+                this.imgObjErr.setDepth(400);
+                this.squareObjErr.setDepth(400);
             }
             if (this.display == "rectangle") {
                 return this.squareObj;
