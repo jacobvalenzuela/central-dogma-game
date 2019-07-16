@@ -244,24 +244,6 @@
                 fn.bind(clas, event, ...args)();
             };
         }
-
-        zoomInCamera() {
-            let zoom = this.camera.zoom;
-            if (Math.abs(4 - zoom) < 0.02) {
-                zoom = 4;
-            } else {
-                zoom = zoom + 0.02;
-                let that = this;
-                this.time.addEvent({
-                    delay: 2,
-                    loop: false,
-                    callback: function () {
-                        that.zoomInCamera();
-                    }
-                });
-            }
-            this.camera.setZoom(zoom);
-        }
     }
 
     class ListLevels extends Phaser.Scene {
@@ -339,24 +321,6 @@
             this.scene.manager.resume("titlescreen");
             titleScreenScene.camera.setBounds(0, 0, 360, 740);
             titleScreenScene.camera.pan(img.x, img.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
-        }
-
-        zoomInCamera() {
-            let zoom = this.camera.zoom;
-            if (Math.abs(4 - zoom) < 0.02) {
-                zoom = 4;
-            } else {
-                zoom = zoom + 0.02;
-                let that = this;
-                this.time.addEvent({
-                    delay: 2,
-                    loop: false,
-                    callback: function () {
-                        that.zoomInCamera();
-                    }
-                });
-            }
-            this.camera.setZoom(zoom);
         }
 
         lvlPointerDown(img) {
