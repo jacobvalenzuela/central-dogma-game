@@ -769,6 +769,7 @@
             } else {
                 let headNTName = headNT.getShortName();
                 let pairNTName = cloned.getShortName();
+                this.scorekeeping.incrementSequences(true);
                 let that = this;
                 this.game.time.addEvent({
                     delay: 100,
@@ -1212,6 +1213,10 @@
             let rate = this.getRate();
             this.rateTxt = this.game.add.text(140, 80, rate, 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
+            this.accuracyTxt = this.game.add.text(222, 80, "100%", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
+            this.scoreTxt = this.game.add.text(307, 80, "0", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
         }
 
         start() {
@@ -1236,11 +1241,17 @@
 
         tickMs() {
             this.updateSequenceNTs();
+            this.updateScore();
         }
 
         updateSequenceNTs() {
             let count = this.getNTCount();
             this.sequenceNTsTxt.setText(count);
+        }
+
+        updateScore() {
+            let score = this.getScore();
+            this.scoreTxt.setText(score);
         }
 
         getNTCount() {
@@ -1283,7 +1294,7 @@
         }
 
         getScore() {
-            return this.sequencesMade;
+            return this.sequencesMade * 100;
         }
     }
 
