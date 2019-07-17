@@ -225,8 +225,9 @@
 
             this.game.scene.add("listlevels", ListLevels, false, {levels: this.levels});
             for (let i = 0; i < this.levels.length; i++) {
-                this.game.scene.add("levelpre" + i, PreLevelStage, false, {gameObj: this, lvlNum: i});
-                this.game.scene.add("level" + i, LevelStage, false, {gameObj: this, lvlNum: i});
+                let level = this.levels[i];
+                this.game.scene.add("levelpre" + i, PreLevelStage, false, {gameObj: this, lvlNum: i, level: level});
+                this.game.scene.add("level" + i, LevelStage, false, {gameObj: this, lvlNum: i, level: level});
             }
         }
 
@@ -556,6 +557,7 @@
         }
 
         init(data) {
+            this.levelConfig = data.level;
             this.gameObj = data.gameObj;
             this.game = this;
             this.level = data.lvlNum;
@@ -654,8 +656,8 @@
                 let nucleotide = new Nucleotide(this, nucleotides[i], "basic");
                 this.nucleotides.push(nucleotide);
             }
-            
-            this.positionManager = new PositionManager(this, 30);
+
+            this.positionManager = new PositionManager(this, this.levelConfig.speed);
             this.positionManager.setPositions(false);
 
             let optbtns = this.gameObj.levels[this.level].controls;
@@ -665,6 +667,8 @@
             for (let i = 0; i < optbtns.length; i++) {
                 this.makeNTBtn(optbtns[i]);
             }
+
+            this.scorekeeping.init();
 
             let that = this;
             this.time.addEvent({
@@ -1175,22 +1179,53 @@
                 });
             });
         }
+
+        getLevelNTCount() {
+            let lvlNTs = this.levelNucleotides;
+            let cnt = 0;
+            for (let i = 0; i < lvlNTs.length; i++) {
+                if (lvlNTs[i]) {
+                    cnt++;
+                }
+            }
+            return cnt;
+        }
     }
 
     
     class GameScore {
         constructor (game) {
+            this.initialized = false;
             this.game = game;
             this.sequencesMade = 0;
             this.secondsElapsed = 0;
             this.wrongSequences = 0;
-            this.timer = null;
+            this.timerSec = null;
+            this.timerMs = null;
+        }
+
+        init() {
+            this.initialized = true;
+            this.sequenceNTsTxt = this.game.add.text(50, 80, "0", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
+            this.updateSequenceNTs();
+            let rate = this.getRate();
+            this.rateTxt = this.game.add.text(140, 80, rate, 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
         }
 
         start() {
-            this.timer = this.game.time.addEvent({
+            if (!this.initialized) {
+                console.error("GameScore instance has not been initialized yet!");
+            }
+            this.timerSec = this.game.time.addEvent({
                 delay: 1000,
-                callback: this.tick,
+                callback: this.bindFn(this.tickSec),
+                loop: true
+            });
+            this.timerMs = this.game.time.addEvent({
+                delay: 50,
+                callback: this.bindFn(this.tickMs),
                 loop: true
             });
         }
@@ -1199,9 +1234,35 @@
 
         }
 
-        tick() {
+        tickMs() {
+            this.updateSequenceNTs();
+        }
+
+        updateSequenceNTs() {
+            let count = this.getNTCount();
+            this.sequenceNTsTxt.setText(count);
+        }
+
+        getNTCount() {
+            return this.game.positionManager.getLevelNTCount();
+        }
+
+        getGameSpeed() {
+            return this.game.levelConfig.speed;
+        }
+
+
+        tickSec() {
             this.secondsElapsed++;
-            //console.log("tick")
+            console.log("tick")
+        }
+
+        bindFn(fn) {
+            let clas = this;
+            return function (...args) {
+                let event = this;
+                fn.bind(clas, event, ...args)();
+            };
         }
 
         incrementSequences(correct) {
@@ -1212,8 +1273,9 @@
         }
 
         getRate() {
-            let minElapsed = Math.ceil(this.secondsElapsed / 60);
-            return Math.round(this.sequencesMade / minElapsed);
+            // let minElapsed = Math.ceil(this.secondsElapsed / 60);
+            // return Math.round(this.sequencesMade / minElapsed);
+            return Math.floor(1000 / this.getGameSpeed());
         }
 
         getAccuracy() {
@@ -1398,23 +1460,26 @@
     }
 
     window.game = new Game([
-        { 
+        {
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "AT the Beginning",
+            "speed": 30,
         },
         {
             "ntSequence": "CGCGCGCGGGGCCGCGCGGCCCCGGGCCGCGGCGCGCGCGCGCGCGCGCGGCCCCGCGCGCGGCCGCGCGCGCGCGGCGCGCGCGCGCGCGCGCGG",
             "controls": ["G", "C"],
             "unlocked": true,
             "name": "Clash of the Cs and Gs",
+            "speed": 30,
         },
         {
             "ntSequence": "TAGTTACTAGGAGAGGTCATTTATAGGTTAGTCACTTCAGGCCTAGAAGAGATACATAGCACTTGGAGGACAGCGAAAAACAAATTTCACGGCATG",
             "unlocked": true,
             "name": "Mixing it Up",
+            "speed": 30,
         },
         {
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
