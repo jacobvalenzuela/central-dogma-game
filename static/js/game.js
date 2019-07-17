@@ -1084,6 +1084,8 @@
         }
 
         next() {
+            let f = this.ntTouchingBindingPocket();
+            console.log(f)
             let relHead = this.getHeadNucleotide();
             if (relHead) {
                 this.level.ntHighlightEllipse.setAlpha(0.90);
@@ -1190,6 +1192,29 @@
                 }
             }
             return cnt;
+        }
+
+        ntTouchingBindingPocket() {
+            let ellipse = this.level.ntHighlightEllipse;
+            let nucleotide = null;
+            for (let i = 0; i < this.levelNucleotides.length; i++) {
+                nucleotide = this.levelNucleotides[i];
+                if (nucleotide) {
+                    nucleotide = nucleotide.getObject();
+                    break;
+                }
+            }
+            if (nucleotide) {
+                let ellipseBottomLeft = ellipse.getBottomLeft();
+                let ellipseTopRight = ellipse.getTopRight();
+                let nucleotideBottomLeft = nucleotide.getBottomLeft();
+                let nucleotideTopRight = nucleotide.getTopRight();
+                return !(ellipseTopRight.x <= nucleotideBottomLeft.x ||
+                        ellipseTopRight.y >= nucleotideBottomLeft.y ||
+                        ellipseBottomLeft.x >= nucleotideTopRight.x ||
+                        ellipseBottomLeft.y <= nucleotideTopRight.y);
+            }
+            return false;
         }
     }
 
