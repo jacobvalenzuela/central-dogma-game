@@ -42,21 +42,6 @@
         }
 
         start() {
-            let touchFeedbackPartConf = {
-                x: 0,
-                y: 0,
-                speed: { min: -100, max: 100 },
-                angle: { min: 0, max: 360 },
-                scale: { start: 0.3, end: 0 },
-                blendMode: "SCREEN",
-                active: false,
-                lifespan: 450
-            }
-            this.partGr = this.scene.add.particles("touch_feedback_green_spark").createEmitter(touchFeedbackPartConf);
-            this.partGr.manager.setDepth(10000);
-            this.partYell = this.scene.add.particles("touch_feedback_yellow_spark").createEmitter(touchFeedbackPartConf);
-            this.partYell.manager.setDepth(10000);
-
             this.scene.input.on("pointerdown", this.bindFn(this.startFeedBack));
             this.scene.input.on("pointermove", this.bindFn(this.moveFeedBack));
 
@@ -94,12 +79,27 @@
         }
 
         createParticles(x, y, amt) {
-            this.partGr.setPosition(x, y);
-            this.partYell.setPosition(x, y);
-            this.partGr.resume();
-            this.partYell.resume();
-            this.partGr.explode(amt);
-            this.partYell.explode(amt);
+            let touchFeedbackPartConf = {
+                x: 0,
+                y: 0,
+                speed: { min: -100, max: 100 },
+                angle: { min: 0, max: 360 },
+                scale: { start: 0.3, end: 0 },
+                blendMode: "SCREEN",
+                active: false,
+                lifespan: 450
+            }
+            let partGr = this.scene.add.particles("touch_feedback_green_spark").createEmitter(touchFeedbackPartConf);
+            partGr.manager.setDepth(10000);
+            let partYell = this.scene.add.particles("touch_feedback_yellow_spark").createEmitter(touchFeedbackPartConf);
+            partYell.manager.setDepth(10000);
+
+            partGr.setPosition(x, y);
+            partYell.setPosition(x, y);
+            partGr.resume();
+            partYell.resume();
+            partGr.explode(amt);
+            partYell.explode(amt);
         }
 
         grow(img) {
