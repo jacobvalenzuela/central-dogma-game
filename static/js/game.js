@@ -47,7 +47,7 @@
                 y: 0,
                 speed: { min: -100, max: 100 },
                 angle: { min: 0, max: 360 },
-                scale: { start: 0.5, end: 0 },
+                scale: { start: 0.3, end: 0 },
                 blendMode: "SCREEN",
                 active: false,
                 lifespan: 450
