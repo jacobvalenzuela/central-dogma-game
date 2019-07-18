@@ -1085,6 +1085,9 @@
 
         next() {
             let f = this.ntTouchingBindingPocket();
+            if (f) {
+                debugger
+            }
             console.log(f)
             let relHead = this.getHeadNucleotide();
             if (relHead) {
@@ -1102,7 +1105,7 @@
                 angle = angle / 2;
                 this.level.ntHighlightEllipse.setAngle(angle);
             } else {
-                this.level.ntHighlightEllipse.setAlpha(0);
+                this.level.ntHighlightEllipse.setAlpha(1);
             }
             let head = this.levelNucleotides[0];
             if (head) {
@@ -1205,16 +1208,33 @@
                 }
             }
             if (nucleotide) {
-                let ellipseBottomLeft = ellipse.getBottomLeft();
-                let ellipseTopRight = ellipse.getTopRight();
-                let nucleotideBottomLeft = nucleotide.getBottomLeft();
-                let nucleotideTopRight = nucleotide.getTopRight();
+                let ellipseBottomLeft = this.getRotatedRectCoordinates(ellipse, ellipse.getTopLeft());
+                let ellipseTopRight = this.getRotatedRectCoordinates(ellipse, ellipse.getBottomRight());
+                let nucleotideBottomLeft = this.getRotatedRectCoordinates(nucleotide, nucleotide.getTopLeft());
+                let nucleotideTopRight = this.getRotatedRectCoordinates(nucleotide, nucleotide.getBottomRight());
                 return !(ellipseTopRight.x <= nucleotideBottomLeft.x ||
-                        ellipseTopRight.y >= nucleotideBottomLeft.y ||
+                        ellipseTopRight.y <= nucleotideBottomLeft.y ||
                         ellipseBottomLeft.x >= nucleotideTopRight.x ||
-                        ellipseBottomLeft.y <= nucleotideTopRight.y);
+                        ellipseBottomLeft.y >= nucleotideTopRight.y);
             }
             return false;
+        }
+
+        getRotatedRectCoordinates(obj, cornerCoord) {
+            let center = obj.getCenter();
+            let tempX = cornerCoord.x - center.x;
+            let tempY = cornerCoord.y - center.y;
+
+            let theta = 360 - obj.angle;
+            theta = theta * Math.PI / 180; // radians
+
+            let rotatedX = tempX * Math.cos(theta) - tempY * Math.sin(theta);
+            let rotatedY = tempX * Math.sin(theta) + tempY * Math.cos(theta);
+
+            let x = rotatedX + center.x;
+            let y = rotatedY + center.y;
+
+            return new Phaser.Math.Vector2(x, y);
         }
     }
 
@@ -1359,9 +1379,6 @@
             }
 
             this.level = level;
-            // if (!(this.level instanceof LevelStage)) {
-            //     debugger
-            // }
             this.rep = rep;
             this.type = type;
             this.imgObj = null;
