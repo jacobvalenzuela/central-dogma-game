@@ -815,7 +815,7 @@
                 this.levelNucleotides.push(this.level.nucleotides[currIdx]);
             }
             this.compLevelNucleotides = [];
-            let paddingComp = 8 * this.pathPointsFactor;
+            let paddingComp = 22 * this.pathPointsFactor;
             for (let i = 0; i < paddingComp; i++) {
                 this.compLevelNucleotides.push(null);
             }
