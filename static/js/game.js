@@ -705,7 +705,7 @@
         }
 
         onDragNTBtnStart (input, pointer, image) {
-            if (!this.ntBtnsEnabled) {
+            if (!this.ntBtnsEnabled || !this.positionManager.ntTouchingBindingPocket()) {
                 return;
             }
             let leftButtonDown = pointer.leftButtonDown();
@@ -722,7 +722,7 @@
         }
 
         onDragNTBtn (input, pointer, image, x, y) {
-            if (!this.ntBtnsEnabled) {
+            if (!this.ntBtnsEnabled || !this.positionManager.ntTouchingBindingPocket()) {
                 return;
             }
             let startedDragging = image.getData("startedDragging");
@@ -747,7 +747,7 @@
             if (!startedDragging) {
                 return;
             }
-            if (!this.ntBtnsEnabled) {
+            if (!this.ntBtnsEnabled || !this.positionManager.ntTouchingBindingPocket()) {
                 return;
             }
             let angle = image.angle;
@@ -1084,11 +1084,6 @@
         }
 
         next() {
-            let f = this.ntTouchingBindingPocket();
-            if (f) {
-                debugger
-            }
-            console.log(f)
             let relHead = this.getHeadNucleotide();
             if (relHead) {
                 this.level.ntHighlightEllipse.setAlpha(0.90);
@@ -1133,8 +1128,8 @@
         }
 
         getHeadNucleotide() {
-            if (this.levelNucleotides.length) {
-                for (let i = 0; i < this.pathPointsFactor; i++) {
+            if (this.ntTouchingBindingPocket()) {
+                for (let i = 0; i < this.levelNucleotides.length; i++) {
                     if (this.levelNucleotides[i] != null) {
                         return this.levelNucleotides[i];
                     }
