@@ -566,10 +566,10 @@
             this.nucleotides = [];
             this.ntButtons = [];
             this.btnLocations = {
-                0: [310, 400],
-                1: [310, 450],
-                2: [310, 500],
-                3: [310, 550]
+                0: [310, 370],
+                1: [310, 440],
+                2: [310, 510],
+                3: [310, 580]
             }
             this.ntBtnsEnabled = true;
             this.scorekeeping = new GameScore(this.game);
@@ -622,7 +622,7 @@
             this.game.add.text(4, 530, "5'", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
-            this.game.add.text(265, 490, "5'", 
+            this.game.add.text(257, 497, "5'", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
             this.game.add.text(340, 690, "3'", 
@@ -695,7 +695,7 @@
             nt.setDisplay("nucleotide");
             nt.setVisible(true);
             nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
-            nt.setScale(0.15);
+            nt.setScale(0.20);
             nt.getObject().setInteractive();
             this.game.input.setDraggable(nt.getObject());
             this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
