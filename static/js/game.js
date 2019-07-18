@@ -218,6 +218,9 @@
             this.game.load.image("errortide_purine", "static/img/errortide/purine_error.png");
             this.game.load.image("errortide_pyrimidine", "static/img/errortide/pyrimidine_error.png");
 
+            this.game.load.image("missingtide_purine", "static/img/missingtide/purine_missing.png");
+            this.game.load.image("missingtide_pyrimidine", "static/img/missingtide/pyrimidine_missing.png");
+
             this.game.load.image("ntparticle_adenine", "static/img/nucleotide_particle/adenine_particle.png");
             this.game.load.image("ntparticle_cytosine", "static/img/nucleotide_particle/cytosine_particle.png");
             this.game.load.image("ntparticle_guanine", "static/img/nucleotide_particle/guanine_particle.png");
@@ -888,7 +891,7 @@
                 if (!nucleotide) {
                     continue;
                 }
-                nucleotide.getObject().setDepth(2999 - i);
+                nucleotide.setDepth(2999 - i);
                 nucleotide.setDisplay("nucleotide");
                 nucleotide.setVisible(true);
                 if (animate) {
@@ -1086,6 +1089,19 @@
             if (head) {
                 this.removeHeadNucleotide();
                 console.log("Removed head nucleotide at the very end");
+                let btns = this.level.ntButtons;
+                for (let i = 0; i < btns.length; i++) {
+                    let btn = btns[i];
+                    if (head.validMatchWith(btn)) {
+                        let cloned = btn.clone();
+                        cloned.setDisplay("nucleotide");
+                        cloned.setPosition(head.getObject().x, head.getObject().y);
+                        cloned.setVisible(true);
+                        cloned.setScale(0.18);
+                        cloned.setMissing(true);
+                        this.addToDNAOutput(cloned);
+                    }
+                }
             }
             this.levelNucleotides = this.levelNucleotides.slice(1, this.levelNucleotides.length);
             this.compLevelNucleotides = this.compLevelNucleotides.slice(1, this.compLevelNucleotides.length);
@@ -1124,7 +1140,7 @@
             let secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
             let point = this.outputVertPathPts[2 * this.pathPointsFactor];
             nucleotide.setPosition(firstPoint.x, firstPoint.y);
-            if (nucleotide.errorNT) {
+            if (nucleotide.errorNT || nucleotide.missingNT) {
                 this.level.camera.flash(300, 255, 30, 30);
                 this.level.camera.shake(400, 0.02);
             }
@@ -1359,6 +1375,7 @@
             this.display = "rectangle"; // rectangle or nucleotide
             this.matches = this.allNucleotides[rep].matches;
             this.errorNT = false; // is an error NT and should show red BG
+            this.missingNT = false; // is missing NT and should show a white center
         }
 
         getObject() {
@@ -1369,21 +1386,40 @@
                 this.squareObj.setVisible(false);
                 this.imgObj.setData("nucleotide", this);
                 this.squareObj.setData("nucleotide", this);
-                this.imgObj.setDepth(500);
-                this.squareObj.setDepth(500);
+                this.imgObj.setDepth(1);
+                this.squareObj.setDepth(1);
                 
                 this.imgObjErr = this.level.game.add.image(0, 0, "errortide_" + this.getClassification());
                 this.squareObjErr = this.level.game.add.rectangle(0, 0, 15, 15, 0xfc0e33);
                 this.imgObjErr.setVisible(false);
                 this.squareObjErr.setVisible(false);
-                this.imgObjErr.setDepth(400);
-                this.squareObjErr.setDepth(400);
+                this.imgObjErr.setDepth(0);
+                this.squareObjErr.setDepth(0);
+
+                this.imgObjMiss = this.level.game.add.image(0, 0, "missingtide_" + this.getClassification());
+                this.squareObjMiss = this.level.game.add.rectangle(0, 0, 15, 15, 0xffffff);
+                this.imgObjMiss.setVisible(false);
+                this.squareObjMiss.setVisible(false);
+                this.imgObjMiss.setDepth(2);
+                this.squareObjMiss.setDepth(2);
             }
             if (this.display == "rectangle") {
                 return this.squareObj;
             } else {
                 return this.imgObj;
             }
+        }
+
+        setDepth(depth) {
+            if (!this.imgObj) {
+                this.getObject();
+            }
+            this.imgObj.setDepth(depth);
+            this.squareObj.setDepth(depth);
+            this.imgObjErr.setDepth(depth - 1);
+            this.squareObjErr.setDepth(depth - 1);
+            this.imgObjMiss.setDepth(depth + 1);
+            this.squareObjMiss.setDepth(depth + 1);
         }
 
         setDisplay(type) {
@@ -1429,31 +1465,66 @@
                 this.squareObjErr.setVisible(false);
                 let scale = this.imgObj.scale;
                 if (scale > 0) {
-                    scale = scale + scale * 0.25;
+                    scale = scale + scale * 0.30;
                 }
                 this.imgObjErr.setScale(scale);
                 this.imgObjErr.setAlpha(this.imgObj.alpha);
             }
         }
 
+        updateMissingDisplay() {
+            if (!this.imgObjMiss || !this.squareObjMiss) {
+                return;
+            }
+            if (!this.missingNT) {
+                this.squareObjMiss.setVisible(false);
+                this.imgObjMiss.setVisible(false);
+                return;
+            }
+            if (this.display == "rectangle") {
+                this.squareObjMiss.setVisible(this.squareObj.visible);
+                this.squareObjMiss.setPosition(this.squareObj.x, this.squareObj.y);
+                this.imgObjMiss.setVisible(false);
+                this.squareObjMiss.setScale(this.squareObj.scale - 0.55);
+            } else {
+                this.imgObjMiss.setVisible(this.imgObj.visible);
+                this.imgObjMiss.setPosition(this.imgObj.x, this.imgObj.y);
+                this.squareObjMiss.setVisible(false);
+                let scale = this.imgObj.scale;
+                if (scale > 0) {
+                    scale = scale - scale * 0.25;
+                }
+                this.imgObjMiss.setScale(scale);
+                this.imgObjMiss.setAlpha(this.imgObj.alpha);
+            }
+        }
+
         setVisible(visible) {
             this.getObject().setVisible(visible);
             this.updateErrorDisplay();
+            this.updateMissingDisplay();
         }
 
         setPosition(x, y) {
             this.getObject().setPosition(x, y);
             this.updateErrorDisplay();
+            this.updateMissingDisplay();
         }
 
         setScale(scale) {
             this.getObject().setScale(scale);
             this.updateErrorDisplay();
+            this.updateMissingDisplay();
         }
 
         setError(errorBool) {
             this.errorNT = errorBool;
             this.updateErrorDisplay();
+        }
+
+        setMissing(missingBool) {
+            this.missingNT = missingBool;
+            this.updateMissingDisplay();
         }
 
         getShortName() {
