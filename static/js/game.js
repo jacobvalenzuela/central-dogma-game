@@ -1153,9 +1153,7 @@
                 }
                 that.updateNTMoveTimer(that.defaultTimerDelay);
                 that.level.ntBtnsEnabled = true;
-                if (!nucleotide.errorNT) {
-                    that.removeHeadNucleotide();
-                }
+                that.removeHeadNucleotide();
             });
         }
 
