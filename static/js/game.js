@@ -769,10 +769,11 @@
             // }
             if (!clickedNT.validMatchWith(headNT)) {
                 cloned.setError(true);
+                this.scorekeeping.incrementIncorrectSequences();
             } else {
+                this.scorekeeping.incrementSequencesMade();
                 let headNTName = headNT.getShortName();
                 let pairNTName = cloned.getShortName();
-                this.scorekeeping.incrementSequences(true);
                 let that = this;
                 this.game.time.addEvent({
                     delay: 100,
@@ -1088,6 +1089,7 @@
             let head = this.levelNucleotides[0];
             if (head) {
                 this.removeHeadNucleotide();
+                this.level.scorekeeping.incrementIncorrectSequences();
                 console.log("Removed head nucleotide at the very end");
                 let btns = this.level.ntButtons;
                 for (let i = 0; i < btns.length; i++) {
@@ -1278,6 +1280,7 @@
         tickMs() {
             this.updateSequenceNTs();
             this.updateScore();
+            this.updateAccuracy();
         }
 
         updateSequenceNTs() {
@@ -1288,6 +1291,10 @@
         updateScore() {
             let score = this.getScore();
             this.scoreTxt.setText(score);
+        }
+
+        updateAccuracy() {
+            this.accuracyTxt.setText(this.getAccuracy() + "%");
         }
 
         getNTCount() {
@@ -1312,11 +1319,12 @@
             };
         }
 
-        incrementSequences(correct) {
+        incrementIncorrectSequences() {
+            this.wrongSequences++;
+        }
+
+        incrementSequencesMade() {
             this.sequencesMade++;
-            if (!correct) {
-                this.wrongSequences++;
-            }
         }
 
         getRate() {
@@ -1326,7 +1334,9 @@
         }
 
         getAccuracy() {
-            return Math.round((this.sequencesMade - this.wrongSequences) / this.sequencesMade);
+            let ntCnt = this.getNTCount();
+            console.log(ntCnt, this.wrongSequences)
+            return Math.round(((ntCnt - this.wrongSequences) / ntCnt) * 100);
         }
 
         getScore() {
