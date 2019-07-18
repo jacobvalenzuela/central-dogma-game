@@ -848,7 +848,7 @@
             // this.inputVertPath.draw(this.level.graphics);
             let numVertPathPts = 7 * this.pathPointsFactor;
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
-            this.inputVertPathDispl = new Phaser.Curves.Path(182, 147);
+            this.inputVertPathDispl = new Phaser.Curves.Path(175, 140);
             this.inputVertPathDispl.cubicBezierTo(-30, 640, 280, 320, -80, 440);
             this.inputVertPathDispl.draw(this.level.graphics);
             this.outputVertPath = new Phaser.Curves.Path(245, 450);
@@ -1082,21 +1082,6 @@
         }
 
         next() {
-            let relHead = this.getHeadNucleotide();
-            if (relHead) {
-                let ntX = relHead.getObject().x;
-                let ntY = relHead.getObject().y;
-                let hX = this.level.ntHighlightEllipse.x;
-                let hY = this.level.ntHighlightEllipse.y;
-                let pX = ntX;
-                let pY = hY;
-                let s1 = hY - ntY;
-                let s2 = hX - pX;
-                let angle = Math.atan(s1 / s2);
-                angle = angle * (180 / Math.PI);
-                angle = angle / 2;
-                this.level.ntHighlightEllipse.setAngle(angle);
-            }
             let head = this.levelNucleotides[0];
             if (head) {
                 this.removeHeadNucleotide();
