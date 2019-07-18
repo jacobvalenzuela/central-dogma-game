@@ -809,6 +809,7 @@
                 let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
                 if (currIdx === nextIdx) {
                     this.levelNucleotides.push(null);
+                    this.levelNucleotides.push(null);
                     continue;
                 }
                 this.levelNucleotides.push(this.level.nucleotides[currIdx]);
@@ -819,16 +820,13 @@
                 this.compLevelNucleotides.push(null);
             }
             for (let i = 0; i < this.levelNucleotides.length; i++) {
-                let prevIdx = Math.floor((i - 1) / this.pathPointsFactor);
-                let currIdx = Math.floor(i / this.pathPointsFactor);
-                let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
-                if (currIdx === nextIdx) {
-                    this.compLevelNucleotides.push(null);
-                    continue;
-                }
                 let nucleotide = this.levelNucleotides[i];
-                let newcleotide = new Nucleotide(this.level, nucleotide.matches[0], "basic");
-                this.compLevelNucleotides.push(newcleotide);
+                if (nucleotide) {
+                    let newcleotide = new Nucleotide(this.level, nucleotide.matches[0], "basic");
+                    this.compLevelNucleotides.push(newcleotide);
+                } else {
+                    this.compLevelNucleotides.push(null);
+                }
             }
             for (let i = 0; i < this.pathPointsFactor * 3; i++) {
                 this.levelNucleotides.unshift(null);
@@ -840,11 +838,11 @@
             this.inputRowPath = new Phaser.Curves.Path(0, 140);
             this.inputRowPath.lineTo(175, 140);
             this.inputRowPath.draw(this.level.graphics);
-            this.initRectPathPts = this.inputRowPath.getSpacedPoints(13 * this.pathPointsFactor);
+            this.initRectPathPts = this.inputRowPath.getSpacedPoints(26 * this.pathPointsFactor);
             this.inputComplRowPath = new Phaser.Curves.Path(0, 126);
             this.inputComplRowPath.lineTo(363.46153846153845, 126);
             this.inputComplRowPath.draw(this.level.graphics);
-            this.inputCompRectPathPts = this.inputComplRowPath.getSpacedPoints(27 * this.pathPointsFactor);
+            this.inputCompRectPathPts = this.inputComplRowPath.getSpacedPoints(54 * this.pathPointsFactor);
             this.inputVertPath = new Phaser.Curves.Path(182, 147);
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
             // this.inputVertPath.draw(this.level.graphics);
