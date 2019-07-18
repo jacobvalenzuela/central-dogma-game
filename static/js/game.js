@@ -596,7 +596,7 @@
 
             this.ntHighlightEllipse = this.game.add.ellipse(140, 510, 230, 125, 0xfffaa8, 1);
             this.ntHighlightEllipse.setAngle(16);
-            this.ntHighlightEllipse.setAlpha(0);
+            this.ntHighlightEllipse.setAlpha(0.90);
 
             this.game.add.text(18, 53, "Sequence NTs", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
@@ -1086,7 +1086,6 @@
         next() {
             let relHead = this.getHeadNucleotide();
             if (relHead) {
-                this.level.ntHighlightEllipse.setAlpha(0.90);
                 let ntX = relHead.getObject().x;
                 let ntY = relHead.getObject().y;
                 let hX = this.level.ntHighlightEllipse.x;
@@ -1099,8 +1098,6 @@
                 angle = angle * (180 / Math.PI);
                 angle = angle / 2;
                 this.level.ntHighlightEllipse.setAngle(angle);
-            } else {
-                this.level.ntHighlightEllipse.setAlpha(1);
             }
             let head = this.levelNucleotides[0];
             if (head) {
