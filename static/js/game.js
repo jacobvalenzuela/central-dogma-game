@@ -1109,7 +1109,7 @@
         }
 
         removeHeadNucleotide() {
-            for (let i = 0; i < this.pathPointsFactor; i++) {
+            for (let i = 0; i < this.levelNucleotides.length; i++) {
                 let removed = this.levelNucleotides[i];
                 if (removed) {
                     this.levelNucleotides[i] = null;
