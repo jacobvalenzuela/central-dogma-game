@@ -1241,6 +1241,7 @@
             this.wrongSequences = 0;
             this.timerSec = null;
             this.timerMs = null;
+            this.initialNTCount = this.game.levelConfig.ntSequence.length;
         }
 
         init() {
@@ -1334,7 +1335,7 @@
         }
 
         getAccuracy() {
-            let ntCnt = this.getNTCount();
+            let ntCnt = this.initialNTCount;
             console.log(ntCnt, this.wrongSequences)
             return Math.round(((ntCnt - this.wrongSequences) / ntCnt) * 100);
         }
