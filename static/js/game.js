@@ -860,7 +860,7 @@
             // this.outputVertPath.draw(this.level.graphics);
             this.outputVertPathPts = this.outputVertPath.getPoints(5 * this.pathPointsFactor);
             this.outputVertPathDispl = new Phaser.Curves.Path(285, 500);
-            this.outputVertPathDispl.cubicBezierTo(145, 710, 250, 600, 130, 670);
+            this.outputVertPathDispl.cubicBezierTo(155, 710, 250, 600, 130, 670);
             this.outputVertPathDispl.draw(this.level.graphics);
             this.outputRowPath = new Phaser.Curves.Path(155, 710);
             this.outputRowPath.lineTo(400, 710);
