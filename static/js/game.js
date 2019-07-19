@@ -1,3 +1,8 @@
+/*
+    Installed plugins:
+    Tag Text: https://rexrainbow.github.io/phaser3-rex-notes/docs/site/tagtext/index.html
+*/
+
 (function () {
     "use strict";
 
@@ -182,6 +187,9 @@
 
         preload(gameObj) {
             this.game = gameObj;
+
+            // load plugins
+            this.game.load.plugin("rextagtextplugin", "static/vendor/js/rextagtextplugin.min.js", true);
 
             this.game.load.image("touch_feedback_circle", "static/img/touch_feedback/circle.png");
             this.game.load.image("touch_feedback_green_spark", "static/img/touch_feedback/green_sparkle.png");
@@ -576,6 +584,7 @@
             }
             this.ntBtnsEnabled = true;
             this.scorekeeping = new GameScore(this.game);
+            this.popupmanager = new PopupManager(this);
 
             this.camera = this.game.cameras.cameras[0];
             this.graphics = this.game.add.graphics();
@@ -768,9 +777,13 @@
             //     this.positionManager.doRejectNT(cloned);
             // }
             if (!clickedNT.validMatchWith(headNT)) {
+                let correctnt = this.positionManager.getValidMatchNT(headNT);
+                this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
                 cloned.setError(true);
                 this.scorekeeping.incrementIncorrectSequences();
             } else {
+                this.popupmanager.emitEvent("correctMatch", headNT, cloned);
+                this.popupmanager.emitEvent("firstCorrectMatch", headNT, cloned);
                 this.scorekeeping.incrementSequencesMade();
                 let headNTName = headNT.getShortName();
                 let pairNTName = cloned.getShortName();
@@ -1091,24 +1104,30 @@
                 this.removeHeadNucleotide();
                 this.level.scorekeeping.incrementIncorrectSequences();
                 console.log("Removed head nucleotide at the very end");
-                let btns = this.level.ntButtons;
-                for (let i = 0; i < btns.length; i++) {
-                    let btn = btns[i];
-                    if (head.validMatchWith(btn)) {
-                        let cloned = btn.clone();
-                        cloned.setDisplay("nucleotide");
-                        cloned.setPosition(head.getObject().x, head.getObject().y);
-                        cloned.setVisible(true);
-                        cloned.setScale(0.18);
-                        cloned.setMissing(true);
-                        this.addToDNAOutput(cloned);
-                    }
-                }
+                let cloned = this.getValidMatchNT(head);
+                cloned.setDisplay("nucleotide");
+                cloned.setPosition(head.getObject().x, head.getObject().y);
+                cloned.setVisible(true);
+                cloned.setScale(0.18);
+                cloned.setMissing(true);
+                this.addToDNAOutput(cloned);
             }
             this.levelNucleotides = this.levelNucleotides.slice(1, this.levelNucleotides.length);
             this.compLevelNucleotides = this.compLevelNucleotides.slice(1, this.compLevelNucleotides.length);
             this.selectedNucleotides.push(null);
             this.setPositions(true);
+        }
+
+        getValidMatchNT(nucleotide) {
+            let btns = this.level.ntButtons;
+            let cloned = null;
+            for (let i = 0; i < btns.length; i++) {
+                let btn = btns[i];
+                if (nucleotide.validMatchWith(btn)) {
+                    cloned = btn.clone();
+                }
+            }
+            return cloned;
         }
 
         removeHeadNucleotide() {
@@ -1567,6 +1586,79 @@
             this.imgObj.destroy();
             this.squareObj.destroy();
         }
+
+        toJSON() {
+            return {
+                "name": this.getShortName().substr(0, 1).toUpperCase() + this.getShortName().substr(1, this.getShortName().length),
+                "color": "#" + this.getColor().toString(16),
+            }
+        }
+    }
+
+    class PopupManager {
+        constructor(level) {
+            this.level = level;
+            this.popupsConfig = this.level.levelConfig.popups;
+            if (!this.popupsConfig) {
+                this.popupsConfig = {};
+            }
+
+            let popupsKeys = Object.keys(this.popupsConfig);
+            for (let i = 0; i < popupsKeys.length; i++) {
+                let key = popupsKeys[i];
+                let val = this.popupsConfig[key];
+                Mustache.parse(val);
+            }
+
+            this.firstCorrectMatchHappened = false;
+        }
+
+        emitEvent(eventType) {
+            if (!(eventType in this.popupsConfig)) {
+                return;
+            }
+            let fn = this["on_" + eventType];
+            if (!fn) {
+                console.error(eventType + " event type is not defined for the popup manager");
+                return;
+            } else {
+                fn = fn.bind(this);
+            }
+            fn(...Array.from(arguments).slice(1));
+        }
+
+        on_firstCorrectMatch(nucleotide1, nucleotide2) {
+            if (this.firstCorrectMatchHappened) {
+                return;
+            }
+            this.firstCorrectMatchHappened = true;
+            nucleotide1 = nucleotide1.toJSON();
+            nucleotide2 = nucleotide2.toJSON();
+            this.displayPopup(
+                "firstCorrectMatch",
+                {
+                    "nucleotide1": nucleotide1,
+                    "nucleotide2": nucleotide2,
+                }
+            );
+        }
+
+        on_errorMatch(nucleotide1, nucleotide2) {
+            nucleotide1 = nucleotide1.toJSON();
+            nucleotide2 = nucleotide2.toJSON();
+            this.displayPopup(
+                "errorMatch",
+                {
+                    "nucleotide1": nucleotide1,
+                    "nucleotide2": nucleotide2,
+                }
+            );
+        }
+
+        displayPopup(eventType, values) {
+            let rendered = Mustache.render(this.popupsConfig[eventType], values);
+            console.log(rendered);
+        }
     }
 
     window.game = new Game([
@@ -1577,6 +1669,10 @@
             "unlocked": true,
             "name": "AT the Beginning",
             "speed": 30,
+            "popups": {
+                "firstCorrectMatch": "Good work! <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> binds with <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>!",
+                "errorMatch": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}, both nucleotides help make up DNA</style>!"
+            },
         },
         {
             "ntSequence": "CGCGCGCGGGGCCGCGCGGCCCCGGGCCGCGGCGCGCGCGCGCGCGCGCGGCCCCGCGCGCGGCCGCGCGCGCGCGGCGCGCGCGCGCGCGCGCGG",
