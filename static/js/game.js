@@ -818,7 +818,7 @@
             this.level = level;
             this.defaultTimerDelay = defaultTimerDelay;
             this.gameObj = level.gameObj;
-            this.game = level.gameObj.game;
+            this.game = level;
             this.levelNucleotides = [];
             for (let i = 0; i < this.level.nucleotides.length * this.pathPointsFactor; i++) {
                 let prevIdx = Math.floor((i - 1) / this.pathPointsFactor);
@@ -1598,6 +1598,8 @@
     class PopupManager {
         constructor(level) {
             this.level = level;
+            this.popupCnt = 0;
+
             this.popupsConfig = this.level.levelConfig.popups;
             if (!this.popupsConfig) {
                 this.popupsConfig = {};
@@ -1657,7 +1659,80 @@
 
         displayPopup(eventType, values) {
             let rendered = Mustache.render(this.popupsConfig[eventType], values);
+            let sceneName = "popupDisplay" + this.popupCnt;
+            let levelSceneName = "level" + this.level.level;
+            this.level.scene.add(sceneName, PopupDisplayScene, false, {text: rendered});
+            let that = this;
+            this.level.time.addEvent({
+                delay: 300,
+                loop: false,
+                callback: function () {
+                    that.level.scene.launch(sceneName);
+                    that.level.scene.pause();
+                    that.level.scene.moveAbove(levelSceneName, sceneName);
+                }
+            });
+            this.popupCnt++;
             console.log(rendered);
+        }
+    }
+
+    class PopupDisplayScene extends Phaser.Scene {
+        constructor (config) {
+            super(config);
+        }
+
+        init(data) {
+            this.camera = this.cameras.main;
+            this.camera.setAlpha(0);
+
+            this.graphics = this.add.graphics();
+
+            this.graphics.fillStyle(0x000000, 0.15);
+            this.graphics.fillRect(0, 0, 360, 740);
+
+            this.fadeIn();
+
+            this.rectangle = this.add.rectangle(180, 270, 300, 150, 0xffffff);
+            this.text = this.add.rexTagText(40, 200, data.text, {
+                fontFamily: '\'Open Sans\', sans-serif',
+                fontSize: "18pt",
+                color: "#000",
+                halign: 'center',
+                wrap: {
+                    mode: "word",
+                    width: 280
+                }
+            });
+            let width = this.text.width;
+            let height = this.text.height;
+            let x = (360 - width) / 2;
+            this.text.setPosition(x, this.text.y);
+            this.rectangle.setSize(this.rectangle.width, this.text.height + 10);
+        }
+
+        fadeIn(callback=null) {
+            let currentAlpha = this.camera.alpha;
+            if (currentAlpha == 0) {
+                currentAlpha = 0.001;
+            }
+            let newAlpha = currentAlpha * 1.5;
+            if (newAlpha > 0.999) {
+                this.camera.clearAlpha();
+                if (callback != null) {
+                    callback();
+                }
+            } else {
+                this.camera.setAlpha(newAlpha);
+                let that = this;
+                this.time.addEvent({
+                    delay: 40,
+                    callback: function () {
+                        that.fadeIn(callback);
+                    },
+                    loop: false
+                });
+            }
         }
     }
 
@@ -1671,7 +1746,7 @@
             "speed": 30,
             "popups": {
                 "firstCorrectMatch": "Good work! <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> binds with <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>!",
-                "errorMatch": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}, both nucleotides help make up DNA</style>!"
+                "errorMatch": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>, both nucleotides help make up DNA!"
             },
         },
         {
