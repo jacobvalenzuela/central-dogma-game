@@ -1661,7 +1661,7 @@
             let rendered = Mustache.render(this.popupsConfig[eventType], values);
             let sceneName = "popupDisplay" + this.popupCnt;
             let levelSceneName = "level" + this.level.level;
-            this.level.scene.add(sceneName, PopupDisplayScene, false, {text: rendered});
+            this.level.scene.add(sceneName, PopupDisplayScene, false, {text: rendered, manager: this});
             let that = this;
             this.level.time.addEvent({
                 delay: 300,
@@ -1683,6 +1683,8 @@
         }
 
         init(data) {
+            this.manager = data.manager;
+
             this.camera = this.cameras.main;
             this.camera.setAlpha(0);
 
@@ -1691,9 +1693,13 @@
             this.graphics.fillStyle(0x000000, 0.15);
             this.graphics.fillRect(0, 0, 360, 740);
 
-            this.fadeIn();
+            let that = this;
+            this.fadeIn(function () {
+                that.input.on("pointerdown", that.bindFn(that.exitPopup));
+            });
 
             this.rectangle = this.add.rectangle(180, 270, 300, 150, 0xffffff);
+            this.rectangle.setStrokeStyle(5, 0x000000, 1);
             this.text = this.add.rexTagText(40, 200, data.text, {
                 fontFamily: '\'Open Sans\', sans-serif',
                 fontSize: "18pt",
@@ -1711,10 +1717,18 @@
             this.rectangle.setSize(this.rectangle.width, this.text.height + 10);
         }
 
+        bindFn(fn) {
+            let clas = this;
+            return function (...args) {
+                let event = this;
+                fn.bind(clas, event, ...args)();
+            };
+        }
+
         fadeIn(callback=null) {
             let currentAlpha = this.camera.alpha;
             if (currentAlpha == 0) {
-                currentAlpha = 0.001;
+                currentAlpha = 0.01;
             }
             let newAlpha = currentAlpha * 1.5;
             if (newAlpha > 0.999) {
@@ -1733,6 +1747,11 @@
                     loop: false
                 });
             }
+        }
+
+        exitPopup(inputPlugin, pointer, objClicked) {
+            this.manager.level.scene.resume();
+            this.scene.stop();
         }
     }
 
