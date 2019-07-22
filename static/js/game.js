@@ -707,6 +707,7 @@
             nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
             nt.setScale(0.20);
             nt.getObject().setInteractive();
+            nt.showLetter(true);
             this.game.input.setDraggable(nt.getObject());
             this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
             this.game.input.on("drag", this.bindFn(this.onDragNTBtn));
@@ -749,7 +750,7 @@
             let pointerY = y;
             let distance = Math.sqrt(Math.pow(pointerX - imgX, 2) + Math.pow(pointerY - imgY, 2));
             let startAngle = image.getData("startAngle");
-            image.setAngle(startAngle + distance);
+            image.getData("nucleotide").setAngle(startAngle + distance);
         }
 
         onDragNTBtnEnd (input, pointer, image) {
@@ -804,8 +805,8 @@
                 });
             }
             this.positionManager.addToDNAOutput(cloned);
-            image.setAngle(0);
-            image.startedDragging = false;
+            image.getData("nucleotide").setAngle(0);
+            image.setData("startedDragging", false);
         }
     }
 
@@ -1406,6 +1407,7 @@
             this.matches = this.allNucleotides[rep].matches;
             this.errorNT = false; // is an error NT and should show red BG
             this.missingNT = false; // is missing NT and should show a white center
+            this.dispLetter = false; // should display NT letter on the face
         }
 
         getObject() {
@@ -1432,6 +1434,11 @@
                 this.squareObjMiss.setVisible(false);
                 this.imgObjMiss.setDepth(2);
                 this.squareObjMiss.setDepth(2);
+
+                this.letterText = this.level.add.text(0, 0, this.rep, 
+                    {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#fff'}).setOrigin(0.5);
+                this.letterText.setDepth(3);
+                this.letterText.setVisible(false);
             }
             if (this.display == "rectangle") {
                 return this.squareObj;
@@ -1450,6 +1457,7 @@
             this.squareObjErr.setDepth(depth - 1);
             this.imgObjMiss.setDepth(depth + 1);
             this.squareObjMiss.setDepth(depth + 1);
+            this.letterText.setDepth(depth + 2);
         }
 
         setDisplay(type) {
@@ -1467,10 +1475,17 @@
                 this.squareObj.setVisible(this.imgObj.visible);
                 this.squareObj.setPosition(this.imgObj.x, this.imgObj.y);
                 this.imgObj.setVisible(false);
+                this.letterText.setVisible(false);
             } else { // want imgObj
                 this.imgObj.setVisible(this.squareObj.visible);
                 this.imgObj.setPosition(this.squareObj.x, this.squareObj.y);
                 this.squareObj.setVisible(false);
+                if (this.dispLetter) {
+                    this.letterText.setVisible(true);
+                    this.letterText.setPosition(this.squareObj.x, this.squareObj.y);
+                } else {
+                    this.letterText.setVisible(false);
+                }
             }
             this.updateErrorDisplay();
         }
@@ -1529,22 +1544,58 @@
             }
         }
 
+        updateLetterDisplay() {
+            if (this.dispLetter && this.display != "rectangle") {
+                this.letterText.setVisible(true);
+                let x = this.getObject().x;
+                let y = this.getObject().y;
+                if (this.getClassification() == "purine") {
+                    let p = x;
+                    let q = y;
+                    x = x + 13;
+                    y = y + 9;
+                    let th = this.getObject().angle;
+                    th = th * Math.PI / 180;
+                    let xp = (x - p) * Math.cos(th) - (y - q) * Math.sin(th) + p;
+                    let yp = (x - p) * Math.sin(th) + (y - q) * Math.cos(th) + q;
+                    x = xp;
+                    y = yp;
+                }
+                this.letterText.setPosition(x, y);
+                this.letterText.setDepth(this.imgObj.depth + 2);
+            } else {
+                this.letterText.setVisible(false);
+            }
+        }
+
+        showLetter(shouldShow) {
+            this.dispLetter = shouldShow;
+            this.updateLetterDisplay();
+        }
+
         setVisible(visible) {
             this.getObject().setVisible(visible);
             this.updateErrorDisplay();
             this.updateMissingDisplay();
+            this.updateLetterDisplay();
         }
 
         setPosition(x, y) {
             this.getObject().setPosition(x, y);
             this.updateErrorDisplay();
             this.updateMissingDisplay();
+            this.updateLetterDisplay();
         }
 
         setScale(scale) {
             this.getObject().setScale(scale);
             this.updateErrorDisplay();
             this.updateMissingDisplay();
+        }
+
+        setAngle(angle) {
+            this.getObject().setAngle(angle);
+            this.updateLetterDisplay();
         }
 
         setError(errorBool) {
