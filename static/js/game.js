@@ -609,6 +609,9 @@
             this.ntHighlightEllipse.setAngle(16);
             this.ntHighlightEllipse.setAlpha(0.90);
 
+            this.game.add.text(70, 554, "Binding Pocket", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '9pt', color: '#000'}).setAngle(19).setAlpha(0.5);
+
             this.game.add.text(18, 53, "Sequence NTs", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
