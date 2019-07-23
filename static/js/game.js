@@ -801,6 +801,7 @@
                 if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() % 180 != 0)) {
                     let correctnt = this.positionManager.getValidMatchNT(headNT);
                     this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
+                    this.popupmanager.emitEvent("error5Match", headNT, correctnt);
                     cloned.setError(true);
                     this.scorekeeping.incrementIncorrectSequences();
                 } else {
@@ -1743,6 +1744,7 @@
             }
 
             this.firstCorrectMatchHappened = false;
+            this.error5MatchCount = 0;
         }
 
         emitEvent(eventType) {
@@ -1780,6 +1782,22 @@
             nucleotide2 = nucleotide2.toJSON();
             this.displayPopup(
                 "errorMatch",
+                {
+                    "nucleotide1": nucleotide1,
+                    "nucleotide2": nucleotide2,
+                }
+            );
+        }
+
+        on_error5Match(nucleotide1, nucleotide2) {
+            this.error5MatchCount++;
+            if ((this.error5MatchCount - 1) % 5 != 0) {
+                return;
+            }
+            nucleotide1 = nucleotide1.toJSON();
+            nucleotide2 = nucleotide2.toJSON();
+            this.displayPopup(
+                "error5Match",
                 {
                     "nucleotide1": nucleotide1,
                     "nucleotide2": nucleotide2,
@@ -1895,7 +1913,7 @@
             "speed": 20,
             "popups": {
                 "firstCorrectMatch": "Good work! <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> binds with <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>!",
-                "errorMatch": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>, both nucleotides help make up DNA!"
+                "error5Match": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>, both nucleotides help make up DNA!"
             },
             "rotateNT": false,
             "ntType": "basic",
