@@ -1376,7 +1376,8 @@
         getRate() {
             // let minElapsed = Math.ceil(this.secondsElapsed / 60);
             // return Math.round(this.sequencesMade / minElapsed);
-            return Math.floor(1000 / this.getGameSpeed());
+            let ntRate = Math.floor(1000 / this.getGameSpeed());
+            return Math.min(ntRate, this.game.levelConfig.ntSequence.length);
         }
 
         getAccuracy() {
