@@ -722,6 +722,9 @@
         }
 
         shuffleNTBtnAngle() {
+            if (!this.rotateNT) {
+                return;
+            }
             let angles = [0, 90, 180, 270];
             for (let i = 0; i < this.ntButtons.length; i++) {
                 let angle = angles[Math.floor(Math.random()*angles.length)];
