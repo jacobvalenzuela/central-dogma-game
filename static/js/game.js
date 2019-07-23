@@ -578,10 +578,10 @@
             this.nucleotides = [];
             this.ntButtons = [];
             this.btnLocations = {
-                0: [310, 370],
+                0: [310, 340],
                 1: [310, 440],
-                2: [310, 510],
-                3: [310, 580]
+                2: [310, 540],
+                3: [310, 640]
             }
             this.ntBtnsEnabled = true;
             this.scorekeeping = new GameScore(this.game);
@@ -682,6 +682,7 @@
             for (let i = 0; i < optbtns.length; i++) {
                 this.makeNTBtn(optbtns[i]);
             }
+            this.shuffleNTBtnAngle();
 
             this.scorekeeping.init();
 
@@ -718,6 +719,14 @@
             this.game.input.on("drag", this.bindFn(this.onDragNTBtn));
             this.game.input.on("dragend", this.bindFn(this.onDragNTBtnEnd));
             this.ntButtons.push(nt);
+        }
+
+        shuffleNTBtnAngle() {
+            let angles = [0, 90, 180, 270];
+            for (let i = 0; i < this.ntButtons.length; i++) {
+                let angle = angles[Math.floor(Math.random()*angles.length)];
+                this.ntButtons[i].setAngle(angle);
+            }
         }
 
         onDragNTBtnStart (input, pointer, image) {
@@ -768,7 +777,7 @@
                 return;
             }
             let distance = image.getData("distanceDragged");
-            if (distance < 30) {
+            if (distance < 30 && this.rotateNT) {
                 let nt = image.getData("nucleotide");
                 nt.setAngle(nt.getAngle() + 90);
             } else if (this.positionManager.ntTouchingBindingPocket()){
@@ -780,8 +789,11 @@
                 cloned.setPosition(clickedNT.getObject().x, clickedNT.getObject().y);
                 cloned.setVisible(true);
                 cloned.setScale(0.18);
+                cloned.setAngle(clickedNT.getAngle());
+                this.shuffleNTBtnAngle();
                 this.ntBtnsEnabled = false;
-                if (!clickedNT.validMatchWith(headNT)) {
+                console.log(cloned.getAngle())
+                if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() % 180 != 0)) {
                     let correctnt = this.positionManager.getValidMatchNT(headNT);
                     this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
                     cloned.setError(true);
@@ -1115,8 +1127,10 @@
                 cloned.setPosition(head.getObject().x, head.getObject().y);
                 cloned.setVisible(true);
                 cloned.setScale(0.18);
+                cloned.setAngle(180);
                 cloned.setMissing(true);
                 this.addToDNAOutput(cloned);
+                this.level.shuffleNTBtnAngle();
             }
             this.levelNucleotides = this.levelNucleotides.slice(1, this.levelNucleotides.length);
             this.compLevelNucleotides = this.compLevelNucleotides.slice(1, this.compLevelNucleotides.length);
@@ -1569,6 +1583,7 @@
                 }
                 this.imgObjErr.setScale(scale);
                 this.imgObjErr.setAlpha(this.imgObj.alpha);
+                this.imgObjErr.setAngle(this.imgObj.angle);
             }
         }
 
@@ -1596,6 +1611,7 @@
                 }
                 this.imgObjMiss.setScale(scale);
                 this.imgObjMiss.setAlpha(this.imgObj.alpha);
+                this.imgObjMiss.setAngle(this.imgObj.angle);
             }
         }
 
