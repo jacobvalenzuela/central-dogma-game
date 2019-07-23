@@ -541,7 +541,7 @@
         fadeOut(callback=null) {
             let currentAlpha = this.camera.alpha;
             let newAlpha = currentAlpha / 1.5;
-            console.log(newAlpha)
+            // console.log(newAlpha)
             if (newAlpha < 0.001) {
                 this.camera.setAlpha(0);
                 if (callback != null) {
@@ -721,7 +721,8 @@
         }
 
         onDragNTBtnStart (input, pointer, image) {
-            if (!this.ntBtnsEnabled || !this.positionManager.ntTouchingBindingPocket()) {
+            console.log("start")
+            if (!this.ntBtnsEnabled) {
                 return;
             }
             let leftButtonDown = pointer.leftButtonDown();
@@ -733,8 +734,9 @@
             let angle = image.getData("nucleotide").getAngle();
             image.setData("pointerStartX", x);
             image.setData("pointerStartY", y);
-            image.setData("startAngle", angle);
+            // image.setData("startAngle", angle);
             image.setData("startedDragging", true);
+            image.setData("distanceDragged", 0);
         }
 
         onDragNTBtn (input, pointer, image, x, y) {
@@ -754,8 +756,7 @@
             let pointerX = x;
             let pointerY = y;
             let distance = Math.sqrt(Math.pow(pointerX - imgX, 2) + Math.pow(pointerY - imgY, 2));
-            let startAngle = image.getData("startAngle");
-            image.getData("nucleotide").setAngle(startAngle + distance);
+            image.setData("distanceDragged", distance);
         }
 
         onDragNTBtnEnd (input, pointer, image) {
@@ -763,54 +764,55 @@
             if (!startedDragging) {
                 return;
             }
-            if (!this.ntBtnsEnabled || !this.positionManager.ntTouchingBindingPocket()) {
+            if (!this.ntBtnsEnabled) {
                 return;
             }
-            let angle = image.angle;
-            let clickedNT = image.getData("nucleotide");
-            let headNT = this.positionManager.getHeadNucleotide();
-            let cloned = clickedNT.clone();
-            cloned.setDisplay("nucleotide");
-            cloned.setPosition(clickedNT.getObject().x, clickedNT.getObject().y);
-            cloned.setVisible(true);
-            cloned.setScale(0.18);
-            this.ntBtnsEnabled = false;
-            // if (clickedNT.validMatchWith(headNT)) {
-            //     this.positionManager.addToDNAOutput(cloned);
-            // } else {
-            //     this.positionManager.doRejectNT(cloned);
-            // }
-            if (!clickedNT.validMatchWith(headNT)) {
-                let correctnt = this.positionManager.getValidMatchNT(headNT);
-                this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
-                cloned.setError(true);
-                this.scorekeeping.incrementIncorrectSequences();
-            } else {
-                this.popupmanager.emitEvent("correctMatch", headNT, cloned);
-                this.popupmanager.emitEvent("firstCorrectMatch", headNT, cloned);
-                this.scorekeeping.incrementSequencesMade();
-                let headNTName = headNT.getShortName();
-                let pairNTName = cloned.getShortName();
-                let that = this;
-                this.game.time.addEvent({
-                    delay: 100,
-                    loop: false,
-                    callback: function () {
-                        that.ntparticle[headNTName].resume();
-                        that.ntparticle[headNTName].explode(50);
-                        that.game.time.addEvent({
-                            delay: 100,
-                            callback: function () {
-                                that.ntparticle[pairNTName].resume();
-                                that.ntparticle[pairNTName].explode(50);
-                            },
-                            loop: false
-                        });
-                    }
-                });
+            let distance = image.getData("distanceDragged");
+            if (distance < 30) {
+                let nt = image.getData("nucleotide");
+                nt.setAngle(nt.getAngle() + 90);
+            } else if (this.positionManager.ntTouchingBindingPocket()){
+                let angle = image.angle;
+                let clickedNT = image.getData("nucleotide");
+                let headNT = this.positionManager.getHeadNucleotide();
+                let cloned = clickedNT.clone();
+                cloned.setDisplay("nucleotide");
+                cloned.setPosition(clickedNT.getObject().x, clickedNT.getObject().y);
+                cloned.setVisible(true);
+                cloned.setScale(0.18);
+                this.ntBtnsEnabled = false;
+                if (!clickedNT.validMatchWith(headNT)) {
+                    let correctnt = this.positionManager.getValidMatchNT(headNT);
+                    this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
+                    cloned.setError(true);
+                    this.scorekeeping.incrementIncorrectSequences();
+                } else {
+                    this.popupmanager.emitEvent("correctMatch", headNT, cloned);
+                    this.popupmanager.emitEvent("firstCorrectMatch", headNT, cloned);
+                    this.scorekeeping.incrementSequencesMade();
+                    let headNTName = headNT.getShortName();
+                    let pairNTName = cloned.getShortName();
+                    let that = this;
+                    this.game.time.addEvent({
+                        delay: 100,
+                        loop: false,
+                        callback: function () {
+                            that.ntparticle[headNTName].resume();
+                            that.ntparticle[headNTName].explode(50);
+                            that.game.time.addEvent({
+                                delay: 100,
+                                callback: function () {
+                                    that.ntparticle[pairNTName].resume();
+                                    that.ntparticle[pairNTName].explode(50);
+                                },
+                                loop: false
+                            });
+                        }
+                    });
+                }
+                this.positionManager.addToDNAOutput(cloned);
+                image.getData("nucleotide").setAngle(0);
             }
-            this.positionManager.addToDNAOutput(cloned);
-            image.getData("nucleotide").setAngle(0);
             image.setData("startedDragging", false);
         }
     }
@@ -1107,7 +1109,7 @@
             if (head) {
                 this.removeHeadNucleotide();
                 this.level.scorekeeping.incrementIncorrectSequences();
-                console.log("Removed head nucleotide at the very end");
+                // console.log("Removed head nucleotide at the very end");
                 let cloned = this.getValidMatchNT(head);
                 cloned.setDisplay("nucleotide");
                 cloned.setPosition(head.getObject().x, head.getObject().y);
@@ -1332,7 +1334,7 @@
 
         tickSec() {
             this.secondsElapsed++;
-            console.log("tick")
+            // console.log("tick")
         }
 
         bindFn(fn) {
@@ -1359,7 +1361,7 @@
 
         getAccuracy() {
             let ntCnt = this.initialNTCount;
-            console.log(ntCnt, this.wrongSequences)
+            // console.log(ntCnt, this.wrongSequences)
             return Math.round(((ntCnt - this.wrongSequences) / ntCnt) * 100);
         }
 
@@ -1780,7 +1782,7 @@
                 }
             });
             this.popupCnt++;
-            console.log(rendered);
+            // console.log(rendered);
         }
     }
 
