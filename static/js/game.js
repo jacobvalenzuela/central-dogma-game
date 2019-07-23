@@ -752,7 +752,7 @@
         }
 
         onDragNTBtn (input, pointer, image, x, y) {
-            if (!this.ntBtnsEnabled || !this.positionManager.ntTouchingBindingPocket()) {
+            if (!this.ntBtnsEnabled) {
                 return;
             }
             let startedDragging = image.getData("startedDragging");
@@ -769,6 +769,7 @@
             let pointerY = y;
             let distance = Math.sqrt(Math.pow(pointerX - imgX, 2) + Math.pow(pointerY - imgY, 2));
             image.setData("distanceDragged", distance);
+            console.log("distance dragged", distance);
         }
 
         onDragNTBtnEnd (input, pointer, image) {
@@ -780,7 +781,8 @@
                 return;
             }
             let distance = image.getData("distanceDragged");
-            if (distance < 30 && this.rotateNT) {
+            if (distance < 15 && this.rotateNT) {
+                console.log("rotated")
                 let nt = image.getData("nucleotide");
                 nt.setAngle(nt.getAngle() + 90);
             } else if (this.positionManager.ntTouchingBindingPocket()){
@@ -795,7 +797,7 @@
                 cloned.setAngle(clickedNT.getAngle());
                 this.shuffleNTBtnAngle();
                 this.ntBtnsEnabled = false;
-                console.log(cloned.getAngle())
+                // console.log(cloned.getAngle())
                 if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() % 180 != 0)) {
                     let correctnt = this.positionManager.getValidMatchNT(headNT);
                     this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
@@ -1909,7 +1911,7 @@
         {
             "ntSequence": "TAGTTACTAGGAGAGGTCATTTATAGGTTAGTCACTTCAGGCCTAGAAGAGATACATAGCACTTGGAGGACAGCGAAAAACAAATTTCACGGCATG",
             "unlocked": true,
-            "name": "Mixing it Up",
+            "name": "Mixing Things Up",
             "speed": 30,
             "rotateNT": false,
             "ntType": "basic",
@@ -1917,7 +1919,7 @@
         {
             "ntSequence": "GTAATCACTAAGTAGTAATACCCTCACTGAATGTGTAACGCCGTTCGGACAACCAAGCTGCACCATTGCTCTACATTCATGTGACGGCCGACCGAG",
             "unlocked": true,
-            "name": "Adding a bit of a Twist",
+            "name": "Adding a Bit of a Twist",
             "speed": 30,
             "rotateNT": true,
             "ntType": "hbonds",
