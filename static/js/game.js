@@ -833,6 +833,22 @@
             }
             image.setData("startedDragging", false);
         }
+
+        endGame() {
+            let sceneName = "levelcomplete" + this.level;
+            let levelSceneName = "level" + this.level;
+            this.scene.add(sceneName, LevelComplete, false, {nucleotides: this.positionManager.selectedNucleotides, score: this.scorekeeping.getScore()});
+            let that = this;
+            this.time.addEvent({
+                delay: 500,
+                loop: false,
+                callback: function () {
+                    that.scene.launch(sceneName);
+                    that.scene.pause();
+                    that.scene.moveAbove(levelSceneName, sceneName);
+                }
+            });
+        }
     }
 
     class PositionManager {
@@ -1137,6 +1153,9 @@
                 cloned.setMissing(true);
                 this.addToDNAOutput(cloned);
                 this.level.shuffleNTBtnAngle();
+                if (this.getLevelNTCount() == 0) {
+                    this.level.endGame();
+                }
             }
             this.levelNucleotides = this.levelNucleotides.slice(1, this.levelNucleotides.length);
             this.compLevelNucleotides = this.compLevelNucleotides.slice(1, this.compLevelNucleotides.length);
@@ -1901,6 +1920,59 @@
         exitPopup(inputPlugin, pointer, objClicked) {
             this.manager.level.scene.resume();
             this.scene.stop();
+        }
+    }
+
+    class LevelComplete extends Phaser.Scene {
+        constructor(config) {
+            super(config);
+        }
+
+        init(data) {
+            this.camera = this.cameras.main;
+            this.camera.setAlpha(0);
+
+            this.graphics = this.add.graphics();
+
+            this.graphics.fillStyle(0x000000, 0.50);
+            this.graphics.fillRect(0, 0, 360, 740);
+
+            let that = this;
+            this.fadeIn(function () {
+                that.add.rectangle(180, 300, 300, 400, 0x9BDBF5);
+            });
+        }
+
+        bindFn(fn) {
+            let clas = this;
+            return function (...args) {
+                let event = this;
+                fn.bind(clas, event, ...args)();
+            };
+        }
+
+        fadeIn(callback=null) {
+            let currentAlpha = this.camera.alpha;
+            if (currentAlpha == 0) {
+                currentAlpha = 0.1;
+            }
+            let newAlpha = currentAlpha * 1.5;
+            if (newAlpha > 0.999) {
+                this.camera.clearAlpha();
+                if (callback != null) {
+                    callback();
+                }
+            } else {
+                this.camera.setAlpha(newAlpha);
+                let that = this;
+                this.time.addEvent({
+                    delay: 40,
+                    callback: function () {
+                        that.fadeIn(callback);
+                    },
+                    loop: false
+                });
+            }
         }
     }
 
