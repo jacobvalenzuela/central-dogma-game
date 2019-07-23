@@ -1888,11 +1888,11 @@
     window.game = new Game([
         {
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
-            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
+            "ntSequence": "ATATTTTAAATATATATATA",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "AT the Beginning",
-            "speed": 30,
+            "speed": 20,
             "popups": {
                 "firstCorrectMatch": "Good work! <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> binds with <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>!",
                 "errorMatch": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>, both nucleotides help make up DNA!"
@@ -1901,18 +1901,18 @@
             "ntType": "basic",
         },
         {
-            "ntSequence": "CGCGCGCGGGGCCGCGCGGCCCCGGGCCGCGGCGCGCGCGCGCGCGCGCGGCCCCGCGCGCGGCCGCGCGCGCGCGGCGCGCGCGCGCGCGCGCGG",
+            "ntSequence": "CGCGCGCGGGGCCGCGCGGC",
             "controls": ["G", "C"],
             "unlocked": true,
             "name": "Clash of the Cs and Gs",
-            "speed": 30,
+            "speed": 20,
             "rotateNT": false,
         },
         {
-            "ntSequence": "TAGTTACTAGGAGAGGTCATTTATAGGTTAGTCACTTCAGGCCTAGAAGAGATACATAGCACTTGGAGGACAGCGAAAAACAAATTTCACGGCATG",
+            "ntSequence": "TAGTTACTAGGAGAGGTCAT",
             "unlocked": true,
             "name": "Mixing Things Up",
-            "speed": 30,
+            "speed": 20,
             "rotateNT": false,
             "ntType": "basic",
         },
