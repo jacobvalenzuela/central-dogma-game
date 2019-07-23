@@ -571,6 +571,8 @@
             this.gameObj = data.gameObj;
             this.game = this;
             this.level = data.lvlNum;
+            this.rotateNT = this.levelConfig.rotateNT;
+            this.ntType = this.levelConfig.ntType;
             this.scorekeeping = null;
             this.objects = {};
             this.nucleotides = [];
@@ -666,7 +668,7 @@
 
             let nucleotides = this.gameObj.levels[this.level].ntSequence;
             for (let i = 0; i < nucleotides.length; i++) {
-                let nucleotide = new Nucleotide(this, nucleotides[i], "basic");
+                let nucleotide = new Nucleotide(this, nucleotides[i], this.ntType);
                 this.nucleotides.push(nucleotide);
             }
 
@@ -704,7 +706,7 @@
         }
 
         makeNTBtn(type) {
-            let nt = new Nucleotide(this, type, "basic");
+            let nt = new Nucleotide(this, type, this.ntType);
             nt.setDisplay("nucleotide");
             nt.setVisible(true);
             nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
@@ -728,7 +730,7 @@
             }
             let x = pointer.x;
             let y = pointer.y;
-            let angle = image.angle;
+            let angle = image.getData("nucleotide").getAngle();
             image.setData("pointerStartX", x);
             image.setData("pointerStartY", y);
             image.setData("startAngle", angle);
@@ -841,7 +843,7 @@
             for (let i = 0; i < this.levelNucleotides.length; i++) {
                 let nucleotide = this.levelNucleotides[i];
                 if (nucleotide) {
-                    let newcleotide = new Nucleotide(this.level, nucleotide.matches[0], "basic");
+                    let newcleotide = new Nucleotide(this.level, nucleotide.matches[0], this.level.ntType);
                     this.compLevelNucleotides.push(newcleotide);
                 } else {
                     this.compLevelNucleotides.push(null);
@@ -1380,24 +1382,64 @@
                     color: 0xf49232,
                     matches: ["T"],
                     classification: "purine",
+                    display: {
+                        "basic": {
+                            "origin": [0.5, 0.5],
+                            "angle": 0,
+                        },
+                        "hbonds": {
+                            "origin": [0.42, 0.5],
+                            "angle": 0,
+                        },
+                    }
                 },
                 "T": {
                     shortname: "thymine",
                     color: 0x31ace0,
                     matches: ["A"],
                     classification: "pyrimidine",
+                    display: {
+                        "basic": {
+                            "origin": [0.5, 0.5],
+                            "angle": 0,
+                        },
+                        "hbonds": {
+                            "origin": [0.65, 0.65],
+                            "angle": 180,
+                        },
+                    }
                 },
                 "C": {
                     shortname: "cytosine",
                     color: 0xc71489,
                     matches: ["G"],
                     classification: "pyrimidine",
+                    display: {
+                        "basic": {
+                            "origin": [0.5, 0.5],
+                            "angle": 0,
+                        },
+                        "hbonds": {
+                            "origin": [0.65, 0.5],
+                            "angle": 180,
+                        },
+                    }
                 },
                 "G": {
                     shortname: "guanine",
                     color: 0x26b11e,
                     matches: ["C"],
                     classification: "purine",
+                    display: {
+                        "basic": {
+                            "origin": [0.5, 0.5],
+                            "angle": 0,
+                        },
+                        "hbonds": {
+                            "origin": [0.5, 0.40],
+                            "angle": 0,
+                        },
+                    }
                 },
             }
 
@@ -1408,6 +1450,7 @@
             this.squareObj = null;
             this.display = "rectangle"; // rectangle or nucleotide
             this.matches = this.allNucleotides[rep].matches;
+            this.displayment = this.allNucleotides[rep].display[type];
             this.errorNT = false; // is an error NT and should show red BG
             this.missingNT = false; // is missing NT and should show a white center
             this.dispLetter = false; // should display NT letter on the face
@@ -1415,39 +1458,46 @@
 
         getObject() {
             if (this.imgObj === null) {
-                this.imgObj = this.level.game.add.image(0, 0, "nt_" + this.getShortName() + "_" + this.type);
-                this.squareObj = this.level.game.add.rectangle(0, 0, 10, 10, this.getColor());
-                this.imgObj.setVisible(false);
-                this.squareObj.setVisible(false);
-                this.imgObj.setData("nucleotide", this);
-                this.squareObj.setData("nucleotide", this);
-                this.imgObj.setDepth(1);
-                this.squareObj.setDepth(1);
-                
-                this.imgObjErr = this.level.game.add.image(0, 0, "errortide_" + this.getClassification());
-                this.squareObjErr = this.level.game.add.rectangle(0, 0, 15, 15, 0xfc0e33);
-                this.imgObjErr.setVisible(false);
-                this.squareObjErr.setVisible(false);
-                this.imgObjErr.setDepth(0);
-                this.squareObjErr.setDepth(0);
-
-                this.imgObjMiss = this.level.game.add.image(0, 0, "missingtide_" + this.getClassification());
-                this.squareObjMiss = this.level.game.add.rectangle(0, 0, 15, 15, 0xffffff);
-                this.imgObjMiss.setVisible(false);
-                this.squareObjMiss.setVisible(false);
-                this.imgObjMiss.setDepth(2);
-                this.squareObjMiss.setDepth(2);
-
-                this.letterText = this.level.add.text(0, 0, this.rep, 
-                    {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#fff'}).setOrigin(0.5);
-                this.letterText.setDepth(3);
-                this.letterText.setVisible(false);
+                this._genNTObjs();
             }
             if (this.display == "rectangle") {
                 return this.squareObj;
             } else {
                 return this.imgObj;
             }
+        }
+
+        _genNTObjs() {
+            this.imgObj = this.level.game.add.image(0, 0, "nt_" + this.getShortName() + "_" + this.type);
+            this.squareObj = this.level.game.add.rectangle(0, 0, 10, 10, this.getColor());
+            this.imgObj.setVisible(false);
+            this.squareObj.setVisible(false);
+            this.imgObj.setData("nucleotide", this);
+            this.squareObj.setData("nucleotide", this);
+            this.imgObj.setDepth(1);
+            this.squareObj.setDepth(1);
+
+            this.imgObj.setOrigin(this.displayment.origin[0], this.displayment.origin[1]);
+            this.imgObj.setAngle(this.displayment.angle);
+            
+            this.imgObjErr = this.level.game.add.image(0, 0, "errortide_" + this.getClassification());
+            this.squareObjErr = this.level.game.add.rectangle(0, 0, 15, 15, 0xfc0e33);
+            this.imgObjErr.setVisible(false);
+            this.squareObjErr.setVisible(false);
+            this.imgObjErr.setDepth(0);
+            this.squareObjErr.setDepth(0);
+
+            this.imgObjMiss = this.level.game.add.image(0, 0, "missingtide_" + this.getClassification());
+            this.squareObjMiss = this.level.game.add.rectangle(0, 0, 15, 15, 0xffffff);
+            this.imgObjMiss.setVisible(false);
+            this.squareObjMiss.setVisible(false);
+            this.imgObjMiss.setDepth(2);
+            this.squareObjMiss.setDepth(2);
+
+            this.letterText = this.level.add.text(0, 0, this.rep, 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#fff'}).setOrigin(0.5);
+            this.letterText.setDepth(3);
+            this.letterText.setVisible(false);
         }
 
         setDepth(depth) {
@@ -1596,7 +1646,12 @@
             this.updateMissingDisplay();
         }
 
+        getAngle() {
+            return this.getObject().angle - this.displayment.angle;
+        }
+
         setAngle(angle) {
+            angle = angle + this.displayment.angle;
             this.getObject().setAngle(angle);
             this.updateLetterDisplay();
         }
@@ -1819,6 +1874,8 @@
                 "firstCorrectMatch": "Good work! <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> binds with <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>!",
                 "errorMatch": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>, both nucleotides help make up DNA!"
             },
+            "rotateNT": false,
+            "ntType": "basic",
         },
         {
             "ntSequence": "CGCGCGCGGGGCCGCGCGGCCCCGGGCCGCGGCGCGCGCGCGCGCGCGCGGCCCCGCGCGCGGCCGCGCGCGCGCGGCGCGCGCGCGCGCGCGCGG",
@@ -1826,15 +1883,23 @@
             "unlocked": true,
             "name": "Clash of the Cs and Gs",
             "speed": 30,
+            "rotateNT": false,
         },
         {
             "ntSequence": "TAGTTACTAGGAGAGGTCATTTATAGGTTAGTCACTTCAGGCCTAGAAGAGATACATAGCACTTGGAGGACAGCGAAAAACAAATTTCACGGCATG",
             "unlocked": true,
             "name": "Mixing it Up",
             "speed": 30,
+            "rotateNT": false,
+            "ntType": "basic",
         },
         {
-            "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
+            "ntSequence": "GTAATCACTAAGTAGTAATACCCTCACTGAATGTGTAACGCCGTTCGGACAACCAAGCTGCACCATTGCTCTACATTCATGTGACGGCCGACCGAG",
+            "unlocked": true,
+            "name": "Adding a bit of a Twist",
+            "speed": 30,
+            "rotateNT": true,
+            "ntType": "hbonds",
         },
         {
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
