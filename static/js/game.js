@@ -211,6 +211,7 @@
             );
             this.game.load.image("logo_isb", "static/img/ISB_Logo.png");
             this.game.load.image("play_btn", "static/img/playBtn.png");
+            this.game.load.image("home_btn", "static/img/homeBtn.png");
             
             this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");
             this.game.load.image("nt_adenine_basic", "static/img/nucleotide/adenine/Adenine_basic@3x.png");
@@ -275,12 +276,12 @@
             
             this.graphics.fillStyle(0xF1F1F2, 1.0);
             this.graphics.fillRect(0, 0, 360, 740);
-            let isblogo = this.game.add.image(190, 320, "logo_isb").setScale(0.35);
+            let isblogo = this.game.add.image(180, 320, "logo_isb").setScale(0.35);
             this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.20).setAlpha(0);
 
             let dogmaLogo = this.game.add.sprite(185, 280, "logo_dogma_intro", 0).setScale(0.75);
 
-            this.playBtn = this.game.add.image(190, 500, "play_btn").setScale(0.30).setAlpha(0).setInteractive();
+            this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.30).setAlpha(0).setInteractive();
 
             this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClick));
             this.playBtn.addListener("pointerdown", this.bindFn(this.onPlayClickHold));
@@ -850,7 +851,7 @@
             this.gameEnded = true;
             let sceneName = "levelcomplete" + this.level;
             let levelSceneName = "level" + this.level;
-            this.scene.add(sceneName, LevelComplete, false, {nucleotides: this.positionManager.selectedNucleotides, score: this.scorekeeping.getScore()});
+            this.scene.add(sceneName, LevelComplete, false, {nucleotides: this.positionManager.selectedNucleotides, score: this.scorekeeping.getScore(), accuracy: this.scorekeeping.getAccuracy()});
             let that = this;
             this.time.addEvent({
                 delay: 500,
@@ -1975,7 +1976,30 @@
                             loop: false,
                             callback: function () {
                                 that.scoreUp(scoreTxt, data.score, function () {
-
+                                    that.time.addEvent({
+                                        delay: 600,
+                                        loop: false,
+                                        callback: function () {
+                                            let homeBtn = that.add.image(180, 420, "home_btn").setScale(0.22).setAlpha(0).setInteractive();
+                                            that.homeBtn = homeBtn;
+                                            that.fadeInObj(homeBtn);
+                                            homeBtn.addListener("pointerup", that.bindFn(that.onHomeClick));
+                                            homeBtn.addListener("pointerdown", that.bindFn(that.onHomeClickHold));
+                                            homeBtn.addListener("pointerup", that.bindFn(that.onHomeClickRelease));
+                                            homeBtn.addListener("dragend", that.bindFn(that.onHomeClickRelease));
+                                            let accStampBg = that.add.image(270, 300, "nt_cytosine_basic").setScale(0.36).setAngle(15);
+                                            that.fadeInObj(accStampBg);
+                                            that.animateScale(accStampBg, 0.26);
+                                            let accStampLbl = that.add.text(265, 320, "%", 
+                                                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '12pt', color: '#FCB6DF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
+                                            that.fadeInObj(accStampLbl);
+                                            that.animateScale(accStampLbl, 1);
+                                            let accStampTxt = that.add.text(271, 295, data.accuracy, 
+                                                {fontFamily: '\'Bevan\', sans-serif', fontSize: '20pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
+                                            that.fadeInObj(accStampTxt);
+                                            that.animateScale(accStampTxt, 1);
+                                        }
+                                    });
                                 });
                             }
                         });
@@ -2090,14 +2114,14 @@
             if (currentAlpha == 0) {
                 currentAlpha = 0.01;
             }
-            if (currentAlpha > 0.9) {
+            if (currentAlpha > 0.99) {
                 obj.setAlpha(1);
                 if (callback != null) {
                     callback();
                 }
             } else {
                 let perc = 1 - currentAlpha;
-                perc = perc * 0.3;
+                perc = perc * 0.2;
                 obj.setAlpha(currentAlpha + perc);
                 let that = this;
                 this.time.addEvent({
@@ -2109,12 +2133,31 @@
                 });
             }
         }
+
+        onHomeClick(img) {
+            if (img != this.homeBtn) {
+                return;
+            }
+            // this.scene.launch("listlevels");
+            // this.scene.moveAbove("titlescreen", "listlevels");
+        }
+
+        onHomeClickHold(img) {
+            if (img != this.homeBtn) {
+                return;
+            }
+            this.homeBtn.setScale(0.18);
+        }
+
+        onHomeClickRelease(img) {
+            this.homeBtn.setScale(0.22);
+        }
     }
 
     window.game = new Game([
         {
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
-            "ntSequence": "ATATTTTAAATATATATATA",
+            "ntSequence": "A", // "ATATTTTAAATATATATATA",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "AT the Beginning",
