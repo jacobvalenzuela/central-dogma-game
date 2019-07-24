@@ -2199,6 +2199,7 @@
             "name": "Clash of the Cs and Gs",
             "speed": 20,
             "rotateNT": false,
+            "ntType": "basic",
         },
         {
             "ntSequence": "TAGTTACTAGGAGAGGTCAT",
