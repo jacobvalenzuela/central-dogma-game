@@ -37,6 +37,12 @@
         resizeCanvas();
     });
 
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'Knewave']
+        }
+    });
+
     class TouchFeedback extends Phaser.Plugins.ScenePlugin {
         constructor (scene, pluginManager) {
             super(scene, pluginManager);
@@ -573,6 +579,7 @@
             this.level = data.lvlNum;
             this.rotateNT = this.levelConfig.rotateNT;
             this.ntType = this.levelConfig.ntType;
+            this.gameEnded = false;
             this.scorekeeping = null;
             this.objects = {};
             this.nucleotides = [];
@@ -683,6 +690,8 @@
                 this.makeNTBtn(optbtns[i]);
             }
             this.shuffleNTBtnAngle();
+
+            this.scene.remove("levelcomplete" + this.level);
 
             this.scorekeeping.init();
 
@@ -835,6 +844,10 @@
         }
 
         endGame() {
+            if (this.gameEnded) {
+                return;
+            }
+            this.gameEnded = true;
             let sceneName = "levelcomplete" + this.level;
             let levelSceneName = "level" + this.level;
             this.scene.add(sceneName, LevelComplete, false, {nucleotides: this.positionManager.selectedNucleotides, score: this.scorekeeping.getScore()});
@@ -1153,14 +1166,15 @@
                 cloned.setMissing(true);
                 this.addToDNAOutput(cloned);
                 this.level.shuffleNTBtnAngle();
-                if (this.getLevelNTCount() == 0) {
-                    this.level.endGame();
-                }
             }
             this.levelNucleotides = this.levelNucleotides.slice(1, this.levelNucleotides.length);
             this.compLevelNucleotides = this.compLevelNucleotides.slice(1, this.compLevelNucleotides.length);
             this.selectedNucleotides.push(null);
             this.setPositions(true);
+            if (this.getLevelNTCount() == 0) {
+                console.log("end")
+                this.level.endGame();
+            }
         }
 
         getValidMatchNT(nucleotide) {
@@ -1939,7 +1953,15 @@
 
             let that = this;
             this.fadeIn(function () {
-                that.add.rectangle(180, 300, 300, 400, 0x9BDBF5);
+                let rectbg = that.add.rectangle(180, -100, 300, 400, 0x9BDBF5);
+                that.moveToY(rectbg, 300, function () {
+                    let lvlcompTxt = that.add.text(180, 135, "Level Complete!", 
+                        {fontFamily: '\'Knewave\', cursive', fontSize: '27pt', color: '#BC1D75', align: "center"});
+                    lvlcompTxt.setOrigin(0.5).setScale(0);
+                    that.animateScale(lvlcompTxt, 1.12, function () {
+                        that.animateScale(lvlcompTxt, 1);
+                    });
+                });
             });
         }
 
@@ -1974,12 +1996,59 @@
                 });
             }
         }
+
+        moveToY(obj, y, callback=null) {
+            let currentY = obj.y;
+            if (Math.abs(currentY - y) < 2) {
+                obj.setPosition(obj.x, y);
+                if (callback != null) {
+                    callback();
+                }
+            } else {
+                let perc = y - currentY;
+                perc = perc * 0.3;
+                obj.setPosition(obj.x, currentY + perc);
+                let that = this;
+                this.time.addEvent({
+                    delay: 10,
+                    loop: false,
+                    callback: function () {
+                        that.moveToY(obj, y, callback);
+                    }
+                });
+            }
+        }
+
+        animateScale(obj, scale, callback=null) {
+            let currentScale = obj.scale;
+            if (currentScale == 0) {
+                currentScale = 0.01;
+            }
+            if (Math.abs(currentScale - scale) < 0.01) {
+                obj.setScale(scale);
+                if (callback != null) {
+                    callback();
+                }
+            } else {
+                let perc = scale - currentScale;
+                perc = perc * 0.3;
+                obj.setScale(currentScale + perc);
+                let that = this;
+                this.time.addEvent({
+                    delay: 10,
+                    loop: false,
+                    callback: function () {
+                        that.animateScale(obj, scale, callback);
+                    }
+                });
+            }
+        }
     }
 
     window.game = new Game([
         {
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
-            "ntSequence": "ATATTTTAAATATATATATA",
+            "ntSequence": "A", // "ATATTTTAAATATATATATA",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "AT the Beginning",
