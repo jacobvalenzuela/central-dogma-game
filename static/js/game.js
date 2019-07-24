@@ -39,7 +39,7 @@
 
     WebFont.load({
         google: {
-            families: ['Open Sans', 'Knewave']
+            families: ['Open Sans', 'Knewave', 'Bevan']
         }
     });
 
@@ -1954,15 +1954,56 @@
             let that = this;
             this.fadeIn(function () {
                 let rectbg = that.add.rectangle(180, -100, 300, 400, 0x9BDBF5);
+                rectbg.setStrokeStyle(5, 0x5C96C9, 1);
                 that.moveToY(rectbg, 300, function () {
-                    let lvlcompTxt = that.add.text(180, 135, "Level Complete!", 
+                    let lvlcompTxt = that.add.text(180, 155, "Level Complete!", 
                         {fontFamily: '\'Knewave\', cursive', fontSize: '27pt', color: '#BC1D75', align: "center"});
                     lvlcompTxt.setOrigin(0.5).setScale(0);
                     that.animateScale(lvlcompTxt, 1.12, function () {
                         that.animateScale(lvlcompTxt, 1);
+                        let scoreRect = that.add.rectangle(180, 260, 200, 100, 0x1B98D1);
+                        scoreRect.setAlpha(0).setStrokeStyle(5, 0x6BABDA, 1);
+                        that.fadeInObj(scoreRect);
+                        let scoreLabTxt = that.add.text(180, 230, "SCORE", 
+                            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '20pt', color: '#8CC7E7', align: 'center'});
+                        scoreLabTxt.setOrigin(0.5);
+                        let scoreTxt = that.add.text(180, 269, "0", 
+                            {fontFamily: '\'Bevan\', cursive', fontSize: '35pt', color: '#FAF5AB', align: 'center'});
+                        scoreTxt.setOrigin(0.5);
+                        that.time.addEvent({
+                            delay: 600,
+                            loop: false,
+                            callback: function () {
+                                that.scoreUp(scoreTxt, data.score, function () {
+
+                                });
+                            }
+                        });
                     });
                 });
             });
+        }
+
+        scoreUp(text, score, callback=null) {
+            let sctxt = parseInt(text.text);
+            if (sctxt == score) {
+                if (callback) {
+                    callback();
+                }
+            } else {
+                let perc = Math.floor((Math.random() * 3) + 1) / 100;
+                perc = score * perc;
+                sctxt = Math.min(sctxt + perc, score);
+                text.setText(sctxt);
+                let that = this;
+                this.time.addEvent({
+                    delay: 1,
+                    loop: false,
+                    callback: function () {
+                        that.scoreUp(text, score, callback);
+                    }
+                });
+            }
         }
 
         bindFn(fn) {
@@ -2043,12 +2084,37 @@
                 });
             }
         }
+
+        fadeInObj(obj, callback=null) {
+            let currentAlpha = obj.alpha;
+            if (currentAlpha == 0) {
+                currentAlpha = 0.01;
+            }
+            if (currentAlpha > 0.9) {
+                obj.setAlpha(1);
+                if (callback != null) {
+                    callback();
+                }
+            } else {
+                let perc = 1 - currentAlpha;
+                perc = perc * 0.3;
+                obj.setAlpha(currentAlpha + perc);
+                let that = this;
+                this.time.addEvent({
+                    delay: 10,
+                    loop: false,
+                    callback: function () {
+                        that.fadeInObj(obj, callback);
+                    }
+                });
+            }
+        }
     }
 
     window.game = new Game([
         {
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
-            "ntSequence": "A", // "ATATTTTAAATATATATATA",
+            "ntSequence": "ATATTTTAAATATATATATA",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "AT the Beginning",
