@@ -269,10 +269,19 @@
         }
 
         init(data) {
+            this.skipToLevelsList = false;
+            if (data.skipToLevelsList) {
+                this.skipToLevelsList = true;
+            }
+
             this.gameObj = data.gameObj;
             this.game = this;
             this.camera = this.game.cameras.cameras[0];
             this.graphics = this.game.add.graphics();
+
+            if (data.fadeIn) {
+                this.camera.fadeIn(1000);
+            }
             
             this.graphics.fillStyle(0xF1F1F2, 1.0);
             this.graphics.fillRect(0, 0, 360, 740);
@@ -288,9 +297,15 @@
             this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClickRelease));
             this.playBtn.addListener("dragend", this.bindFn(this.onPlayClickRelease));
 
+            let animDelay = 1;
+            if (this.skipToLevelsList) {
+                animDelay = 0;
+                this.onPlayClick();
+            }
+
             let that = this;
             this.game.time.addEvent({
-                delay: 1000,
+                delay: 1000 * animDelay,
                 callback: function () {
                     that.fadeOut(isblogo, function () {
                         that.game.anims.create({
@@ -298,18 +313,18 @@
                             frames: that.game.anims.generateFrameNumbers("logo_dogma_intro", null),
                             frameRate: 30,
                             repeat: 0,
-                            delay: 500
+                            delay: 500  * animDelay
                         });
                         dogmaLogo.anims.play("logo_dogma_anim");
                         that.game.time.addEvent({
-                            delay: 3600,
+                            delay: 3600  * animDelay,
                             callback: function () {
                                 that.fadeIn(that.playBtn);
                                 that.fadeIn(that.isblogo);
                             },
                             loop: false
                         });
-                    });
+                    }, that.skipToLevelsList);
                 },
                 loop: false
             });
@@ -340,10 +355,11 @@
             }
         }
 
-        fadeOut(image, callback=null) {
+        fadeOut(image, callback=null, skip=false) {
+            console.log(skip)
             let currentAlpha = image.alpha;
             let newAlpha = currentAlpha / 1.5;
-            if (newAlpha < 0.001) {
+            if (newAlpha < 0.001 || skip) {
                 image.clearAlpha();
                 image.setVisible(false);
                 if (callback != null) {
@@ -363,9 +379,6 @@
         }
 
         onPlayClick(img) {
-            if (img != this.playBtn) {
-                return;
-            }
             let that = this;
             this.fadeOut(this.playBtn);
             this.scene.launch("listlevels");
@@ -373,9 +386,6 @@
         }
 
         onPlayClickHold(img) {
-            if (img != this.playBtn) {
-                return;
-            }
             this.playBtn.setScale(0.25);
         }
 
@@ -851,7 +861,7 @@
             this.gameEnded = true;
             let sceneName = "levelcomplete" + this.level;
             let levelSceneName = "level" + this.level;
-            this.scene.add(sceneName, LevelComplete, false, {nucleotides: this.positionManager.selectedNucleotides, score: this.scorekeeping.getScore(), accuracy: this.scorekeeping.getAccuracy()});
+            this.scene.add(sceneName, LevelComplete, false, {gameObj: this.gameObj, nucleotides: this.positionManager.selectedNucleotides, score: this.scorekeeping.getScore(), accuracy: this.scorekeeping.getAccuracy()});
             let that = this;
             this.time.addEvent({
                 delay: 500,
@@ -860,6 +870,7 @@
                     that.scene.launch(sceneName);
                     that.scene.pause();
                     that.scene.moveAbove(levelSceneName, sceneName);
+                    that.popupmanager.destroy();
                 }
             });
         }
@@ -1858,6 +1869,13 @@
             this.popupCnt++;
             // console.log(rendered);
         }
+
+        destroy() {
+            console.log("destroy")
+            for (let i = 0; i < this.popupCnt; i++) {
+                this.level.scene.remove("popupDisplay" + i);
+            }
+        }
     }
 
     class PopupDisplayScene extends Phaser.Scene {
@@ -1944,6 +1962,7 @@
         }
 
         init(data) {
+            this.gameObj = data.gameObj;
             this.camera = this.cameras.main;
             this.camera.setAlpha(0);
 
@@ -2138,8 +2157,12 @@
             if (img != this.homeBtn) {
                 return;
             }
-            // this.scene.launch("listlevels");
-            // this.scene.moveAbove("titlescreen", "listlevels");
+            this.camera.fadeOut(600, 0, 0, 0, function (camera, progress) {
+                if (progress < 0.9) {
+                    return;
+                }
+                this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
+            });
         }
 
         onHomeClickHold(img) {
@@ -2157,7 +2180,7 @@
     window.game = new Game([
         {
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
-            "ntSequence": "A", // "ATATTTTAAATATATATATA",
+            "ntSequence": "ATATTTTAAATATATATATA",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "AT the Beginning",
