@@ -158,7 +158,7 @@
     class Game {
         constructor (levels) {
             this.config = {
-                type: Phaser.CANVAS,
+                type: Phaser.WEBGL,
                 canvas: document.getElementsByTagName("canvas")[0],
                 width: 360,
                 height: 740,
@@ -1897,9 +1897,7 @@
                 that.input.on("pointerdown", that.bindFn(that.exitPopup));
             });
 
-            this.rectangle = this.add.rectangle(180, 270, 300, 150, 0xffffff);
-            this.rectangle.setStrokeStyle(5, 0x000000, 1);
-            this.text = this.add.rexTagText(40, 200, data.text, {
+            this.text = this.add.rexTagText(180, 200, data.text, {
                 fontFamily: '\'Open Sans\', sans-serif',
                 fontSize: "18pt",
                 color: "#000",
@@ -1909,11 +1907,11 @@
                     width: 280
                 }
             });
-            let width = this.text.width;
-            let height = this.text.height;
-            let x = (360 - width) / 2;
-            this.text.setPosition(x, this.text.y);
-            this.rectangle.setSize(this.rectangle.width, this.text.height + 10);
+            this.text.setDepth(5).setOrigin(0.5);
+            this.rectangle = this.add.rectangle(180, 200, 300, this.text.height + 10, 0xffffff);
+            this.rectangle.setOrigin(0.5);
+            this.rectangle.setStrokeStyle(5, 0x000000, 1);
+            this.rectangle.setDepth(4);
         }
 
         bindFn(fn) {
@@ -2039,7 +2037,7 @@
                 let cfnt = this.confnucleotides[i];
                 let nt = cfnt.clone(this);
                 this.nucleotides.push(nt);
-                highestX = lowestX + 75 * i;
+                highestX = lowestX + 85 * i;
                 nt.setPosition(highestX, 650);
                 nt.setDisplay("nucleotide");
                 nt.setScale(0.25);
