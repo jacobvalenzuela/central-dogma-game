@@ -2178,6 +2178,9 @@
         }
 
         moveDraggableNTs(displacement) {
+            if (isNaN(displacement)) {
+                return;
+            }
             for (let i = 0; i < this.nucleotides.length; i++) {
                 let nt = this.nucleotides[i];
                 let x = nt.getObject().x + displacement;
