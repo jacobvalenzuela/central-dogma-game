@@ -97,7 +97,7 @@
                 angle: { min: 0, max: 360 },
                 scale: { start: 0.3, end: 0 },
                 active: false,
-                lifespan: 450
+                lifespan: 800
             }
             let partGr = this.scene.add.particles("touch_feedback_green_spark").createEmitter(touchFeedbackPartConf);
             partGr.manager.setDepth(10000);
