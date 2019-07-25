@@ -855,10 +855,13 @@
             this.gameEnded = true;
             let sceneName = "levelcomplete" + this.level;
             let levelSceneName = "level" + this.level;
-            this.scene.add(sceneName, LevelComplete, false, {gameObj: this.gameObj, nucleotides: this.positionManager.selectedNucleotides, score: this.scorekeeping.getScore(), accuracy: this.scorekeeping.getAccuracy()});
+            let nucleotides = this.positionManager.selectedNucleotides.filter(function (el) {
+                return el != null;
+            });
+            this.scene.add(sceneName, LevelComplete, false, {gameObj: this.gameObj, nucleotides: nucleotides, score: this.scorekeeping.getScore(), accuracy: this.scorekeeping.getAccuracy()});
             let that = this;
             this.time.addEvent({
-                delay: 500,
+                delay: 300,
                 loop: false,
                 callback: function () {
                     that.scene.launch(sceneName);
@@ -1177,7 +1180,14 @@
             this.selectedNucleotides.push(null);
             this.setPositions(true);
             if (this.getLevelNTCount() == 0) {
-                this.level.endGame();
+                let that = this;
+                this.level.time.addEvent({
+                    delay: 300,
+                    loop: false,
+                    callback: function () {
+                        that.level.endGame();
+                    }
+                });
             }
         }
 
@@ -1526,8 +1536,8 @@
         }
 
         _genNTObjs() {
-            this.imgObj = this.level.game.add.image(0, 0, "nt_" + this.getShortName() + "_" + this.type);
-            this.squareObj = this.level.game.add.rectangle(0, 0, 10, 10, this.getColor());
+            this.imgObj = this.level.add.image(0, 0, "nt_" + this.getShortName() + "_" + this.type);
+            this.squareObj = this.level.add.rectangle(0, 0, 10, 10, this.getColor());
             this.imgObj.setVisible(false);
             this.squareObj.setVisible(false);
             this.imgObj.setData("nucleotide", this);
@@ -1538,15 +1548,15 @@
             this.imgObj.setOrigin(this.displayment.origin[0], this.displayment.origin[1]);
             this.imgObj.setAngle(this.displayment.angle);
             
-            this.imgObjErr = this.level.game.add.image(0, 0, "errortide_" + this.getClassification());
-            this.squareObjErr = this.level.game.add.rectangle(0, 0, 15, 15, 0xfc0e33);
+            this.imgObjErr = this.level.add.image(0, 0, "errortide_" + this.getClassification());
+            this.squareObjErr = this.level.add.rectangle(0, 0, 15, 15, 0xfc0e33);
             this.imgObjErr.setVisible(false);
             this.squareObjErr.setVisible(false);
             this.imgObjErr.setDepth(0);
             this.squareObjErr.setDepth(0);
 
-            this.imgObjMiss = this.level.game.add.image(0, 0, "missingtide_" + this.getClassification());
-            this.squareObjMiss = this.level.game.add.rectangle(0, 0, 15, 15, 0xffffff);
+            this.imgObjMiss = this.level.add.image(0, 0, "missingtide_" + this.getClassification());
+            this.squareObjMiss = this.level.add.rectangle(0, 0, 15, 15, 0xffffff);
             this.imgObjMiss.setVisible(false);
             this.squareObjMiss.setVisible(false);
             this.imgObjMiss.setDepth(2);
@@ -1745,8 +1755,8 @@
             return this.allNucleotides[this.rep].matches.indexOf(other.rep) >= 0;
         }
 
-        clone() {
-            return new Nucleotide(this.level, this.rep, this.type);
+        clone(level=this.level) {
+            return new Nucleotide(level, this.rep, this.type);
         }
 
         destroy() {
@@ -1950,6 +1960,11 @@
         }
 
         init(data) {
+            this.confnucleotides = data.nucleotides;
+            this.nucleotides = [];
+            this.draggableNTWidth = 0;
+            this.draggableNTX = 0;
+
             this.gameObj = data.gameObj;
             this.camera = this.cameras.main;
             this.camera.setAlpha(0);
@@ -2005,6 +2020,7 @@
                                                 {fontFamily: '\'Bevan\', sans-serif', fontSize: '20pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
                                             that.fadeInObj(accStampTxt);
                                             that.animateScale(accStampTxt, 1);
+                                            that.makeDraggableNTs();
                                         }
                                     });
                                 });
@@ -2013,6 +2029,83 @@
                     });
                 });
             });
+        }
+
+        makeDraggableNTs() {
+            let lowestX = 400;
+            let highestX = lowestX;
+            for (let i = 0; i < this.confnucleotides.length; i++) {
+                let cfnt = this.confnucleotides[i];
+                let nt = cfnt.clone(this);
+                this.nucleotides.push(nt);
+                highestX = lowestX + 75 * i;
+                nt.setPosition(highestX, 650);
+                nt.setDisplay("nucleotide");
+                nt.setScale(0.25);
+                nt.setVisible(true);
+                nt.showLetter(true);
+                nt.setAngle(270);
+                nt.setError(cfnt.errorNT);
+                nt.setMissing(cfnt.missingNT);
+            }
+            this.draggableNTWidth = highestX - lowestX;
+            this.draggableNTX = lowestX;
+            this.introDraggableNTs();
+        }
+
+        introDraggableNTs() {
+            let count = 0;
+            let that = this;
+            this.time.addEvent({
+                delay: 3,
+                repeat: 50,
+                callback: function () {
+                    count++;
+                    console.log(count)
+                    if (count <= 50) {
+                        let dis = that.calcExponential(0, 15, 50, 2, count);
+                        that.moveDraggableNTs(-1 * dis);
+                    } else {
+                        that.runNTTilTouch();
+                    }
+                }
+            });
+        }
+
+        runNTTilTouch() {
+            let sign = -1;
+            let that = this;
+            this.draggableNTTimer = this.time.addEvent({
+                delay: 30,
+                loop: true,
+                callback: function () {
+                    that.moveDraggableNTs(sign * 3);
+                    if (sign < 0 && !that.canDragLeft()) {
+                        sign = 1;
+                    } else if (sign > 0 && !that.canDragRight()) {
+                        sign = -1;
+                    }
+                }
+            });
+        }
+
+        moveDraggableNTs(displacement) {
+            for (let i = 0; i < this.nucleotides.length; i++) {
+                let nt = this.nucleotides[i];
+                let x = nt.getObject().x + displacement;
+                nt.setPosition(x, nt.getObject().y);
+                if (i == 0) {
+                    this.draggableNTX = x;
+                }
+            }
+        }
+
+        canDragLeft() {
+            return this.draggableNTWidth + this.draggableNTX > 0;
+        }
+
+        canDragRight() {
+            return this.draggableNTX < 360;
         }
 
         scoreUp(text, score, callback=null) {
@@ -2035,6 +2128,13 @@
                     }
                 });
             }
+        }
+
+        calcExponential(x1, y1, x2, y2, x) {
+            x1 = 0; // assuming this is always 0
+            let a = y1;
+            let b = Math.pow(Math.E, Math.log(y2 / y1) / x2);
+            return a * Math.pow(b, x);
         }
 
         bindFn(fn) {
@@ -2216,6 +2316,19 @@
         },
         {
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
+        },
+        {
+            "ntSequence": "ATT",
+            "controls": ["T", "A"],
+            "unlocked": true,
+            "name": "It's Debug Time!",
+            "speed": 1,
+            "popups": {
+                "firstCorrectMatch": "Good work! <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> binds with <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>!",
+                "error5Match": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>, both nucleotides help make up DNA!"
+            },
+            "rotateNT": false,
+            "ntType": "basic",
         },
     ]);
 })();
