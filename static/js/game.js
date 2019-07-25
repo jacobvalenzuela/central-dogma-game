@@ -356,7 +356,6 @@
         }
 
         fadeOut(image, callback=null, skip=false) {
-            console.log(skip)
             let currentAlpha = image.alpha;
             let newAlpha = currentAlpha / 1.5;
             if (newAlpha < 0.001 || skip) {
@@ -558,7 +557,6 @@
         fadeOut(callback=null) {
             let currentAlpha = this.camera.alpha;
             let newAlpha = currentAlpha / 1.5;
-            // console.log(newAlpha)
             if (newAlpha < 0.001) {
                 this.camera.setAlpha(0);
                 if (callback != null) {
@@ -753,7 +751,6 @@
         }
 
         onDragNTBtnStart (input, pointer, image) {
-            console.log("start")
             if (!this.ntBtnsEnabled) {
                 return;
             }
@@ -789,7 +786,6 @@
             let pointerY = y;
             let distance = Math.sqrt(Math.pow(pointerX - imgX, 2) + Math.pow(pointerY - imgY, 2));
             image.setData("distanceDragged", distance);
-            console.log("distance dragged", distance);
         }
 
         onDragNTBtnEnd (input, pointer, image) {
@@ -802,7 +798,6 @@
             }
             let distance = image.getData("distanceDragged");
             if (distance < 15 && this.rotateNT) {
-                console.log("rotated")
                 let nt = image.getData("nucleotide");
                 nt.setAngle(nt.getAngle() + 90);
             } else if (this.positionManager.ntTouchingBindingPocket()){
@@ -817,7 +812,6 @@
                 cloned.setAngle(clickedNT.getAngle());
                 this.shuffleNTBtnAngle();
                 this.ntBtnsEnabled = false;
-                // console.log(cloned.getAngle())
                 if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() % 180 != 0)) {
                     let correctnt = this.positionManager.getValidMatchNT(headNT);
                     this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
@@ -1168,7 +1162,6 @@
             if (head) {
                 this.removeHeadNucleotide();
                 this.level.scorekeeping.incrementIncorrectSequences();
-                // console.log("Removed head nucleotide at the very end");
                 let cloned = this.getValidMatchNT(head);
                 cloned.setDisplay("nucleotide");
                 cloned.setPosition(head.getObject().x, head.getObject().y);
@@ -1184,7 +1177,6 @@
             this.selectedNucleotides.push(null);
             this.setPositions(true);
             if (this.getLevelNTCount() == 0) {
-                console.log("end")
                 this.level.endGame();
             }
         }
@@ -1399,7 +1391,6 @@
 
         tickSec() {
             this.secondsElapsed++;
-            // console.log("tick")
         }
 
         bindFn(fn) {
@@ -1427,7 +1418,6 @@
 
         getAccuracy() {
             let ntCnt = this.initialNTCount;
-            // console.log(ntCnt, this.wrongSequences)
             return Math.round(((ntCnt - this.wrongSequences) / ntCnt) * 100);
         }
 
@@ -1867,11 +1857,9 @@
                 }
             });
             this.popupCnt++;
-            // console.log(rendered);
         }
 
         destroy() {
-            console.log("destroy")
             for (let i = 0; i < this.popupCnt; i++) {
                 this.level.scene.remove("popupDisplay" + i);
             }
