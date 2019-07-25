@@ -75,7 +75,7 @@
         resetRateLimit() {
             let that = this;
             this.scene.time.addEvent({
-                delay: 100,
+                delay: 90,
                 loop: false,
                 callback: function () {
                     that.rateLimitHit = false;
