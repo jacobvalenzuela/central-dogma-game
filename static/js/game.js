@@ -2061,12 +2061,12 @@
                 repeat: 50,
                 callback: function () {
                     count++;
-                    console.log(count)
                     if (count <= 50) {
                         let dis = that.calcExponential(0, 15, 50, 2, count);
                         that.moveDraggableNTs(-1 * dis);
                     } else {
                         that.runNTTilTouch();
+                        that.makeHitbox();
                     }
                 }
             });
@@ -2089,6 +2089,62 @@
             });
         }
 
+        makeHitbox() {
+            this.hitbox = this.add.rectangle(180, 650, 360, 160, 0x000);
+            this.hitbox.setFillStyle(0x000, 0).setInteractive();
+            this.input.setDraggable(this.hitbox);
+            this.input.on("dragstart", this.bindFn(this.onDragHitboxStart));
+            this.input.on("drag", this.bindFn(this.onDragHitbox));
+            this.input.on("dragend", this.bindFn(this.onDragHitboxEnd));
+        }
+
+        onDragHitboxStart (input, pointer, rect) {
+            let leftButtonDown = pointer.leftButtonDown();
+            if (!leftButtonDown) {
+                return;
+            }
+            if (this.draggableNTTimer) {
+                this.draggableNTTimer.destroy();
+                this.draggableNTTimer = null;
+            }
+            let x = pointer.x;
+            rect.setData("pointerStartX", x);
+            rect.setData("startedDragging", true);
+            rect.setData("distanceDragged", 0);
+        }
+
+        onDragHitbox (input, pointer, rect, x, y) {
+            let startedDragging = rect.getData("startedDragging");
+            if (!startedDragging) {
+                return;
+            }
+            let leftButtonDown = pointer.leftButtonDown();
+            if (!leftButtonDown) {
+                return;
+            }
+            let imgX = rect.getData("pointerStartX");
+            let pointerX = pointer.x;
+            let distanceDraggedNew = pointerX - imgX;
+            let distanceDragged = rect.getData("distanceDragged");
+            let displacement = distanceDraggedNew - distanceDragged;
+            if (displacement < 0 && !this.canDragLeft(displacement)) {
+                return;
+            } else if (displacement > 0 && !this.canDragRight(displacement)) {
+                return;
+            }
+            this.moveDraggableNTs(displacement);
+            rect.setData("distanceDragged", distanceDraggedNew);
+        }
+
+        onDragHitboxEnd (input, pointer, rect) {
+            let startedDragging = rect.getData("startedDragging");
+            if (!startedDragging) {
+                return;
+            }
+            rect.setData("startedDragging", false);
+            rect.setData("distanceDragged", 0);
+        }
+
         moveDraggableNTs(displacement) {
             for (let i = 0; i < this.nucleotides.length; i++) {
                 let nt = this.nucleotides[i];
@@ -2100,12 +2156,12 @@
             }
         }
 
-        canDragLeft() {
-            return this.draggableNTWidth + this.draggableNTX > 0;
+        canDragLeft(displacement=0) {
+            return this.draggableNTWidth + this.draggableNTX + displacement > 0;
         }
 
-        canDragRight() {
-            return this.draggableNTX < 360;
+        canDragRight(displacement=0) {
+            return this.draggableNTX + displacement < 360;
         }
 
         scoreUp(text, score, callback=null) {
