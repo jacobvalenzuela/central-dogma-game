@@ -2107,10 +2107,19 @@
                 this.draggableNTTimer.destroy();
                 this.draggableNTTimer = null;
             }
+            if (this.velocityTimer) {
+                this.velocityTimer.destroy();
+                this.velocityTimer = null;
+            }
             let x = pointer.x;
             rect.setData("pointerStartX", x);
             rect.setData("startedDragging", true);
             rect.setData("distanceDragged", 0);
+            this.timepoint1 = (new Date).getTime();
+            this.timepoint2 = (new Date).getTime();
+            this.position1 = x;
+            this.position2 = x;
+            this.velocity = 0;
         }
 
         onDragHitbox (input, pointer, rect, x, y) {
@@ -2134,6 +2143,10 @@
             }
             this.moveDraggableNTs(displacement);
             rect.setData("distanceDragged", distanceDraggedNew);
+            this.timepoint1 = this.timepoint2;
+            this.position1 = this.position2;
+            this.timepoint2 = (new Date).getTime();
+            this.position2 = pointerX;
         }
 
         onDragHitboxEnd (input, pointer, rect) {
@@ -2143,6 +2156,24 @@
             }
             rect.setData("startedDragging", false);
             rect.setData("distanceDragged", 0);
+            this.velocity = (this.position2 - this.position1) / (this.timepoint2 - this.timepoint1);
+            this.doVelocityDragNT();
+        }
+
+        doVelocityDragNT() {
+            let that = this;
+            this.velocityTimer = this.time.addEvent({
+                loop: true,
+                delay: 10,
+                callback: function () {
+                    that.moveDraggableNTs(that.velocity * 2);
+                    that.velocity = that.velocity * 0.95;
+                    if (Math.abs(that.velocity) < 0.001 || (that.velocity < 0 && !that.canDragLeft(that.velocity)) || (that.velocity > 0 && !that.canDragRight(that.velocity))) {
+                        that.velocityTimer.destroy();
+                        that.velocity = 0;
+                    }
+                }
+            });
         }
 
         moveDraggableNTs(displacement) {
