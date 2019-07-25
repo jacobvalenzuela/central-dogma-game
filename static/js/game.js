@@ -858,7 +858,7 @@
             let nucleotides = this.positionManager.selectedNucleotides.filter(function (el) {
                 return el != null;
             });
-            this.scene.add(sceneName, LevelComplete, false, {gameObj: this.gameObj, nucleotides: nucleotides, score: this.scorekeeping.getScore(), accuracy: this.scorekeeping.getAccuracy()});
+            this.scene.add(sceneName, LevelComplete, false, {level: this.level, gameObj: this.gameObj, nucleotides: nucleotides, score: this.scorekeeping.getScore(), accuracy: this.scorekeeping.getAccuracy()});
             let that = this;
             this.time.addEvent({
                 delay: 300,
@@ -1960,6 +1960,7 @@
         }
 
         init(data) {
+            this.level = data.level;
             this.confnucleotides = data.nucleotides;
             this.nucleotides = [];
             this.draggableNTWidth = 0;
@@ -2336,6 +2337,7 @@
                 if (progress < 0.9) {
                     return;
                 }
+                this.scene.stop("level" + this.level);
                 this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
             });
         }
