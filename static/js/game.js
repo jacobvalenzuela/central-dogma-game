@@ -2400,7 +2400,7 @@
             "ntType": "basic",
         },
         {
-            "ntSequence": "GTAATCACTAAGTAGTAATACCCTCACTGAATGTGTAACGCCGTTCGGACAACCAAGCTGCACCATTGCTCTACATTCATGTGACGGCCGACCGAG",
+            "ntSequence": "GTAATCACTAAGTAGTAATA",
             "unlocked": true,
             "name": "Adding a Bit of a Twist",
             "speed": 30,
