@@ -283,6 +283,8 @@
                 this.camera.fadeIn(1000);
             }
             
+            this.playedIntro = false;
+
             this.graphics.fillStyle(0xF1F1F2, 1.0);
             this.graphics.fillRect(0, 0, 360, 740);
             let isblogo = this.game.add.image(180, 320, "logo_isb").setScale(0.35);
@@ -303,6 +305,8 @@
                 this.onPlayClick();
             }
 
+            this.input.on("pointerdown", this.bindFn(this.displayUI));
+
             let that = this;
             this.game.time.addEvent({
                 delay: 1000 * animDelay,
@@ -316,11 +320,10 @@
                             delay: 500  * animDelay
                         });
                         dogmaLogo.anims.play("logo_dogma_anim");
-                        that.game.time.addEvent({
+                        that.introWaitTimer = that.game.time.addEvent({
                             delay: 3600  * animDelay,
                             callback: function () {
-                                that.fadeIn(that.playBtn);
-                                that.fadeIn(that.isblogo);
+                                that.displayUI();
                             },
                             loop: false
                         });
@@ -328,6 +331,15 @@
                 },
                 loop: false
             });
+        }
+
+        displayUI() {
+            if (this.playedIntro) {
+                return;
+            }
+            this.playedIntro = true;
+            this.fadeIn(this.playBtn);
+            this.fadeIn(this.isblogo);
         }
 
         fadeIn(image, callback=null) {
