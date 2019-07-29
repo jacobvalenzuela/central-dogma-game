@@ -240,7 +240,7 @@ class LevelStage extends Phaser.Scene {
             cloned.setAngle(clickedNT.getAngle());
             this.shuffleNTBtnAngle();
             this.ntBtnsEnabled = false;
-            if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() % 180 != 0)) {
+            if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != -180)) {
                 let correctnt = this.positionManager.getValidMatchNT(headNT);
                 this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
                 this.popupmanager.emitEvent("error5Match", headNT, correctnt);
