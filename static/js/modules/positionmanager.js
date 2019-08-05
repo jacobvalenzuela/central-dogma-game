@@ -112,6 +112,9 @@ class PositionManager {
             if (this.level.levelConfig.lvlType == "dna_replication") {
                 nucleotide.setDisplay("nucleotide");
             } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+                if (nucleotide.display != "codon") {
+                    nucleotide.setPosition(x - 60, y);
+                }
                 nucleotide.setDisplay("codon");
             }
             nucleotide.setVisible(true);

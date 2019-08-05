@@ -387,7 +387,7 @@ class Codon {
     }
 
     validMatchWith(other) {
-        if (!other) {
+        if (!other || this.constructor !== other.constructor) {
             return false;
         }
         for (let i = 0; i < 3; i++) {
