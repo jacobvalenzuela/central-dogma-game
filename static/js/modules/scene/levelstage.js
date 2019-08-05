@@ -3,6 +3,7 @@ import PopupManager from "../popupmanager.js";
 import Nucleotide from "../nucleotide.js";
 import PositionManager from "../positionmanager.js";
 import LevelComplete from "./levelcomplete.js";
+import Codon from "../codon.js";
 
 /**
  * Represents the level stage scene
@@ -82,13 +83,15 @@ class LevelStage extends Phaser.Scene {
         this.game.add.text(293, 53, "Score", 
             {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
-        this.game.add.text(4, 105, "5'", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
-        
-        this.game.add.text(4, 150, "3'", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+        if (this.levelConfig.lvlType == "dna_replication") {
+            this.game.add.text(4, 105, "5'", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+            
+            this.game.add.text(345, 105, "3'", 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+        }
 
-        this.game.add.text(345, 105, "3'", 
+        this.game.add.text(4, 150, "3'", 
             {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
         this.game.add.text(4, 530, "5'", 
@@ -123,9 +126,20 @@ class LevelStage extends Phaser.Scene {
         }
 
         let nucleotides = this.gameObj.levels[this.level].ntSequence;
-        for (let i = 0; i < nucleotides.length; i++) {
-            let nucleotide = new Nucleotide(this, nucleotides[i], this.ntType);
-            this.nucleotides.push(nucleotide);
+        if (this.levelConfig.lvlType == "dna_replication") {
+            for (let i = 0; i < nucleotides.length; i++) {
+                let nucleotide = new Nucleotide(this, nucleotides[i], this.ntType);
+                this.nucleotides.push(nucleotide);
+            }
+        } else if (this.levelConfig.lvlType == "codon_transcription") {
+            if (nucleotides.length % 3 != 0) {
+                console.error("Nucleotides length is not divisible by 3");
+            }
+            for (let i = 0; i < nucleotides.length; i+=3) {
+                let ntstr = nucleotides.substr(i, 3);
+                let codon = new Codon(this, ntstr, this.ntType);
+                this.nucleotides.push(codon);
+            }
         }
 
         this.positionManager = new PositionManager(this, this.levelConfig.speed);
@@ -154,6 +168,10 @@ class LevelStage extends Phaser.Scene {
                 that.positionManager.start();
             }
         });
+
+        // window.cod = new Codon(this, "UAC");
+        // window.cod.getObject();
+        // window.cod.setPosition(200, 275);
     }
 
     /**

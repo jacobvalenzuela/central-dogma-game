@@ -106,6 +106,11 @@ class Game {
         this.game.load.image("ntparticle_guanine", "static/img/nucleotide_particle/guanine_particle.png");
         this.game.load.image("ntparticle_thymine", "static/img/nucleotide_particle/thymine_particle.png");
 
+        this.game.load.svg("codontide_adenine", "static/img/codontide/a_codon.svg");
+        this.game.load.svg("codontide_cytosine", "static/img/codontide/c_codon.svg");
+        this.game.load.svg("codontide_guanine", "static/img/codontide/g_codon.svg");
+        this.game.load.svg("codontide_uracil", "static/img/codontide/u_codon.svg");
+
         this.game.scene.add("listlevels", ListLevels, false, {levels: this.levels});
         for (let i = 0; i < this.levels.length; i++) {
             let level = this.levels[i];

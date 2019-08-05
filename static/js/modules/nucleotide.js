@@ -25,7 +25,12 @@ class Nucleotide {
                         "origin": [0.42, 0.5],
                         "angle": 0,
                     },
-                }
+                },
+                codonSize: {
+                    width: 50,
+                    height: 65,
+                    offsetY: 19.7,
+                },
             },
             "T": {
                 shortname: "thymine",
@@ -41,7 +46,12 @@ class Nucleotide {
                         "origin": [0.65, 0.65],
                         "angle": 180,
                     },
-                }
+                },
+                codonSize: {
+                    width: 50,
+                    height: 105,
+                    offsetY: 0,
+                },
             },
             "C": {
                 shortname: "cytosine",
@@ -57,7 +67,12 @@ class Nucleotide {
                         "origin": [0.65, 0.5],
                         "angle": 180,
                     },
-                }
+                },
+                codonSize: {
+                    width: 50,
+                    height: 65,
+                    offsetY: 19.7,
+                },
             },
             "G": {
                 shortname: "guanine",
@@ -73,7 +88,33 @@ class Nucleotide {
                         "origin": [0.5, 0.40],
                         "angle": 0,
                     },
-                }
+                },
+                codonSize: {
+                    width: 50,
+                    height: 105,
+                    offsetY: 0,
+                },
+            },
+            "U": {
+                shortname: "uracil",
+                color: 0x808184,
+                matches: ["A"],
+                classification: "pyrimidine",
+                display: {
+                    "basic": {
+                        "origin": [0.5, 0.5],
+                        "angle": 0,
+                    },
+                    "hbonds": {
+                        "origin": [0.65, 0.65],
+                        "angle": 180,
+                    },
+                },
+                codonSize: {
+                    width: 50,
+                    height: 105,
+                    offsetY: 0,
+                },
             },
         }
 
@@ -383,6 +424,14 @@ class Nucleotide {
      */
     getClassification() {
         return this.allNucleotides[this.rep].classification;
+    }
+
+    /**
+     * Return the codon size object
+     * @return {JSON} codon size
+     */
+    getCodonSize() {
+        return this.allNucleotides[this.rep].codonSize;
     }
 
     /**

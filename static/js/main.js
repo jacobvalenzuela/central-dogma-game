@@ -60,6 +60,7 @@ import Game from "./modules/game.js";
             },
             "rotateNT": false,
             "ntType": "basic",
+            "lvlType": "dna_replication",
         },
         {
             "ntSequence": "CGCGCGCGGGGCCGCGCGGC",
@@ -69,6 +70,7 @@ import Game from "./modules/game.js";
             "speed": 20,
             "rotateNT": false,
             "ntType": "basic",
+            "lvlType": "dna_replication",
         },
         {
             "ntSequence": "TAGTTACTAGGAGAGGTCAT",
@@ -77,6 +79,7 @@ import Game from "./modules/game.js";
             "speed": 20,
             "rotateNT": false,
             "ntType": "basic",
+            "lvlType": "dna_replication",
         },
         {
             "ntSequence": "GTAATCACTAAGTAGTAATA",
@@ -85,6 +88,7 @@ import Game from "./modules/game.js";
             "speed": 30,
             "rotateNT": true,
             "ntType": "hbonds",
+            "lvlType": "dna_replication",
         },
         {
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
@@ -99,17 +103,18 @@ import Game from "./modules/game.js";
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
         },
         {
-            "ntSequence": "ATT",
+            "ntSequence": "UACCGUAUC",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "It's Debug Time!",
             "speed": 1,
             "popups": {
-                "firstCorrectMatch": "Good work! <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> binds with <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>!",
-                "error5Match": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>, both nucleotides help make up DNA!"
+                // "firstCorrectMatch": "Good work! <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> binds with <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>!",
+                // "error5Match": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>, both nucleotides help make up DNA!"
             },
             "rotateNT": false,
             "ntType": "basic",
+            "lvlType": "codon_transcription",
         },
     ]);
 

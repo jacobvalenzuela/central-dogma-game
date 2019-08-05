@@ -35,7 +35,7 @@ class PositionManager {
         }
         for (let i = 0; i < this.levelNucleotides.length; i++) {
             let nucleotide = this.levelNucleotides[i];
-            if (nucleotide) {
+            if (nucleotide && this.level.levelConfig.lvlType == "dna_replication") {
                 let newcleotide = new Nucleotide(this.level, nucleotide.matches[0], this.level.ntType);
                 this.compLevelNucleotides.push(newcleotide);
             } else {
@@ -55,7 +55,9 @@ class PositionManager {
         this.initRectPathPts = this.inputRowPath.getSpacedPoints(26 * this.pathPointsFactor);
         this.inputComplRowPath = new Phaser.Curves.Path(0, 126);
         this.inputComplRowPath.lineTo(363.46153846153845, 126);
-        this.inputComplRowPath.draw(this.level.graphics);
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            this.inputComplRowPath.draw(this.level.graphics);
+        }
         this.inputCompRectPathPts = this.inputComplRowPath.getSpacedPoints(54 * this.pathPointsFactor);
         this.inputVertPath = new Phaser.Curves.Path(182, 147);
         this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
