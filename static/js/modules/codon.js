@@ -198,9 +198,12 @@ class Codon {
             new Nucleotide(this.level, this.rep.substr(1, 1), "basic"),
             new Nucleotide(this.level, this.rep.substr(2, 1), "basic"),
         ];
-        this.matches = this.nucleotides[0].matches[0] + this.nucleotides[1].matches[0] + this.nucleotides[2].matches[0];
-
+        this.matches = this.nucleotides[2].matches[0] + this.nucleotides[1].matches[0] + this.nucleotides[0].matches[0];
+        this.display = "codon"; // codon or rectangle (three nucleotides) or circle (ammino acid)
+        this.codonDisplay = new Set(["codon", "amminoacid"]); // codon and/or amminoacid
         this.containerObj = null;
+        this.containerObjRect = null;
+        this.circleObj = null;
         this.ntCodonObj = [];
         this.amminoAcidObj = null;
         this.connectLineObj = null;
@@ -210,7 +213,13 @@ class Codon {
         if (!this.containerObj) {
             this._genObjects();
         }
-        return this.containerObj;
+        if (this.display == "codon") {
+            return this.containerObj;
+        } else if (this.display == "rectangle") {
+            return this.containerObjRect;
+        } else {
+            return this.circleObj;
+        }
     }
 
     _genObjects() {
@@ -240,6 +249,17 @@ class Codon {
             this.amminoAcidObj = this._genOctagon(50, 75, this.amminoAcid.color);
         }
         this.containerObj.add(this.amminoAcidObj);
+        this.containerObj.setAngle(90);
+
+        let rectTop = this.level.add.rectangle(0, -3.333, 10, 3.333, this.nucleotides[0].getColor());
+        let rectMid = this.level.add.rectangle(0, 0, 10, 3.333, this.nucleotides[1].getColor());
+        let rectBot = this.level.add.rectangle(0, 3.333, 10, 3.333, this.nucleotides[2].getColor());
+        this.containerObjRect = this.level.add.container(0, 0, [rectTop, rectMid, rectBot]);
+        this.circleObj = this.level.add.circle(0, 0, 5, this.getAmminoColor());
+
+        this.containerObj.setVisible(false);
+        this.containerObjRect.setVisible(false);
+        this.circleObj.setVisible(false);
     }
 
     _genCircle(x, y, fillColor) {
@@ -282,7 +302,44 @@ class Codon {
     }
 
     setDisplay(type) {
-
+        if (["codon", "rectangle", "circle"].indexOf(type) < 0) {
+            throw new Error("Invalid display type! " + type);
+        }
+        if (this.containerObj === null) {
+            this.getObject();
+        }
+        if (this.display == type) {
+            return this.getObject();
+        }
+        let prevType = this.display;
+        this.display = type;
+        let prevObj = null;
+        if (prevType == "codon") {
+            prevObj = this.containerObj;
+        } else if (prevType == "rectangle") {
+            prevObj = this.containerObjRect;
+        } else if (prevType == "circle") {
+            prevObj = this.circleObj;
+        }
+        let visible = prevObj.visible;
+        let x = prevObj.x;
+        let y = prevObj.y;
+        if (type == "codon") {
+            this.containerObj.setVisible(visible);
+            this.containerObj.setPosition(x, y);
+            this.containerObjRect.setVisible(false);
+            this.circleObj.setVisible(false);
+        } else if (type == "rectangle") {
+            this.containerObjRect.setVisible(visible);
+            this.containerObjRect.setPosition(x, y);
+            this.containerObj.setVisible(false);
+            this.circleObj.setVisible(false);
+        } else if (type == "circle") {
+            this.circleObj.setVisible(visible);
+            this.circleObj.setPosition(x, y);
+            this.containerObj.setVisible(false);
+            this.containerObjRect.setVisible(false);
+        }
     }
 
     updateErrorDisplay() {
@@ -298,7 +355,7 @@ class Codon {
     }
 
     setVisible(visible) {
-
+        this.getObject().setVisible(visible);
     }
 
     setPosition(x, y) {
@@ -306,7 +363,7 @@ class Codon {
     }
 
     setScale(scale) {
-
+        this.getObject().setScale(scale);
     }
 
     getAngle() {

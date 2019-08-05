@@ -109,8 +109,15 @@ class PositionManager {
                 continue;
             }
             nucleotide.setDepth(2999 - i);
-            nucleotide.setDisplay("nucleotide");
+            if (this.level.levelConfig.lvlType == "dna_replication") {
+                nucleotide.setDisplay("nucleotide");
+            } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+                nucleotide.setDisplay("codon");
+            }
             nucleotide.setVisible(true);
+            if (this.level.levelConfig.lvlType == "codon_transcription") {
+                x = x - 60;
+            }
             if (animate) {
                 this._animatePosition(nucleotide, x, y);
             } else {
@@ -119,6 +126,9 @@ class PositionManager {
             let modifier = 0;
             if (i < this.pathPointsFactor * 10) {
                 modifier = 0.045;
+            }
+            if (this.level.levelConfig.lvlType == "codon_transcription") {
+                modifier += 0.35;
             }
             let scale = this.calcInScale(i, modifier);
             let scalePrev = this.calcInScale(i - 1, modifier);
@@ -137,6 +147,7 @@ class PositionManager {
             if (!nucleotide) {
                 continue;
             }
+            nucleotide.setDisplay("rectangle");
             if (animate) {
                 this._animatePosition(nucleotide, x, y);
             } else {
