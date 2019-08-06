@@ -439,7 +439,16 @@ class PositionManager {
      * Get the head nucleotide from the imcoming stack.
      * @returns {Nucleotide} the head nucleotide
      */
-    getHeadNucleotide() {
+    getHeadNucleotide(ignorePocket=false) {
+        if (ignorePocket) {
+            for (let i = 0; i < this.levelNucleotides.length; i++) {
+                let nucleotide = this.levelNucleotides[i];
+                if (nucleotide) {
+                    return nucleotide;
+                }
+            }
+            return null;
+        }
         if (this.ntTouchingBindingPocket()) {
             for (let i = 0; i < this.levelNucleotides.length; i++) {
                 if (this.levelNucleotides[i] != null) {

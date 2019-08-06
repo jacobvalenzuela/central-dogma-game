@@ -103,8 +103,7 @@ import Game from "./modules/game.js";
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
         },
         {
-            "ntSequence": "UACCGUAUC",
-            "controls": ["T", "A"],
+            "ntSequence": "AUGGCAUAG",
             "unlocked": true,
             "name": "It's Debug Time!",
             "speed": 1,

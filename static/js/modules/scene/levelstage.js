@@ -135,6 +135,14 @@ class LevelStage extends Phaser.Scene {
             if (nucleotides.length % 3 != 0) {
                 console.error("Nucleotides length is not divisible by 3");
             }
+            let nucleotidesnew = "";
+            for (let i = 0; i < nucleotides.length; i+=3) {
+                let first = nucleotides.substr(i, 1);
+                let second = nucleotides.substr(i + 1, 1);
+                let third = nucleotides.substr(i + 2, 1);
+                nucleotidesnew += (third + second + first);
+            }
+            nucleotides = nucleotidesnew;
             for (let i = 0; i < nucleotides.length; i+=3) {
                 let ntstr = nucleotides.substr(i, 3);
                 let codon = new Codon(this, ntstr, this.ntType);
@@ -147,7 +155,11 @@ class LevelStage extends Phaser.Scene {
 
         let optbtns = this.gameObj.levels[this.level].controls;
         if (!optbtns) {
-            optbtns = ["T", "A", "G", "C"];
+            if (this.levelConfig.lvlType == "dna_replication") {
+                optbtns = ["T", "A", "G", "C"];
+            } else if (this.levelConfig.lvlType == "codon_transcription") {
+                optbtns = this.genCodonBtnOpts();
+            }
         }
         for (let i = 0; i < optbtns.length; i++) {
             this.makeNTBtn(optbtns[i]);
@@ -191,18 +203,42 @@ class LevelStage extends Phaser.Scene {
      * @param {string} type - the nucleotide type
      */
     makeNTBtn(type) {
-        let nt = new Nucleotide(this, type, this.ntType);
-        nt.setDisplay("nucleotide");
+        let nt = null;
+        if (this.levelConfig.lvlType == "dna_replication") {
+            nt = new Nucleotide(this, type, this.ntType);
+            nt.setDisplay("nucleotide");
+        } else if (this.levelConfig.lvlType == "codon_transcription") {
+            nt = new Codon(this, type);
+            nt.setDisplay("codon");
+        }
         nt.setVisible(true);
         nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
         nt.setScale(0.20);
         nt.getObject().setInteractive();
         nt.showLetter(true);
-        this.game.input.setDraggable(nt.getObject());
-        this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
-        this.game.input.on("drag", this.bindFn(this.onDragNTBtn));
-        this.game.input.on("dragend", this.bindFn(this.onDragNTBtnEnd));
+        // this.game.input.setDraggable(nt.getObject());
+        // this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
+        // this.game.input.on("drag", this.bindFn(this.onDragNTBtn));
+        // this.game.input.on("dragend", this.bindFn(this.onDragNTBtnEnd));
         this.ntButtons.push(nt);
+    }
+
+    genCodonBtnOpts() {
+        let head = this.positionManager.getHeadNucleotide(true);
+        let codonOptions = ["U", "C", "A", "G"];
+        let actualOptions = [head.matches];
+        for (let i = 0; i < 2; i++) {
+            let nt1 = this.getRandomInArray(codonOptions);
+            let nt2 = this.getRandomInArray(codonOptions);
+            let nt3 = this.getRandomInArray(codonOptions);
+            let option = nt1 + nt2 + nt3;
+            actualOptions.push(option);
+        }
+        return actualOptions;
+    }
+
+    getRandomInArray(array) {
+        return array[Math.floor(Math.random()*array.length)];
     }
 
     /**
