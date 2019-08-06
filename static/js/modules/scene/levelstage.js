@@ -216,10 +216,12 @@ class LevelStage extends Phaser.Scene {
         nt.setScale(0.20);
         nt.getObject().setInteractive();
         nt.showLetter(true);
-        // this.game.input.setDraggable(nt.getObject());
-        // this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
-        // this.game.input.on("drag", this.bindFn(this.onDragNTBtn));
-        // this.game.input.on("dragend", this.bindFn(this.onDragNTBtnEnd));
+        if (this.levelConfig.lvlType == "dna_replication") {
+            this.game.input.setDraggable(nt.getObject());
+            this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
+            this.game.input.on("drag", this.bindFn(this.onDragNTBtn));
+            this.game.input.on("dragend", this.bindFn(this.onDragNTBtnEnd));
+        }
         this.ntButtons.push(nt);
     }
 
