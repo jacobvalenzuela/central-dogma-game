@@ -213,7 +213,14 @@ class LevelStage extends Phaser.Scene {
         }
         nt.setVisible(true);
         nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
-        nt.setScale(0.20);
+        let scale = 0;
+        if (this.levelConfig.lvlType == "dna_replication") {
+            scale = 0.20;
+        } else if (this.levelConfig.lvlType == "codon_transcription") {
+            scale = 0.45;
+            nt.setAngle(180);
+        }
+        nt.setScale(scale);
         nt.getObject().setInteractive();
         nt.showLetter(true);
         if (this.levelConfig.lvlType == "dna_replication") {

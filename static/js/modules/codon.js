@@ -43,6 +43,7 @@ class Codon {
             },
             "ser": {
                 "name": "serine",
+                "color": 0x632E86,
                 "class": "polar",
             },
             "pro": {
@@ -343,6 +344,45 @@ class Codon {
         }
     }
 
+    addCodonDisplay(type) {
+        if (["codon", "amminoacid"].indexOf(type) < 0) {
+            throw new Error("Invalid codon display type! " + type);
+        }
+        this.codonDisplay.add(type);
+        this.updateCodonDisplay();
+    }
+
+    removeCodonDisplay(type) {
+        if (["codon", "amminoacid"].indexOf(type) < 0) {
+            throw new Error("Invalid codon display type! " + type);
+        }
+        this.codonDisplay.delete(type);
+        this.updateCodonDisplay();
+    }
+
+    updateCodonDisplay() {
+        if (this.codonDisplay.has("codon")) {
+            for (let i = 0; i < this.ntCodonObj.length; i++) {
+                this.ntCodonObj[i].setVisible(true);
+            }
+        } else {
+            for (let i = 0; i < this.ntCodonObj.length; i++) {
+                this.ntCodonObj[i].setVisible(false);
+            }
+        }
+        if (this.codonDisplay.has("amminoacid")) {
+            this.amminoAcidObj.setVisible(true);
+        } else {
+            this.amminoAcidObj.setVisible(false);
+        }
+
+        if (this.codonDisplay.has("codon") && this.codonDisplay.has("amminoacid")) {
+            this.connectLineObj.setVisible(true);
+        } else {
+            this.connectLineObj.setVisible(false);
+        }
+    }
+
     updateErrorDisplay() {
 
     }
@@ -368,11 +408,11 @@ class Codon {
     }
 
     getAngle() {
-        return 0;
+        return this.getObject().angle - 90;
     }
 
     setAngle(angle) {
-
+        this.getObject().setAngle(angle + 90);
     }
 
     setError(errorBool) {

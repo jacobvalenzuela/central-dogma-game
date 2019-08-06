@@ -112,12 +112,13 @@ class PositionManager {
             if (this.level.levelConfig.lvlType == "dna_replication") {
                 nucleotide.setDisplay("nucleotide");
             } else if (this.level.levelConfig.lvlType == "codon_transcription") {
-                let exp = this.calcExponential(0, 75, initVertPathPts.length, 10, i);
+                let exp = this.calcExponential(0, 80, initVertPathPts.length, 15, i);
                 x = x - exp;
                 if (nucleotide.display != "codon") {
                     nucleotide.setPosition(x, y);
                 }
                 nucleotide.setDisplay("codon");
+                nucleotide.removeCodonDisplay("amminoacid");
             }
             nucleotide.setVisible(true);
             if (animate) {
