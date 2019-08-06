@@ -112,15 +112,14 @@ class PositionManager {
             if (this.level.levelConfig.lvlType == "dna_replication") {
                 nucleotide.setDisplay("nucleotide");
             } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+                let exp = this.calcExponential(0, 75, initVertPathPts.length, 10, i);
+                x = x - exp;
                 if (nucleotide.display != "codon") {
-                    nucleotide.setPosition(x - 60, y);
+                    nucleotide.setPosition(x, y);
                 }
                 nucleotide.setDisplay("codon");
             }
             nucleotide.setVisible(true);
-            if (this.level.levelConfig.lvlType == "codon_transcription") {
-                x = x - 60;
-            }
             if (animate) {
                 this._animatePosition(nucleotide, x, y);
             } else {
@@ -130,11 +129,14 @@ class PositionManager {
             if (i < this.pathPointsFactor * 10) {
                 modifier = 0.045;
             }
+            let modifier1 = 0;
+            let modifier2 = 0;
             if (this.level.levelConfig.lvlType == "codon_transcription") {
-                modifier += 0.35;
+                modifier1 = 0.35;
+                modifier2 = 0.15;
             }
-            let scale = this.calcInScale(i, modifier);
-            let scalePrev = this.calcInScale(i - 1, modifier);
+            let scale = this.calcInScale(i, modifier, modifier1, modifier2);
+            let scalePrev = this.calcInScale(i - 1, modifier, modifier1, modifier2);
             if (animate) {
                 nucleotide.setScale(scalePrev);
                 this._animateScale(nucleotide, scale);
@@ -206,13 +208,13 @@ class PositionManager {
      * @param {number} modifier - The number to influence in the size
      * @returns {number} the resulting answer
      */
-    calcInScale(idx, modifier=0) {
+    calcInScale(idx, modifier=0, modifier1=0, modifier2=0) {
         //  x1 y1    x2   y2
         // (0, 17/50) (180, 11/100)
         const x1 = 0;
-        const y1 = 17 / 50 + modifier;
+        const y1 = 17 / 50 + modifier + modifier1;
         const x2 = 180;
-        const y2 = 45 / 500 + modifier;
+        const y2 = 45 / 500 + modifier + modifier2;
         return this.calcExponential(x1, y1, x2, y2, idx);
     }
 
@@ -226,6 +228,9 @@ class PositionManager {
      * @returns {number} The resulting answer
      */
     calcExponential(x1, y1, x2, y2, x) {
+        if (y2 == 0) {
+            y2 = 0.00001;
+        }
         x1 = 0; // assuming this is always 0
         let a = y1;
         let b = Math.pow(Math.E, Math.log(y2 / y1) / x2);
