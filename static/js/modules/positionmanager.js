@@ -194,7 +194,11 @@ class PositionManager {
             }
             let x = outputRectPathsPts[i].x;
             let y = outputRectPathsPts[i].y;
-            nucleotide.setDisplay("rectangle");
+            if (this.level.levelConfig.lvlType == "dna_replication") {
+                nucleotide.setDisplay("rectangle");
+            } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+                nucleotide.setDisplay("circle");
+            }
             if (animate) {
                 this._animatePosition(nucleotide, x, y);
             } else {
@@ -485,6 +489,9 @@ class PositionManager {
         let that = this;
         this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
             that._animatePosition(nucleotide, point.x, point.y);
+            if (that.level.levelConfig.lvlType == "codon_transcription") {
+                nucleotide.removeCodonDisplay("codon");
+            }
             that.selectedNucleotides.push(nucleotide);
             for (let i = 0; i < (that.pathPointsFactor * 2); i++) {
                 that.selectedNucleotides.push(null);

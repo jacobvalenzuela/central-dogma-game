@@ -103,10 +103,12 @@ class LevelComplete extends Phaser.Scene {
             nt.setPosition(highestX, 650);
             if (this.lvlType == "dna_replication") {
                 nt.setDisplay("nucleotide");
+                nt.setScale(0.25);
             } else if (this.lvlType == "codon_transcription") {
                 nt.setDisplay("codon");
+                nt.removeCodonDisplay("codon");
+                nt.setScale(0.55);
             }
-            nt.setScale(0.25);
             nt.setVisible(true);
             nt.showLetter(true);
             nt.setAngle(270);
