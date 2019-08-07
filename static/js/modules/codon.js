@@ -249,7 +249,7 @@ class Codon {
             this.amminoAcidObj = this._genDiamond(0, 25, this.amminoAcid.color);
         } else if (this.amminoAcid.class == "basic") {
             this.amminoAcidObj = this._genTriangle(0, 25, this.amminoAcid.color);
-        } else if (this.amminoAcid.class == "stop") {
+        } else /*if (this.amminoAcid.class == "stop")*/ {
             this.amminoAcidObj = this._genOctagon(50, 75, this.amminoAcid.color);
         }
         this.containerObj.add(this.amminoAcidObj);

@@ -18,6 +18,7 @@ class LevelComplete extends Phaser.Scene {
     init(data) {
         this.level = data.level;
         this.confnucleotides = data.nucleotides;
+        this.lvlType = data.lvlType;
         this.nucleotides = [];
         this.draggableNTWidth = 0;
         this.draggableNTX = 0;
@@ -100,7 +101,11 @@ class LevelComplete extends Phaser.Scene {
             this.nucleotides.push(nt);
             highestX = lowestX + 85 * i;
             nt.setPosition(highestX, 650);
-            nt.setDisplay("nucleotide");
+            if (this.lvlType == "dna_replication") {
+                nt.setDisplay("nucleotide");
+            } else if (this.lvlType == "codon_transcription") {
+                nt.setDisplay("codon");
+            }
             nt.setScale(0.25);
             nt.setVisible(true);
             nt.showLetter(true);

@@ -243,11 +243,23 @@ class LevelStage extends Phaser.Scene {
             let option = nt1 + nt2 + nt3;
             actualOptions.push(option);
         }
-        return actualOptions;
+        return this.shuffleArray(actualOptions);
     }
 
     getRandomInArray(array) {
         return array[Math.floor(Math.random()*array.length)];
+    }
+
+    /**
+     * Shuffles array in place.
+     * @param {Array} a items An array containing the items.
+     */
+    shuffleArray(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
     }
 
     /**
@@ -412,7 +424,7 @@ class LevelStage extends Phaser.Scene {
         let nucleotides = this.positionManager.selectedNucleotides.filter(function (el) {
             return el != null;
         });
-        this.scene.add(sceneName, LevelComplete, false, {level: this.level, gameObj: this.gameObj, nucleotides: nucleotides, score: this.scorekeeping.getScore(), accuracy: this.scorekeeping.getAccuracy()});
+        this.scene.add(sceneName, LevelComplete, false, {level: this.level, lvlType: this.levelConfig.lvlType, gameObj: this.gameObj, nucleotides: nucleotides, score: this.scorekeeping.getScore(), accuracy: this.scorekeeping.getAccuracy()});
         let that = this;
         this.time.addEvent({
             delay: 300,
