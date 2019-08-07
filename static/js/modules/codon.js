@@ -209,6 +209,8 @@ class Codon {
         this.ntCodonObj = [];
         this.amminoAcidObj = null;
         this.connectLineObj = null;
+
+        this.missingNT = false;
     }
 
     getObject() {
@@ -420,7 +422,8 @@ class Codon {
     }
 
     setMissing(missingBool) {
-
+        this.missingNT = missingBool;
+        this.updateErrorDisplay();
     }
 
     getAmminoShortName() {
@@ -431,9 +434,10 @@ class Codon {
         if (!other || this.constructor !== other.constructor) {
             return false;
         }
+        let othernucleotides = other.nucleotides.slice().reverse();
         for (let i = 0; i < 3; i++) {
             let nt1 = this.nucleotides[i];
-            let nt2 = other.nucleotides[i];
+            let nt2 = othernucleotides[i];
             if (!nt1.validMatchWith(nt2)) {
                 return false;
             }
@@ -443,6 +447,17 @@ class Codon {
 
     clone(level=this.level) {
         return new Codon(level, this.rep);
+    }
+
+    destroy() {
+        this.containerObj.destroy();
+        this.containerObjRect.destroy();
+        this.circleObj.destroy();
+        this.amminoAcidObj.destroy();
+        this.connectLineObj.destroy;
+        for (let i = 0; i < this.ntCodonObj.length; i++) {
+            this.ntCodonObj[i].destroy();
+        }
     }
 }
 

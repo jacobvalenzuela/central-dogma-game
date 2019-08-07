@@ -265,6 +265,23 @@ class LevelStage extends Phaser.Scene {
     }
 
     /**
+     * Shuffles nucleotide options. One correct from codon.
+     */
+    shuffleNTBtnOpts() {
+        if (!this.positionManager.getHeadNucleotide(true)) {
+            return;
+        }
+        for (let i = 0; i < this.ntButtons.length; i++) {
+            this.ntButtons[i].destroy();
+        }
+        this.ntButtons = [];
+        let optbtns = this.genCodonBtnOpts();
+        for (let i = 0; i < optbtns.length; i++) {
+            this.makeNTBtn(optbtns[i]);
+        }
+    }
+
+    /**
      * When nucleotide button gets dragged
      * @param {Phaser.Input.InputPlugin} input - input
      * @param {Phaser.Input.Pointer} pointer - The pointer

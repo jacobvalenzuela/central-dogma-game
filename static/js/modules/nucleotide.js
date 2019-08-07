@@ -14,7 +14,7 @@ class Nucleotide {
             "A": {
                 shortname: "adenine",
                 color: 0xf49232,
-                matches: ["T"],
+                matches: ["T", "U"],
                 classification: "purine",
                 display: {
                     "basic": {

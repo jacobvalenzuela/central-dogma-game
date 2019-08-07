@@ -377,7 +377,11 @@ class PositionManager {
             this.removeHeadNucleotide();
             this.level.scorekeeping.incrementIncorrectSequences();
             let cloned = this.getValidMatchNT(head);
-            cloned.setDisplay("nucleotide");
+            if (this.level.levelConfig.lvlType == "dna_replication") {
+                cloned.setDisplay("nucleotide");
+            } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+                cloned.setDisplay("codon");
+            }
             cloned.setPosition(head.getObject().x, head.getObject().y);
             cloned.setVisible(true);
             cloned.setScale(0.18);
@@ -385,6 +389,9 @@ class PositionManager {
             cloned.setMissing(true);
             this.addToDNAOutput(cloned);
             this.level.shuffleNTBtnAngle();
+            if (this.level.levelConfig.lvlType == "codon_transcription") {
+                this.level.shuffleNTBtnOpts();
+            }
         }
         this.levelNucleotides = this.levelNucleotides.slice(1, this.levelNucleotides.length);
         this.compLevelNucleotides = this.compLevelNucleotides.slice(1, this.compLevelNucleotides.length);
