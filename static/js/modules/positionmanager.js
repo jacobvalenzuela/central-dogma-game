@@ -500,6 +500,9 @@ class PositionManager {
             that.level.ntBtnsEnabled = true;
             if (!nucleotide.missingNT) {
                 that.removeHeadNucleotide();
+                if (that.level.levelConfig.lvlType == "codon_transcription") {
+                    that.level.shuffleNTBtnOpts();
+                }
             }
         });
     }
@@ -551,18 +554,47 @@ class PositionManager {
             nucleotide = this.levelNucleotides[i];
             if (nucleotide) {
                 nucleotide = nucleotide.getObject();
+                if (this.level.levelConfig.lvlType == "codon_transcription") {
+                    let displayWidth = nucleotide.displayWidth;
+                    let displayHeight = nucleotide.displayHeight;
+                    let ntx = nucleotide.x;
+                    let nty = nucleotide.y;
+                    let originX = nucleotide.originX;
+                    let originY = nucleotide.originY;
+                    nucleotide = {
+                        getTopLeft: function () {
+                            let x = ntx - (displayWidth * originX);
+                            let y = nty - (displayHeight * originY);
+                            return new Phaser.Math.Vector2(x, y);
+                        },
+                        getBottomRight: function () {
+                            let x = (ntx - (displayWidth * originX)) + displayWidth;
+                            let y = (nty - (displayHeight * originY)) + displayHeight;
+                            return new Phaser.Math.Vector2(x, y);
+                        },
+                        getCenter: function () {
+                            let x = ntx - (displayWidth * originX) + (displayWidth / 2);
+                            let y = nty - (displayHeight * originY) + (displayHeight / 2);
+                            return new Phaser.Math.Vector2(x, y);
+                        },
+                        x: ntx,
+                        y: nty,
+                        angle: nucleotide.angle,
+                    };
+                }
                 break;
             }
         }
         if (nucleotide) {
-            let ellipseBottomLeft = this.getRotatedRectCoordinates(ellipse, ellipse.getTopLeft());
-            let ellipseTopRight = this.getRotatedRectCoordinates(ellipse, ellipse.getBottomRight());
-            let nucleotideBottomLeft = this.getRotatedRectCoordinates(nucleotide, nucleotide.getTopLeft());
-            let nucleotideTopRight = this.getRotatedRectCoordinates(nucleotide, nucleotide.getBottomRight());
-            return !(ellipseTopRight.x <= nucleotideBottomLeft.x ||
-                    ellipseTopRight.y <= nucleotideBottomLeft.y ||
-                    ellipseBottomLeft.x >= nucleotideTopRight.x ||
-                    ellipseBottomLeft.y >= nucleotideTopRight.y);
+            return ellipse.getTopLeft().y + 30 < nucleotide.getBottomRight().y;
+            // let ellipseBottomLeft = this.getRotatedRectCoordinates(ellipse, ellipse.getTopLeft());
+            // let ellipseTopRight = this.getRotatedRectCoordinates(ellipse, ellipse.getBottomRight());
+            // let nucleotideBottomLeft = this.getRotatedRectCoordinates(nucleotide, nucleotide.getTopLeft());
+            // let nucleotideTopRight = this.getRotatedRectCoordinates(nucleotide, nucleotide.getBottomRight());
+            // return !(ellipseTopRight.x <= nucleotideBottomLeft.x ||
+            //         ellipseTopRight.y <= nucleotideBottomLeft.y ||
+            //         ellipseBottomLeft.x >= nucleotideTopRight.x ||
+            //         ellipseBottomLeft.y >= nucleotideTopRight.y);
         }
         return false;
     }

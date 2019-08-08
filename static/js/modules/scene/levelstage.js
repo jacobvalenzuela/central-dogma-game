@@ -118,6 +118,7 @@ class LevelStage extends Phaser.Scene {
             "cytosine": this.add.particles("ntparticle_cytosine").createEmitter(ntParticleConfig),
             "guanine": this.add.particles("ntparticle_guanine").createEmitter(ntParticleConfig),
             "thymine": this.add.particles("ntparticle_thymine").createEmitter(ntParticleConfig),
+            "uracil": this.add.particles("ntparticle_thymine").createEmitter(ntParticleConfig),
         }
 
         for (let i = 0; i < Object.keys(this.ntparticle).length; i++) {
@@ -223,12 +224,10 @@ class LevelStage extends Phaser.Scene {
         nt.setScale(scale);
         nt.getObject().setInteractive();
         nt.showLetter(true);
-        if (this.levelConfig.lvlType == "dna_replication") {
-            this.game.input.setDraggable(nt.getObject());
-            this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
-            this.game.input.on("drag", this.bindFn(this.onDragNTBtn));
-            this.game.input.on("dragend", this.bindFn(this.onDragNTBtnEnd));
-        }
+        this.game.input.setDraggable(nt.getObject());
+        this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
+        this.game.input.on("drag", this.bindFn(this.onDragNTBtn));
+        this.game.input.on("dragend", this.bindFn(this.onDragNTBtnEnd));
         this.ntButtons.push(nt);
     }
 
@@ -368,7 +367,11 @@ class LevelStage extends Phaser.Scene {
             let clickedNT = image.getData("nucleotide");
             let headNT = this.positionManager.getHeadNucleotide();
             let cloned = clickedNT.clone();
-            cloned.setDisplay("nucleotide");
+            if (this.levelConfig.lvlType == "dna_replication") {
+                cloned.setDisplay("nucleotide");
+            } else {
+                cloned.setDisplay("codon");
+            }
             cloned.setPosition(clickedNT.getObject().x, clickedNT.getObject().y);
             cloned.setVisible(true);
             cloned.setScale(0.18);
@@ -385,8 +388,15 @@ class LevelStage extends Phaser.Scene {
                 this.popupmanager.emitEvent("correctMatch", headNT, cloned);
                 this.popupmanager.emitEvent("firstCorrectMatch", headNT, cloned);
                 this.scorekeeping.incrementSequencesMade();
-                let headNTName = headNT.getShortName();
-                let pairNTName = cloned.getShortName();
+                let headNTName = null;
+                let pairNTName = null;
+                if (this.levelConfig.lvlType == "dna_replication") {
+                    headNTName = headNT.getShortName();
+                    pairNTName = cloned.getShortName();
+                } else if (this.levelConfig.lvlType == "codon_transcription") {
+                    headNTName = headNT.nucleotides[0].getShortName();
+                    pairNTName = cloned.nucleotides[0].getShortName();
+                }
                 let that = this;
                 this.game.time.addEvent({
                     delay: 100,
@@ -406,7 +416,9 @@ class LevelStage extends Phaser.Scene {
                 });
             }
             this.positionManager.addToDNAOutput(cloned);
-            image.getData("nucleotide").setAngle(0);
+            if (this.levelConfig.lvlType == "dna_replication") {
+                image.getData("nucleotide").setAngle(0);
+            }
         }
         image.setData("startedDragging", false);
     }

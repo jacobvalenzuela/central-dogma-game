@@ -211,6 +211,7 @@ class Codon {
         this.connectLineObj = null;
 
         this.missingNT = false;
+        this.errorNT = false;
     }
 
     getObject() {
@@ -231,6 +232,8 @@ class Codon {
         this.connectLineObj = this.level.add.line(0, 0, 0, -50, 0, 50);
         this.connectLineObj.setStrokeStyle(1, 0x000);
         this.containerObj.add(this.connectLineObj);
+        let width = 0;
+        let height = 0;
         for (let i = 0; i < this.nucleotides.length; i++) {
             let nt = this.nucleotides[i];
             let cdnt = this.level.add.image(-50, -125, "codontide_" + nt.getShortName());
@@ -240,7 +243,12 @@ class Codon {
             cdnt.setPosition(cdnt.x + size.width * i, cdnt.y + size.offsetY);
             this.containerObj.add(cdnt);
             this.ntCodonObj.push(cdnt);
+            width += size.width;
+            if (height == 0) {
+                height += size.height;
+            }
         }
+        
         if (this.amminoAcid.class == "nonpolar") {
             this.amminoAcidObj = this._genCircle(25, 75, this.amminoAcid.color);
         } else if (this.amminoAcid.class == "polar") {
@@ -254,12 +262,24 @@ class Codon {
         }
         this.containerObj.add(this.amminoAcidObj);
         this.containerObj.setAngle(90);
+        this.containerObj.setSize(width, height + this.connectLineObj.height + this.amminoAcidObj.height);
 
         let rectTop = this.level.add.rectangle(0, -3.333, 10, 3.333, this.nucleotides[0].getColor());
         let rectMid = this.level.add.rectangle(0, 0, 10, 3.333, this.nucleotides[1].getColor());
         let rectBot = this.level.add.rectangle(0, 3.333, 10, 3.333, this.nucleotides[2].getColor());
         this.containerObjRect = this.level.add.container(0, 0, [rectTop, rectMid, rectBot]);
         this.circleObj = this.level.add.circle(0, 0, 5, this.getAmminoColor());
+
+        this.containerObjRect.setSize(
+            rectTop.width + rectMid.width + rectBot.width,
+            rectTop.height + rectMid.height + rectBot.height
+        );
+
+        this.containerObj.setData("nucleotide", this);
+        this.containerObjRect.setData("nucleotide", this);
+        this.circleObj.setData("nucleotide", this);
+        this.amminoAcidObj.setData("nucleotide", this);
+        this.connectLineObj.setData("nucleotide", this);
 
         this.containerObj.setVisible(false);
         this.containerObjRect.setVisible(false);
@@ -418,7 +438,7 @@ class Codon {
     }
 
     setError(errorBool) {
-
+        this.errorNT = errorBool;
     }
 
     setMissing(missingBool) {
