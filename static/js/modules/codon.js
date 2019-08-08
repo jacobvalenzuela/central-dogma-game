@@ -200,7 +200,7 @@ class Codon {
             new Nucleotide(this.level, this.rep.substr(2, 1), "basic"),
         ];
         this.matches = this.nucleotides[2].matches[0] + this.nucleotides[1].matches[0] + this.nucleotides[0].matches[0];
-        this.matches = this.matches.replace("T", "U");
+        this.matches = this.matches.replace(/T/g, "U");
         this.display = "codon"; // codon or rectangle (three nucleotides) or circle (ammino acid)
         this.codonDisplay = new Set(["codon", "amminoacid"]); // codon and/or amminoacid
         this.containerObj = null;
