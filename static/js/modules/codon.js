@@ -250,7 +250,7 @@ class Codon {
         }
         
         if (this.amminoAcid.class == "nonpolar") {
-            this.amminoAcidObj = this._genCircle(25, 75, this.amminoAcid.color);
+            this.amminoAcidObj = this._genCircle(25, 50, this.amminoAcid.color);
         } else if (this.amminoAcid.class == "polar") {
             this.amminoAcidObj = this._genSquare(0, 25, this.amminoAcid.color);
         } else if (this.amminoAcid.class == "acidic") {
