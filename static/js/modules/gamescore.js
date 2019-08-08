@@ -15,6 +15,9 @@ class GameScore {
         this.timerSec = null;
         this.timerMs = null;
         this.initialNTCount = this.game.levelConfig.ntSequence.length;
+        if (this.game.levelConfig.lvlType == "codon_transcription") {
+            this.initialNTCount = this.initialNTCount / 3;
+        }
     }
 
     /**
@@ -149,7 +152,7 @@ class GameScore {
         // let minElapsed = Math.ceil(this.secondsElapsed / 60);
         // return Math.round(this.sequencesMade / minElapsed);
         let ntRate = Math.floor(1000 / this.getGameSpeed());
-        return Math.min(ntRate, this.game.levelConfig.ntSequence.length);
+        return Math.min(ntRate, this.initialNTCount);
     }
 
     /**
