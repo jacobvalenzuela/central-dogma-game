@@ -194,6 +194,7 @@ class Codon {
         this.level = level;
         this.rep = rep;
         this.amminoAcid = this.allAmminoAcids[this.allCodons[this.rep]];
+        this.amminoAcidAbbr = this.allCodons[this.rep].toUpperCase();
         this.nucleotides = [
             new Nucleotide(this.level, this.rep.substr(0, 1), "basic"),
             new Nucleotide(this.level, this.rep.substr(1, 1), "basic"),
@@ -212,6 +213,10 @@ class Codon {
 
         this.missingNT = false;
         this.errorNT = false;
+        this.dispLetter = false;
+
+        this.amminoAcidAbbrText = null;
+        this.ntLetterText = [];
     }
 
     getObject() {
@@ -284,6 +289,20 @@ class Codon {
         this.containerObj.setVisible(false);
         this.containerObjRect.setVisible(false);
         this.circleObj.setVisible(false);
+
+        this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
+            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '11pt', color: '#fff'}).setOrigin(0.5);
+        this.amminoAcidAbbrText.setVisible(false);
+        this.amminoAcidAbbrText.setStroke(0x000, 3);
+
+        for (let i = 0; i < this.nucleotides.length; i++) {
+            let txt = this.nucleotides[i].rep;
+            let nttxt = this.level.add.text(0, 0, txt, 
+                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '11pt', color: '#fff'}).setOrigin(0.5);
+            nttxt.setVisible(false);
+            // nttxt.setStroke(0x000, 3);
+            this.ntLetterText.push(nttxt);
+        }
     }
 
     _genCircle(x, y, fillColor) {
@@ -403,6 +422,7 @@ class Codon {
         } else {
             this.connectLineObj.setVisible(false);
         }
+        this.updateLetterDisplay();
     }
 
     updateErrorDisplay() {
@@ -413,16 +433,63 @@ class Codon {
 
     }
 
-    showLetter(shouldShow) {
+    calculateRotatedPosition(offsetX, offsetY) {
+        let x = this.getObject().x;
+        let y = this.getObject().y;
+        let p = x;
+        let q = y;
+        x = x + offsetX;
+        y = y + offsetY;
+        let th = this.getObject().angle;
+        th = th * Math.PI / 180;
+        let xp = (x - p) * Math.cos(th) - (y - q) * Math.sin(th) + p;
+        let yp = (x - p) * Math.sin(th) + (y - q) * Math.cos(th) + q;
+        x = xp;
+        y = yp;
+        return new Phaser.Math.Vector2(x, y);
+    }
 
+    updateLetterDisplay() {
+        if (this.dispLetter && this.display == "codon") {
+            if (this.codonDisplay.has("amminoacid")) {
+                this.amminoAcidAbbrText.setVisible(true);
+                let amminoAcidAbbrTextPos = this.calculateRotatedPosition(0, 12);
+                this.amminoAcidAbbrText.setPosition(amminoAcidAbbrTextPos.x, amminoAcidAbbrTextPos.y);
+            } else {
+                this.amminoAcidAbbrText.setVisible(false);
+            }
+            if (this.codonDisplay.has("codon")) {
+                for (let i = 0; i < this.ntLetterText.length; i++) {
+                    this.ntLetterText[i].setVisible(true);
+                    let pos = this.calculateRotatedPosition(-23 + i * 23, -40);
+                    this.ntLetterText[i].setPosition(pos.x, pos.y);
+                }
+            } else {
+                for (let i = 0; i < this.ntLetterText.length; i++) {
+                    this.ntLetterText[i].setVisible(false);
+                }
+            }
+        } else {
+            this.amminoAcidAbbrText.setVisible(false);
+            for (let i = 0; i < this.ntLetterText.length; i++) {
+                this.ntLetterText[i].setVisible(false);
+            }
+        }
+    }
+
+    showLetter(shouldShow) {
+        this.dispLetter = shouldShow;
+        this.updateLetterDisplay();
     }
 
     setVisible(visible) {
         this.getObject().setVisible(visible);
+        this.updateLetterDisplay();
     }
 
     setPosition(x, y) {
         this.getObject().setPosition(x, y);
+        this.updateLetterDisplay();
     }
 
     setScale(scale) {
