@@ -217,6 +217,11 @@ class Codon {
 
         this.amminoAcidAbbrText = null;
         this.ntLetterText = [];
+
+        this.amminoAcidErrorObj = null;
+        this.circleErrorObj = null;
+        this.amminoAcidMissObj = null;
+        this.circleMissObj = null;
     }
 
     getObject() {
@@ -255,16 +260,23 @@ class Codon {
         }
         
         if (this.amminoAcid.class == "nonpolar") {
+            this.amminoAcidErrorObj = this._genCircle(30, 60, 0xfc0e33);
             this.amminoAcidObj = this._genCircle(25, 50, this.amminoAcid.color);
         } else if (this.amminoAcid.class == "polar") {
+            this.amminoAcidErrorObj = this._genSquare(0, 25, 0xfc0e33);
             this.amminoAcidObj = this._genSquare(0, 25, this.amminoAcid.color);
         } else if (this.amminoAcid.class == "acidic") {
+            this.amminoAcidErrorObj = this._genDiamond(0, 25, 0xfc0e33);
             this.amminoAcidObj = this._genDiamond(0, 25, this.amminoAcid.color);
         } else if (this.amminoAcid.class == "basic") {
+            this.amminoAcidErrorObj = this._genTriangle(0, 25, 0xfc0e33);
             this.amminoAcidObj = this._genTriangle(0, 25, this.amminoAcid.color);
         } else /*if (this.amminoAcid.class == "stop")*/ {
+            this.amminoAcidErrorObj = this._genOctagon(60, 85, 0xfc0e33);
             this.amminoAcidObj = this._genOctagon(50, 75, this.amminoAcid.color);
         }
+        this.amminoAcidErrorObj.setScale(1.3);
+        this.containerObj.add(this.amminoAcidErrorObj);
         this.containerObj.add(this.amminoAcidObj);
         this.containerObj.setAngle(90);
         this.containerObj.setSize(width, height + this.connectLineObj.height + this.amminoAcidObj.height);
@@ -273,6 +285,7 @@ class Codon {
         let rectMid = this.level.add.rectangle(0, 0, 10, 3.333, this.nucleotides[1].getColor());
         let rectBot = this.level.add.rectangle(0, 3.333, 10, 3.333, this.nucleotides[2].getColor());
         this.containerObjRect = this.level.add.container(0, 0, [rectTop, rectMid, rectBot]);
+        this.circleErrorObj = this.level.add.circle(0, 0, 9, 0xfc0e33);
         this.circleObj = this.level.add.circle(0, 0, 5, this.getAmminoColor());
 
         this.containerObjRect.setSize(
@@ -290,6 +303,9 @@ class Codon {
         this.containerObjRect.setVisible(false);
         this.circleObj.setVisible(false);
 
+        this.amminoAcidErrorObj.setVisible(false);
+        this.circleErrorObj.setVisible(false);
+
         this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
             {fontFamily: '\'Open Sans\', sans-serif', fontSize: '11pt', color: '#fff'}).setOrigin(0.5);
         this.amminoAcidAbbrText.setVisible(false);
@@ -303,6 +319,7 @@ class Codon {
             // nttxt.setStroke(0x000, 3);
             this.ntLetterText.push(nttxt);
         }
+        this.setDepth(1);
     }
 
     _genCircle(x, y, fillColor) {
@@ -423,10 +440,25 @@ class Codon {
             this.connectLineObj.setVisible(false);
         }
         this.updateLetterDisplay();
+        this.updateErrorDisplay();
     }
 
     updateErrorDisplay() {
-
+        if (!this.errorNT) {
+            this.amminoAcidErrorObj.setVisible(false);
+            this.circleErrorObj.setVisible(false);
+            return;
+        }
+        if (this.display == "circle") {
+            this.circleErrorObj.setVisible(this.circleObj.visible);
+            this.circleErrorObj.setPosition(this.circleObj.x, this.circleObj.y);
+            this.amminoAcidErrorObj.setVisible(false);
+            this.circleErrorObj.setScale(this.circleObj.scale);
+        } else if (this.display == "codon") {
+            this.amminoAcidErrorObj.setVisible(true);
+            this.circleErrorObj.setVisible(false);
+        }
+        
     }
 
     updateMissingDisplay() {
@@ -485,15 +517,18 @@ class Codon {
     setVisible(visible) {
         this.getObject().setVisible(visible);
         this.updateLetterDisplay();
+        this.updateErrorDisplay();
     }
 
     setPosition(x, y) {
         this.getObject().setPosition(x, y);
         this.updateLetterDisplay();
+        this.updateErrorDisplay();
     }
 
     setScale(scale) {
         this.getObject().setScale(scale);
+        this.updateErrorDisplay();
     }
 
     getAngle() {
@@ -506,11 +541,12 @@ class Codon {
 
     setError(errorBool) {
         this.errorNT = errorBool;
+        this.updateErrorDisplay();
     }
 
     setMissing(missingBool) {
         this.missingNT = missingBool;
-        this.updateErrorDisplay();
+        this.updateMissingDisplay();
     }
 
     getAmminoShortName() {
