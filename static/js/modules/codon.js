@@ -262,22 +262,29 @@ class Codon {
         if (this.amminoAcid.class == "nonpolar") {
             this.amminoAcidErrorObj = this._genCircle(30, 60, 0xfc0e33);
             this.amminoAcidObj = this._genCircle(25, 50, this.amminoAcid.color);
+            this.amminoAcidMissObj = this._genCircle(18, 40, 0xffffff);
         } else if (this.amminoAcid.class == "polar") {
             this.amminoAcidErrorObj = this._genSquare(0, 25, 0xfc0e33);
             this.amminoAcidObj = this._genSquare(0, 25, this.amminoAcid.color);
+            this.amminoAcidMissObj = this._genSquare(0, 25, 0xffffff);
         } else if (this.amminoAcid.class == "acidic") {
             this.amminoAcidErrorObj = this._genDiamond(0, 25, 0xfc0e33);
             this.amminoAcidObj = this._genDiamond(0, 25, this.amminoAcid.color);
+            this.amminoAcidMissObj = this._genDiamond(0, 25, 0xffffff);
         } else if (this.amminoAcid.class == "basic") {
             this.amminoAcidErrorObj = this._genTriangle(0, 25, 0xfc0e33);
             this.amminoAcidObj = this._genTriangle(0, 25, this.amminoAcid.color);
+            this.amminoAcidMissObj = this._genTriangle(0, 25, 0xffffff);
         } else /*if (this.amminoAcid.class == "stop")*/ {
             this.amminoAcidErrorObj = this._genOctagon(60, 85, 0xfc0e33);
             this.amminoAcidObj = this._genOctagon(50, 75, this.amminoAcid.color);
+            this.amminoAcidMissObj = this._genOctagon(34, 60, 0xffffff);
         }
         this.amminoAcidErrorObj.setScale(1.3);
+        this.amminoAcidMissObj.setScale(0.7);
         this.containerObj.add(this.amminoAcidErrorObj);
         this.containerObj.add(this.amminoAcidObj);
+        this.containerObj.add(this.amminoAcidMissObj);
         this.containerObj.setAngle(90);
         this.containerObj.setSize(width, height + this.connectLineObj.height + this.amminoAcidObj.height);
 
@@ -287,6 +294,7 @@ class Codon {
         this.containerObjRect = this.level.add.container(0, 0, [rectTop, rectMid, rectBot]);
         this.circleErrorObj = this.level.add.circle(0, 0, 9, 0xfc0e33);
         this.circleObj = this.level.add.circle(0, 0, 5, this.getAmminoColor());
+        this.circleMissObj = this.level.add.circle(0, 0, 3, 0xffffff);
 
         this.containerObjRect.setSize(
             rectTop.width + rectMid.width + rectBot.width,
@@ -305,6 +313,8 @@ class Codon {
 
         this.amminoAcidErrorObj.setVisible(false);
         this.circleErrorObj.setVisible(false);
+        this.amminoAcidMissObj.setVisible(false);
+        this.circleMissObj.setVisible(false);
 
         this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
             {fontFamily: '\'Open Sans\', sans-serif', fontSize: '11pt', color: '#fff'}).setOrigin(0.5);
@@ -462,7 +472,23 @@ class Codon {
     }
 
     updateMissingDisplay() {
-
+        if (!this.amminoAcidMissObj || !this.circleMissObj) {
+            return;
+        }
+        if (!this.missingNT) {
+            this.amminoAcidMissObj.setVisible(false);
+            this.circleMissObj.setVisible(false);
+            return;
+        }
+        if (this.display == "circle") {
+            this.circleMissObj.setVisible(this.circleObj.visible);
+            this.circleMissObj.setPosition(this.circleObj.x - 1, this.circleObj.y - 1);
+            this.amminoAcidMissObj.setVisible(false);
+            this.circleMissObj.setScale(this.circleObj.scale);
+        } else if (this.display == "codon") {
+            this.amminoAcidMissObj.setVisible(true);
+            this.circleMissObj.setVisible(false);
+        }
     }
 
     calculateRotatedPosition(offsetX, offsetY) {
@@ -518,17 +544,20 @@ class Codon {
         this.getObject().setVisible(visible);
         this.updateLetterDisplay();
         this.updateErrorDisplay();
+        this.updateMissingDisplay();
     }
 
     setPosition(x, y) {
         this.getObject().setPosition(x, y);
         this.updateLetterDisplay();
         this.updateErrorDisplay();
+        this.updateMissingDisplay();
     }
 
     setScale(scale) {
         this.getObject().setScale(scale);
         this.updateErrorDisplay();
+        this.updateMissingDisplay();
     }
 
     getAngle() {
