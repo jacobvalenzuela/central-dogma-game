@@ -22,6 +22,9 @@ class PositionManager {
             let currIdx = Math.floor(i / this.pathPointsFactor);
             let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
             if (currIdx === nextIdx) {
+                if (this.level.levelConfig.lvlType == "codon_transcription" && i % 2 != 0) {
+                    continue;
+                }
                 this.levelNucleotides.push(null);
                 this.levelNucleotides.push(null);
                 continue;
@@ -42,15 +45,26 @@ class PositionManager {
                 this.compLevelNucleotides.push(null);
             }
         }
-        for (let i = 0; i < this.pathPointsFactor * 3; i++) {
+        let unshiftFactor = 0;
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            unshiftFactor = 3;
+        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            unshiftFactor = 1;
+        }
+        for (let i = 0; i < this.pathPointsFactor * unshiftFactor; i++) {
             this.levelNucleotides.unshift(null);
             this.compLevelNucleotides.unshift(null);
         }
         this.selectedNucleotides = [];
 
         this.level.graphics.lineStyle(1, 0x6c757d, 0.6);
-        this.inputRowPath = new Phaser.Curves.Path(0, 140);
-        this.inputRowPath.lineTo(175, 140);
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            this.inputRowPath = new Phaser.Curves.Path(0, 140);
+            this.inputRowPath.lineTo(175, 140);
+        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            this.inputRowPath = new Phaser.Curves.Path(740, 140);
+            this.inputRowPath.lineTo(70, 140);
+        }
         this.inputRowPath.draw(this.level.graphics);
         this.initRectPathPts = this.inputRowPath.getSpacedPoints(26 * this.pathPointsFactor);
         this.inputComplRowPath = new Phaser.Curves.Path(0, 126);
@@ -59,13 +73,24 @@ class PositionManager {
             this.inputComplRowPath.draw(this.level.graphics);
         }
         this.inputCompRectPathPts = this.inputComplRowPath.getSpacedPoints(54 * this.pathPointsFactor);
-        this.inputVertPath = new Phaser.Curves.Path(182, 147);
-        this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            this.inputVertPath = new Phaser.Curves.Path(182, 147);
+            this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
+        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            this.inputVertPath = new Phaser.Curves.Path(77, 140);
+            this.inputVertPath.cubicBezierTo(55, 800, 15, 160, 75, 440);
+        }
         // this.inputVertPath.draw(this.level.graphics);
         let numVertPathPts = 7 * this.pathPointsFactor;
         this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
-        this.inputVertPathDispl = new Phaser.Curves.Path(175, 140);
-        this.inputVertPathDispl.cubicBezierTo(-30, 640, 280, 320, -80, 440);
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            this.inputVertPathDispl = new Phaser.Curves.Path(175, 140);
+            this.inputVertPathDispl.cubicBezierTo(-30, 640, 280, 320, -80, 440);
+        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            this.inputVertPathDispl = new Phaser.Curves.Path(70, 140);
+            this.inputVertPathDispl.cubicBezierTo(40, 600, -5, 160, 55, 440);
+        }
+        
         this.inputVertPathDispl.draw(this.level.graphics);
         this.outputVertPath = new Phaser.Curves.Path(245, 450);
         this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
@@ -586,7 +611,13 @@ class PositionManager {
             }
         }
         if (nucleotide) {
-            return ellipse.getTopLeft().y + 30 < nucleotide.getBottomRight().y;
+            let offset = 0;
+            if (this.level.levelConfig.lvlType == "dna_replication") {
+                offset = 50;
+            } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+                offset = 100;
+            }
+            return ellipse.getTopLeft().y + offset < nucleotide.getBottomRight().y;
             // let ellipseBottomLeft = this.getRotatedRectCoordinates(ellipse, ellipse.getTopLeft());
             // let ellipseTopRight = this.getRotatedRectCoordinates(ellipse, ellipse.getBottomRight());
             // let nucleotideBottomLeft = this.getRotatedRectCoordinates(nucleotide, nucleotide.getTopLeft());
