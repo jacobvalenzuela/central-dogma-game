@@ -611,6 +611,13 @@ class Codon {
             this.ntCodonObj[i].destroy();
         }
     }
+
+    toJSON() {
+        return {
+            "name": this.amminoAcid.name,
+            "color": "#" + this.amminoAcid.color.toString(16),
+        }
+    }
 }
 
 export default Codon;
