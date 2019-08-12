@@ -92,14 +92,25 @@ class PositionManager {
         }
         
         this.inputVertPathDispl.draw(this.level.graphics);
-        this.outputVertPath = new Phaser.Curves.Path(245, 450);
-        this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            this.outputVertPath = new Phaser.Curves.Path(245, 450);
+            this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
+        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            this.outputVertPath = new Phaser.Curves.Path(180, 450);
+            this.outputVertPath.cubicBezierTo(220, 710, 180, 600, 120, 700);
+        }
+        
         // this.outputVertPath.draw(this.level.graphics);
         this.outputVertPathPts = this.outputVertPath.getPoints(5 * this.pathPointsFactor);
-        this.outputVertPathDispl = new Phaser.Curves.Path(285, 500);
-        this.outputVertPathDispl.cubicBezierTo(155, 710, 250, 600, 130, 670);
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            this.outputVertPathDispl = new Phaser.Curves.Path(285, 500);
+            this.outputVertPathDispl.cubicBezierTo(155, 710, 250, 600, 130, 670);
+        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            this.outputVertPathDispl = new Phaser.Curves.Path(200, 450);
+            this.outputVertPathDispl.cubicBezierTo(220, 710, 200, 600, 130, 700);
+        }
         this.outputVertPathDispl.draw(this.level.graphics);
-        this.outputRowPath = new Phaser.Curves.Path(155, 710);
+        this.outputRowPath = new Phaser.Curves.Path(220, 710);
         this.outputRowPath.lineTo(400, 710);
         this.outputRowPath.draw(this.level.graphics);
         this.outputRowPathPts = this.outputRowPath.getPoints(30 * this.pathPointsFactor);

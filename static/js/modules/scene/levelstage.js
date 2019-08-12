@@ -66,7 +66,7 @@ class LevelStage extends Phaser.Scene {
 
         this.ntHighlightEllipse = this.game.add.ellipse(140, 510, 230, 125, 0xfffaa8, 1);
         this.ntHighlightEllipse.setAngle(16);
-        this.ntHighlightEllipse.setAlpha(0.90);
+        this.ntHighlightEllipse.setAlpha(0.50);
 
         this.game.add.text(70, 554, "Binding Pocket", 
             {fontFamily: '\'Open Sans\', sans-serif', fontSize: '9pt', color: '#000'}).setAngle(19).setAlpha(0.5);
