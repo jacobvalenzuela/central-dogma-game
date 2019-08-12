@@ -292,7 +292,7 @@ class Codon {
         let rectMid = this.level.add.rectangle(0, 0, 10, 3.333, this.nucleotides[1].getColor());
         let rectBot = this.level.add.rectangle(0, 3.333, 10, 3.333, this.nucleotides[2].getColor());
         this.containerObjRect = this.level.add.container(0, 0, [rectTop, rectMid, rectBot]);
-        this.circleErrorObj = this.level.add.circle(0, 0, 9, 0xfc0e33);
+        this.circleErrorObj = this.level.add.circle(0, 0, 6, 0xfc0e33);
         this.circleObj = this.level.add.circle(0, 0, 5, this.getAmminoColor());
         this.circleMissObj = this.level.add.circle(0, 0, 3, 0xffffff);
 
