@@ -291,6 +291,9 @@ class PositionManager {
      * @param {number} delay - timer day 
      */
     startNTMoveTimer(delay) {
+        if (this.autoMoveTimer) {
+            return;
+        }
         let that = this;
         this.autoMoveTimer = this.game.time.addEvent({
             delay: delay,
@@ -532,6 +535,7 @@ class PositionManager {
      * @param {Nucleotide} nucleotide - The nucleotide that should be added to the output stack
      */
     addToDNAOutput(nucleotide) {
+        this.hasFrozenHead = false;
         nucleotide.setScale(0.3);
         let firstPoint = this.outputVertPathPts[0];
         let secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
@@ -541,7 +545,7 @@ class PositionManager {
             this.level.camera.flash(300, 255, 30, 30);
             this.level.camera.shake(400, 0.02);
         }
-        this.updateNTMoveTimer(50);
+        this.updateNTMoveTimer(this.defaultTimerDelay / 2);
         let that = this;
         this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
             that._animatePosition(nucleotide, point.x, point.y);
