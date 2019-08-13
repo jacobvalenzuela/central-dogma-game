@@ -17,6 +17,7 @@ class PositionManager {
         this.gameObj = level.gameObj;
         this.game = level;
         this.levelNucleotides = [];
+        this.hasFrozenHead = false;
         for (let i = 0; i < this.level.nucleotides.length * this.pathPointsFactor; i++) {
             let prevIdx = Math.floor((i - 1) / this.pathPointsFactor);
             let currIdx = Math.floor(i / this.pathPointsFactor);
@@ -308,6 +309,20 @@ class PositionManager {
         }
     }
 
+    tempPauseNTMoveTime(delay=500) {
+        if (this.autoMoveTimer) {
+            let nextdelay = this.autoMoveTimer.delay;
+            this.autoMoveTimer.remove();
+            this.autoMoveTimer = null;
+            let that = this;
+            this.game.time.addEvent({
+                delay: delay,
+                callback: function () {that.startNTMoveTimer(nextdelay)},
+                loop: false
+            });
+        }
+    }
+
     /**
      * Restarts the timer with a new delay
      * @param {number} newDelay - The new delay
@@ -446,7 +461,11 @@ class PositionManager {
                     that.level.endGame();
                 }
             });
+        } else if (this.level.levelConfig.lvlType == "codon_transcription" && !this.hasFrozenHead && this.getHeadNucleotide() && this.getHeadNucleotide().getObject().y > 490) {
+            this.hasFrozenHead = true;
+            this.tempPauseNTMoveTime(500);
         }
+        
     }
 
     /**
@@ -473,6 +492,7 @@ class PositionManager {
         for (let i = 0; i < this.levelNucleotides.length; i++) {
             let removed = this.levelNucleotides[i];
             if (removed) {
+                this.hasFrozenHead = false;
                 this.levelNucleotides[i] = null;
                 this._animatePosition(removed, removed.getObject().x - 40, removed.getObject().y + 130);
                 this._fadeOut(removed, function () {
