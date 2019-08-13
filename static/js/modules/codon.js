@@ -319,7 +319,7 @@ class Codon {
         this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
             {fontFamily: '\'Open Sans\', sans-serif', fontSize: '11pt', color: '#fff'}).setOrigin(0.5);
         this.amminoAcidAbbrText.setVisible(false);
-        this.amminoAcidAbbrText.setStroke(0x000, 3);
+        this.amminoAcidAbbrText.setStroke(0x000, 1);
 
         for (let i = 0; i < this.nucleotides.length; i++) {
             let txt = this.nucleotides[i].rep;
