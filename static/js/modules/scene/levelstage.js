@@ -171,20 +171,14 @@ class LevelStage extends Phaser.Scene {
 
         this.scorekeeping.init();
 
-        let that = this;
-        this.time.addEvent({
-            delay: 5000,
-            loop: false,
-            callback: function () {
-                that.scorekeeping.start();
-
-                that.positionManager.start();
-            }
-        });
-
         // window.cod = new Codon(this, "UAC");
         // window.cod.getObject();
         // window.cod.setPosition(200, 275);
+    }
+
+    start() {
+        this.scorekeeping.start();
+        this.positionManager.start();
     }
 
     /**

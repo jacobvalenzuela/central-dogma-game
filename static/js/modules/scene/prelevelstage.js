@@ -16,6 +16,7 @@ class PreLevelStage extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
+        this.lvlNum = data.lvlNum;
         this.level = data.gameObj.levels[data.lvlNum];
 
         this.camera = this.cameras.main;
@@ -35,13 +36,26 @@ class PreLevelStage extends Phaser.Scene {
         this.scene.launch("level" + data.lvlNum);
         this.scene.moveAbove("level" + data.lvlNum, "levelpre" + data.lvlNum);
 
+        this.gameStarted = false;
+
         let that = this;
         this.time.addEvent({
             delay: 3000,
             loop: false,
-            callback: function () {
-                that.fadeOut();
-            }
+            callback: this.bindFn(this.startGame),
+        });
+
+        this.input.on("pointerdown", this.bindFn(this.startGame));
+    }
+
+    startGame() {
+        if (this.gameStarted) {
+            return;
+        }
+        this.gameStarted = true;
+        let that = this;
+        this.fadeOut(function () {
+            that.scene.manager.getScene("level" + that.lvlNum).start();
         });
     }
 
@@ -68,6 +82,18 @@ class PreLevelStage extends Phaser.Scene {
                 loop: false
             });
         }
+    }
+
+    /**
+     * Changes the context of the function `this` keyword to the class. Moves the `this` reference to the first parameter instead.
+     * @param {function} fn - The function used to bind to the class
+     */
+    bindFn(fn) {
+        let clas = this;
+        return function (...args) {
+            let event = this;
+            fn.bind(clas, event, ...args)();
+        };
     }
 }
 
