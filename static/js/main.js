@@ -109,7 +109,7 @@ import Game from "./modules/game.js";
             "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATAAATATATTATATAATATATATTATAAATATATATTTATATATATAATATAAATATATT",
         },
         {
-            "ntSequence": "AUGGCAUAG",
+            "ntSequence": "AUG",
             "unlocked": true,
             "name": "It's Debug Time!",
             "speed": 1,
@@ -121,6 +121,15 @@ import Game from "./modules/game.js";
             "ntType": "basic",
             "lvlType": "codon_transcription",
         },
+        // {
+        //     "ntSequence": "A",
+        //     "controls": ["T", "A"],
+        //     "unlocked": true,
+        //     "name": "Debug 2",
+        //     "rotateNT": false,
+        //     "ntType": "basic",
+        //     "lvlType": "dna_replication",
+        // },
     ]);
 
     window.game = new Phaser.Game(game.config);

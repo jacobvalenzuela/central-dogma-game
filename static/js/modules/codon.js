@@ -508,7 +508,8 @@ class Codon {
     }
 
     updateLetterDisplay() {
-        if (this.dispLetter && this.display == "codon") {
+        if (this.dispLetter && this.display == "codon" && this.getObject().visible && this.getObject().alpha > 0.1) {
+            console.log(this.getObject().scale)
             if (this.codonDisplay.has("amminoacid")) {
                 this.amminoAcidAbbrText.setVisible(true);
                 let amminoAcidAbbrTextPos = this.calculateRotatedPosition(0, 12);
@@ -519,7 +520,10 @@ class Codon {
             if (this.codonDisplay.has("codon")) {
                 for (let i = 0; i < this.ntLetterText.length; i++) {
                     this.ntLetterText[i].setVisible(true);
-                    let pos = this.calculateRotatedPosition(-23 + i * 23, -40);
+                    this.ntLetterText[i].setScale(this.containerObj.scale * 2);
+                    let xoffset = 0 + 54 * this.containerObj.scale;
+                    let yoffset = 0 + 100 * this.containerObj.scale;
+                    let pos = this.calculateRotatedPosition(-1 * xoffset + i * xoffset, -1 * yoffset);
                     this.ntLetterText[i].setPosition(pos.x, pos.y);
                 }
             } else {

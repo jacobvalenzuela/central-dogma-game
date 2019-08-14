@@ -158,6 +158,7 @@ class PositionManager {
                 nucleotide.removeCodonDisplay("amminoacid");
             }
             nucleotide.setVisible(true);
+            nucleotide.showLetter(true);
             if (animate) {
                 this._animatePosition(nucleotide, x, y);
             } else {
@@ -409,6 +410,7 @@ class PositionManager {
             nucleotide.getObject().clearAlpha();
             nucleotide.setVisible(false);
             nucleotide.updateErrorDisplay();
+            nucleotide.updateLetterDisplay();
             if (callback != null) {
                 callback(nucleotide);
             }

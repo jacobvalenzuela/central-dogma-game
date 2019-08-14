@@ -301,15 +301,16 @@ class Nucleotide {
      * Updates the letter display on the nucleotide. Only shows when in nucleotide display mode.
      */
     updateLetterDisplay() {
-        if (this.dispLetter && this.display != "rectangle") {
+        if (this.dispLetter && this.display != "rectangle" && this.getObject().visible && this.getObject().alpha > 0.1) {
             this.letterText.setVisible(true);
             let x = this.getObject().x;
             let y = this.getObject().y;
+            this.letterText.setScale(this.imgObj.scale * 5);
             if (this.getClassification() == "purine") {
                 let p = x;
                 let q = y;
-                x = x + 13;
-                y = y + 9;
+                x = x + (1 + 61 * this.imgObj.scale);
+                y = y + (1 + 41 * this.imgObj.scale);
                 let th = this.getObject().angle;
                 th = th * Math.PI / 180;
                 let xp = (x - p) * Math.cos(th) - (y - q) * Math.sin(th) + p;
@@ -364,6 +365,7 @@ class Nucleotide {
         this.getObject().setScale(scale);
         this.updateErrorDisplay();
         this.updateMissingDisplay();
+        this.updateLetterDisplay();
     }
 
     /**
@@ -460,6 +462,7 @@ class Nucleotide {
     destroy() {
         this.imgObj.destroy();
         this.squareObj.destroy();
+        this.showLetter(false);
     }
 
     /**
