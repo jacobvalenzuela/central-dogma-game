@@ -91,7 +91,7 @@ import Game from "./modules/game.js";
             "lvlType": "dna_replication",
         },
         {
-            "ntSequence": "AUGGCAACCAAACCGAGUUAG",
+            "ntSequence": "AUGGCAACCAAACCGAGUCAUUGACCCACUGACCAUGGGUUUUAG",
             "unlocked": true,
             "name": "Codon you do this?",
             "speed": 35,
