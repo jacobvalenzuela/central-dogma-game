@@ -111,8 +111,14 @@ class PositionManager {
             this.outputVertPathDispl.cubicBezierTo(220, 710, 200, 600, 130, 700);
         }
         this.outputVertPathDispl.draw(this.level.graphics);
-        this.outputRowPath = new Phaser.Curves.Path(220, 710);
-        this.outputRowPath.lineTo(400, 710);
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            this.outputRowPath = new Phaser.Curves.Path(155, 710);
+            this.outputRowPath.lineTo(400, 710);
+        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            this.outputRowPath = new Phaser.Curves.Path(220, 710);
+            this.outputRowPath.lineTo(400, 710);
+        }
+        
         this.outputRowPath.draw(this.level.graphics);
         this.outputRowPathPts = this.outputRowPath.getPoints(30 * this.pathPointsFactor);
     }
