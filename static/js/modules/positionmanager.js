@@ -95,7 +95,7 @@ class PositionManager {
         this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
         if (this.level.levelConfig.lvlType == "dna_replication") {
             this.inputVertPathDispl = new Phaser.Curves.Path(175, 140);
-            this.inputVertPathDispl.cubicBezierTo(-30, 640, 280, 320, -80, 440);
+            this.inputVertPathDispl.cubicBezierTo(-20, 640, 320, 320, -80, 440);
         } else if (this.level.levelConfig.lvlType == "codon_transcription") {
             this.inputVertPathDispl = new Phaser.Curves.Path(70, 140);
             this.inputVertPathDispl.cubicBezierTo(40, 600, 20, 160, 55, 440);
