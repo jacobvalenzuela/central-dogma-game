@@ -521,7 +521,7 @@ class Codon {
                     this.ntLetterText[i].setVisible(true);
                     this.ntLetterText[i].setScale(this.containerObj.scale * 2);
                     let xoffset = 0 + 54 * this.containerObj.scale;
-                    let yoffset = 0 + 100 * this.containerObj.scale;
+                    let yoffset = 0 + 90 * this.containerObj.scale;
                     let pos = this.calculateRotatedPosition(-1 * xoffset + i * xoffset, -1 * yoffset);
                     this.ntLetterText[i].setPosition(pos.x, pos.y);
                 }
