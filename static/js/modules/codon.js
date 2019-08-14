@@ -368,7 +368,27 @@ class Codon {
     }
 
     setDepth(depth) {
+        if (!this.containerObj) {
+            this.getObject();
+        }
+        for (let i = 0; i < this.ntLetterText.length; i++) {
+            this.ntLetterText[i].setDepth(depth + 2);
+        }
+        this.amminoAcidAbbrText.setDepth(depth + 2);
 
+        this.amminoAcidMissObj.setDepth(depth + 1);
+        this.circleMissObj.setDepth(depth + 1);
+        
+        this.containerObj.setDepth(depth);
+        this.containerObjRect.setDepth(depth);
+        this.circleObj.setDepth(depth);
+        this.amminoAcidObj.setDepth(depth);
+        
+        this.connectLineObj.setDepth(depth - 1);
+        
+        this.amminoAcidErrorObj.setDepth(depth - 2);
+        this.circleErrorObj.setDepth(depth - 2);
+        
     }
 
     setDisplay(type) {
@@ -614,6 +634,10 @@ class Codon {
         for (let i = 0; i < this.ntCodonObj.length; i++) {
             this.ntCodonObj[i].destroy();
         }
+        for (let i = 0; i < this.ntLetterText.length; i++) {
+            this.ntLetterText[i].destroy();
+        }
+        this.amminoAcidAbbrText.destroy();
     }
 
     toJSON() {
