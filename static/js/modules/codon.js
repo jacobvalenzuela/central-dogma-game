@@ -509,7 +509,6 @@ class Codon {
 
     updateLetterDisplay() {
         if (this.dispLetter && this.display == "codon" && this.getObject().visible && this.getObject().alpha > 0.1) {
-            console.log(this.getObject().scale)
             if (this.codonDisplay.has("amminoacid")) {
                 this.amminoAcidAbbrText.setVisible(true);
                 let amminoAcidAbbrTextPos = this.calculateRotatedPosition(0, 12);
@@ -562,6 +561,7 @@ class Codon {
         this.getObject().setScale(scale);
         this.updateErrorDisplay();
         this.updateMissingDisplay();
+        this.updateLetterDisplay();
     }
 
     getAngle() {
