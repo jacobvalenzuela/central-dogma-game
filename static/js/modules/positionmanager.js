@@ -312,7 +312,7 @@ class PositionManager {
         }
     }
 
-    tempPauseNTMoveTime(delay=500) {
+    tempPauseNTMoveTime(delay=1000) {
         if (this.autoMoveTimer) {
             let nextdelay = this.autoMoveTimer.delay;
             this.autoMoveTimer.remove();
@@ -466,7 +466,7 @@ class PositionManager {
             });
         } else if (this.level.levelConfig.lvlType == "codon_transcription" && !this.hasFrozenHead && this.getHeadNucleotide() && this.getHeadNucleotide().getObject().y > 490) {
             this.hasFrozenHead = true;
-            this.tempPauseNTMoveTime(500);
+            this.tempPauseNTMoveTime(1000);
         }
         
     }
