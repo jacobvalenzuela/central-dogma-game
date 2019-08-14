@@ -18,20 +18,27 @@ class PositionManager {
         this.game = level;
         this.levelNucleotides = [];
         this.hasFrozenHead = false;
-        for (let i = 0; i < this.level.nucleotides.length * this.pathPointsFactor; i++) {
-            let prevIdx = Math.floor((i - 1) / this.pathPointsFactor);
-            let currIdx = Math.floor(i / this.pathPointsFactor);
-            let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
-            if (currIdx === nextIdx) {
-                if (this.level.levelConfig.lvlType == "codon_transcription" && i % 2 != 0) {
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            for (let i = 0; i < this.level.nucleotides.length * this.pathPointsFactor; i++) {
+                let prevIdx = Math.floor((i - 1) / this.pathPointsFactor);
+                let currIdx = Math.floor(i / this.pathPointsFactor);
+                let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
+                if (currIdx === nextIdx) {
+                    this.levelNucleotides.push(null);
+                    this.levelNucleotides.push(null);
                     continue;
                 }
-                this.levelNucleotides.push(null);
-                this.levelNucleotides.push(null);
-                continue;
+                this.levelNucleotides.push(this.level.nucleotides[currIdx]);
             }
-            this.levelNucleotides.push(this.level.nucleotides[currIdx]);
+        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            for (let i = 0; i < this.level.nucleotides.length; i++) {
+                for (let j = 0; j < 97; j++) {
+                    this.levelNucleotides.push(null);
+                }
+                this.levelNucleotides.push(this.level.nucleotides[i]);
+            }
         }
+        
         this.compLevelNucleotides = [];
         let paddingComp = 22 * this.pathPointsFactor;
         for (let i = 0; i < paddingComp; i++) {
@@ -78,8 +85,10 @@ class PositionManager {
             this.inputVertPath = new Phaser.Curves.Path(182, 147);
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
         } else if (this.level.levelConfig.lvlType == "codon_transcription") {
-            this.inputVertPath = new Phaser.Curves.Path(77, 140);
-            this.inputVertPath.cubicBezierTo(55, 800, 15, 160, 75, 440);
+            // this.inputVertPath = new Phaser.Curves.Path(77, 140);
+            // this.inputVertPath.cubicBezierTo(55, 800, 15, 160, 75, 440);
+            this.inputVertPath = new Phaser.Curves.Path(55, 140);
+            this.inputVertPath.lineTo(55, 740);
         }
         // this.inputVertPath.draw(this.level.graphics);
         let numVertPathPts = 7 * this.pathPointsFactor;
@@ -155,11 +164,13 @@ class PositionManager {
             if (this.level.levelConfig.lvlType == "dna_replication") {
                 nucleotide.setDisplay("nucleotide");
             } else if (this.level.levelConfig.lvlType == "codon_transcription") {
-                let exp = this.calcExponential(0, 80, initVertPathPts.length, 15, i);
-                x = x - exp;
-                if (nucleotide.display != "codon") {
-                    nucleotide.setPosition(x, y);
-                }
+                // let exp = this.calcExponential(0, 80, initVertPathPts.length, 15, i);
+                // x = x - exp;
+                // if (nucleotide.display != "codon") {
+                //     nucleotide.setPosition(x, y);
+                // }
+                x = x - 70;
+                nucleotide.setPosition(x, y);
                 nucleotide.setDisplay("codon");
                 nucleotide.removeCodonDisplay("amminoacid");
             }
@@ -177,11 +188,21 @@ class PositionManager {
             let modifier1 = 0;
             let modifier2 = 0;
             if (this.level.levelConfig.lvlType == "codon_transcription") {
-                modifier1 = 0.44;
-                modifier2 = 0.30;
+                modifier1 = 0.51;
+                modifier2 = 0.51;
             }
-            let scale = this.calcInScale(i, modifier, modifier1, modifier2);
-            let scalePrev = this.calcInScale(i - 1, modifier, modifier1, modifier2);
+            let scale = 0;
+            let scalePrev = 0;
+            if (this.level.levelConfig.lvlType == "dna_replication") {
+                scale = this.calcInScale(i, modifier, modifier1, modifier2);
+                scalePrev = this.calcInScale(i - 1, modifier, modifier1, modifier2);
+            } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+                scale = 0.8;
+                scalePrev = 0.8;
+                if (i == initVertPathPts.length - 1) {
+                    scalePrev = 0.1;
+                }
+            }
             if (animate) {
                 nucleotide.setScale(scalePrev);
                 this._animateScale(nucleotide, scale);
