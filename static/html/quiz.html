@@ -1,0 +1,196 @@
+<style>
+        .quiz {
+          background: #eceeee;
+          border: 1px solid #42464b;
+          border-radius: 6px;
+          height: 400px;
+          margin: 20px auto 0;
+          width: 298px;
+          font: 600 14px/1 'Open Sans', sans-serif;
+        }
+        .quiz h1 {
+          background-image: linear-gradient(top, #f1f3f3, #d4dae0);
+          border-bottom: 1px solid #a6abaf;
+          border-radius: 6px 6px 0 0;
+          box-sizing: border-box;
+          color: #727678;
+          display: block;
+          height: 43px;
+          font: 600 14px/1 'Open Sans', sans-serif;
+          padding-top: 14px;
+          margin: 0;
+          text-align: center;
+          text-shadow: 0 -1px 0 rgba(0,0,0,0.2), 0 1px 0 #fff;
+        }
+        .quiz input[type="password"], .quiz input[type="text"] {
+          background: linear-gradient(top, #d6d7d7, #dee0e0);
+          border: 1px solid #a1a3a3;
+          border-radius: 4px;
+          box-shadow: 0 1px #fff;
+          box-sizing: border-box;
+          color: #696969;
+          height: 39px;
+          margin: 31px 0 0 29px;
+          padding-left: 37px;
+          transition: box-shadow 0.3s;
+          width: 240px;
+        }
+        .quiz input[type="password"]:focus, .quiz input[type="text"]:focus {
+          box-shadow: 0 0 4px 1px rgba(55, 166, 155, 0.3);
+          outline: 0;
+        }
+        .quiz .show-password {
+          display: block;
+          height: 16px;
+          margin: 26px 0 0 28px;
+          width: 87px;
+        }
+        .quiz input[type="checkbox"] {
+          cursor: pointer;
+          height: 16px;
+          opacity: 0;
+          position: relative;
+          width: 64px;
+        }
+        .quiz input[type="checkbox"]:checked {
+          left: 29px;
+          width: 58px;
+        }
+        .quiz .toggle {
+          display: block;
+          height: 16px;
+          margin-top: -20px;
+          width: 87px;
+          z-index: -1;
+        }
+        .quiz input[type="checkbox"]:checked + .quiz .toggle { background-position: 0 -16px }
+        .quiz .forgot {
+          color: #7f7f7f;
+          display: inline-block;
+          float: right;
+          font: 12px/1 sans-serif;
+          left: -19px;
+          position: relative;
+          text-decoration: none;
+          top: 5px;
+          transition: color .4s;
+        }
+        .quiz .forgot:hover { color: #3b3b3b }
+        .quiz input[type="submit"] {
+          width:240px;
+          height:35px;
+          display:block;
+          font-family:Arial, "Helvetica", sans-serif;
+          font-size:16px;
+          font-weight:bold;
+          color:#fff;
+          text-decoration:none;
+          text-transform:uppercase;
+          text-align:center;
+          text-shadow:1px 1px 0px #37a69b;
+          padding-top:6px;
+          margin: 29px 0 0 29px;
+          position:relative;
+          cursor:pointer;
+          border: none;  
+          background-color: #37a69b;
+          background-image: linear-gradient(top,#3db0a6,#3111);
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+          border-bottom-left-radius:5px;
+          box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #497a78, 0px 10px 5px #999;
+        }
+      
+        .quiz input[type="submit"]:active {
+          top:3px;
+          box-shadow: inset 0px 1px 0px #2ab7ec, 0px 2px 0px 0px #31524d, 0px 5px 3px #999;
+        }
+      
+        .quiz .hidden {
+          display: none !important;
+        }
+      
+        .quiz .error {
+          color: red;
+          text-align: center;
+        }
+    
+        .quiz .slidecontainer {
+            width: 90%; /* Width of the outside container */
+            margin-left: auto;
+            margin-right: auto;
+        }
+    
+        .quiz .slider {
+            width: 100%;
+        }
+    
+        .quiz p {
+            margin-bottom: 4px;
+        }
+    
+        .quiz p, .quiz .radio-btns {
+            margin-left: 17px;
+        }
+    
+        .quiz .leaderboard-container {
+            max-height: 130px;
+            overflow-y: scroll;
+        }
+    
+        .quiz .leaderboard-container ol {
+            margin: 0;
+        }
+
+        .quiz h2 {
+          text-align: center;
+        }
+
+        .quiz ul {
+          list-style: none;
+        }
+
+        .quiz ul li {
+          background-color: lightblue;
+          width: 200px;
+          padding: 10px;
+          border-width: 3px;
+          border-color: forestgreen;
+          border-style: solid;
+          text-align: center;
+          border-radius: 10px;
+          margin-bottom: 15px;
+          cursor: pointer;
+          box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #497a78, 0px 10px 5px #999;
+          position: relative;
+        }
+
+        .quiz ul li.selected {
+          box-shadow: none;
+          top: 3px;
+          background-color: LightSkyBlue;
+        }
+
+        .quiz ul li.wrong {
+          border-color: orangered;
+          background-color: yellow;
+        }
+
+        .quiz ul li.correct {
+          border-color: darkgreen;
+          background-color: limegreen;
+        }
+      </style>
+      
+      <div class="quiz">
+        <h1>Quiz</h1>
+        <h2>DNA stands for what?</h2>
+        <ul>
+          <li>Deoxyribonucleic acid</li>
+          <li class="selected wrong">Selected Wrong</li>
+          <li class="correct">Correct</li>
+          <li class="selected">Selected</li>
+        </ul>
+        <input type="submit" value="Submit" name="quizButton" class="hidden">
+      </div>
