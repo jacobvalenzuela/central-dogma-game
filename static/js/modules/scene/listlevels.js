@@ -82,8 +82,8 @@ class ListLevels extends Phaser.Scene {
         }
     }
 
-    dismissOverlay(a, b, c, d, e) {
-        if (!this.domOverlay || b.upElement.tagName != "CANVAS") {
+    dismissOverlay(img, pointer) {
+        if (!this.domOverlay || pointer.upElement.tagName != "CANVAS") {
             return;
         }
         this.domOverlay.destroy();
