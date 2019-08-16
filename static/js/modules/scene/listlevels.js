@@ -88,6 +88,27 @@ class ListLevels extends Phaser.Scene {
                 event.preventDefault();
                 this._dismissOverlay(0);
                 this.showRegisterOverlay(0);
+            } else if (event.target.id == "login-button") {
+                event.preventDefault();
+                let username = this.domOverlay.getChildByID("login-username").value;
+                let password = this.domOverlay.getChildByID("login-password").value;
+                if (!username || !password) {
+                    return;
+                }
+                let that = this;
+                cdapi.login(username, password)
+                    .then(function (data) {
+                        if (data.status == "ok") {
+                            that.updateSignInIcon();
+                            that._dismissOverlay();
+                        } else if (data.status == "error") {
+                            that.domOverlay.getChildByID("login-error-msg").textContent = data.error;
+                            that.domOverlay.getChildByID("login-error-msg").classList.remove("hidden");
+                        }
+                    }).catch(function (data) {
+                        that.domOverlay.getChildByID("login-error-msg").textContent = data.error;
+                        that.domOverlay.getChildByID("login-error-msg").classList.remove("hidden");
+                    });
             }
         }, this);
     }
