@@ -56,34 +56,80 @@ class ListLevels extends Phaser.Scene {
     }
 
     onUserButtonClick() {
-        if (this.domOverlay) {
-            return;
-        }
         if (!cdapi.isLoggedIn()) {
-            this.domOverlay = this.add.dom(180, 300).createFromCache('html_login');
-            // this.camera.fadeEffect.start(true, 500, 100, 100, 100);
-            this.add.tween({
-                targets: [this.fadeCover],
-                ease: 'Sine.easeInOut',
-                duration: 500,
-                delay: 0,
-                alpha: {
-                    getStart: function () {
-                        return 0;
-                    },
-                    getEnd: function () {
-                        return 0.4;
-                    }
-                }
-            });
-            window.dol = this.domOverlay
+            this.showLoginOverlay();
         } else {
 
         }
     }
 
+    showLoginOverlay(duration=500) {
+        if (this.domOverlay) {
+            return;
+        }
+        this.domOverlay = this.add.dom(180, 300).createFromCache('html_login');
+        this.add.tween({
+            targets: [this.fadeCover],
+            ease: 'Sine.easeInOut',
+            duration: duration,
+            delay: 0,
+            alpha: {
+                getStart: function () {
+                    return 0;
+                },
+                getEnd: function () {
+                    return 0.4;
+                }
+            }
+        });
+        this.domOverlay.addListener("click");
+        this.domOverlay.on("click", function (event) {
+            if (event.target.id === "login-register") {
+                event.preventDefault();
+                this._dismissOverlay(0);
+                this.showRegisterOverlay(0);
+            }
+        }, this);
+    }
+
+    showRegisterOverlay(duration=500) {
+        if (this.domOverlay) {
+            return;
+        }
+        this.domOverlay = this.add.dom(180, 300).createFromCache('html_register');
+        this.add.tween({
+            targets: [this.fadeCover],
+            ease: 'Sine.easeInOut',
+            duration: duration,
+            delay: 0,
+            alpha: {
+                getStart: function () {
+                    return 0;
+                },
+                getEnd: function () {
+                    return 0.4;
+                }
+            }
+        });
+        this.domOverlay.addListener("click");
+        this.domOverlay.on("click", function (event) {
+            if (event.target.id === "register-login") {
+                event.preventDefault();
+                this._dismissOverlay(0);
+                this.showLoginOverlay(0);
+            }
+        }, this);
+    }
+
     dismissOverlay(img, pointer) {
-        if (!this.domOverlay || pointer.upElement.tagName != "CANVAS") {
+        if (pointer.upElement.tagName != "CANVAS") {
+            return
+        }
+        this._dismissOverlay();
+    }
+
+    _dismissOverlay(duration=200) {
+        if (!this.domOverlay) {
             return;
         }
         this.domOverlay.destroy();
@@ -91,7 +137,7 @@ class ListLevels extends Phaser.Scene {
         let tw = this.add.tween({
             targets: [this.fadeCover],
             ease: 'Sine.easeInOut',
-            duration: 200,
+            duration: duration,
             delay: 0,
             alpha: {
                 getStart: function () {
