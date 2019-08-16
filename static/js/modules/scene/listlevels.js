@@ -117,8 +117,44 @@ class ListLevels extends Phaser.Scene {
                 event.preventDefault();
                 this._dismissOverlay(0);
                 this.showLoginOverlay(0);
+            } else if (event.target.id == "register-button") {
+                event.preventDefault();
+                let username = this.domOverlay.getChildByID("register-username").value;
+                let password = this.domOverlay.getChildByID("register-password").value;
+                let node = this.domOverlay.node;
+                let genders = node.querySelectorAll("[name='register-gender']");
+                let gender = null;
+                for (let i  = 0; i < genders.length; i++) {
+                    if (genders[i].checked) {
+                        gender = genders[i].value.substr(0, 1);
+                        break;
+                    }
+                }
+                let grade = this.domOverlay.getChildByID("register-grade").value;
+                if (!username || !password || !gender || !grade) {
+                    return;
+                }
+                let that = this;
+                cdapi.register(username, password, grade, gender)
+                    .then(function (data) {
+                        if (data.status == "ok") {
+                            that.updateSignInIcon();
+                            that._dismissOverlay();
+                        } else if (data.status == "error") {
+                            that.domOverlay.getChildByID("register-error-msg").textContent = data.error;
+                            that.domOverlay.getChildByID("register-error-msg").classList.remove("hidden");
+                        }
+                    }).catch(function (data) {
+                        that.domOverlay.getChildByID("register-error-msg").textContent = data.error;
+                        that.domOverlay.getChildByID("register-error-msg").classList.remove("hidden");
+                    });
             }
         }, this);
+        let gradeDisp = this.domOverlay.getChildByID("register-grade-displ");
+        let gradeSlider = this.domOverlay.getChildByID("register-grade");
+        gradeSlider.addEventListener("input", function () {
+            gradeDisp.textContent = this.value;
+        })
     }
 
     dismissOverlay(img, pointer) {

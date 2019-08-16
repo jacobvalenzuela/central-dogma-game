@@ -5,7 +5,7 @@
       border-radius: 6px;
       height: 370px;
       margin: 20px auto 0;
-      width: 298px;
+      width: 377px;
     }
     .register h1 {
       background-image: linear-gradient(top, #f1f3f3, #d4dae0);
@@ -141,9 +141,9 @@
 
     <p>Gender</p>
     <div class="radio-btns">
-        <input type="radio" name="gender" value="male" id="register-gender-male"> <label for="register-gender-male">Male</label>
-        <input type="radio" name="gender" value="female" id="register-gender-female"> <label for="register-gender-female">Female</label>
-        <input type="radio" name="gender" value="other" id="register-gender-other"> <label for="register-gender-other">Other</label>
+        <input type="radio" name="register-gender" value="male" id="register-gender-male"> <label for="register-gender-male">Male</label>
+        <input type="radio" name="register-gender" value="female" id="register-gender-female"> <label for="register-gender-female">Female</label>
+        <input type="radio" name="register-gender" value="other" id="register-gender-other"> <label for="register-gender-other">Other</label>
     </div>
 
     <p>Grade: <span id="register-grade-displ">6</span></p>
@@ -151,6 +151,6 @@
         <input type="range" min="1" max="12" value="6" class="slider" id="register-grade">
     </div>
 
-    <input type="submit" value="Register" name="registerButton">
-    <p class="error hidden">Username is already taken.</p>
+    <input type="submit" value="Register" name="registerButton" id="register-button">
+    <p class="error hidden" id="register-error-msg">Username is already taken.</p>
   </div>

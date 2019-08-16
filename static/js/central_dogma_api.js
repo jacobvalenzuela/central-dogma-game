@@ -16,7 +16,7 @@
     }
 
     function handleError() {
-        let err = {"status": "error", "message": "The API service cannot be reached."};
+        let err = {"status": "error", "error": "The API service cannot be reached."};
         console.log(err);
         return err;
     }
