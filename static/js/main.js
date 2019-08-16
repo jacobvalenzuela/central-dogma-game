@@ -8,38 +8,7 @@ import Game from "./modules/game.js";
  */
 (function () {
     "use strict";
-
-    /**
-     * When called, it resizes the Canvas on the page so that
-     * it would scale porportionally to the width and height.
-     * That would look good on all devices width and height.
-     */
-    function resizeCanvas() {
-        let mainWidth = 360;
-        let mainHeight = 740;
-        let screenWidth = window.innerWidth;
-        let screenHeight = window.innerHeight;
-        let tRatio = mainWidth / screenWidth;
-        let tProportionalHeight = mainHeight / tRatio;
-        tRatio = mainHeight / screenHeight;
-        let tProportionalWidth = mainWidth / tRatio;
-        if (tProportionalHeight > screenHeight) {
-            mainWidth = tProportionalWidth;
-            mainHeight = screenHeight;
-        } else {
-            mainWidth = screenWidth;
-            mainHeight = tProportionalHeight;
-        }
-        let main = document.querySelector("main");
-        main.style.height = mainHeight + "px";
-        main.style.width = mainWidth + "px";
-    }
-
-    resizeCanvas();
-    window.addEventListener("resize", function () {
-        resizeCanvas();
-    });
-
+    
     WebFont.load({
         google: {
             families: ['Open Sans', 'Knewave', 'Bevan']

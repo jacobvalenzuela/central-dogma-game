@@ -66,13 +66,13 @@
     .register .forgot {
       color: #7f7f7f;
       display: inline-block;
-      float: right;
       font: 12px/1 sans-serif;
-      left: -19px;
       position: relative;
       text-decoration: none;
-      top: 5px;
+      top: 15px;
       transition: color .4s;
+      text-align: center;
+      width: 100%;
     }
     .register .forgot:hover { color: #3b3b3b }
     .register input[type="submit"] {
@@ -135,6 +135,7 @@
   </style>
   
   <div class="register">
+    <a href="#" class="forgot">Already have an account? Login here!</a>
     <input type="text" placeholder="Username" id="register-username" name="username">
     <input type="password" placeholder="Password" id="register-password" name="password">
 

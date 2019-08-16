@@ -16,9 +16,18 @@ class Game {
     constructor (levels) {
         this.config = {
             type: Phaser.WEBGL,
-            canvas: document.getElementsByTagName("canvas")[0],
-            width: 360,
-            height: 740,
+            // canvas: document.getElementsByTagName("canvas")[0],
+            // parent: document.getElementsByTagName("main")[0],
+            dom: {
+                createContainer: true,
+            },
+            scale: {
+                parent: "game",
+                mode: Phaser.Scale.FIT,
+                autoCenter: Phaser.Scale.CENTER_BOTH,
+                width: 360,
+                height: 740,
+            },
             backgroundColor: "#fff",
             plugins: {
                 scene: [
@@ -78,6 +87,9 @@ class Game {
         this.game.load.image("logo_isb", "static/img/ISB_Logo.png");
         this.game.load.image("play_btn", "static/img/playBtn.png");
         this.game.load.image("home_btn", "static/img/homeBtn.png");
+
+        this.game.load.svg("signin_signin_icn", "static/img/sign_in/sign-in-alt-solid.svg");
+        this.game.load.svg("signin_user_icn", "static/img/sign_in/user-solid.svg");
         
         this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");
         this.game.load.image("nt_adenine_basic", "static/img/nucleotide/adenine/Adenine_basic@3x.png");
@@ -117,6 +129,10 @@ class Game {
             this.game.scene.add("levelpre" + i, PreLevelStage, false, {gameObj: this, lvlNum: i, level: level});
             this.game.scene.add("level" + i, LevelStage, false, {gameObj: this, lvlNum: i, level: level});
         }
+
+        this.game.load.html("html_login", "static/html/login.html");
+        this.game.load.html("html_register", "static/html/register.html");
+        this.game.load.html("html_sessions", "static/html/sessions.html");
     }
 
     /**

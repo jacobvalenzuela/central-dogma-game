@@ -29,9 +29,78 @@ class ListLevels extends Phaser.Scene {
         this.add.text(18, 53, "Choose a level", 
             {fontFamily: '\'Open Sans\', sans-serif', fontSize: '24pt', color: '#000'});
 
+        this.userbtn = this.add.image(40, 30, "nt_thymine_basic").setScale(0.17).setAngle(15).setInteractive();
+        this.signInIcn = this.add.image(40, 30, "signin_signin_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
+        this.userIcn = this.add.image(40, 30, "signin_user_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
+        this.updateSignInIcon();
+
         let that = this;
         this.fadeIn(function () {
             that.populateLevels();
+            that.userbtn.addListener("pointerup", that.bindFn(that.onUserButtonClick));
+        });
+
+        this.domOverlay = null;
+        this.fadeCover = this.add.rectangle(180, 370, 360, 740, 0x000000).setDepth(1000).setAlpha(0).setInteractive();
+        this.fadeCover.addListener("pointerup", that.bindFn(that.dismissOverlay))
+    }
+
+    updateSignInIcon() {
+        if (cdapi.isLoggedIn()) {
+            this.signInIcn.setVisible(false);
+            this.userIcn.setVisible(true);
+        } else {
+            this.signInIcn.setVisible(true);
+            this.userIcn.setVisible(false);
+        }
+    }
+
+    onUserButtonClick() {
+        if (this.domOverlay) {
+            return;
+        }
+        if (!cdapi.isLoggedIn()) {
+            this.domOverlay = this.add.dom(180, 300).createFromCache('html_login');
+            // this.camera.fadeEffect.start(true, 500, 100, 100, 100);
+            this.add.tween({
+                targets: [this.fadeCover],
+                ease: 'Sine.easeInOut',
+                duration: 500,
+                delay: 0,
+                alpha: {
+                    getStart: function () {
+                        return 0;
+                    },
+                    getEnd: function () {
+                        return 0.4;
+                    }
+                }
+            });
+            window.dol = this.domOverlay
+        } else {
+
+        }
+    }
+
+    dismissOverlay(a, b, c, d, e) {
+        if (!this.domOverlay || b.upElement.tagName != "CANVAS") {
+            return;
+        }
+        this.domOverlay.destroy();
+        this.domOverlay = null;
+        let tw = this.add.tween({
+            targets: [this.fadeCover],
+            ease: 'Sine.easeInOut',
+            duration: 200,
+            delay: 0,
+            alpha: {
+                getStart: function () {
+                    return 0.4;
+                },
+                getEnd: function () {
+                    return 0;
+                }
+            }
         });
     }
 
@@ -74,6 +143,9 @@ class ListLevels extends Phaser.Scene {
      * @param {Phaser.GameObjects.Image} img - image that got clicked
      */
     onLvlClick(img) {
+        if (this.domOverlay) {
+            return;
+        }
         let level = img.getData("level");
         this.camera.fadeOut(400);
 
@@ -99,6 +171,9 @@ class ListLevels extends Phaser.Scene {
      * @param {Phaser.GameObjects.Image} img 
      */
     lvlPointerDown(img) {
+        if (this.domOverlay) {
+            return;
+        }
         img.setScale(0.15);
     }
 
@@ -107,6 +182,9 @@ class ListLevels extends Phaser.Scene {
      * @param {Phaser.GameObjects.Image} img 
      */
     lvlPointerRelease(img) {
+        if (this.domOverlay) {
+            return;
+        }
         img.setScale(0.20);
     }
 
