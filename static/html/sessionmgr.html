@@ -3,7 +3,7 @@
       background: #F0F8FF;
       border: 1px solid #42464b;
       border-radius: 6px;
-      height: 499px;
+      height: 511px;
       margin: 20px auto 0;
       width: 298px;
     }
@@ -146,7 +146,31 @@
     }
 
     .sessionmgr li {
-      margin-bottom: 3px;
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
+
+    .sessionmgr li a {
+      display: block;
+      background-color: #1fc8db;
+      background-image: linear-gradient(141deg, #23ce83 0%, #1fc8db 51%, #2cb5e8 75%);
+      height: 25px;
+      width: 250px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-top: 2px;
+      font-size: 15pt;
+      border-radius: 10px;
+      color: white;
+      text-decoration: none;
+      border-color: rgba(0, 0, 0, 0);
+      border-width: 5px;
+      border-style: solid;
+    }
+
+    .sessionmgr li a.selected {
+      border-color: #a25bff;
+      
     }
 
     .sessionmgr .leaderboard-container ol {
@@ -167,11 +191,11 @@
     <h1>Manage Sessions</h1>
     <div class="leaderboard-container">
       <ul>
-        <li><a href="#">[Create New Session]</a></li>
-        <li><a href="#">Session1</a></li>
-        <li><a href="#">Session1</a></li>
-        <li><a href="#">Session1</a></li>
-        <li><a href="#">Session1</a></li>
+        <li><a href="#" data-session-id="new" class="selected">[Create New Session]</a></li>
+        <li><a href="#" data-session-id="session1">Session1</a></li>
+        <li><a href="#" data-session-id="session1">Session1</a></li>
+        <li><a href="#" data-session-id="session1">Session1</a></li>
+        <li><a href="#" data-session-id="session1">Session1</a></li>
         <li><a href="#">Session1</a></li>
         <li><a href="#">Session1</a></li>
         <li><a href="#">Session1</a></li>
@@ -180,35 +204,12 @@
         <li><a href="#">Session1</a></li>
       </ul>
     </div>
-    <h1>Manage Sessions</h1>
+    <h1>Session</h1>
     <input type="text" placeholder="Name" id="sessionmgr-name-input" name="name">
     <div class="label">Start</div>
     <input type="datetime-local" placeholder="Start" id="sessionmgr-start-input" name="start">
     <div class="label">End</div>
     <input type="datetime-local" placeholder="End" id="sessionmgr-end-input" name="end">
-    <input type="submit" value="submit" name="sessionmgrButton" id="sessionmgr-submit-button">
-
-
-    <!--
-    <input type="text" placeholder="Name" id="sessionmgr-name-input" name="name">
-    <input type="submit" value="join" name="sessionmgrButton" id="sessionmgr-join-button">
-    <div class="error hidden" id="sessionmgr-error-message">This session does not exist!</div>
-    <br>
-    <h1>Leaderboard (Current Session: <strong id="sessionmgr-session-name-displ">None</strong>)</h1>
-    <div class="leaderboard-container">
-        <p class="hidden" id="sessionmgr-no-scores-notice">There are no scores.</p>
-        <ol id="sessionmgr-leaderboard-list">
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-        </ol>
-    </div>
-    -->
+    <input type="submit" value="Save" name="sessionmgrButton" id="sessionmgr-submit-button">
+    <div class="error hidden" id="sessionmgr-error-message">This session name has already been taken!</div>
   </div>
