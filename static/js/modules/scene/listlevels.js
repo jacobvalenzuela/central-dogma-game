@@ -104,6 +104,53 @@ class ListLevels extends Phaser.Scene {
                 that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
                 that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
             });
+            
+        this.domOverlay.addListener("click");
+        this.domOverlay.on("click", function (event) {
+            if (event.target.id == "sessionmgr-submit-button") {
+                event.preventDefault();
+                let sessioncode = this.domOverlay.getChildByID("sessionmgr-name-input").value;
+                let start = this.domOverlay.getChildByID("sessionmgr-start-input").value;
+                let end = this.domOverlay.getChildByID("sessionmgr-end-input").value;
+                if (!sessioncode || !start || !end) {
+                    return;
+                }
+                start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL).format("YYYY-MM-DD HH:mm:ss");
+                end = moment(end, moment.HTML5_FMT.DATETIME_LOCAL).format("YYYY-MM-DD HH:mm:ss");
+                let selectedSessionCode = this.domOverlay.getChildByID("sessionmgr-sessions-list").querySelector("a.selected").dataset.sessionCode;
+                if (selectedSessionCode == "new") {
+                    cdapi.makeSession(sessioncode, start, end)
+                        .then(function (data) {
+                            if (data.status == "ok") {
+                                that._dismissOverlay(0);
+                                that.showSessionMgrOverlay(0);
+                            } else {
+                                that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
+                                that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
+                            }
+                        })
+                        .catch(function (data) {
+                            that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
+                            that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
+                        });
+                } else {
+                    cdapi.modifySession(sessioncode, start, end)
+                        .then(function (data) {
+                            if (data.status == "ok") {
+                                that._dismissOverlay(0);
+                                that.showSessionMgrOverlay(0);
+                            }else {
+                                that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
+                                that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
+                            }
+                        })
+                        .catch(function (data) {
+                            that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
+                            that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
+                        });
+                }
+            }
+        }, this);
     }
 
     addSessionToSessionMgr(code, start=null, end=null) {
@@ -125,7 +172,8 @@ class ListLevels extends Phaser.Scene {
         li.appendChild(anchor);
         this.domOverlay.getChildByID("sessionmgr-sessions-list").appendChild(li);
         let that = this;
-        anchor.addEventListener("click", function () {
+        anchor.addEventListener("click", function (event) {
+            event.preventDefault();
             this.parentNode.parentNode.querySelector("a.selected").classList.remove("selected");
             this.classList.add("selected");
             that.populateSessionManagerForm(this.dataset.sessionCode, this.dataset.startTime, this.dataset.endTime);
