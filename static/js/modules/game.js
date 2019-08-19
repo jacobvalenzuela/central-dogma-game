@@ -133,6 +133,7 @@ class Game {
         this.game.load.html("html_login", "static/html/login.html");
         this.game.load.html("html_register", "static/html/register.html");
         this.game.load.html("html_sessions", "static/html/sessions.html");
+        this.game.load.html("html_sessionmgr", "static/html/sessionmgr.html");
     }
 
     /**

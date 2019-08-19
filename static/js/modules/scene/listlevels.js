@@ -63,6 +63,90 @@ class ListLevels extends Phaser.Scene {
         }
     }
 
+    showSessionMgrOverlay(duration=500) {
+        if (this.domOverlay) {
+            return;
+        }
+        this.domOverlay = this.add.dom(180, 300).createFromCache('html_sessionmgr');
+        this.add.tween({
+            targets: [this.fadeCover],
+            ease: 'Sine.easeInOut',
+            duration: duration,
+            delay: 0,
+            alpha: {
+                getStart: function () {
+                    return 0;
+                },
+                getEnd: function () {
+                    return 0.4;
+                }
+            }
+        });
+
+        this.domOverlay.getChildByID("sessionmgr-sessions-list").innerHTML = "";
+        let newSess = this.addSessionToSessionMgr("new");
+        newSess.querySelector("a").classList.add("selected");
+        let that = this;
+        cdapi.ownedSessions()
+            .then(function (data) {
+                if (data.status == "ok") {
+                    that.domOverlay.getChildByID("sessionmgr-error-message").classList.add("hidden");
+                    for (let i = 0; i < data.sessions.length; i++) {
+                        let sess = data.sessions[i];
+                        that.addSessionToSessionMgr(sess.session_code, sess.start_time, sess.end_time);
+                    }
+                } else {
+                    that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
+                    that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
+                }
+            })
+            .catch(function (data) {
+                that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
+                that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
+            });
+    }
+
+    addSessionToSessionMgr(code, start=null, end=null) {
+        let li = document.createElement("li");
+        let anchor = document.createElement("a");
+        anchor.href = "#";
+        if (code == "new") {
+            anchor.textContent = "[Create New Session]";
+        } else {
+            anchor.textContent = code;
+        }
+        if (start) {
+            anchor.dataset.startTime = start;
+        }
+        if (end) {
+            anchor.dataset.endTime = end;
+        }
+        anchor.dataset.sessionCode = code;
+        li.appendChild(anchor);
+        this.domOverlay.getChildByID("sessionmgr-sessions-list").appendChild(li);
+        let that = this;
+        anchor.addEventListener("click", function () {
+            this.parentNode.parentNode.querySelector("a.selected").classList.remove("selected");
+            this.classList.add("selected");
+            that.populateSessionManagerForm(this.dataset.sessionCode, this.dataset.startTime, this.dataset.endTime);
+        });
+        return li;
+    }
+
+    populateSessionManagerForm(code, start=null, end=null) {
+        if (code == "new") {
+            this.domOverlay.getChildByID("sessionmgr-name-input").disabled = false;
+            this.domOverlay.getChildByID("sessionmgr-name-input").value = "";
+            this.domOverlay.getChildByID("sessionmgr-start-input").value = "";
+            this.domOverlay.getChildByID("sessionmgr-end-input").value = "";
+        } else {
+            this.domOverlay.getChildByID("sessionmgr-name-input").disabled = true;
+            this.domOverlay.getChildByID("sessionmgr-name-input").value = code;
+            this.domOverlay.getChildByID("sessionmgr-start-input").value = moment(start).format(moment.HTML5_FMT.DATETIME_LOCAL);
+            this.domOverlay.getChildByID("sessionmgr-end-input").value = moment(end).format(moment.HTML5_FMT.DATETIME_LOCAL);
+        }
+    }
+
     showSessionsOverlay(duration=500) {
         if (this.domOverlay) {
             return;
@@ -112,8 +196,12 @@ class ListLevels extends Phaser.Scene {
                         that.domOverlay.getChildByID("sessions-error-message").classList.remove("hidden");
                         that.domOverlay.getChildByID("sessions-error-message").textContent = error;
                     });
+            } else if (event.target.id == "sessions-manager") {
+                event.preventDefault();
+                this._dismissOverlay(0);
+                this.showSessionMgrOverlay(0);
             }
-        });
+        }, this);
     }
 
     updateSessionOverlay() {
