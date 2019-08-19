@@ -59,7 +59,129 @@ class ListLevels extends Phaser.Scene {
         if (!cdapi.isLoggedIn()) {
             this.showLoginOverlay();
         } else {
+            this.showSessionsOverlay();
+        }
+    }
 
+    showSessionsOverlay(duration=500) {
+        if (this.domOverlay) {
+            return;
+        }
+        this.domOverlay = this.add.dom(180, 300).createFromCache('html_sessions');
+        this.add.tween({
+            targets: [this.fadeCover],
+            ease: 'Sine.easeInOut',
+            duration: duration,
+            delay: 0,
+            alpha: {
+                getStart: function () {
+                    return 0;
+                },
+                getEnd: function () {
+                    return 0.4;
+                }
+            }
+        });
+        
+        this.updateSessionOverlay();
+
+        let that = this;
+        this.domOverlay.addListener("click");
+        this.domOverlay.on("click", function () {
+            if (event.target.id == "sessions-join-button") {
+                let val = that.domOverlay.getChildByID("sessions-name-input").value;
+                if (!val) {
+                    return;
+                }
+                cdapi.sessionInfo(val)
+                    .then(function (data) {
+                        if (data.status == "ok") {
+                            that.domOverlay.getChildByID("sessions-error-message").classList.add("hidden");
+                            cdapi.setCurrentSession(val);
+                            that.updateSessionOverlay();
+                        } else {
+                            that.domOverlay.getChildByID("sessions-error-message").classList.remove("hidden");
+                            that.domOverlay.getChildByID("sessions-error-message").textContent = "Session does not exist or it may have expied.";
+                        }
+                    })
+                    .catch(function (data) {
+                        let error = data.error;
+                        if (!error) {
+                            error = "The API service cannot be reached.";
+                        }
+                        that.domOverlay.getChildByID("sessions-error-message").classList.remove("hidden");
+                        that.domOverlay.getChildByID("sessions-error-message").textContent = error;
+                    });
+            }
+        });
+    }
+
+    updateSessionOverlay() {
+        let that = this;
+        if (cdapi.getCurrentSession() == null) {
+            cdapi.globalLeaderboard()
+                .then(function (data) {
+                    if (data.status == "ok") {
+                        that.updateSessionOverlayLeaderboard(data.entries);
+                    } else {
+                        that.updateSessionOverlayLeaderboard([]);
+                    }
+                })
+                .catch(function () {
+                    that.updateSessionOverlayLeaderboard([]);
+                });
+        } else {
+            let currentSession = cdapi.getCurrentSession();
+            cdapi.sessionInfo(currentSession)
+                .then(function (data) {
+                    if (data.status == "ok") {
+                        cdapi.sessionLeaderboard(currentSession)
+                            .then(function (data) {
+                                if (data.status == "ok") {
+                                    that.updateSessionOverlayLeaderboard(data.entries);
+                                } else {
+                                    that.updateSessionOverlayLeaderboard([]);
+                                }
+                            })
+                            .catch(function () {
+                                that.updateSessionOverlayLeaderboard([]);
+                            });
+                    } else {
+                        cdapi.setCurrentSession(null);
+                        that.updateSessionOverlayLeaderboard([]);
+                    }
+                })
+                .catch(function () {
+                    cdapi.setCurrentSession(null);
+                    that.updateSessionOverlayLeaderboard([]);
+                });
+        }
+    }
+
+    updateSessionOverlayLeaderboard(leaderboard) {
+        let currentSession = cdapi.getCurrentSession();
+        this.domOverlay.getChildByID("sessions-leaderboard-list").innerHTML = "";
+
+        if (currentSession == null) {
+            this.domOverlay.getChildByID("sessions-session-name-displ").textContent = "Global";
+        } else {
+            this.domOverlay.getChildByID("sessions-session-name-displ").textContent = currentSession;
+        }
+        
+        if (leaderboard.length) {
+            this.domOverlay.getChildByID("sessions-no-scores-notice").classList.add("hidden");
+            for (let i = 0; i < leaderboard.length; i++) {
+                let entry = leaderboard[i];
+                let li = document.createElement("li");
+                let tn = document.createTextNode(entry.username + " - ");
+                let strong = document.createElement("strong");
+                strong.textContent = entry.score;
+                li.appendChild(tn);
+                li.appendChild(strong);
+                this.domOverlay.getChildByID("sessions-leaderboard-list").appendChild(li);
+            }
+        } else {
+            this.domOverlay.getChildByID("sessions-no-scores-notice").classList.remove("hidden");
         }
     }
 

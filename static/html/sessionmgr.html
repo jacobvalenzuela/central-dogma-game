@@ -1,13 +1,13 @@
 <style>
-    .sessions {
+    .sessionmgr {
       background: #F0F8FF;
       border: 1px solid #42464b;
       border-radius: 6px;
-      height: 370px;
+      height: 499px;
       margin: 20px auto 0;
       width: 298px;
     }
-    .sessions h1 {
+    .sessionmgr h1 {
       background-image: linear-gradient(top, #f1f3f3, #d4dae0);
       border-bottom: 1px solid #a6abaf;
       border-radius: 6px 6px 0 0;
@@ -21,7 +21,7 @@
       text-align: center;
       text-shadow: 0 -1px 0 rgba(0,0,0,0.2), 0 1px 0 #fff;
     }
-    .sessions input[type="password"], .sessions input[type="text"] {
+    .sessionmgr input[type="password"], .sessionmgr input[type="text"], .sessionmgr input[type="datetime-local"] {
       background: linear-gradient(top, #d6d7d7, #dee0e0);
       border: 1px solid #a1a3a3;
       border-radius: 4px;
@@ -29,41 +29,41 @@
       box-sizing: border-box;
       color: #696969;
       height: 39px;
-      margin: 31px 0 0 29px;
+      margin: 5px 0 0 29px;
       padding-left: 37px;
       transition: box-shadow 0.3s;
       width: 240px;
     }
-    .sessions input[type="password"]:focus, .sessions input[type="text"]:focus {
+    .sessionmgr input[type="password"]:focus, .sessionmgr input[type="text"]:focus, .sessionmgr input[type="datetime-local"]:focus {
       box-shadow: 0 0 4px 1px rgba(55, 166, 155, 0.3);
       outline: 0;
     }
-    .sessions .show-password {
+    .sessionmgr .show-password {
       display: block;
       height: 16px;
       margin: 26px 0 0 28px;
       width: 87px;
     }
-    .sessions input[type="checkbox"] {
+    .sessionmgr input[type="checkbox"] {
       cursor: pointer;
       height: 16px;
       opacity: 0;
       position: relative;
       width: 64px;
     }
-    .sessions input[type="checkbox"]:checked {
+    .sessionmgr input[type="checkbox"]:checked {
       left: 29px;
       width: 58px;
     }
-    .sessions .toggle {
+    .sessionmgr .toggle {
       display: block;
       height: 16px;
       margin-top: -20px;
       width: 87px;
       z-index: -1;
     }
-    .sessions input[type="checkbox"]:checked + .sessions .toggle { background-position: 0 -16px }
-    .sessions .forgot {
+    .sessionmgr input[type="checkbox"]:checked + .sessionmgr .toggle { background-position: 0 -16px }
+    .sessionmgr .forgot {
       color: #7f7f7f;
       display: inline-block;
       float: right;
@@ -74,8 +74,8 @@
       top: 5px;
       transition: color .4s;
     }
-    .sessions .forgot:hover { color: #3b3b3b }
-    .sessions input[type="submit"] {
+    .sessionmgr .forgot:hover { color: #3b3b3b }
+    .sessionmgr input[type="submit"] {
       width:240px;
       height:35px;
       display:block;
@@ -101,63 +101,103 @@
       box-shadow: inset 0px 1px 0px #2ab7ec, 0px 5px 0px 0px #497a78, 0px 10px 5px #999;
     }
   
-    .sessions input[type="submit"]:active {
+    .sessionmgr input[type="submit"]:active {
       top:3px;
       box-shadow: inset 0px 1px 0px #2ab7ec, 0px 2px 0px 0px #31524d, 0px 5px 3px #999;
     }
   
-    .sessions .hidden {
+    .sessionmgr .hidden {
       display: none;
     }
   
-    .sessions .error {
+    .sessionmgr .error {
       color: red;
       text-align: center;
     }
 
-    .sessions .slidecontainer {
+    .sessionmgr .slidecontainer {
         width: 90%; /* Width of the outside container */
         margin-left: auto;
         margin-right: auto;
     }
 
-    .sessions .slider {
+    .sessionmgr .slider {
         width: 100%;
     }
 
-    .sessions p {
+    .sessionmgr p {
         margin-bottom: 4px;
     }
 
-    .sessions p, .sessions .radio-btns {
+    .sessionmgr p, .sessionmgr .radio-btns {
         margin-left: 17px;
     }
 
-    .sessions .leaderboard-container {
+    .sessionmgr .leaderboard-container {
         max-height: 130px;
         overflow-y: scroll;
     }
 
-    .sessions .leaderboard-container ol {
+    .sessionmgr ul {
+      text-align: center;
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sessionmgr li {
+      margin-bottom: 3px;
+    }
+
+    .sessionmgr .leaderboard-container ol {
         margin: 0;
     }
 
-    #sessions-error-message {
+    #sessionmgr-error-message {
       margin-top: 10px;
+    }
+
+    .sessionmgr .label {
+      margin-top: 15px;
+      text-align: center;
     }
   </style>
   
-  <div class="sessions">
-    <h1>Join a Session</h1>
-    <input type="text" placeholder="Name" id="sessions-name-input" name="name">
-    <a href="#" class="forgot" id="sessions-manager">Manage Your Sessions</a>
-    <input type="submit" value="join" name="sessionsButton" id="sessions-join-button">
-    <div class="error hidden" id="sessions-error-message">This session does not exist!</div>
-    <br>
-    <h1>Leaderboard (Current Session: <strong id="sessions-session-name-displ">None</strong>)</h1>
+  <div class="sessionmgr">
+    <h1>Manage Sessions</h1>
     <div class="leaderboard-container">
-        <p class="hidden" id="sessions-no-scores-notice">There are no scores.</p>
-        <ol id="sessions-leaderboard-list">
+      <ul>
+        <li><a href="#">[Create New Session]</a></li>
+        <li><a href="#">Session1</a></li>
+        <li><a href="#">Session1</a></li>
+        <li><a href="#">Session1</a></li>
+        <li><a href="#">Session1</a></li>
+        <li><a href="#">Session1</a></li>
+        <li><a href="#">Session1</a></li>
+        <li><a href="#">Session1</a></li>
+        <li><a href="#">Session1</a></li>
+        <li><a href="#">Session1</a></li>
+        <li><a href="#">Session1</a></li>
+      </ul>
+    </div>
+    <h1>Manage Sessions</h1>
+    <input type="text" placeholder="Name" id="sessionmgr-name-input" name="name">
+    <div class="label">Start</div>
+    <input type="datetime-local" placeholder="Start" id="sessionmgr-start-input" name="start">
+    <div class="label">End</div>
+    <input type="datetime-local" placeholder="End" id="sessionmgr-end-input" name="end">
+    <input type="submit" value="submit" name="sessionmgrButton" id="sessionmgr-submit-button">
+
+
+    <!--
+    <input type="text" placeholder="Name" id="sessionmgr-name-input" name="name">
+    <input type="submit" value="join" name="sessionmgrButton" id="sessionmgr-join-button">
+    <div class="error hidden" id="sessionmgr-error-message">This session does not exist!</div>
+    <br>
+    <h1>Leaderboard (Current Session: <strong id="sessionmgr-session-name-displ">None</strong>)</h1>
+    <div class="leaderboard-container">
+        <p class="hidden" id="sessionmgr-no-scores-notice">There are no scores.</p>
+        <ol id="sessionmgr-leaderboard-list">
             <li>Name - <strong>2000</strong></li>
             <li>Name - <strong>2000</strong></li>
             <li>Name - <strong>2000</strong></li>
@@ -170,4 +210,5 @@
             <li>Name - <strong>2000</strong></li>
         </ol>
     </div>
+    -->
   </div>

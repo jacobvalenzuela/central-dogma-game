@@ -8,6 +8,7 @@
     const BASE_URL = 'http://localhost:5000';
     //const BASE_URL = '/api';
     let loggedIn = false;
+    let currentSession = null;
 
     /* Get the session id */
     function get(name) {
@@ -166,6 +167,13 @@
         return loggedIn;
     }
 
+    cdapi.getCurrentSession = function () {
+        return currentSession;
+    }
+
+    cdapi.setCurrentSession = function (sess) {
+        currentSession = sess;
+    }
     // These lines needed to support a NPM/ES6 environment, the define() call
     // is to support RequireJS
     glob.cdapi = cdapi;
