@@ -33,6 +33,13 @@ class LevelComplete extends Phaser.Scene {
         this.graphics.fillRect(0, 0, 360, 740);
 
         let that = this;
+        if (cdapi.isLoggedIn()) {
+            cdapi.logLevelCompletion(this.level, {
+                "score": data.score,
+                "session_code": cdapi.getCurrentSession(),
+            });
+        }
+
         this.fadeIn(function () {
             let rectbg = that.add.rectangle(180, -100, 300, 400, 0x9BDBF5);
             rectbg.setStrokeStyle(5, 0x5C96C9, 1);
