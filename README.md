@@ -58,9 +58,9 @@ There are multiple popups variations to choose from. You may assign one popup va
 
 | Popup Variation | Behavior | Template Parameters |
 | --- | --- | --- |
-| firstCorrectMatch | When the player makes a first correct match, compliment them with something! | nucleotide1 & nucleotide2 -> the two nucleotides that the player has made |
-| errorMatch | When the player makes an incorrect match, inform them. | nucleotide1 & nucleotide2 -> the two nucleotides that the player has made |
-| error5Match | On every 5 incorrect matches made, show this popup. | nucleotide1 & nucleotide2 -> the two nucleotides that the player has made |
+| firstCorrectMatch | When the player makes a first correct match, compliment them with something! | `nucleotide1` & `nucleotide2` -> the two nucleotides that the player has made |
+| errorMatch | When the player makes an incorrect match, inform them. | `nucleotide1` & `nucleotide2` -> the two nucleotides that the player has made |
+| error5Match | On every 5 incorrect matches made, show this popup. | `nucleotide1` & `nucleotide2` -> the two nucleotides that the player has made |
 
 ##### Templates Object
 
