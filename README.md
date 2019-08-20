@@ -39,6 +39,7 @@ for the nucleotides level may look something like this.
 ```
 
 Here is a reference of what kind of properties each level can contain.
+
 | Property | Description |
 | --- | --- |
 | ntSequence | Sequence of nucleotides that the level should provide for the player. They are the incoming nucleotides. For codons level, the length of the sequence must be divisible by 3. |
@@ -54,6 +55,7 @@ Here is a reference of what kind of properties each level can contain.
 #### Popups
 
 There are multiple popups variations to choose from. You may assign one popup variation each per level.
+
 | Popup Variation | Behavior | Template Parameters |
 | --- | --- | --- |
 | firstCorrectMatch | When the player makes a first correct match, compliment them with something! | nucleotide1 & nucleotide2 -> the two nucleotides that the player has made |
