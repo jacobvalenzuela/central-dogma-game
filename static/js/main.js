@@ -89,6 +89,25 @@ import Game from "./modules/game.js";
             "rotateNT": false,
             "ntType": "basic",
             "lvlType": "codon_transcription",
+            "quiz": {
+                "question": "Three base pairs are called a __________.",
+                "options": [
+                    "Codon", // first option is correct
+                    "Ammino Acid",
+                    "Peptide",
+                    "DNA",
+                ],
+            },
+            "sequencedinfo": {
+                "name": "insulin",
+                "description": "<strong>Insulin</strong> is a <span style='color: lightblue;'>gene</span> that codes for a peptide (sequence of <span style='color: red;'>amino acids</span>) that acts as a hormone to regulate metabolism",
+                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+                "imgurl": "./static/img/flashcard/insulin.png",
+            },
+            "knowledgepanel": {
+                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: lightblue;'>gene starts</span>.",
+                "imgurl": "./static/img/flashcard/promoter_dna.png",
+            },
         },
         // {
         //     "ntSequence": "A",
