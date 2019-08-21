@@ -34,7 +34,8 @@ class LevelComplete extends Phaser.Scene {
 
         this.graphics.fillStyle(0x000000, 0.50);
         this.graphics.fillRect(0, 0, 360, 740);
-        this.cntTimer = 20;
+        this.cntTimer = 2;
+        this.quizAnswered = false;
 
         let that = this;
         if (cdapi.isLoggedIn()) {
@@ -541,6 +542,33 @@ class LevelComplete extends Phaser.Scene {
         this.homeBtn.removeInteractive();
         this.quizOverlay = this.add.dom(180, 900).createFromCache("html_quiz");
         this.quizOverlay.setScale(1.1);
+        this.quizOverlay.getChildByID("quiz-question").textContent = this.quiz.question;
+        this.quizOverlay.getChildByID("quiz-options").innerHTML = "";
+        this.quizOverlay.getChildByID("quiz-submit-btn").classList.add("hidden");
+        let choices = [];
+        for (let i = 0; i < this.quiz.options.length; i++) {
+            let option = this.quiz.options[i];
+            let li = document.createElement("li");
+            li.textContent = option;
+            choices.push(li);
+        }
+        this.shuffleArray(choices);
+        for (let i = 0; i < choices.length; i++) {
+            let li = choices[i];
+            this.quizOverlay.getChildByID("quiz-options").appendChild(li);
+            let that = this;
+            li.addEventListener("click", function () {
+                if (that.quizAnswered) {
+                    return;
+                }
+                that.quizOverlay.getChildByID("quiz-submit-btn").classList.remove("hidden");
+                let lastselected = that.quizOverlay.getChildByID("quiz-options").querySelector(".selected");
+                if (lastselected) {
+                    lastselected.classList.remove("selected");
+                }
+                this.classList.add("selected");
+            });
+        }
         this.tweens.add({
             targets: this.quizOverlay,
             y: 360,
@@ -554,6 +582,10 @@ class LevelComplete extends Phaser.Scene {
         //     this.scene.stop("level" + this.level);
         //     this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
         // });
+    }
+
+    shuffleArray(array) {
+        array.sort(() => Math.random() - 0.5);
     }
 
     /**
