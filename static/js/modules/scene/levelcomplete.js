@@ -569,19 +569,48 @@ class LevelComplete extends Phaser.Scene {
                 this.classList.add("selected");
             });
         }
+        let that = this;
+        this.quizOverlay.node.querySelector("#quiz-submit-btn").addEventListener("click", function () {
+            this.classList.add("hidden");
+            that.quizAnswered = true;
+            let quizOpts = that.quizOverlay.getChildByID("quiz-options").querySelectorAll("li");
+            for (let i = 0; i < quizOpts.length; i++) {
+                let li = quizOpts[i];
+                if (li.textContent == that.quiz.options[0]) {
+                    li.classList.add("correct");
+                } else if (li.classList.contains("selected")) {
+                    li.classList.add("wrong");
+                }
+            }
+            that.time.addEvent({
+                delay: 2000,
+                callback: function () {
+                    that.tweens.add({ targets: that.quizOverlay.rotate3d, x: 1, w: 90, duration: 1200, ease: 'Power3' });
+
+                    that.tweens.add({ targets: that.knowledgePanelOverlay, alpha: 0, duration: 600});
+
+                    that.tweens.add({ targets: that.quizOverlay, scaleX: 1.25, scaleY: 1.25, y: 900, alpha: 0.4, duration: 1200, ease: 'Power3',
+                        onComplete: function ()
+                        {
+                            that.quizOverlay.setVisible(false);
+                        }
+                    });
+                    that.camera.fadeOut(600, 0, 0, 0, function (camera, progress) {
+                        if (progress < 0.9) {
+                            return;
+                        }
+                        this.scene.stop("level" + that.level);
+                        this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: that.gameObj, fadeIn: true});
+                    });
+                }
+            });
+        });
         this.tweens.add({
             targets: this.quizOverlay,
             y: 360,
             duration: 500,
             ease: 'Power3'
         });
-        // this.camera.fadeOut(600, 0, 0, 0, function (camera, progress) {
-        //     if (progress < 0.9) {
-        //         return;
-        //     }
-        //     this.scene.stop("level" + this.level);
-        //     this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
-        // });
     }
 
     shuffleArray(array) {
