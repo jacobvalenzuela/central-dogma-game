@@ -430,7 +430,17 @@ class LevelStage extends Phaser.Scene {
         let nucleotides = this.positionManager.selectedNucleotides.filter(function (el) {
             return el != null;
         });
-        this.scene.add(sceneName, LevelComplete, false, {level: this.level, lvlType: this.levelConfig.lvlType, gameObj: this.gameObj, nucleotides: nucleotides, score: this.scorekeeping.getScore(), accuracy: this.scorekeeping.getAccuracy()});
+        this.scene.add(sceneName, LevelComplete, false, {
+            level: this.level,
+            lvlType: this.levelConfig.lvlType,
+            gameObj: this.gameObj,
+            nucleotides: nucleotides,
+            score: this.scorekeeping.getScore(),
+            accuracy: this.scorekeeping.getAccuracy(),
+            quiz: this.levelConfig.quiz,
+            sequencedinfo: this.levelConfig.sequencedinfo,
+            knowledgepanel: this.levelConfig.knowledgepanel,
+        });
         let that = this;
         this.time.addEvent({
             delay: 300,

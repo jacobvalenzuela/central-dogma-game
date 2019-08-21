@@ -22,6 +22,9 @@ class LevelComplete extends Phaser.Scene {
         this.nucleotides = [];
         this.draggableNTWidth = 0;
         this.draggableNTX = 0;
+        this.quiz = data.quiz;
+        this.knowledgepanel = data.knowledgepanel;
+        this.sequencedinfo = data.sequencedinfo;
 
         this.gameObj = data.gameObj;
         this.camera = this.cameras.main;
@@ -31,7 +34,7 @@ class LevelComplete extends Phaser.Scene {
 
         this.graphics.fillStyle(0x000000, 0.50);
         this.graphics.fillRect(0, 0, 360, 740);
-        this.cntTimer = 2; //10;
+        this.cntTimer = 20;
 
         let that = this;
         if (cdapi.isLoggedIn()) {
@@ -73,6 +76,10 @@ class LevelComplete extends Phaser.Scene {
                                         that.homeBtn = homeBtn;
                                         that.sequencedInfoOverlay = that.add.dom(180, 360).createFromCache('html_sequencedinfo');
                                         that.sequencedInfoOverlay.setScale(0.7).setAlpha(0);
+                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-molecule-name").textContent = that.sequencedinfo.name;
+                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-description").innerHTML = that.sequencedinfo.description;
+                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-img").src = that.sequencedinfo.imgurl;
+                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").href = that.sequencedinfo.infourl;
                                         that.countdownText = that.add.text(300, 560, that.cntTimer, 
                                             {fontFamily: '\'Bevan\', cursive', fontSize: '12pt', color: '#483D8B', align: 'center'});
                                         that.countDownTimer(function () {
