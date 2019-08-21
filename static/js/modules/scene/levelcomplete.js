@@ -81,6 +81,11 @@ class LevelComplete extends Phaser.Scene {
                                         that.sequencedInfoOverlay.getChildByID("sequencedinfo-description").innerHTML = that.sequencedinfo.description;
                                         that.sequencedInfoOverlay.getChildByID("sequencedinfo-img").src = that.sequencedinfo.imgurl;
                                         that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").href = that.sequencedinfo.infourl;
+                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").addEventListener("click", function () {
+                                            if (cdapi.isLoggedIn()) {
+                                                cdapi.logHyperlinkVisited(this.href);
+                                            }
+                                        });
                                         that.countdownText = that.add.text(300, 560, that.cntTimer, 
                                             {fontFamily: '\'Bevan\', cursive', fontSize: '12pt', color: '#483D8B', align: 'center'});
                                         that.countDownTimer(function () {

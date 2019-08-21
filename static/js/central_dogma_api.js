@@ -163,6 +163,10 @@
         return await getAuth(BASE_URL + "/game");
     };
 
+    cdapi.logHyperlinkVisited = async (url) => {
+        return await postJSONAuth(BASE_URL + "/tracklink", {"url": url});
+    };
+
     cdapi.isLoggedIn = function () {
         return loggedIn;
     }
