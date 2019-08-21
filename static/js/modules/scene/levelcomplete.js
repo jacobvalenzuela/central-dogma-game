@@ -91,6 +91,8 @@ class LevelComplete extends Phaser.Scene {
                                             homeBtn.addListener("dragend", that.bindFn(that.onHomeClickRelease));
                                             that.knowledgePanelOverlay = that.add.dom(180, 500).createFromCache("html_knowledgepanel");
                                             that.knowledgePanelOverlay.setScale(0.7).setAlpha(0);
+                                            that.knowledgePanelOverlay.getChildByID("knowledgepanel-description").innerHTML = that.knowledgepanel.description;
+                                            that.knowledgePanelOverlay.getChildByID("knowledgepanel-img").src = that.knowledgepanel.imgurl;
                                             that.fadeInObj(that.knowledgePanelOverlay);
                                         });
                                         that.fadeInObj(that.sequencedInfoOverlay);

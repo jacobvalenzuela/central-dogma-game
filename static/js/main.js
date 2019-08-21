@@ -46,7 +46,7 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/insulin.png",
             },
             "knowledgepanel": {
-                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: lightblue;'>gene starts</span>.",
+                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
@@ -75,7 +75,7 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/insulin.png",
             },
             "knowledgepanel": {
-                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: lightblue;'>gene starts</span>.",
+                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
@@ -103,7 +103,7 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/insulin.png",
             },
             "knowledgepanel": {
-                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: lightblue;'>gene starts</span>.",
+                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
@@ -131,7 +131,7 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/insulin.png",
             },
             "knowledgepanel": {
-                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: lightblue;'>gene starts</span>.",
+                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
@@ -159,7 +159,7 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/insulin.png",
             },
             "knowledgepanel": {
-                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: lightblue;'>gene starts</span>.",
+                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
@@ -200,19 +200,10 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/insulin.png",
             },
             "knowledgepanel": {
-                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: lightblue;'>gene starts</span>.",
+                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
-        // {
-        //     "ntSequence": "A",
-        //     "controls": ["T", "A"],
-        //     "unlocked": true,
-        //     "name": "Debug 2",
-        //     "rotateNT": false,
-        //     "ntType": "basic",
-        //     "lvlType": "dna_replication",
-        // },
     ]);
 
     window.game = new Phaser.Game(game.config);
