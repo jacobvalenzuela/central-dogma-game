@@ -574,13 +574,22 @@ class LevelComplete extends Phaser.Scene {
             this.classList.add("hidden");
             that.quizAnswered = true;
             let quizOpts = that.quizOverlay.getChildByID("quiz-options").querySelectorAll("li");
+            let answeredOption = "";
+            let correctness = true;
             for (let i = 0; i < quizOpts.length; i++) {
                 let li = quizOpts[i];
                 if (li.textContent == that.quiz.options[0]) {
                     li.classList.add("correct");
                 } else if (li.classList.contains("selected")) {
                     li.classList.add("wrong");
+                    correctness = false;
                 }
+                if (li.classList.contains("selected")) {
+                    answeredOption = li.textContent;
+                }
+            }
+            if (cdapi.isLoggedIn()) {
+                cdapi.logQuestionResponse(that.level, answeredOption, + correctness, cdapi.getCurrentSession());
             }
             that.time.addEvent({
                 delay: 2000,
