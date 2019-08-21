@@ -31,6 +31,7 @@ class LevelComplete extends Phaser.Scene {
 
         this.graphics.fillStyle(0x000000, 0.50);
         this.graphics.fillRect(0, 0, 360, 740);
+        this.cntTimer = 2; //10;
 
         let that = this;
         if (cdapi.isLoggedIn()) {
@@ -41,9 +42,10 @@ class LevelComplete extends Phaser.Scene {
         }
 
         this.fadeIn(function () {
-            let rectbg = that.add.rectangle(180, -100, 300, 400, 0x9BDBF5);
+            let rectbg = that.add.rectangle(180, -100, 300, 470, 0x9BDBF5);
             rectbg.setStrokeStyle(5, 0x5C96C9, 1);
-            that.moveToY(rectbg, 300, function () {
+            window.rectbg = rectbg
+            that.moveToY(rectbg, 350, function () {
                 let lvlcompTxt = that.add.text(180, 155, "Level Complete!", 
                     {fontFamily: '\'Knewave\', cursive', fontSize: '27pt', color: '#BC1D75', align: "center"});
                 lvlcompTxt.setOrigin(0.5).setScale(0);
@@ -69,11 +71,22 @@ class LevelComplete extends Phaser.Scene {
                                     callback: function () {
                                         let homeBtn = that.add.image(180, 420, "home_btn").setScale(0.22).setAlpha(0).setInteractive();
                                         that.homeBtn = homeBtn;
-                                        that.fadeInObj(homeBtn);
-                                        homeBtn.addListener("pointerup", that.bindFn(that.onHomeClick));
-                                        homeBtn.addListener("pointerdown", that.bindFn(that.onHomeClickHold));
-                                        homeBtn.addListener("pointerup", that.bindFn(that.onHomeClickRelease));
-                                        homeBtn.addListener("dragend", that.bindFn(that.onHomeClickRelease));
+                                        that.sequencedInfoOverlay = that.add.dom(180, 360).createFromCache('html_sequencedinfo');
+                                        that.sequencedInfoOverlay.setScale(0.7).setAlpha(0);
+                                        that.countdownText = that.add.text(300, 560, that.cntTimer, 
+                                            {fontFamily: '\'Bevan\', cursive', fontSize: '12pt', color: '#483D8B', align: 'center'});
+                                        that.countDownTimer(function () {
+                                            that.sequencedInfoOverlay.destroy();
+                                            that.fadeInObj(homeBtn);
+                                            homeBtn.addListener("pointerup", that.bindFn(that.onHomeClick));
+                                            homeBtn.addListener("pointerdown", that.bindFn(that.onHomeClickHold));
+                                            homeBtn.addListener("pointerup", that.bindFn(that.onHomeClickRelease));
+                                            homeBtn.addListener("dragend", that.bindFn(that.onHomeClickRelease));
+                                            that.knowledgePanelOverlay = that.add.dom(180, 500).createFromCache("html_knowledgepanel");
+                                            that.knowledgePanelOverlay.setScale(0.7).setAlpha(0);
+                                            that.fadeInObj(that.knowledgePanelOverlay);
+                                        });
+                                        that.fadeInObj(that.sequencedInfoOverlay);
                                         let accStampBg = that.add.image(270, 300, "nt_cytosine_basic").setScale(0.36).setAngle(15);
                                         that.fadeInObj(accStampBg);
                                         that.animateScale(accStampBg, 0.26);
@@ -94,6 +107,25 @@ class LevelComplete extends Phaser.Scene {
                 });
             });
         });
+    }
+
+    countDownTimer(callback=null) {
+        if (this.cntTimer == 0) {
+            this.countdownText.setVisible(false);
+            if (callback != null) {
+                callback();
+            }
+        } else {
+            this.cntTimer--;
+            this.countdownText.setText(this.cntTimer);
+            let that = this;
+            this.time.addEvent({
+                delay: 1000,
+                callback: function () {
+                    that.countDownTimer(callback);
+                }
+            });
+        }
     }
 
     /**
@@ -497,13 +529,22 @@ class LevelComplete extends Phaser.Scene {
         if (img != this.homeBtn) {
             return;
         }
-        this.camera.fadeOut(600, 0, 0, 0, function (camera, progress) {
-            if (progress < 0.9) {
-                return;
-            }
-            this.scene.stop("level" + this.level);
-            this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
+        this.homeBtn.removeInteractive();
+        this.quizOverlay = this.add.dom(180, 900).createFromCache("html_quiz");
+        this.quizOverlay.setScale(1.1);
+        this.tweens.add({
+            targets: this.quizOverlay,
+            y: 360,
+            duration: 500,
+            ease: 'Power3'
         });
+        // this.camera.fadeOut(600, 0, 0, 0, function (camera, progress) {
+        //     if (progress < 0.9) {
+        //         return;
+        //     }
+        //     this.scene.stop("level" + this.level);
+        //     this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
+        // });
     }
 
     /**
