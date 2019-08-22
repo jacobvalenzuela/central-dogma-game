@@ -224,7 +224,7 @@ class LevelComplete extends Phaser.Scene {
      * Make touch hit box
      */
     makeHitbox() {
-        this.hitbox = this.add.rectangle(180, 650, 360, 160, 0x000);
+        this.hitbox = this.add.rectangle(180, 670, 360, 140, 0x000);
         this.hitbox.setFillStyle(0x000, 0).setInteractive();
         this.input.setDraggable(this.hitbox);
         this.input.on("dragstart", this.bindFn(this.onDragHitboxStart));
