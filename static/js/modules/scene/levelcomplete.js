@@ -557,7 +557,7 @@ class LevelComplete extends Phaser.Scene {
             li.textContent = option;
             choices.push(li);
         }
-        this.shuffleArray(choices);
+        choices = this.shuffleArray(choices);
         for (let i = 0; i < choices.length; i++) {
             let li = choices[i];
             this.quizOverlay.getChildByID("quiz-options").appendChild(li);
@@ -657,8 +657,12 @@ class LevelComplete extends Phaser.Scene {
         });
     }
 
-    shuffleArray(array) {
-        array.sort(() => Math.random() - 0.5);
+    shuffleArray(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
     }
 
     /**
