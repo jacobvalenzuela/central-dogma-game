@@ -607,7 +607,7 @@ class LevelComplete extends Phaser.Scene {
 
                     that.tweens.add({ targets: that.knowledgePanelOverlay, alpha: 0, duration: 600});
 
-                    that.tweens.add({ targets: that.quizOverlay, scaleX: 1.25, scaleY: 1.25, y: 900, alpha: 0.4, duration: 1200, ease: 'Power3',
+                    that.tweens.add({ targets: that.quizOverlay, scaleX: 0.75, scaleY: 0.75, y: 900, alpha: 0.6, duration: 1200, ease: 'Power3',
                         onComplete: function ()
                         {
                             that.quizOverlay.setVisible(false);
