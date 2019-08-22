@@ -10,7 +10,8 @@ while maintaining accuracy.
 ## Play Now!
 
 The game is currently hosted on Github for the time being. http://baliga-lab.github.io/central-dogma-game/central-dogma.html
-However, the game will be moved onto proper Systems Biology infrastructure soon.
+
+The game can also accessed with login capabilities from the ISB servers internally. https://centraldogma.systemsbiology.net/central-dogma.html
 
 ## Main Source
 
