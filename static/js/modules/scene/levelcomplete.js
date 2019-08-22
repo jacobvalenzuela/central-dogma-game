@@ -23,6 +23,7 @@ class LevelComplete extends Phaser.Scene {
         this.draggableNTWidth = 0;
         this.draggableNTX = 0;
         this.quiz = data.quiz;
+        this.score = data.score;
         this.knowledgepanel = data.knowledgepanel;
         this.sequencedinfo = data.sequencedinfo;
 
@@ -38,12 +39,6 @@ class LevelComplete extends Phaser.Scene {
         this.quizAnswered = false;
 
         let that = this;
-        if (cdapi.isLoggedIn()) {
-            cdapi.logLevelCompletion(this.level, {
-                "score": data.score,
-                "session_code": cdapi.getCurrentSession(),
-            });
-        }
 
         this.fadeIn(function () {
             let rectbg = that.add.rectangle(180, -100, 300, 470, 0x9BDBF5);
@@ -64,6 +59,7 @@ class LevelComplete extends Phaser.Scene {
                     let scoreTxt = that.add.text(180, 269, "0", 
                         {fontFamily: '\'Bevan\', cursive', fontSize: '35pt', color: '#FAF5AB', align: 'center'});
                     scoreTxt.setOrigin(0.5);
+                    that.scoreTxt = scoreTxt;
                     that.time.addEvent({
                         delay: 600,
                         loop: false,
@@ -601,24 +597,42 @@ class LevelComplete extends Phaser.Scene {
                 cdapi.logQuestionResponse(that.level, answeredOption, + correctness, cdapi.getCurrentSession());
             }
             that.time.addEvent({
-                delay: 2000,
+                delay: 2500,
                 callback: function () {
-                    that.tweens.add({ targets: that.quizOverlay.rotate3d, x: 1, w: 90, duration: 1200, ease: 'Power3' });
+                    that.tweens.add({ targets: that.quizOverlay.rotate3d, x: 1, w: 90, duration: 600, ease: 'Power3' });
 
-                    that.tweens.add({ targets: that.knowledgePanelOverlay, alpha: 0, duration: 600});
-
-                    that.tweens.add({ targets: that.quizOverlay, scaleX: 0.75, scaleY: 0.75, y: 900, alpha: 0.6, duration: 1200, ease: 'Power3',
+                    that.tweens.add({ targets: that.quizOverlay, scaleX: 0.75, scaleY: 0.75, y: 900, alpha: 0.6, duration: 600, ease: 'Power3',
                         onComplete: function ()
                         {
                             that.quizOverlay.setVisible(false);
                         }
                     });
-                    that.camera.fadeOut(600, 0, 0, 0, function (camera, progress) {
-                        if (progress < 0.9) {
-                            return;
-                        }
-                        this.scene.stop("level" + that.level);
-                        this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: that.gameObj, fadeIn: true});
+                    let newScore = that.score;
+                    let delayscore = 0;
+                    if (correctness) {
+                        newScore = newScore + 500;
+                        delayscore = 600;
+                    }
+                    if (cdapi.isLoggedIn()) {
+                        cdapi.logLevelCompletion(that.level, {
+                            "score": newScore,
+                            "session_code": cdapi.getCurrentSession(),
+                        });
+                    }
+                    that.scoreUp(that.scoreTxt, newScore, function () {
+                        that.time.addEvent({
+                            delay: delayscore,
+                            callback: function () {
+                                that.tweens.add({ targets: that.knowledgePanelOverlay, alpha: 0, duration: 600});
+                                that.camera.fadeOut(600, 0, 0, 0, function (camera, progress) {
+                                    if (progress < 0.9) {
+                                        return;
+                                    }
+                                    this.scene.stop("level" + that.level);
+                                    this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: that.gameObj, fadeIn: true});
+                                });
+                            }
+                        });
                     });
                 }
             });
