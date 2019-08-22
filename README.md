@@ -35,6 +35,25 @@ for the nucleotides level may look something like this.
     "rotateNT": false,
     "ntType": "basic",
     "lvlType": "dna_replication",
+    "quiz": {
+        "question": "Three base pairs are called a __________.",
+        "options": [
+            "Codon",
+            "Ammino Acid",
+            "Peptide",
+            "DNA",
+        ],
+    },
+    "sequencedinfo": {
+        "name": "insulin",
+        "description": "<strong>Insulin</strong> is a <span style='color: blue;'>gene</span> that codes for a peptide (sequence of <span style='color: red;'>amino acids</span>) that acts as a hormone to regulate metabolism",
+        "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+        "imgurl": "./static/img/flashcard/insulin.png",
+    },
+    "knowledgepanel": {
+        "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
+        "imgurl": "./static/img/flashcard/promoter_dna.png",
+    },
 }
 ```
 
@@ -51,6 +70,9 @@ Here is a reference of what kind of properties each level can contain.
 | rotateNT | If the nucleotide buttons should be able to be rotated into the correct position before submitting. |
 | ntType | The level of details for the nucleotides that players see. Choose from `basic`, `hbonds`, or `backbone`. |
 | lvlType | The type of level that the game should souce from. `dna_replication` or `codon_transcription` |
+| quiz | The quiz containing `question` and the avaliable `options` list for the question. The first option is correct, the others are wrong. |
+| sequencedinfo | Information regarding to what just has been sequenced. Containing the `name` of the molecule, html `description`, more information `infourl`, and related image `imgurl` |
+| knowledgepanel | Small knowledge panel that contains the `description` html and `imgurl` |
 
 #### Popups
 
