@@ -154,10 +154,16 @@
         return await postJSONAuth(BASE_URL + "/game/" + levelId, params);
     };
     cdapi.logQuestionResponse = async (questionId, answerOption, correctness, sessionCode) => {
-        return await postJSONAuth(BASE_URL + "/response/" + questionId,
-                                  {'session_code': sessionCode,
-                                   'correctness': correctness,
-                                   'answer_option': answerOption});
+        if (sessionCode !== null) {
+            return await postJSONAuth(BASE_URL + "/response/" + questionId,
+                                      {'session_code': sessionCode,
+                                       'correctness': correctness,
+                                       'answer_option': answerOption});
+        } else {
+            return await postJSONAuth(BASE_URL + "/response/" + questionId,
+                                      {'correctness': correctness,
+                                       'answer_option': answerOption});
+        }
     };
     cdapi.gameCompletionInfo = async () => {
         return await getAuth(BASE_URL + "/game");
