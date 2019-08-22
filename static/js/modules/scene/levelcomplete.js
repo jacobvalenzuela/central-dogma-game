@@ -88,6 +88,10 @@ class LevelComplete extends Phaser.Scene {
                                         });
                                         that.countdownText = that.add.text(300, 560, that.cntTimer, 
                                             {fontFamily: '\'Bevan\', cursive', fontSize: '12pt', color: '#483D8B', align: 'center'});
+                                        that.countdownText.setInteractive();
+                                        that.countdownText.addListener("pointerup", function () {
+                                            that.cntTimer = 1;
+                                        });
                                         that.countDownTimer(function () {
                                             that.sequencedInfoOverlay.destroy();
                                             that.fadeInObj(homeBtn);
