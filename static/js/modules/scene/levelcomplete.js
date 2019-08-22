@@ -34,7 +34,7 @@ class LevelComplete extends Phaser.Scene {
 
         this.graphics.fillStyle(0x000000, 0.50);
         this.graphics.fillRect(0, 0, 360, 740);
-        this.cntTimer = 2;
+        this.cntTimer = 20;
         this.quizAnswered = false;
 
         let that = this;
