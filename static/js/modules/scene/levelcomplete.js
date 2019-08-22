@@ -596,6 +596,18 @@ class LevelComplete extends Phaser.Scene {
             if (cdapi.isLoggedIn()) {
                 cdapi.logQuestionResponse(that.level, answeredOption, + correctness, cdapi.getCurrentSession());
             }
+            if (correctness) {
+                let bonustxt = that.add.text(180, 269, "+500 BONUS!", 
+                    {fontFamily: '\'Bevan\', cursive', fontSize: '29pt', color: '#78D863', align: 'center'});
+                bonustxt.setOrigin(0.5);
+                that.tweens.add({ targets: bonustxt, y: 60, duration: 1900, ease: 'Power3' });
+                that.time.addEvent({
+                    delay: 1100,
+                    callback: function () {
+                        that.tweens.add({ targets: bonustxt, alpha: 0, duration: 1500, ease: 'Power3' });
+                    }
+                });
+            }
             that.time.addEvent({
                 delay: 2500,
                 callback: function () {
@@ -623,7 +635,7 @@ class LevelComplete extends Phaser.Scene {
                         that.time.addEvent({
                             delay: delayscore,
                             callback: function () {
-                                that.tweens.add({ targets: that.knowledgePanelOverlay, alpha: 0, duration: 600});
+                                that.tweens.add({ targets: that.knowledgePanelOverlay, alpha: 0, duration: 500});
                                 that.camera.fadeOut(600, 0, 0, 0, function (camera, progress) {
                                     if (progress < 0.9) {
                                         return;
