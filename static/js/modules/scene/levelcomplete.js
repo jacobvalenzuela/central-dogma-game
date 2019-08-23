@@ -35,16 +35,16 @@ class LevelComplete extends Phaser.Scene {
 
         this.graphics.fillStyle(0x000000, 0.50);
         this.graphics.fillRect(0, 0, 360, 740);
-        this.cntTimer = 20;
+        this.cntTimer = 10;
         this.quizAnswered = false;
 
         let that = this;
 
         this.fadeIn(function () {
-            let rectbg = that.add.rectangle(180, -100, 300, 470, 0x9BDBF5);
+            let rectbg = that.add.rectangle(180, -100, 300, 250, 0x9BDBF5);
             rectbg.setStrokeStyle(5, 0x5C96C9, 1);
-            window.rectbg = rectbg
-            that.moveToY(rectbg, 350, function () {
+            that.rectbg = rectbg;
+            that.moveToY(rectbg, 240, function () {
                 let lvlcompTxt = that.add.text(180, 155, "Level Complete!", 
                     {fontFamily: '\'Knewave\', cursive', fontSize: '27pt', color: '#BC1D75', align: "center"});
                 lvlcompTxt.setOrigin(0.5).setScale(0);
@@ -52,10 +52,12 @@ class LevelComplete extends Phaser.Scene {
                     that.animateScale(lvlcompTxt, 1);
                     let scoreRect = that.add.rectangle(180, 260, 200, 100, 0x1B98D1);
                     scoreRect.setAlpha(0).setStrokeStyle(5, 0x6BABDA, 1);
+                    that.scoreRect = scoreRect;
                     that.fadeInObj(scoreRect);
                     let scoreLabTxt = that.add.text(180, 230, "SCORE", 
                         {fontFamily: '\'Open Sans\', sans-serif', fontSize: '20pt', color: '#8CC7E7', align: 'center'});
                     scoreLabTxt.setOrigin(0.5);
+                    that.scoreLabTxt = scoreLabTxt;
                     let scoreTxt = that.add.text(180, 269, "0", 
                         {fontFamily: '\'Bevan\', cursive', fontSize: '35pt', color: '#FAF5AB', align: 'center'});
                     scoreTxt.setOrigin(0.5);
@@ -69,39 +71,6 @@ class LevelComplete extends Phaser.Scene {
                                     delay: 600,
                                     loop: false,
                                     callback: function () {
-                                        let homeBtn = that.add.image(180, 420, "home_btn").setScale(0.22).setAlpha(0).setInteractive();
-                                        that.homeBtn = homeBtn;
-                                        that.sequencedInfoOverlay = that.add.dom(180, 360).createFromCache('html_sequencedinfo');
-                                        that.sequencedInfoOverlay.setScale(0.7).setAlpha(0);
-                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-molecule-name").textContent = that.sequencedinfo.name;
-                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-description").innerHTML = that.sequencedinfo.description;
-                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-img").src = that.sequencedinfo.imgurl;
-                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").href = that.sequencedinfo.infourl;
-                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").addEventListener("click", function () {
-                                            if (cdapi.isLoggedIn()) {
-                                                cdapi.logHyperlinkVisited(this.href);
-                                            }
-                                        });
-                                        that.countdownText = that.add.text(300, 560, that.cntTimer, 
-                                            {fontFamily: '\'Bevan\', cursive', fontSize: '12pt', color: '#483D8B', align: 'center'});
-                                        that.countdownText.setInteractive();
-                                        that.countdownText.addListener("pointerup", function () {
-                                            that.cntTimer = 1;
-                                        });
-                                        that.countDownTimer(function () {
-                                            that.sequencedInfoOverlay.destroy();
-                                            that.fadeInObj(homeBtn);
-                                            homeBtn.addListener("pointerup", that.bindFn(that.onHomeClick));
-                                            homeBtn.addListener("pointerdown", that.bindFn(that.onHomeClickHold));
-                                            homeBtn.addListener("pointerup", that.bindFn(that.onHomeClickRelease));
-                                            homeBtn.addListener("dragend", that.bindFn(that.onHomeClickRelease));
-                                            that.knowledgePanelOverlay = that.add.dom(180, 500).createFromCache("html_knowledgepanel");
-                                            that.knowledgePanelOverlay.setScale(0.7).setAlpha(0);
-                                            that.knowledgePanelOverlay.getChildByID("knowledgepanel-description").innerHTML = that.knowledgepanel.description;
-                                            that.knowledgePanelOverlay.getChildByID("knowledgepanel-img").src = that.knowledgepanel.imgurl;
-                                            that.fadeInObj(that.knowledgePanelOverlay);
-                                        });
-                                        that.fadeInObj(that.sequencedInfoOverlay);
                                         let accStampBg = that.add.image(270, 300, "nt_cytosine_basic").setScale(0.36).setAngle(15);
                                         that.fadeInObj(accStampBg);
                                         that.animateScale(accStampBg, 0.26);
@@ -113,6 +82,55 @@ class LevelComplete extends Phaser.Scene {
                                             {fontFamily: '\'Bevan\', sans-serif', fontSize: '20pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
                                         that.fadeInObj(accStampTxt);
                                         that.animateScale(accStampTxt, 1);
+                                        
+                                        that.tweens.add({ targets: scoreRect, x: 180, y: 100, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: scoreLabTxt, x: 180, y: 75, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: scoreTxt, x: 180, y: 110, duration: 300, ease: 'power4' });
+
+                                        that.tweens.add({ targets: accStampBg, x: 270, y: 145, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: accStampLbl, x: 265, y: 160, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: accStampTxt, x: 271, y: 140, duration: 300, ease: 'power4' });
+
+                                        that.tweens.add({ targets: lvlcompTxt, alpha: 0, duration: 400, ease: 'power4' });
+                                        that.tweens.add({ targets: rectbg, alpha: 0, duration: 400, ease: 'power4' });
+
+                                        let homeBtn = that.add.image(180, 520, "home_btn").setScale(0.3).setAlpha(0).setInteractive();
+                                        that.homeBtn = homeBtn;
+                                        that.sequencedInfoOverlay = that.add.dom(180, 300).createFromCache('html_sequencedinfo');
+                                        that.sequencedInfoOverlay.setAlpha(0);
+                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-molecule-name").textContent = that.sequencedinfo.name;
+                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-description").innerHTML = that.sequencedinfo.description;
+                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-img").src = that.sequencedinfo.imgurl;
+                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").href = that.sequencedinfo.infourl;
+                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").addEventListener("click", function () {
+                                            if (cdapi.isLoggedIn()) {
+                                                cdapi.logHyperlinkVisited(this.href);
+                                            }
+                                        });
+                                        that.countdownText = that.add.text(310, 570, that.cntTimer, 
+                                            {fontFamily: '\'Bevan\', cursive', fontSize: '12pt', color: '#483D8B', align: 'center'});
+                                        that.countdownText.setInteractive();
+                                        that.countdownText.addListener("pointerup", function () {
+                                            that.cntTimer = 1;
+                                        });
+                                        that.countDownTimer(function () {
+                                            that.sequencedInfoOverlay.destroy();
+                                            that.knowledgePanelOverlay = that.add.dom(180, 300).createFromCache("html_knowledgepanel");
+                                            that.knowledgePanelOverlay.setAlpha(0);
+                                            that.knowledgePanelOverlay.getChildByID("knowledgepanel-description").innerHTML = that.knowledgepanel.description;
+                                            that.knowledgePanelOverlay.getChildByID("knowledgepanel-img").src = that.knowledgepanel.imgurl;
+                                            that.fadeInObj(that.knowledgePanelOverlay);
+                                            that.cntTimer = 10;
+                                            that.countdownText.setPosition(310, 400).setText(that.cntTimer).setVisible(true);
+                                            that.countDownTimer(function () {
+                                                that.fadeInObj(homeBtn);
+                                                homeBtn.addListener("pointerup", that.bindFn(that.onHomeClick));
+                                                homeBtn.addListener("pointerdown", that.bindFn(that.onHomeClickHold));
+                                                homeBtn.addListener("pointerup", that.bindFn(that.onHomeClickRelease));
+                                                homeBtn.addListener("dragend", that.bindFn(that.onHomeClickRelease));
+                                            });
+                                        });
+                                        that.fadeInObj(that.sequencedInfoOverlay);
                                         that.makeDraggableNTs();
                                     }
                                 });
