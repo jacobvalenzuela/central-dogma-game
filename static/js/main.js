@@ -34,7 +34,7 @@ import Game from "./modules/game.js";
                 "question": "Three base pairs are called a __________.",
                 "options": [
                     "Codon", // first option is correct
-                    "Ammino Acid",
+                    "Amino Acid",
                     "Peptide",
                     "DNA",
                 ],
@@ -63,7 +63,7 @@ import Game from "./modules/game.js";
                 "question": "Three base pairs are called a __________.",
                 "options": [
                     "Codon", // first option is correct
-                    "Ammino Acid",
+                    "Amino Acid",
                     "Peptide",
                     "DNA",
                 ],
@@ -91,7 +91,7 @@ import Game from "./modules/game.js";
                 "question": "Three base pairs are called a __________.",
                 "options": [
                     "Codon", // first option is correct
-                    "Ammino Acid",
+                    "Amino Acid",
                     "Peptide",
                     "DNA",
                 ],
@@ -119,7 +119,7 @@ import Game from "./modules/game.js";
                 "question": "Three base pairs are called a __________.",
                 "options": [
                     "Codon", // first option is correct
-                    "Ammino Acid",
+                    "Amino Acid",
                     "Peptide",
                     "DNA",
                 ],
@@ -147,7 +147,7 @@ import Game from "./modules/game.js";
                 "question": "Three base pairs are called a __________.",
                 "options": [
                     "Codon", // first option is correct
-                    "Ammino Acid",
+                    "Amino Acid",
                     "Peptide",
                     "DNA",
                 ],
@@ -188,7 +188,7 @@ import Game from "./modules/game.js";
                 "question": "Three base pairs are called a __________.",
                 "options": [
                     "Codon", // first option is correct
-                    "Ammino Acid",
+                    "Amino Acid",
                     "Peptide",
                     "DNA",
                 ],
