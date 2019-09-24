@@ -65,7 +65,7 @@ class PositionManager {
         }
         this.selectedNucleotides = [];
 
-        this.level.graphics.lineStyle(1, 0x6c757d, 0.6);
+        this.level.graphics.lineStyle(1, 0x6c757d, 1.0);
         if (this.level.levelConfig.lvlType == "dna_replication") {
             this.inputRowPath = new Phaser.Curves.Path(0, 140);
             this.inputRowPath.lineTo(175, 140);

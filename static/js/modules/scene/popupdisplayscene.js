@@ -32,8 +32,8 @@ class PopupDisplayScene extends Phaser.Scene {
         });
 
         this.text = this.add.rexTagText(180, 200, data.text, {
-            fontFamily: '\'Open Sans\', sans-serif',
-            fontSize: "18pt",
+            fontFamily: 'Teko',
+            fontSize: "20pt",
             color: "#000",
             halign: 'center',
             wrap: {
@@ -44,7 +44,7 @@ class PopupDisplayScene extends Phaser.Scene {
         this.text.setDepth(5).setOrigin(0.5);
         this.rectangle = this.add.rectangle(180, 200, 300, this.text.height + 10, 0xffffff);
         this.rectangle.setOrigin(0.5);
-        this.rectangle.setStrokeStyle(5, 0x000000, 1);
+        this.rectangle.setStrokeStyle(2, 0x000000, 1);
         this.rectangle.setDepth(4);
     }
 

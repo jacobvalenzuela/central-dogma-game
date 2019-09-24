@@ -26,8 +26,8 @@ class ListLevels extends Phaser.Scene {
         this.graphics.fillStyle(0x9BDBF5, 0.75);
         this.graphics.fillRect(30, 100, 300, 600);
 
-        this.add.text(18, 53, "Choose a level", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '24pt', color: '#000'});
+        this.add.text(18, 53, "LEVEL SELECTION", 
+            {fontFamily: 'Teko', fontSize: '24pt', color: '#000'});
 
         this.userbtn = this.add.image(40, 30, "nt_thymine_basic").setScale(0.17).setAngle(15).setInteractive();
         this.signInIcn = this.add.image(40, 30, "signin_signin_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);

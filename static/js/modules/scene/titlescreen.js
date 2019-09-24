@@ -39,7 +39,7 @@ class TitleScreen extends Phaser.Scene {
 
         let dogmaLogo = this.game.add.sprite(185, 280, "logo_dogma_intro", 0).setScale(1.4);
 
-        this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.30).setAlpha(0).setInteractive();
+        this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.25).setAlpha(0).setInteractive();
         this.playBtn.setVisible(false);
 
         this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClick));

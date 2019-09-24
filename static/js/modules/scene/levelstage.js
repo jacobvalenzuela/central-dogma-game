@@ -18,11 +18,23 @@ class LevelStage extends Phaser.Scene {
         super(config);
     }
 
+
+
+
+
     /**
      * Initalizes the level with the graphics, positioning, and scorekeeping
      * @param {JSON} data 
      */
     init(data) {
+        // Color Constants
+        let ORANGE = 0xFE5832;
+        let DARK_BLUE = 0x002664;
+        let CYAN = 0x21EEE9;
+        let BLUE = 0x006FFF;
+        let WHITE = 0xFFFFFF;
+        let DARKER_BLUE = 0x0e1e2d;
+
         this.levelConfig = data.level;
         this.gameObj = data.gameObj;
         this.game = this;
@@ -46,42 +58,53 @@ class LevelStage extends Phaser.Scene {
 
         this.camera = this.game.cameras.cameras[0];
         this.graphics = this.game.add.graphics();
+
+        // Background
+        this.graphics.fillStyle(WHITE, 1.0);
+        this.graphics.fillRect(0, 0, 360, 740);
+
+        // Header background space
+        this.graphics.fillStyle(0xFFFFFF, 1);
+        this.graphics.fillRect(0, 0, 360, 42);
+
+        // Header logos
         this.game.add.image(75, 30, "logo_dogma").setScale(0.15);
         this.game.add.image(300, 22, "logo_isb").setScale(0.15);
-        
-        this.graphics.fillStyle(0xF1F1F2, 1.0);
-        this.graphics.fillRect(0, 100, 360, 640);
 
-        this.graphics.fillStyle(0xE5F7FD, 1.0);
+        // UI Colored Boxes
+        this.graphics.fillStyle(DARK_BLUE, 1.0);
         this.graphics.fillRect(15, 50, 75, 45);
 
-        this.graphics.fillStyle(0xEFEAF4, 1.0);
+        this.graphics.fillStyle(ORANGE, 1.0);
         this.graphics.fillRect(100, 50, 75, 45);
 
-        this.graphics.fillStyle(0xF3F9EC, 1.0);
+        this.graphics.fillStyle(CYAN, 1.0);
         this.graphics.fillRect(185, 50, 75, 45);
 
-        this.graphics.fillStyle(0xFDE8E9, 1.0);
+        this.graphics.fillStyle(BLUE, 1.0);
         this.graphics.fillRect(270, 50, 75, 45);
 
+        // Binding Pocket
         this.ntHighlightEllipse = this.game.add.ellipse(140, 510, 230, 125, 0xfffaa8, 1);
         this.ntHighlightEllipse.setAngle(16);
-        this.ntHighlightEllipse.setAlpha(0.50);
+        //this.ntHighlightEllipse.setAlpha(0.50);
 
         this.game.add.text(70, 554, "Binding Pocket", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '9pt', color: '#000'}).setAngle(19).setAlpha(0.5);
+            {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setAngle(19); //.setAlpha(0.5);
 
-        this.game.add.text(18, 53, "Sequence NTs", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+        // UI Labels
+        // '\'Open Sans\', sans-serif'
+        this.game.add.text(29, 53, "REMAINING", 
+            {fontFamily: 'Teko', fontSize: '10pt', color: '#FFFFFF'});
 
-        this.game.add.text(102, 53, "Rate [NTs/min]", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+        this.game.add.text(108, 53, "RATE [NTs/MIN]", 
+            {fontFamily: 'Teko', fontSize: '10pt', color: '#FFFFFF'});
 
-        this.game.add.text(200, 53, "Accuracy", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+        this.game.add.text(202, 53, "ACCURACY", 
+            {fontFamily: 'Teko', fontSize: '10pt', color: '#FFFFFF'});
 
-        this.game.add.text(293, 53, "Score", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+        this.game.add.text(295, 53, "SCORE", 
+            {fontFamily: 'Teko', fontSize: '10pt', color: '#FFFFFF'});
 
         if (this.levelConfig.lvlType == "dna_replication") {
             this.game.add.text(4, 105, "5'", 

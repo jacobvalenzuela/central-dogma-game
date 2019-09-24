@@ -21,20 +21,20 @@ class GameScore {
     }
 
     /**
-     * Initializes the game score by adding inital text to specific area in the scene.
+     * Initializes the game score by adding inital text to scoring area in the scene.
      */
     init() {
         this.initialized = true;
         this.sequenceNTsTxt = this.game.add.text(50, 80, "0", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5);
         this.updateSequenceNTs();
         let rate = this.getRate();
         this.rateTxt = this.game.add.text(140, 80, rate, 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5);
         this.accuracyTxt = this.game.add.text(222, 80, "100%", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5);
         this.scoreTxt = this.game.add.text(307, 80, "0", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5);
     }
 
     /**
