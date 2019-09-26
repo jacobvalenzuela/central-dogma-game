@@ -14,6 +14,7 @@ class GameScore {
         this.wrongSequences = 0;
         this.timerSec = null;
         this.timerMs = null;
+        this.maxScoreDigits = 7;
         this.initialNTCount = this.game.levelConfig.ntSequence.length;
         if (this.game.levelConfig.lvlType == "codon_transcription") {
             this.initialNTCount = this.initialNTCount / 3;
@@ -28,12 +29,9 @@ class GameScore {
         this.sequenceNTsTxt = this.game.add.text(50, 80, "0", 
             {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
         this.updateSequenceNTs();
-        let rate = this.getRate();
-        this.rateTxt = this.game.add.text(140, 80, rate, 
+        this.accuracyTxt = this.game.add.text(140, 80, "100%", 
             {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
-        this.accuracyTxt = this.game.add.text(222, 80, "100%", 
-            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
-        this.scoreTxt = this.game.add.text(307, 80, "0", 
+        this.scoreTxt = this.game.add.text(295, 73, "0000000", 
             {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
     }
 
@@ -85,7 +83,7 @@ class GameScore {
      */
     updateScore() {
         let score = this.getScore();
-        this.scoreTxt.setText(score);
+        this.scoreTxt.setText(this.leftPad(score, this.maxScoreDigits));
     }
 
     /**
@@ -171,6 +169,14 @@ class GameScore {
      */
     getScore() {
         return this.sequencesMade * 100;
+    }
+
+    leftPad(number, targetLength) {
+        var output = number + "";
+        while (output.length < targetLength) {
+            output = "0" + output;
+        }
+        return output;
     }
 }
 

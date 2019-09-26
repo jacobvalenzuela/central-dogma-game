@@ -34,6 +34,7 @@ class LevelStage extends Phaser.Scene {
         let BLUE = 0x006FFF;
         let WHITE = 0xFFFFFF;
         let DARKER_BLUE = 0x0e1e2d;
+        let BLACK = 0x1e1e1e;
 
         this.levelConfig = data.level;
         this.gameObj = data.gameObj;
@@ -60,11 +61,12 @@ class LevelStage extends Phaser.Scene {
         this.graphics = this.game.add.graphics();
 
         // Background
-        // this.graphics.fillStyle(WHITE, 1.0);
-        // this.graphics.fillRect(0, 0, 360, 740);
+        this.graphics.fillStyle(BLACK, 1.0);
+        this.graphics.fillRect(0, 0, 360, 740);
+
+        //this.game.add.image(180, 360, "bg").setAlpha(0.5);
 
         //let bgtile = this.add.tileSprite(0, 42, 360, 740, "bg");
-        this.game.add.image(180, 360, "bg").setAlpha(0.5);
         /*let background = game.add.tileSprite(0,
             this.game.height - this.game.cache.getImage("bg").height,
             this.game.width,
@@ -73,7 +75,7 @@ class LevelStage extends Phaser.Scene {
         */
 
         // Header background space
-        this.graphics.fillStyle(0xFFFFFF, 1);
+        this.graphics.fillStyle(WHITE, 1);
         this.graphics.fillRect(0, 0, 360, 42);
 
         // Header logos
@@ -87,34 +89,28 @@ class LevelStage extends Phaser.Scene {
         this.graphics.fillStyle(ORANGE, 1.0);
         this.graphics.fillRect(100, 50, 75, 45).setDepth(0.5);
 
-        this.graphics.fillStyle(CYAN, 1.0);
-        this.graphics.fillRect(185, 50, 75, 45).setDepth(0.5);
-
         this.graphics.fillStyle(BLUE, 1.0);
-        this.graphics.fillRect(270, 50, 75, 45).setDepth(0.5);
+        this.graphics.fillRect(185, 50, 160, 45).setDepth(0.5);
 
         // Binding Pocket
         this.ntHighlightEllipse = this.game.add.ellipse(160, 490, 230, 125, 0xfffaa8, 1);
         this.ntHighlightEllipse.setDepth(1);
         this.ntHighlightEllipse.setAngle(16);
-        this.ntHighlightEllipse.setAlpha(0.50);
+        this.ntHighlightEllipse.setAlpha(1.0);
 
         this.game.add.text(90, 534, "Binding Pocket", 
-            {fontFamily: 'Teko', fontSize: '12pt', color: DARKER_BLUE}).setDepth(1).setAngle(19); //.setAlpha(0.5);
+            {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1).setAngle(19); //.setAlpha(0.5);
 
         // UI Labels
         // '\'Open Sans\', sans-serif'
         this.game.add.text(29, 53, "REMAINING", 
             {fontFamily: 'Teko', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
-        
-        this.game.add.text(108, 53, "RATE [NTs/MIN]", 
+
+        this.game.add.text(116, 53, "ACCURACY", 
             {fontFamily: 'Teko', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
-        this.game.add.text(202, 53, "ACCURACY", 
-            {fontFamily: 'Teko', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
-
-        this.game.add.text(295, 53, "SCORE", 
-            {fontFamily: 'Teko', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
+        this.game.add.text(195, 62, "SCORE:", 
+            {fontFamily: 'Teko', fontSize: '20pt', color: '#FFFFFF'}).setDepth(1);
 
         if (this.levelConfig.lvlType == "dna_replication") {
             this.game.add.text(4, 105, "5'", 
