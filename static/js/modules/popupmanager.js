@@ -26,6 +26,7 @@ class PopupManager {
 
         this.firstCorrectMatchHappened = false;
         this.error5MatchCount = 0;
+        this.introHappened = false;
     }
 
     /**
@@ -45,6 +46,21 @@ class PopupManager {
             fn = fn.bind(this);
         }
         fn(...Array.from(arguments).slice(1));
+    }
+
+
+    /**
+     * An initial popup message for giving directions or more introduction.
+     */
+    on_intro() {
+        if (this.introHappened) {
+            return;
+        }
+        this.introHappened = true;
+        this.displayPopup(
+            "intro",
+            {} // would a blank object work?
+        );
     }
 
     /**

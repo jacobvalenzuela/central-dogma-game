@@ -11,19 +11,32 @@ class PositionManager {
      */
     constructor (level, defaultTimerDelay) {
         this.autoMoveTimer = null;
-        this.pathPointsFactor = 60;
+        this.pathPointsFactor = 30;
         this.level = level;
         this.defaultTimerDelay = defaultTimerDelay;
         this.gameObj = level.gameObj;
         this.game = level;
         this.levelNucleotides = [];
         this.hasFrozenHead = false;
+
+        this.nucleotideSpacer = 2;
+
+        // One of the many if special cases to distinguish codon and dna levels
+        // All this code below is for path line drawing
         if (this.level.levelConfig.lvlType == "dna_replication") {
+            // This loop is important, says how many total "spots" along line.
             for (let i = 0; i < this.level.nucleotides.length * this.pathPointsFactor; i++) {
                 let prevIdx = Math.floor((i - 1) / this.pathPointsFactor);
                 let currIdx = Math.floor(i / this.pathPointsFactor);
                 let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
+
+                // Introduce a new variable called spacer
+                // Increment down every time we need to add something to line.
+                // If spacer count hits 0, reset it to max and add a nucleotide instead of a null.
+                // Later when we're popping stuff off of large array, 
+                
                 if (currIdx === nextIdx) {
+                    // Spaces out nucleotides
                     this.levelNucleotides.push(null);
                     this.levelNucleotides.push(null);
                     continue;
@@ -65,7 +78,7 @@ class PositionManager {
         }
         this.selectedNucleotides = [];
 
-        this.level.graphics.lineStyle(1, 0x6c757d, 1.0);
+        this.level.graphics.lineStyle(1, 0x6c757d, 0.6);
         if (this.level.levelConfig.lvlType == "dna_replication") {
             this.inputRowPath = new Phaser.Curves.Path(0, 140);
             this.inputRowPath.lineTo(175, 140);
@@ -92,11 +105,19 @@ class PositionManager {
         }
         // this.inputVertPath.draw(this.level.graphics);
         let numVertPathPts = 7 * this.pathPointsFactor;
-        this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
+
+        // VERTICAL PATH
+        // Change the getPoints below to alter the points on the main incoming path. Will change speed traveled along path.
+        // For some reason, changing this allows nucleotides to drift beyond the binding pocket.
+
+        // * I've duplicated a line setting initVertPathPts because I plan on using a reduced amount of points on the vertical path
+        // for nucleotides...
         if (this.level.levelConfig.lvlType == "dna_replication") {
+            this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
             this.inputVertPathDispl = new Phaser.Curves.Path(175, 140);
             this.inputVertPathDispl.cubicBezierTo(-20, 640, 320, 320, -80, 440);
         } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
             this.inputVertPathDispl = new Phaser.Curves.Path(70, 140);
             this.inputVertPathDispl.cubicBezierTo(40, 600, 20, 160, 55, 440);
         }
@@ -119,6 +140,8 @@ class PositionManager {
             this.outputVertPathDispl = new Phaser.Curves.Path(200, 450);
             this.outputVertPathDispl.cubicBezierTo(220, 710, 200, 600, 130, 700);
         }
+
+        // Drawing the actual curve
         this.outputVertPathDispl.draw(this.level.graphics);
         if (this.level.levelConfig.lvlType == "dna_replication") {
             this.outputRowPath = new Phaser.Curves.Path(155, 710);
@@ -129,6 +152,8 @@ class PositionManager {
         }
         
         this.outputRowPath.draw(this.level.graphics);
+
+        // Determines the amount of points on the output path line
         this.outputRowPathPts = this.outputRowPath.getPoints(30 * this.pathPointsFactor);
     }
 
@@ -193,6 +218,9 @@ class PositionManager {
             }
             let scale = 0;
             let scalePrev = 0;
+
+            // Handles scaling of nucleotides/codons
+            // What I think is happening is that each nucleotide is at scale prev and animates up to scale..?
             if (this.level.levelConfig.lvlType == "dna_replication") {
                 scale = this.calcInScale(i, modifier, modifier1, modifier2);
                 scalePrev = this.calcInScale(i - 1, modifier, modifier1, modifier2);
@@ -311,12 +339,13 @@ class PositionManager {
      * Start the timer at default delay
      */
     start() {
+        // Gets the speed attriute from the level object in the config file.
         this.startNTMoveTimer(this.defaultTimerDelay);
     }
 
     /**
      * Start the nucleotides move timer
-     * @param {number} delay - timer day 
+     * @param {number} delay - timer delay 
      */
     startNTMoveTimer(delay) {
         if (this.autoMoveTimer) {
@@ -325,7 +354,9 @@ class PositionManager {
         let that = this;
         this.autoMoveTimer = this.game.time.addEvent({
             delay: delay,
-            callback: function () {that.next();},
+            callback: function () {
+                that.next();
+            },
             loop: true
         });
     }
@@ -459,6 +490,8 @@ class PositionManager {
      * Increments the nucleotides position by one
      */
     next() {
+        // Look at the front of the line of nucleotides, 
+        // and do stuff if we actually have a nucleotide and not a null object.
         let head = this.levelNucleotides[0];
         if (head) {
             this.removeHeadNucleotide();
@@ -480,8 +513,11 @@ class PositionManager {
                 this.level.shuffleNTBtnOpts();
             }
         }
+        // levelNucleotides is a collection of all nucleotides and null objects along the line.
+        // It shortens the array each tick by 1...
         this.levelNucleotides = this.levelNucleotides.slice(1, this.levelNucleotides.length);
         this.compLevelNucleotides = this.compLevelNucleotides.slice(1, this.compLevelNucleotides.length);
+
         this.selectedNucleotides.push(null);
         this.setPositions(true);
         if (this.getLevelNTCount() == 0) {

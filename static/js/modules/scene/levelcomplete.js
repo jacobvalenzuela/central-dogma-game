@@ -16,6 +16,14 @@ class LevelComplete extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
+        // Color Constants
+        let ORANGE = 0xFE5832;
+        let DARK_BLUE = 0x002664;
+        let CYAN = 0x21EEE9;
+        let BLUE = 0x006FFF;
+        let WHITE = 0xFFFFFF;
+        let DARKER_BLUE = 0x0e1e2d;
+
         this.level = data.level;
         this.confnucleotides = data.nucleotides;
         this.lvlType = data.lvlType;
@@ -41,25 +49,25 @@ class LevelComplete extends Phaser.Scene {
         let that = this;
 
         this.fadeIn(function () {
-            let rectbg = that.add.rectangle(180, -100, 300, 250, 0x9BDBF5);
-            rectbg.setStrokeStyle(5, 0x5C96C9, 1);
+            let rectbg = that.add.rectangle(180, -100, 300, 250, DARK_BLUE);
+            rectbg.setStrokeStyle(2, WHITE, 1);
             that.rectbg = rectbg;
             that.moveToY(rectbg, 240, function () {
                 let lvlcompTxt = that.add.text(180, 155, "Level Complete!", 
-                    {fontFamily: '\'Knewave\', cursive', fontSize: '27pt', color: '#BC1D75', align: "center"});
+                    {fontFamily: 'Teko', fontSize: '27pt', color: '#FFFFFF', align: "center"});
                 lvlcompTxt.setOrigin(0.5).setScale(0);
                 that.animateScale(lvlcompTxt, 1.12, function () {
                     that.animateScale(lvlcompTxt, 1);
-                    let scoreRect = that.add.rectangle(180, 260, 200, 100, 0x1B98D1);
-                    scoreRect.setAlpha(0).setStrokeStyle(5, 0x6BABDA, 1);
+                    let scoreRect = that.add.rectangle(180, 260, 200, 100, BLUE);
+                    scoreRect.setAlpha(0).setStrokeStyle(2, WHITE, 1);
                     that.scoreRect = scoreRect;
                     that.fadeInObj(scoreRect);
                     let scoreLabTxt = that.add.text(180, 230, "SCORE", 
-                        {fontFamily: '\'Open Sans\', sans-serif', fontSize: '20pt', color: '#8CC7E7', align: 'center'});
+                        {fontFamily: 'Teko', fontSize: '20pt', color: '#FFFFFF', align: 'center'});
                     scoreLabTxt.setOrigin(0.5);
                     that.scoreLabTxt = scoreLabTxt;
                     let scoreTxt = that.add.text(180, 269, "0", 
-                        {fontFamily: '\'Bevan\', cursive', fontSize: '35pt', color: '#FAF5AB', align: 'center'});
+                        {fontFamily: 'Teko', fontSize: '35pt', color: '#FFFFFF', align: 'center'});
                     scoreTxt.setOrigin(0.5);
                     that.scoreTxt = scoreTxt;
                     that.time.addEvent({
@@ -71,15 +79,15 @@ class LevelComplete extends Phaser.Scene {
                                     delay: 600,
                                     loop: false,
                                     callback: function () {
-                                        let accStampBg = that.add.image(270, 300, "nt_cytosine_basic").setScale(0.36).setAngle(15);
+                                        let accStampBg = that.add.image(270, 300, "nt_thymine_basic").setScale(0.36).setAngle(15);
                                         that.fadeInObj(accStampBg);
                                         that.animateScale(accStampBg, 0.26);
                                         let accStampLbl = that.add.text(265, 320, "%", 
-                                            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '12pt', color: '#FCB6DF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
+                                            {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
                                         that.fadeInObj(accStampLbl);
                                         that.animateScale(accStampLbl, 1);
                                         let accStampTxt = that.add.text(271, 295, data.accuracy, 
-                                            {fontFamily: '\'Bevan\', sans-serif', fontSize: '20pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
+                                            {fontFamily: 'Teko', fontSize: '20pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
                                         that.fadeInObj(accStampTxt);
                                         that.animateScale(accStampTxt, 1);
                                         
@@ -108,7 +116,7 @@ class LevelComplete extends Phaser.Scene {
                                             }
                                         });
                                         that.countdownText = that.add.text(310, 570, that.cntTimer, 
-                                            {fontFamily: '\'Bevan\', cursive', fontSize: '12pt', color: '#483D8B', align: 'center'});
+                                            {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF', align: 'center'});
                                         that.countdownText.setInteractive();
                                         that.countdownText.addListener("pointerup", function () {
                                             that.cntTimer = 1;

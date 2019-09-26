@@ -26,15 +26,15 @@ class GameScore {
     init() {
         this.initialized = true;
         this.sequenceNTsTxt = this.game.add.text(50, 80, "0", 
-            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5);
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
         this.updateSequenceNTs();
         let rate = this.getRate();
         this.rateTxt = this.game.add.text(140, 80, rate, 
-            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5);
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
         this.accuracyTxt = this.game.add.text(222, 80, "100%", 
-            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5);
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
         this.scoreTxt = this.game.add.text(307, 80, "0", 
-            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5);
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
     }
 
     /**
@@ -152,7 +152,8 @@ class GameScore {
         // let minElapsed = Math.ceil(this.secondsElapsed / 60);
         // return Math.round(this.sequencesMade / minElapsed);
         let ntRate = Math.floor(1000 / this.getGameSpeed());
-        return Math.min(ntRate, this.initialNTCount);
+        return Math.round(ntRate);
+        //return Math.min(ntRate, this.initialNTCount);
     }
 
     /**
