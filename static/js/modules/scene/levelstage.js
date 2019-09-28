@@ -240,7 +240,7 @@ class LevelStage extends Phaser.Scene {
         nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
         let scale = 0;
         if (this.levelConfig.lvlType == "dna_replication") {
-            scale = 0.20;
+            scale = 0.15;
         } else if (this.levelConfig.lvlType == "codon_transcription") {
             scale = 0.55;
             nt.setAngle(180);
