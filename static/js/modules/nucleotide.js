@@ -152,29 +152,15 @@ class Nucleotide {
      * Also includes text representation. All are invisible of course.
      */
     _genNTObjs() {
-
-        //testing purposes... can later swap out with jeremy's original method of building filenames
-        if (this.getShortName() == "adenine") {
-            this.imgObj = this.level.add.sprite(0, 0, "nt_adenine_basic_animated");
-            this.level.anims.create({
-                key: "idle_adenine",
-                frames: this.level.anims.generateFrameNumbers("nt_adenine_basic_animated", { start: 0, end: 6}),
-                frameRate: 25,
-                repeat: -1
-            });
-            this.imgObj.anims.play("idle_adenine");
-        } else if (this.getShortName() == "thymine") {
-            this.imgObj = this.level.add.sprite(0, 0, "nt_thymine_basic_animated");
-            this.level.anims.create({
-                key: "idle_thymine",
-                frames: this.level.anims.generateFrameNumbers("nt_thymine_basic_animated", { start: 0, end: 5}),
-                frameRate: 25,
-                repeat: -1
-            });
-            this.imgObj.anims.play("idle_thymine");
-        } else {
-            this.imgObj = this.level.add.image(0, 0, "nt_" + this.getShortName() + "_" + this.type);
-        }
+        // Finding and setting up the correct animation
+        this.imgObj = this.level.add.sprite(0, 0, "nt_" + this.getShortName() + "_basic_animated");
+        this.level.anims.create({
+            key: "idle_" + this.getShortName(),
+            frames: this.level.anims.generateFrameNumbers("nt_" + this.getShortName() + "_basic_animated", { start: 0, end: 5}),
+            frameRate: 25,
+            repeat: -1
+        });
+        this.imgObj.anims.play("idle_" + this.getShortName());
 
         this.squareObj = this.level.add.rectangle(0, 0, 10, 10, this.getColor());
         this.imgObj.setVisible(false);
@@ -331,6 +317,7 @@ class Nucleotide {
             this.letterText.setScale(this.imgObj.scale * 5);
 
             // Purine Special Case
+            /*
             if (this.getClassification() == "purine") {
                 let p = x;
                 let q = y;
@@ -343,6 +330,7 @@ class Nucleotide {
                 x = xp;
                 y = yp;
             }
+            */
             this.letterText.setPosition(x, y);
             this.letterText.setDepth(this.imgObj.depth + 2);
         } else {

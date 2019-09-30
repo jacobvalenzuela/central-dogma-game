@@ -240,7 +240,8 @@ class LevelStage extends Phaser.Scene {
         nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
         let scale = 0;
         if (this.levelConfig.lvlType == "dna_replication") {
-            scale = 0.15;
+            scale = 0.20;
+            nt.setAngle(180); // Makes button face correct way.
         } else if (this.levelConfig.lvlType == "codon_transcription") {
             scale = 0.55;
             nt.setAngle(180);
@@ -384,8 +385,11 @@ class LevelStage extends Phaser.Scene {
         }
         let distance = image.getData("distanceDragged");
         if (distance < 15 && this.rotateNT) {
+            // Rotates 90 degrees if not dragged but tapped.
             let nt = image.getData("nucleotide");
             nt.setAngle(nt.getAngle() + 90);
+
+            console.log("Angle set to " + nt.getAngle());
         } else if (this.positionManager.ntTouchingBindingPocket()){
             let angle = image.angle;
             let clickedNT = image.getData("nucleotide");
@@ -402,13 +406,30 @@ class LevelStage extends Phaser.Scene {
             cloned.setAngle(clickedNT.getAngle());
             this.shuffleNTBtnAngle();
             this.ntBtnsEnabled = false;
-            if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != -180)) {
+
+            // On a "correct" match, T and C are -360 degrees and A and G are -180 degrees for some reason.
+            // This may be the result of guessing numbers, or the fact that the angle is set in several different places,
+            // or the lack of a clear point of reference, but this is what it ends up as...
+            let correctAngle = -180;
+            if (cloned.getShortName() == "Thymine" || cloned.getShortName() == "Cytosine") {
+                correctAngle = -360;
+            }
+
+            if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != correctAngle)) {
+                console.log("Wrong!")
+                console.log("My angle: " + cloned.getAngle());
+                console.log("Their angle: " + headNT.getAngle());
+
                 let correctnt = this.positionManager.getValidMatchNT(headNT);
                 this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
                 this.popupmanager.emitEvent("error5Match", headNT, correctnt);
                 cloned.setError(true);
                 this.scorekeeping.incrementIncorrectSequences();
             } else {
+                console.log("Correct!")
+                console.log("My angle: " + cloned.getAngle());
+                console.log("Their angle: " + headNT.getAngle());
+
                 this.popupmanager.emitEvent("correctMatch", headNT, cloned);
                 this.popupmanager.emitEvent("firstCorrectMatch", headNT, cloned);
                 this.scorekeeping.incrementSequencesMade();
@@ -441,7 +462,8 @@ class LevelStage extends Phaser.Scene {
             }
             this.positionManager.addToDNAOutput(cloned);
             if (this.levelConfig.lvlType == "dna_replication") {
-                image.getData("nucleotide").setAngle(0);
+                // Default angle nucleotide respawns with in a non-rotational level.
+                image.getData("nucleotide").setAngle(180);
             }
         }
         image.setData("startedDragging", false);

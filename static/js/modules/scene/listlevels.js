@@ -23,7 +23,7 @@ class ListLevels extends Phaser.Scene {
 
         this.graphics = this.add.graphics();
 
-        this.graphics.fillStyle(0x9BDBF5, 0.75);
+        this.graphics.fillStyle(0x002664, 0.75);
         this.graphics.fillRect(30, 100, 300, 600);
 
         this.add.text(18, 53, "LEVEL SELECTION", 

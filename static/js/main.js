@@ -171,7 +171,7 @@ import Game from "./modules/game.js";
             "ntSequence": "GTAATCACTAAGTAGTAATA",
             "unlocked": true,
             "name": "Adding a Bit of a Twist",
-            "speed": 30,
+            "speed": 40,
             "rotateNT": true,
             "ntType": "hbonds",
             "lvlType": "dna_replication",

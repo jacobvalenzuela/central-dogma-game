@@ -114,13 +114,25 @@ class Game {
 
         this.game.load.image("nt_thymine_hbonds", "static/img/nucleotide/thymine/Thymine_Hbonds@3x.png");
 
+        // CYTOSINE
         this.game.load.image("nt_cytosine_backbone", "static/img/nucleotide/cytosine/Cytosine_Backbone@3x.png");
         this.game.load.image("nt_cytosine_basic", "static/img/nucleotide/cytosine/Cytosine_basic@3x.png");
         this.game.load.image("nt_cytosine_hbonds", "static/img/nucleotide/cytosine/Cytosine_Hbonds@3x.png");
 
+        this.game.load.spritesheet("nt_cytosine_basic_animated", 
+            "static/img/nucleotide/cytosine/cytosine_basic_animated.png",
+            { frameWidth: 600, frameHeight: 300 }
+        );
+
+        // GUANINE
         this.game.load.image("nt_guanine_backbone", "static/img/nucleotide/guanine/Guanine_Backbone@3x.png");
         this.game.load.image("nt_guanine_basic", "static/img/nucleotide/guanine/Guanine_basic@3x.png");
         this.game.load.image("nt_guanine_hbonds", "static/img/nucleotide/guanine/Guanine_Hbonds@3x.png");
+
+        this.game.load.spritesheet("nt_guanine_basic_animated", 
+            "static/img/nucleotide/guanine/guanine_basic_animated.png",
+            { frameWidth: 600, frameHeight: 300 }
+        );
 
         this.game.load.image("errortide_purine", "static/img/errortide/purine_error.png");
         this.game.load.image("errortide_pyrimidine", "static/img/errortide/pyrimidine_error.png");
