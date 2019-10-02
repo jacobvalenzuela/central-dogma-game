@@ -156,7 +156,7 @@ class Nucleotide {
         this.imgObj = this.level.add.sprite(0, 0, "nt_" + this.getShortName() + "_basic_animated");
         this.level.anims.create({
             key: "idle_" + this.getShortName(),
-            frames: this.level.anims.generateFrameNumbers("nt_" + this.getShortName() + "_basic_animated", { start: 0, end: 5}),
+            frames: this.level.anims.generateFrameNumbers("nt_" + this.getShortName() + "_basic_animated", { start: 0, end: 3}),
             frameRate: 25,
             repeat: -1
         });

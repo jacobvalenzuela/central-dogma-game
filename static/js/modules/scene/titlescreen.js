@@ -32,16 +32,19 @@ class TitleScreen extends Phaser.Scene {
         
         this.playedIntro = false;
 
+        // Background color
         this.graphics.fillStyle(0xF1F1F2, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
+        this.game.add.image(180, 360, "bg");
+
         let isblogo = this.game.add.image(180, 320, "logo_isb").setScale(0.35);
         this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.20).setAlpha(0);
 
         let dogmaLogo = this.game.add.sprite(185, 280, "logo_dogma_intro", 0).setScale(1.4);
 
-        this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.25).setAlpha(0).setInteractive();
+        // Menu Buttons
+        this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.4).setAlpha(0).setInteractive();
         this.playBtn.setVisible(false);
-
         this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClick));
         this.playBtn.addListener("pointerdown", this.bindFn(this.onPlayClickHold));
         this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClickRelease));
