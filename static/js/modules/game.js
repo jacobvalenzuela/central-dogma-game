@@ -97,7 +97,7 @@ class Game {
         this.game.load.image("nt_adenine_basic", "static/img/nucleotide/adenine/Adenine_basic@3x.png");
 
         this.game.load.spritesheet("nt_adenine_basic_animated", 
-            "static/img/nucleotide/adenine/adenine_basic_animated.png",
+            "static/img/nucleotide/adenine/Adenine_basic_animated.png",
             { frameWidth: 600, frameHeight: 300 }
         );
 
@@ -108,7 +108,7 @@ class Game {
         this.game.load.image("nt_thymine_basic", "static/img/nucleotide/thymine/Thymine_basic@3x.png");
 
         this.game.load.spritesheet("nt_thymine_basic_animated", 
-            "static/img/nucleotide/thymine/thymine_basic_animated.png",
+            "static/img/nucleotide/thymine/Thymine_basic_animated.png",
             { frameWidth: 600, frameHeight: 300 }
         );
 
@@ -120,7 +120,7 @@ class Game {
         this.game.load.image("nt_cytosine_hbonds", "static/img/nucleotide/cytosine/Cytosine_Hbonds@3x.png");
 
         this.game.load.spritesheet("nt_cytosine_basic_animated", 
-            "static/img/nucleotide/cytosine/cytosine_basic_animated.png",
+            "static/img/nucleotide/cytosine/Cytosine_basic_animated.png",
             { frameWidth: 600, frameHeight: 300 }
         );
 
@@ -130,7 +130,7 @@ class Game {
         this.game.load.image("nt_guanine_hbonds", "static/img/nucleotide/guanine/Guanine_Hbonds@3x.png");
 
         this.game.load.spritesheet("nt_guanine_basic_animated", 
-            "static/img/nucleotide/guanine/guanine_basic_animated.png",
+            "static/img/nucleotide/guanine/Guanine_basic_animated.png",
             { frameWidth: 600, frameHeight: 300 }
         );
 

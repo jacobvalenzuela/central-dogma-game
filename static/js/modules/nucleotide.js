@@ -473,9 +473,9 @@ class Nucleotide {
      * Destroys the nucleotide object
      */
     destroy() {
+        this.showLetter(false);
         this.imgObj.destroy();
         this.squareObj.destroy();
-        this.showLetter(false);
     }
 
     /**

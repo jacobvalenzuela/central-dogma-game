@@ -458,6 +458,7 @@ class PositionManager {
 
     /**
      * Fade out nucleotide
+     * Note: Currently this function is used for the player's swiped nucleotide.
      * @param {Nucleotide} nucleotide - nucleotide to fade
      * @param {function} [callback=null] - function to be called after done fading
      */
@@ -607,10 +608,12 @@ class PositionManager {
         let point = this.outputVertPathPts[2 * this.pathPointsFactor];
         nucleotide.setPosition(firstPoint.x, firstPoint.y);
         if (nucleotide.errorNT || nucleotide.missingNT) {
+            // Shakes screen and flashes red upon a wrong match
             this.level.camera.flash(300, 255, 30, 30);
             this.level.camera.shake(400, 0.02);
         }
         this.updateNTMoveTimer(this.defaultTimerDelay / 2);
+        // Matching animation?
         let that = this;
         this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
             that._animatePosition(nucleotide, point.x, point.y);
@@ -641,6 +644,8 @@ class PositionManager {
         let firstPoint = this.outputVertPathPts[0];
         let secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
         nucleotide.setPosition(firstPoint.x, firstPoint.y);
+        
+        // Shakes screen and flashes red upon a wrong match
         this.level.camera.flash(300, 255, 30, 30);
         this.level.camera.shake(400, 0.01);
         let that = this;

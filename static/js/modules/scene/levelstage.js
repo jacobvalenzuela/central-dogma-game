@@ -416,6 +416,8 @@ class LevelStage extends Phaser.Scene {
             }
 
             if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != correctAngle)) {
+                
+                // Wrong Match
                 console.log("Wrong!")
                 console.log("My angle: " + cloned.getAngle());
                 console.log("Their angle: " + headNT.getAngle());
@@ -425,7 +427,10 @@ class LevelStage extends Phaser.Scene {
                 this.popupmanager.emitEvent("error5Match", headNT, correctnt);
                 cloned.setError(true);
                 this.scorekeeping.incrementIncorrectSequences();
+
             } else {
+
+                // Correct Match
                 console.log("Correct!")
                 console.log("My angle: " + cloned.getAngle());
                 console.log("Their angle: " + headNT.getAngle());
@@ -442,6 +447,8 @@ class LevelStage extends Phaser.Scene {
                     headNTName = headNT.nucleotides[0].getShortName();
                     pairNTName = cloned.nucleotides[0].getShortName();
                 }
+
+                // Particle explosion upon correct match
                 let that = this;
                 this.game.time.addEvent({
                     delay: 100,
