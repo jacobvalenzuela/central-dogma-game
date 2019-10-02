@@ -411,7 +411,7 @@ class LevelStage extends Phaser.Scene {
             // This may be the result of guessing numbers, or the fact that the angle is set in several different places,
             // or the lack of a clear point of reference, but this is what it ends up as...
             let correctAngle = -180;
-            if (cloned.getShortName() == "Thymine" || cloned.getShortName() == "Cytosine") {
+            if (cloned.getShortName() == "thymine" || cloned.getShortName() == "cytosine") {
                 correctAngle = -360;
             }
 
