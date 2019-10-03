@@ -22,7 +22,7 @@ class Nucleotide {
                         "angle": 0,
                     },
                     "hbonds": {
-                        "origin": [0.42, 0.5],
+                        "origin": [0.5, 0.5],
                         "angle": 0,
                     },
                 },
@@ -43,8 +43,8 @@ class Nucleotide {
                         "angle": 0,
                     },
                     "hbonds": {
-                        "origin": [0.65, 0.65],
-                        "angle": 180,
+                        "origin": [0.5, 0.5],
+                        "angle": 0,
                     },
                 },
                 codonSize: {
@@ -64,8 +64,8 @@ class Nucleotide {
                         "angle": 0,
                     },
                     "hbonds": {
-                        "origin": [0.65, 0.5],
-                        "angle": 180,
+                        "origin": [0.5, 0.5],
+                        "angle": 0,
                     },
                 },
                 codonSize: {
@@ -85,7 +85,7 @@ class Nucleotide {
                         "angle": 0,
                     },
                     "hbonds": {
-                        "origin": [0.5, 0.40],
+                        "origin": [0.5, 0.5],
                         "angle": 0,
                     },
                 },
@@ -106,7 +106,7 @@ class Nucleotide {
                         "angle": 0,
                     },
                     "hbonds": {
-                        "origin": [0.65, 0.65],
+                        "origin": [0.5, 0.5],
                         "angle": 180,
                     },
                 },

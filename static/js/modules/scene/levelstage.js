@@ -410,12 +410,15 @@ class LevelStage extends Phaser.Scene {
             // On a "correct" match, T and C are -360 degrees and A and G are -180 degrees for some reason.
             // This may be the result of guessing numbers, or the fact that the angle is set in several different places,
             // or the lack of a clear point of reference, but this is what it ends up as...
+            
+            /*
             let correctAngle = -180;
             if (cloned.getShortName() == "thymine" || cloned.getShortName() == "cytosine") {
                 correctAngle = -360;
             }
+            */
 
-            if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != correctAngle)) {
+            if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != -180)) {
                 
                 // Wrong Match
                 console.log("Wrong!")
