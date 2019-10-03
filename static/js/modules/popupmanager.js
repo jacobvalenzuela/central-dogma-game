@@ -59,7 +59,7 @@ class PopupManager {
         this.introHappened = true;
         this.displayPopup(
             "intro",
-            {} // would a blank object work?
+            {}
         );
     }
 

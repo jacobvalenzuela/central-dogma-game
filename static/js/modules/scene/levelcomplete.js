@@ -102,7 +102,7 @@ class LevelComplete extends Phaser.Scene {
                                         that.tweens.add({ targets: lvlcompTxt, alpha: 0, duration: 400, ease: 'power4' });
                                         that.tweens.add({ targets: rectbg, alpha: 0, duration: 400, ease: 'power4' });
 
-                                        let homeBtn = that.add.image(180, 520, "home_btn").setScale(0.3).setAlpha(0).setInteractive();
+                                        let homeBtn = that.add.image(180, 520, "home_btn").setScale(0.5).setAlpha(0).setInteractive();
                                         that.homeBtn = homeBtn;
                                         that.sequencedInfoOverlay = that.add.dom(180, 300).createFromCache('html_sequencedinfo');
                                         that.sequencedInfoOverlay.setAlpha(0);
