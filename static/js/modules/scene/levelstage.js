@@ -60,6 +60,10 @@ class LevelStage extends Phaser.Scene {
         this.camera = this.game.cameras.cameras[0];
         this.graphics = this.game.add.graphics();
 
+        // Sound Effects
+        this.incorrectSound = game.sound.add("incorrect");
+        this.correctSound = game.sound.add("correct");
+
         // Background
         this.graphics.fillStyle(BLACK, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
@@ -430,7 +434,7 @@ class LevelStage extends Phaser.Scene {
                 this.popupmanager.emitEvent("error5Match", headNT, correctnt);
                 cloned.setError(true);
                 this.scorekeeping.incrementIncorrectSequences();
-
+                this.incorrectSound.play();
             } else {
 
                 // Correct Match
@@ -441,6 +445,7 @@ class LevelStage extends Phaser.Scene {
                 this.popupmanager.emitEvent("correctMatch", headNT, cloned);
                 this.popupmanager.emitEvent("firstCorrectMatch", headNT, cloned);
                 this.scorekeeping.incrementSequencesMade();
+                this.correctSound.play();
                 let headNTName = null;
                 let pairNTName = null;
                 if (this.levelConfig.lvlType == "dna_replication") {

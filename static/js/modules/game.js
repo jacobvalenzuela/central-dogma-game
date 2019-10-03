@@ -164,6 +164,11 @@ class Game {
         this.game.load.html("html_sequencedinfo", "static/html/sequencedinfo.html");
         this.game.load.html("html_knowledgepanel", "static/html/knowledgepanel.html");
         this.game.load.html("html_quiz", "static/html/quiz.html");
+
+
+        // Sounds
+        this.game.load.audio("incorrect", "static/audio/sounds/Incorrect.wav");
+        this.game.load.audio("correct", "static/audio/sounds/Correct.wav");
     }
 
     /**
