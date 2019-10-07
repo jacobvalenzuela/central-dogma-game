@@ -22,6 +22,7 @@ import Game from "./modules/game.js";
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "AT the Beginning!",
+            "description": "The basics of nucleotide pairing.",
             "speed": 50,
             "popups": {
                 "firstCorrectMatch": "Good work! <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> binds with <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>!",
@@ -55,6 +56,7 @@ import Game from "./modules/game.js";
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "Back AT it Again...",
+            "description": "Harder basics of nucleotide pairing.",
             "speed": 25,
             "popups": {},
             "rotateNT": false,
@@ -85,6 +87,7 @@ import Game from "./modules/game.js";
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "AT's all Folks!",
+            "description": "Hardest basics of nucleotide pairing.",
             "speed": 1,
             "popups": {},
             "rotateNT": false,

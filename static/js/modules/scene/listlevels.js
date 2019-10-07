@@ -11,6 +11,22 @@ class ListLevels extends Phaser.Scene {
         super(config);
     }
 
+
+    // Process for making a new level selection screen
+    // Position two arrows in the level selection scene, which when clicked will either increment/decrement curLevel
+    // Each arrow, when clicked, will call the increment/decrment method of the ListLevels object, then update the display.
+    // onLvlClick() starts the scene based on button clicked, but can be adapted to start a given scene/level number.
+    // When levels are cycled, their name should be displayed, a small description, and its difficulty.
+    // ^^ for that, potentially use tweens to make it appear on screen in an interesting way.
+    // ^^ also for that, let's use some associated color in the background.
+
+    // TODO
+    // Write increment method DONE
+    // Write decrement method DONE
+    // Write a startPreLevel(levelNum) method. DONE
+    // Write a displayLevel(levelNum) method. DONE
+    // Add a description field to the level json object found in main.js. DONEish. *only on the first three levels...
+
     /**
      * Initalizes the list levels. Fades in and populate the level list
      * @param {JSON} data 
@@ -25,6 +41,8 @@ class ListLevels extends Phaser.Scene {
 
         this.graphics.fillStyle(0x002664, 0.75);
         this.graphics.fillRect(30, 100, 300, 600);
+
+        let curLevel = 1;
 
         this.add.text(18, 53, "LEVEL SELECTION", 
             {fontFamily: 'Teko', fontSize: '24pt', color: '#000'});
@@ -43,6 +61,10 @@ class ListLevels extends Phaser.Scene {
         this.domOverlay = null;
         this.fadeCover = this.add.rectangle(180, 370, 360, 740, 0x000000).setDepth(1000).setAlpha(0).setInteractive();
         this.fadeCover.addListener("pointerup", that.bindFn(that.dismissOverlay))
+
+        // Creates left arrow
+
+        // Creates right arrow
     }
 
     updateSignInIcon() {
@@ -477,6 +499,7 @@ class ListLevels extends Phaser.Scene {
             this.time.addEvent({
                 delay: 75 * i,
                 callback: function () {
+                    // Button image for level
                     let lvlBtn = that.add.image(x, y, "nt_adenine_basic").setScale(0.20).setInteractive();
                     lvlBtn.setData("level", i);
 
@@ -526,6 +549,33 @@ class ListLevels extends Phaser.Scene {
         titleScreenScene.camera.setBounds(0, 0, 360, 740);
         titleScreenScene.camera.pan(img.x, img.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
     }
+
+    // Note: I know this is a duplicated method of above, I'm keeping both for testing purposes.
+    /**
+     * Stop the titlescreen and starts the given prelevel scene
+     * @param {Int} level - The level to start.
+     */
+    startPrelevel(level) {
+        if (this.domOverlay) {
+            return;
+        }
+        this.camera.fadeOut(400);
+        let that = this;
+        this.time.addEvent({
+            delay: 400,
+            loop: false,
+            callback: function () {
+                that.scene.stop("titlescreen");
+                that.scene.start("levelpre" + level);
+            }
+        });
+        this.camera.setBounds(0, 0, 360, 740);
+        this.camera.pan(img.x, img.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
+        let titleScreenScene = this.scene.manager.getScene("titlescreen");
+        this.scene.manager.resume("titlescreen");
+        titleScreenScene.camera.setBounds(0, 0, 360, 740);
+        titleScreenScene.camera.pan(img.x, img.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
+    }    
 
     /**
      * Shrink the image
@@ -587,6 +637,45 @@ class ListLevels extends Phaser.Scene {
                 loop: false
             });
         }
+    }
+
+    incrementLevel() {
+        if (curLevel < levels.length) {
+            curLevel++;
+            displayLevel(curLevel);
+        }
+    }
+
+    decrementLevel() {
+        if (curLevel > 0) {
+            curLevel--;
+            displayLevel(curLevel);
+        }
+    }
+
+    displayLevel(level) {
+        if (level > levels.length || level < 0) {
+            console.error("Given level number to display, " + level + ", is not a valid level number.");
+            break; // is there a better way of documenting programming errors?
+        }
+        let title = this.levels[level - 1].name;
+        let desc = this.levels[level - 1].description;
+        let speed = this.levels[level - 1].speed;
+        let difficulty = "Unknown";
+        
+        // Arbitrary numbers were chosen for dictating difficulty... may change later.
+        if (speed >= 50) {
+            difficulty = "Hard";
+        } else if (speed >= 30) {
+            difficulty = "Medium";
+        } else {
+            difficulty = "Easy";
+        }
+
+        this.text.add(20, 50, title);
+        this.text.add(20, 100, difficulty);
+        this.text.add(20, 150, desc);
+
     }
 }
 
