@@ -75,6 +75,7 @@ class Game {
         this.game.load.image("touch_feedback_green_spark", "static/img/touch_feedback/green_sparkle.png");
         this.game.load.image("touch_feedback_yellow_spark", "static/img/touch_feedback/yellow_sparkle.png");
 
+        // User Interface Related
         this.game.load.image("logo_dogma", "static/img/DOGMA_logo.png");
         this.game.load.spritesheet(
             "logo_dogma_intro",
@@ -88,10 +89,11 @@ class Game {
         this.game.load.image("play_btn", "static/img/playBtn.png");
         this.game.load.image("home_btn", "static/img/homeBtn.png");
         this.game.load.image("bg", "static/img/bg.png");
-
-        this.game.load.svg("signin_signin_icn", "static/img/sign_in/sign-in-alt-solid.svg");
         this.game.load.svg("signin_user_icn", "static/img/sign_in/user-solid.svg");
-        
+        this.game.load.image("right_arrow_btn", "static/img/rightArrowBtn.png");
+        this.game.load.image("left_arrow_btn", "static/img/leftArrowBtn.png");
+
+
         // ADENINE
         this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");
         this.game.load.image("nt_adenine_basic", "static/img/nucleotide/adenine/Adenine_basic@3x.png");
@@ -134,17 +136,19 @@ class Game {
             { frameWidth: 600, frameHeight: 300 }
         );
 
+        // Errortides and Missingtides
         this.game.load.image("errortide_purine", "static/img/errortide/purine_error.png");
         this.game.load.image("errortide_pyrimidine", "static/img/errortide/pyrimidine_error.png");
-
         this.game.load.image("missingtide_purine", "static/img/missingtide/purine_missing.png");
         this.game.load.image("missingtide_pyrimidine", "static/img/missingtide/pyrimidine_missing.png");
 
+        // Particles
         this.game.load.image("ntparticle_adenine", "static/img/nucleotide_particle/adenine_particle.png");
         this.game.load.image("ntparticle_cytosine", "static/img/nucleotide_particle/cytosine_particle.png");
         this.game.load.image("ntparticle_guanine", "static/img/nucleotide_particle/guanine_particle.png");
         this.game.load.image("ntparticle_thymine", "static/img/nucleotide_particle/thymine_particle.png");
 
+        // Codons
         this.game.load.svg("codontide_adenine", "static/img/codontide/a_codon.svg");
         this.game.load.svg("codontide_cytosine", "static/img/codontide/c_codon.svg");
         this.game.load.svg("codontide_guanine", "static/img/codontide/g_codon.svg");

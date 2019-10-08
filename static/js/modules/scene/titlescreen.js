@@ -41,6 +41,7 @@ class TitleScreen extends Phaser.Scene {
         this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.20).setAlpha(0);
 
         let dogmaLogo = this.game.add.sprite(185, 280, "logo_dogma_intro", 0).setScale(1.4);
+        this.dogmaLogo = dogmaLogo;
 
         // Menu Buttons
         this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.5).setAlpha(0).setInteractive();
@@ -168,6 +169,9 @@ class TitleScreen extends Phaser.Scene {
         this.playBtn.removeListener("pointerdown");
         this.playBtn.removeListener("pointerup");
         this.playBtn.removeListener("dragend");
+
+        this.fadeOut(this.dogmaLogo);
+
         this.scene.launch("listlevels");
         this.scene.moveAbove("titlescreen", "listlevels");
     }

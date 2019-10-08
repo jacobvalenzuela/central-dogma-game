@@ -32,29 +32,54 @@ class ListLevels extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
+
+        // Initialization
         this.camera = this.cameras.main;
         this.camera.setAlpha(0);
-
-        this.levels = data.levels;
-
         this.graphics = this.add.graphics();
 
-        this.graphics.fillStyle(0x002664, 0.75);
-        this.graphics.fillRect(30, 100, 300, 600);
+        // Level Data
+        this.levels = data.levels;
+        this.curLevel = 1;
 
-        let curLevel = 1;
-
-        this.add.text(18, 53, "LEVEL SELECTION", 
+        // Background and Title
+        // this.graphics.fillStyle(0x002664, 0.75);
+        // this.graphics.fillRect(20, 100, 320, 600);
+        this.add.text(20, 53, "LEVEL SELECTION", 
             {fontFamily: 'Teko', fontSize: '24pt', color: '#000'});
 
+        // Level Selection Arrows and Text
+        this.leftLevelBtn = this.add.image(60, 650, "left_arrow_btn").setScale(0.25).setInteractive();
+        this.rightLevelBtn = this.add.image(300, 650, "right_arrow_btn").setScale(0.25).setInteractive();
+
+        this.leftLevelBtn.on("pointerdown", () => {
+            this.browseLeft();
+        });
+
+        this.rightLevelBtn.on("pointerdown", () => {
+            this.browseRight();
+        });
+
+        this.levelBrowseTitle = this.add.text(20, 160, "Level Title", 
+            {fontFamily: 'Teko', fontSize: '36pt', color: '#000', align: 'center'});
+
+        this.levelBrowseDifficulty = this.add.text(20, 220, "Difficulty", 
+            {fontFamily: 'Teko', fontSize: '28pt', color: '#000', align: 'center'}); 
+
+        this.levelBrowseDesc = this.add.text(20, 300, "Description", 
+            {fontFamily: 'Teko', fontSize: '20pt', color: '#000', align: 'left'});                                  
+
+        // Sign in UI
         this.userbtn = this.add.image(40, 30, "nt_thymine_basic").setScale(0.17).setAngle(15).setInteractive();
         this.signInIcn = this.add.image(40, 30, "signin_signin_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
         this.userIcn = this.add.image(40, 30, "signin_user_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
         this.updateSignInIcon();
 
+        // Functionality to skip DOGMA animation, also fades in content.
         let that = this;
         this.fadeIn(function () {
-            that.populateLevels();
+            // that.populateLevels();
+            that.displayLevel(that.curLevel);
             that.userbtn.addListener("pointerup", that.bindFn(that.onUserButtonClick));
         });
 
@@ -62,9 +87,7 @@ class ListLevels extends Phaser.Scene {
         this.fadeCover = this.add.rectangle(180, 370, 360, 740, 0x000000).setDepth(1000).setAlpha(0).setInteractive();
         this.fadeCover.addListener("pointerup", that.bindFn(that.dismissOverlay))
 
-        // Creates left arrow
 
-        // Creates right arrow
     }
 
     updateSignInIcon() {
@@ -639,43 +662,43 @@ class ListLevels extends Phaser.Scene {
         }
     }
 
-    incrementLevel() {
-        if (curLevel < levels.length) {
-            curLevel++;
-            displayLevel(curLevel);
+    browseRight() {
+        if (this.curLevel < this.levels.length) {
+            this.curLevel++;
+            this.displayLevel(this.curLevel);
         }
     }
 
-    decrementLevel() {
-        if (curLevel > 0) {
-            curLevel--;
-            displayLevel(curLevel);
+    browseLeft() {
+        if (this.curLevel > 0) {
+            this.curLevel--;
+            this.displayLevel(this.curLevel);
         }
     }
 
     displayLevel(level) {
-        if (level > levels.length || level < 0) {
-            console.error("Given level number to display, " + level + ", is not a valid level number.");
-            break; // is there a better way of documenting programming errors?
-        }
-        let title = this.levels[level - 1].name;
-        let desc = this.levels[level - 1].description;
-        let speed = this.levels[level - 1].speed;
-        let difficulty = "Unknown";
-        
-        // Arbitrary numbers were chosen for dictating difficulty... may change later.
-        if (speed >= 50) {
-            difficulty = "Hard";
-        } else if (speed >= 30) {
-            difficulty = "Medium";
+        if (level > this.levels.length || this.level < 0) {
+            console.error("Given level number to display, " + this.level + ", is not a valid level number.");
+            // Is there a better way of handling errors? like a way to break or something instead of putting everything
+            // into a giant else branch?
         } else {
-            difficulty = "Easy";
+            let title = this.levels[level - 1].name;
+            let desc = this.levels[level - 1].description;
+            let speed = this.levels[level - 1].speed;
+            let difficulty = "Unknown";
+            
+            // Arbitrary numbers were chosen for dictating difficulty... may change later.
+            if (speed >= 50) {
+                difficulty = "(Hard)";
+            } else if (speed >= 30) {
+                difficulty = "(Medium)";
+            } else {
+                difficulty = "(Easy)";
+            }
+            this.levelBrowseTitle.text = title;
+            this.levelBrowseDifficulty.text = difficulty;
+            this.levelBrowseDesc.text = desc;
         }
-
-        this.text.add(20, 50, title);
-        this.text.add(20, 100, difficulty);
-        this.text.add(20, 150, desc);
-
     }
 }
 
