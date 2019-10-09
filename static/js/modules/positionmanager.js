@@ -459,7 +459,7 @@ class PositionManager {
     _fadeOut(nucleotide, callback=null) {
         let currentAlpha = nucleotide.getObject().alpha;
         let newAlpha = currentAlpha / 1.5;
-        if (newAlpha > 5) {
+        if (newAlpha < 0.1) {
             nucleotide.getObject().clearAlpha();
             nucleotide.setVisible(false);
             nucleotide.updateErrorDisplay();
@@ -474,7 +474,7 @@ class PositionManager {
             this.game.time.addEvent({
                 delay: 40,
                 callback: function () {
-                    that._fadeOut(nucleotide);
+                    that._fadeOut(nucleotide, callback);
                 },
                 loop: false
             });

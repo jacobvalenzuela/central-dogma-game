@@ -171,6 +171,7 @@ class TitleScreen extends Phaser.Scene {
         this.playBtn.removeListener("dragend");
 
         this.fadeOut(this.dogmaLogo);
+        this.fadeOut(this.playBtn);
 
         this.scene.launch("listlevels");
         this.scene.moveAbove("titlescreen", "listlevels");

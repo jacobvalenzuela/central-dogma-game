@@ -92,7 +92,7 @@ class Game {
         this.game.load.svg("signin_user_icn", "static/img/sign_in/user-solid.svg");
         this.game.load.image("right_arrow_btn", "static/img/rightArrowBtn.png");
         this.game.load.image("left_arrow_btn", "static/img/leftArrowBtn.png");
-
+        this.game.load.image("go_btn", "static/img/goBtn.png");
 
         // ADENINE
         this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");

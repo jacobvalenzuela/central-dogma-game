@@ -40,17 +40,19 @@ class ListLevels extends Phaser.Scene {
 
         // Level Data
         this.levels = data.levels;
-        this.curLevel = 1;
+        this.curLevel = 0;
 
         // Background and Title
         // this.graphics.fillStyle(0x002664, 0.75);
         // this.graphics.fillRect(20, 100, 320, 600);
-        this.add.text(20, 53, "LEVEL SELECTION", 
+        this.add.text(20, 60, "LEVEL SELECTION", 
             {fontFamily: 'Teko', fontSize: '24pt', color: '#000'});
 
-        // Level Selection Arrows and Text
+
+        // Level Selection UI/Functionality
         this.leftLevelBtn = this.add.image(60, 650, "left_arrow_btn").setScale(0.25).setInteractive();
         this.rightLevelBtn = this.add.image(300, 650, "right_arrow_btn").setScale(0.25).setInteractive();
+        this.goBtn = this.add.image(180, 650, "go_btn").setScale(0.40).setInteractive();
 
         this.leftLevelBtn.on("pointerdown", () => {
             this.browseLeft();
@@ -60,14 +62,23 @@ class ListLevels extends Phaser.Scene {
             this.browseRight();
         });
 
-        this.levelBrowseTitle = this.add.text(20, 160, "Level Title", 
+        this.goBtn.on("pointerdown", () => {
+            if (this.levels[this.curLevel].unlocked == true) {
+               this.startPrelevel(this.curLevel); 
+            }
+        })
+
+
+        // Level Selection Descriptors
+        this.levelBrowseTitle = this.add.text(20, 160, "", 
             {fontFamily: 'Teko', fontSize: '36pt', color: '#000', align: 'center'});
 
-        this.levelBrowseDifficulty = this.add.text(20, 220, "Difficulty", 
+        this.levelBrowseSubtitle = this.add.text(20, 220, "", 
             {fontFamily: 'Teko', fontSize: '28pt', color: '#000', align: 'center'}); 
 
-        this.levelBrowseDesc = this.add.text(20, 300, "Description", 
-            {fontFamily: 'Teko', fontSize: '20pt', color: '#000', align: 'left'});                                  
+        this.levelBrowseDesc = this.add.text(20, 300, "", 
+            {fontFamily: 'Teko', fontSize: '20pt', color: '#000', align: 'left', wordWrap: { width: 320, useAdvancedWrap: true } });                                  
+
 
         // Sign in UI
         this.userbtn = this.add.image(40, 30, "nt_thymine_basic").setScale(0.17).setAngle(15).setInteractive();
@@ -75,10 +86,10 @@ class ListLevels extends Phaser.Scene {
         this.userIcn = this.add.image(40, 30, "signin_user_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
         this.updateSignInIcon();
 
+
         // Functionality to skip DOGMA animation, also fades in content.
         let that = this;
         this.fadeIn(function () {
-            // that.populateLevels();
             that.displayLevel(that.curLevel);
             that.userbtn.addListener("pointerup", that.bindFn(that.onUserButtonClick));
         });
@@ -511,70 +522,6 @@ class ListLevels extends Phaser.Scene {
     }
 
     /**
-     * Populate the level list
-     */
-    populateLevels() {
-        for (let i = 0; i < this.levels.length; i++) {
-            let x = 80 + 100 * (i % 3);
-            let y = 150 + 100 * Math.floor(i / 3);
-
-            let that = this;
-            this.time.addEvent({
-                delay: 75 * i,
-                callback: function () {
-                    // Button image for level
-                    let lvlBtn = that.add.image(x, y, "nt_adenine_basic").setScale(0.20).setInteractive();
-                    lvlBtn.setData("level", i);
-
-                    let xtxt = x - 18;
-                    let ytxt = y - 30;
-                    let txt = that.add.text(xtxt, ytxt, i + 1, 
-                        {fontFamily: '\'Open Sans\', sans-serif', fontSize: '35pt', color: '#fff', stroke: '#000', strokeThickness: 10});  
-                    
-                    if (that.levels[i].unlocked) {
-                        lvlBtn.addListener("pointerup", that.bindFn(that.onLvlClick));
-                        lvlBtn.addListener("pointerdown", that.bindFn(that.lvlPointerDown));
-                        lvlBtn.addListener("pointerup", that.bindFn(that.lvlPointerRelease));
-                    } else {
-                        lvlBtn.setAlpha(0.50);
-                        txt.setAlpha(0.75);
-                    }
-                },
-                loop: false
-            });
-        }
-    }
-
-    /**
-     * Stop the titlescreen and start the prelevel scene
-     * @param {Phaser.GameObjects.Image} img - image that got clicked
-     */
-    onLvlClick(img) {
-        if (this.domOverlay) {
-            return;
-        }
-        let level = img.getData("level");
-        this.camera.fadeOut(400);
-
-        let that = this;
-        this.time.addEvent({
-            delay: 400,
-            loop: false,
-            callback: function () {
-                that.scene.stop("titlescreen");
-                that.scene.start("levelpre" + level);
-            }
-        });
-        this.camera.setBounds(0, 0, 360, 740);
-        this.camera.pan(img.x, img.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
-        let titleScreenScene = this.scene.manager.getScene("titlescreen");
-        this.scene.manager.resume("titlescreen");
-        titleScreenScene.camera.setBounds(0, 0, 360, 740);
-        titleScreenScene.camera.pan(img.x, img.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
-    }
-
-    // Note: I know this is a duplicated method of above, I'm keeping both for testing purposes.
-    /**
      * Stop the titlescreen and starts the given prelevel scene
      * @param {Int} level - The level to start.
      */
@@ -593,11 +540,11 @@ class ListLevels extends Phaser.Scene {
             }
         });
         this.camera.setBounds(0, 0, 360, 740);
-        this.camera.pan(img.x, img.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
+        this.camera.pan(this.goBtn.x, this.goBtn.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
         let titleScreenScene = this.scene.manager.getScene("titlescreen");
         this.scene.manager.resume("titlescreen");
         titleScreenScene.camera.setBounds(0, 0, 360, 740);
-        titleScreenScene.camera.pan(img.x, img.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
+        titleScreenScene.camera.pan(this.goBtn.x, this.goBtn.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
     }    
 
     /**
@@ -662,13 +609,19 @@ class ListLevels extends Phaser.Scene {
         }
     }
 
+    /**
+     * Selects the next level.
+     */
     browseRight() {
-        if (this.curLevel < this.levels.length) {
+        if (this.curLevel < this.levels.length - 1) {
             this.curLevel++;
             this.displayLevel(this.curLevel);
         }
     }
 
+    /**
+     * Selects the previous level.
+     */
     browseLeft() {
         if (this.curLevel > 0) {
             this.curLevel--;
@@ -676,28 +629,43 @@ class ListLevels extends Phaser.Scene {
         }
     }
 
+    /**
+     * In the level selection scene, displays the information related to a level.
+     * @param {Int} - The level whose data should be displayed.
+     */
     displayLevel(level) {
         if (level > this.levels.length || this.level < 0) {
             console.error("Given level number to display, " + this.level + ", is not a valid level number.");
             // Is there a better way of handling errors? like a way to break or something instead of putting everything
             // into a giant else branch?
         } else {
-            let title = this.levels[level - 1].name;
-            let desc = this.levels[level - 1].description;
-            let speed = this.levels[level - 1].speed;
+            let title = this.levels[level].name;
+            let desc = this.levels[level].description;
+            let speed = this.levels[level].speed;
             let difficulty = "Unknown";
             
             // Arbitrary numbers were chosen for dictating difficulty... may change later.
             if (speed >= 50) {
-                difficulty = "(Hard)";
-            } else if (speed >= 30) {
+                difficulty = "(Easy)";
+            } else if (speed >= 25) {
                 difficulty = "(Medium)";
             } else {
-                difficulty = "(Easy)";
+                difficulty = "(Hard)";
             }
+
+            // Rendering text, testing if it is unlocked and/or has a description.
             this.levelBrowseTitle.text = title;
-            this.levelBrowseDifficulty.text = difficulty;
-            this.levelBrowseDesc.text = desc;
+            if (this.levels[level].unlocked == true) {
+                if (typeof this.levels[level].description === "undefined") {
+                    this.levelBrowseDesc.text = "Description not available."
+                } else {
+                    this.levelBrowseDesc.text = desc;
+                }
+                this.levelBrowseSubtitle.text = "Level " + (level + 1) + " - " + difficulty;
+            } else {
+                this.levelBrowseSubtitle.text = "Level " + (level + 1) + " - LOCKED";
+                this.levelBrowseDesc.text = "You could probably write something about how to unlock this level here.";
+            }
         }
     }
 }
