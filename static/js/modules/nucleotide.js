@@ -13,7 +13,7 @@ class Nucleotide {
         this.allNucleotides = {
             "A": {
                 shortname: "adenine",
-                color: 0xf49232,
+                color: 0xF56C2,
                 matches: ["T", "U"],
                 classification: "purine",
                 display: {
@@ -34,7 +34,7 @@ class Nucleotide {
             },
             "T": {
                 shortname: "thymine",
-                color: 0x31ace0,
+                color: 0x22f2DD,
                 matches: ["A"],
                 classification: "pyrimidine",
                 display: {
@@ -55,7 +55,7 @@ class Nucleotide {
             },
             "C": {
                 shortname: "cytosine",
-                color: 0xc71489,
+                color: 0x103B75,
                 matches: ["G"],
                 classification: "pyrimidine",
                 display: {
@@ -76,7 +76,7 @@ class Nucleotide {
             },
             "G": {
                 shortname: "guanine",
-                color: 0x26b11e,
+                color: 0xF5B222,
                 matches: ["C"],
                 classification: "purine",
                 display: {
@@ -157,7 +157,7 @@ class Nucleotide {
         this.level.anims.create({
             key: "idle_" + this.getShortName(),
             frames: this.level.anims.generateFrameNumbers("nt_" + this.getShortName() + "_basic_animated", { start: 0, end: 3}),
-            frameRate: 25,
+            frameRate: 30,
             repeat: -1
         });
         this.imgObj.anims.play("idle_" + this.getShortName());
@@ -177,15 +177,15 @@ class Nucleotide {
         this.squareObjErr = this.level.add.rectangle(0, 0, 15, 15, 0xfc0e33);
         this.imgObjErr.setVisible(false);
         this.squareObjErr.setVisible(false);
-        this.imgObjErr.setDepth(0);
-        this.squareObjErr.setDepth(0);
+        this.imgObjErr.setDepth(10);
+        this.squareObjErr.setDepth(10);
 
         this.imgObjMiss = this.level.add.image(0, 0, "missingtide_" + this.getClassification());
         this.squareObjMiss = this.level.add.rectangle(0, 0, 15, 15, 0xffffff);
         this.imgObjMiss.setVisible(false);
         this.squareObjMiss.setVisible(false);
-        this.imgObjMiss.setDepth(2);
-        this.squareObjMiss.setDepth(2);
+        this.imgObjMiss.setDepth(10);
+        this.squareObjMiss.setDepth(10);
 
         this.letterText = this.level.add.text(0, 0, this.rep, 
             {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#fff'}).setOrigin(0.5);
@@ -260,14 +260,14 @@ class Nucleotide {
             this.squareObjErr.setVisible(this.squareObj.visible);
             this.squareObjErr.setPosition(this.squareObj.x, this.squareObj.y);
             this.imgObjErr.setVisible(false);
-            this.squareObjErr.setScale(this.squareObj.scale);
+            this.squareObjErr.setScale(this.squareObj.scale - 0.55);
         } else {
             this.imgObjErr.setVisible(this.imgObj.visible);
             this.imgObjErr.setPosition(this.imgObj.x, this.imgObj.y);
             this.squareObjErr.setVisible(false);
             let scale = this.imgObj.scale;
             if (scale > 0) {
-                scale = scale + scale * 0.30;
+                scale = scale - scale * 0.25;
             }
             this.imgObjErr.setScale(scale);
             this.imgObjErr.setAlpha(this.imgObj.alpha);

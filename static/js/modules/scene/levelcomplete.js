@@ -699,7 +699,7 @@ class LevelComplete extends Phaser.Scene {
         if (img != this.homeBtn) {
             return;
         }
-        this.homeBtn.setScale(0.18);
+        this.homeBtn.setScale(0.45);
     }
 
     /**
@@ -707,7 +707,7 @@ class LevelComplete extends Phaser.Scene {
      * @param {Phaser.GameObjects.Image} img - home button img obj
      */
     onHomeClickRelease(img) {
-        this.homeBtn.setScale(0.22);
+        this.homeBtn.setScale(0.50);
     }
 }
 

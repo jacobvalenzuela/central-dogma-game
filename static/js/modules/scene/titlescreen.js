@@ -182,7 +182,7 @@ class TitleScreen extends Phaser.Scene {
      * @param {Phaser.GameObjects.Image} img - the play button
      */
     onPlayClickHold(img) {
-        this.playBtn.setScale(0.25);
+        this.playBtn.setScale(0.45);
     }
 
     /**
@@ -190,7 +190,7 @@ class TitleScreen extends Phaser.Scene {
      * @param {Phaser.GameObjects.Image} img - the play button
      */
     onPlayClickRelease(img) {
-        this.playBtn.setScale(0.30);
+        this.playBtn.setScale(0.50);
     }
 
     /**

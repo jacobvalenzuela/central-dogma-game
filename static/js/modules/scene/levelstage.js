@@ -35,6 +35,7 @@ class LevelStage extends Phaser.Scene {
         let WHITE = 0xFFFFFF;
         let DARKER_BLUE = 0x0e1e2d;
         let BLACK = 0x1e1e1e;
+        let GOLD = 0xF5B222;
 
         this.levelConfig = data.level;
         this.gameObj = data.gameObj;
@@ -93,7 +94,7 @@ class LevelStage extends Phaser.Scene {
         this.graphics.fillStyle(ORANGE, 1.0);
         this.graphics.fillRect(100, 50, 75, 45).setDepth(0.5);
 
-        this.graphics.fillStyle(BLUE, 1.0);
+        this.graphics.fillStyle(GOLD, 1.0);
         this.graphics.fillRect(185, 50, 160, 45).setDepth(0.5);
 
         // Binding Pocket
