@@ -249,7 +249,7 @@ class Codon {
             let cdnt = this.level.add.image(-50, -125, "codontide_" + nt.getShortName());
             let size = nt.getCodonSize();
             cdnt.setSize(size.width, size.height);
-            cdnt.setDisplaySize(size.width, size.height);
+            cdnt.setDisplaySize(size.width * 0.5, size.height * 0.5);
             cdnt.setPosition(cdnt.x + size.width * i, cdnt.y + size.offsetY);
             this.containerObj.add(cdnt);
             this.ntCodonObj.push(cdnt);

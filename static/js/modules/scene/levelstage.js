@@ -375,7 +375,7 @@ class LevelStage extends Phaser.Scene {
     }
 
     /**
-     * WHen dragging stops
+     * When dragging stops
      * @param {Phaser.Input.InputPlugin} input - input
      * @param {Phaser.Input.Pointer} pointer - The pointer
      * @param {Phaser.GameObjects.Image} image - the image
@@ -398,7 +398,9 @@ class LevelStage extends Phaser.Scene {
         } else if (this.positionManager.ntTouchingBindingPocket()){
             let angle = image.angle;
             let clickedNT = image.getData("nucleotide");
+            // ntTouchingBindingPocket also uses getHeadNucleotide, so we call it twice...
             let headNT = this.positionManager.getHeadNucleotide();
+            // getHeadNucleotide is only triggering once...
             let cloned = clickedNT.clone();
             if (this.levelConfig.lvlType == "dna_replication") {
                 cloned.setDisplay("nucleotide");
@@ -414,22 +416,12 @@ class LevelStage extends Phaser.Scene {
 
             // On a "correct" match, T and C are -360 degrees and A and G are -180 degrees for some reason.
             // This may be the result of guessing numbers, or the fact that the angle is set in several different places,
-            // or the lack of a clear point of reference, but this is what it ends up as...
-            
-            /*
-            let correctAngle = -180;
-            if (cloned.getShortName() == "thymine" || cloned.getShortName() == "cytosine") {
-                correctAngle = -360;
-            }
-            */
+            // or the lack of a clear point of reference, but this is what it ends up as...s
 
             if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != -180)) {
                 
                 // Wrong Match
-                console.log("Wrong!")
-                console.log("My angle: " + cloned.getAngle());
-                console.log("Their angle: " + headNT.getAngle());
-
+                console.log("DOUBLE SUB POSSIBILITY.");
                 let correctnt = this.positionManager.getValidMatchNT(headNT);
                 this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
                 this.popupmanager.emitEvent("error5Match", headNT, correctnt);
@@ -439,10 +431,6 @@ class LevelStage extends Phaser.Scene {
             } else {
 
                 // Correct Match
-                console.log("Correct!")
-                console.log("My angle: " + cloned.getAngle());
-                console.log("Their angle: " + headNT.getAngle());
-
                 this.popupmanager.emitEvent("correctMatch", headNT, cloned);
                 this.popupmanager.emitEvent("firstCorrectMatch", headNT, cloned);
                 this.scorekeeping.incrementSequencesMade();

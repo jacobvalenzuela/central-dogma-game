@@ -238,7 +238,7 @@ import Game from "./modules/game.js";
             "ntSequence": "AUGGCAACCAAACCGGGUCAUUGACCCACUGACCAUGGGUUUUAG",
             "unlocked": true,
             "name": "Codon you do this?",
-            "speed": 35,
+            "speed": 50,
             "rotateNT": false,
             "ntType": "basic",
             "lvlType": "codon_transcription",

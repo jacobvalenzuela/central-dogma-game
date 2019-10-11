@@ -19,8 +19,6 @@ class PositionManager {
         this.levelNucleotides = [];
         this.hasFrozenHead = false;
 
-        this.nucleotideSpacer = 2;
-
         // One of the many if special cases to distinguish codon and dna levels
         // All this code below is for path line drawing
         if (this.level.levelConfig.lvlType == "dna_replication") {
@@ -30,11 +28,6 @@ class PositionManager {
                 let currIdx = Math.floor(i / this.pathPointsFactor);
                 let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
 
-                // Introduce a new variable called spacer
-                // Increment down every time we need to add something to line.
-                // If spacer count hits 0, reset it to max and add a nucleotide instead of a null.
-                // Later when we're popping stuff off of large array, 
-                
                 if (currIdx === nextIdx) {
                     // Spaces out nucleotides
                     this.levelNucleotides.push(null);
@@ -43,9 +36,19 @@ class PositionManager {
                 }
                 this.levelNucleotides.push(this.level.nucleotides[currIdx]);
             }
+
+        // Controls the spacing between codons as they travel the path.
         } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            
+            // Initial spacing before first codon.
+            for (let i = 0; i < 120; i++) {
+                this.levelNucleotides.push(null);
+            }
+
+            // Fills up the rest of the level sequence.
             for (let i = 0; i < this.level.nucleotides.length; i++) {
-                for (let j = 0; j < 97; j++) {
+                // How much spacing to add between each codon.
+                for (let j = 0; j < 50; j++) {
                     this.levelNucleotides.push(null);
                 }
                 this.levelNucleotides.push(this.level.nucleotides[i]);
@@ -109,9 +112,6 @@ class PositionManager {
         // VERTICAL PATH
         // Change the getPoints below to alter the points on the main incoming path. Will change speed traveled along path.
         // For some reason, changing this allows nucleotides to drift beyond the binding pocket.
-
-        // * I've duplicated a line setting initVertPathPts because I plan on using a reduced amount of points on the vertical path
-        // for nucleotides...
         if (this.level.levelConfig.lvlType == "dna_replication") {
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
             this.inputVertPathDispl = new Phaser.Curves.Path(175, 140);
