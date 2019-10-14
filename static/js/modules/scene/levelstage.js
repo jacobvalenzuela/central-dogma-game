@@ -98,7 +98,8 @@ class LevelStage extends Phaser.Scene {
         this.graphics.fillRect(185, 50, 160, 45).setDepth(0.5);
 
         // Binding Pocket
-        this.ntHighlightEllipse = this.game.add.ellipse(160, 490, 230, 125, 0xfffaa8, 1);
+        // this.ntHighlightEllipse = this.game.add.ellipse(160, 490, 230, 125, 0xfffaa8, 1);
+        this.ntHighlightEllipse = this.game.add.ellipse(190, 400, 230, 50, 0xfffaa8, 1);
         this.ntHighlightEllipse.setDepth(1);
         this.ntHighlightEllipse.setAngle(16);
         this.ntHighlightEllipse.setAlpha(1.0);
@@ -388,14 +389,16 @@ class LevelStage extends Phaser.Scene {
         if (!this.ntBtnsEnabled) {
             return;
         }
+
+        // Rotates 90 degrees if not dragged but tapped.
         let distance = image.getData("distanceDragged");
         if (distance < 15 && this.rotateNT) {
-            // Rotates 90 degrees if not dragged but tapped.
             let nt = image.getData("nucleotide");
             nt.setAngle(nt.getAngle() + 90);
-
             console.log("Angle set to " + nt.getAngle());
-        } else if (this.positionManager.ntTouchingBindingPocket()){
+
+        // Otherwise we're actually dragging
+        } else if (this.positionManager.ntTouchingBindingPocket()) {
             let angle = image.angle;
             let clickedNT = image.getData("nucleotide");
             // ntTouchingBindingPocket also uses getHeadNucleotide, so we call it twice...
@@ -414,20 +417,17 @@ class LevelStage extends Phaser.Scene {
             this.shuffleNTBtnAngle();
             this.ntBtnsEnabled = false;
 
-            // On a "correct" match, T and C are -360 degrees and A and G are -180 degrees for some reason.
-            // This may be the result of guessing numbers, or the fact that the angle is set in several different places,
-            // or the lack of a clear point of reference, but this is what it ends up as...s
 
             if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != -180)) {
                 
                 // Wrong Match
-                console.log("DOUBLE SUB POSSIBILITY.");
                 let correctnt = this.positionManager.getValidMatchNT(headNT);
                 this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
                 this.popupmanager.emitEvent("error5Match", headNT, correctnt);
                 cloned.setError(true);
                 this.scorekeeping.incrementIncorrectSequences();
                 this.incorrectSound.play();
+
             } else {
 
                 // Correct Match

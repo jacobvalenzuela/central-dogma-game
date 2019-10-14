@@ -246,6 +246,26 @@ class Codon {
         let height = 0;
         for (let i = 0; i < this.nucleotides.length; i++) {
             let nt = this.nucleotides[i];
+            // Old method of grabbing codon sprites
+            // let cdnt = this.level.add.image(-50, -125, "codontide_" + nt.getShortName());
+
+            // Finding and setting up the correct animation
+
+            /*
+            let cdnt;
+            if (nt.getShortName() != "uracil") {
+                cdnt = this.level.add.sprite(0, 0, "nt_" + nt.getShortName() + "_basic_animated");
+                this.level.anims.create({
+                    key: "idle_" + nt.getShortName(),
+                    frames: this.level.anims.generateFrameNumbers("nt_" + nt.getShortName() + "_basic_animated", { start: 0, end: 3}),
+                    frameRate: 30,
+                    repeat: -1
+                });
+                cdnt.anims.play("idle_" + nt.getShortName());
+            } else {
+                let cdnt = this.level.add.image(-50, -125, "codontide_" + nt.getShortName());
+            }
+            */
             let cdnt = this.level.add.image(-50, -125, "codontide_" + nt.getShortName());
             let size = nt.getCodonSize();
             cdnt.setSize(size.width, size.height);

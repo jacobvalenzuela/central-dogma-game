@@ -18,7 +18,8 @@ import Game from "./modules/game.js";
     let game = new Game([
         {
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
-            "ntSequence": "ATATTTTAAATATATATATA",
+            // "ntSequence": "ATATTTTAAATATATATATA",
+            "ntSequence": "AAAAAAAAAAAAAAAAAA",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "AT the Beginning!",

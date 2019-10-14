@@ -674,10 +674,15 @@ class PositionManager {
     ntTouchingBindingPocket() {
         let ellipse = this.level.ntHighlightEllipse;
         let nucleotide = null;
+
+        // Loops over all the nucleotide array, which contains 
+        // either nucleotide objects or null objects.
         for (let i = 0; i < this.levelNucleotides.length; i++) {
             nucleotide = this.levelNucleotides[i];
             if (nucleotide) {
                 nucleotide = nucleotide.getObject();
+
+                // Codon Levels
                 if (this.level.levelConfig.lvlType == "codon_transcription") {
                     let displayWidth = nucleotide.displayWidth;
                     let displayHeight = nucleotide.displayHeight;
@@ -709,14 +714,25 @@ class PositionManager {
                 break;
             }
         }
-        if (nucleotide) {
+
+        // We actually never go into this statement...
+        if (nucleotide) { 
+
             let offset = 0;
             if (this.level.levelConfig.lvlType == "dna_replication") {
                 offset = 50;
             } else if (this.level.levelConfig.lvlType == "codon_transcription") {
                 offset = 100;
             }
-            return ellipse.getTopLeft().y + offset < nucleotide.getBottomRight().y;
+            // We test the top left of the ellipse and the bottom right of the nucleotide
+            // because they're the first place where the nucleotide and binding area intersect.
+
+            // I think the frame of reference is that the bottom of the screen is max and the top of the screen is 0..
+            return (ellipse.getTopLeft().y + offset < nucleotide.getBottomRight().y && ellipse.getBottomRight().y > nucleotide.getTopLeft().y);
+            //&& ellipse.getBottomRight().y < nucleotide.getTopLeft().y doesn't seem to affect it.
+
+
+            //return ellipse.getTopLeft().y + offset < nucleotide.getBottomRight().y;
             // let ellipseBottomLeft = this.getRotatedRectCoordinates(ellipse, ellipse.getTopLeft());
             // let ellipseTopRight = this.getRotatedRectCoordinates(ellipse, ellipse.getBottomRight());
             // let nucleotideBottomLeft = this.getRotatedRectCoordinates(nucleotide, nucleotide.getTopLeft());
