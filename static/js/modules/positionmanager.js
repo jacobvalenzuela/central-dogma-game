@@ -638,7 +638,7 @@ class PositionManager {
         let firstPoint = this.outputVertPathPts[0];
         let secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
         nucleotide.setPosition(firstPoint.x, firstPoint.y);
-        
+
         // Shakes screen and flashes red upon a wrong match
         this.level.camera.flash(300, 255, 30, 30);
         this.level.camera.shake(400, 0.01);
@@ -674,73 +674,60 @@ class PositionManager {
     ntTouchingBindingPocket() {
         let ellipse = this.level.ntHighlightEllipse;
         let nucleotide = null;
+        let nucDispObj = null;
 
         // Loops over all the nucleotide array, which contains 
         // either nucleotide objects or null objects.
         for (let i = 0; i < this.levelNucleotides.length; i++) {
             nucleotide = this.levelNucleotides[i];
             if (nucleotide) {
-                nucleotide = nucleotide.getObject();
+                nucDispObj = nucleotide.getObject();
 
                 // Codon Levels
                 if (this.level.levelConfig.lvlType == "codon_transcription") {
-                    let displayWidth = nucleotide.displayWidth;
-                    let displayHeight = nucleotide.displayHeight;
-                    let ntx = nucleotide.x;
-                    let nty = nucleotide.y;
-                    let originX = nucleotide.originX;
-                    let originY = nucleotide.originY;
-                    nucleotide = {
+                    let wrapped = nucDispObj;
+                    nucDispObj = {
+                        getX: function() {
+                            return wrapped.x - (wrapped.displayWidth * wrapped.originX);
+                        },
+                        getY: function() {
+                            return wrapped.y - (wrapped.displayHeight * wrapped.originY);
+                        },
                         getTopLeft: function () {
-                            let x = ntx - (displayWidth * originX);
-                            let y = nty - (displayHeight * originY);
-                            return new Phaser.Math.Vector2(x, y);
+                            return new Phaser.Math.Vector2(this.getX(), this.getY());
                         },
                         getBottomRight: function () {
-                            let x = (ntx - (displayWidth * originX)) + displayWidth;
-                            let y = (nty - (displayHeight * originY)) + displayHeight;
-                            return new Phaser.Math.Vector2(x, y);
+                            return new Phaser.Math.Vector2(this.getX() + wrapped.displayWidth,
+                                                           this.getY() + wrapped.displayHeight);
                         },
                         getCenter: function () {
-                            let x = ntx - (displayWidth * originX) + (displayWidth / 2);
-                            let y = nty - (displayHeight * originY) + (displayHeight / 2);
-                            return new Phaser.Math.Vector2(x, y);
+                            return new Phaser.Math.Vector2(this.getX() + wrapped.displayWidth / 2,
+                                                           this.getY() + wrapped.displayHeight / 2);
                         },
-                        x: ntx,
-                        y: nty,
-                        angle: nucleotide.angle,
+                        getBounds: function() {
+                            return new Phaser.Geom.Rectangle(this.getX(), this.getY(),
+                                                             wrapped.displayWidth,
+                                                             wrapped.displayHeight);
+                        },
+                        x: wrapped.x,
+                        y: wrapped.y,
+                        angle: wrapped.angle,
                     };
                 }
                 break;
             }
         }
 
-        // We actually never go into this statement...
-        if (nucleotide) { 
-
-            let offset = 0;
-            if (this.level.levelConfig.lvlType == "dna_replication") {
-                offset = 50;
-            } else if (this.level.levelConfig.lvlType == "codon_transcription") {
-                offset = 100;
-            }
-            // We test the top left of the ellipse and the bottom right of the nucleotide
-            // because they're the first place where the nucleotide and binding area intersect.
-
-            // I think the frame of reference is that the bottom of the screen is max and the top of the screen is 0..
-            return (ellipse.getTopLeft().y + offset < nucleotide.getBottomRight().y && ellipse.getBottomRight().y > nucleotide.getTopLeft().y);
-            //&& ellipse.getBottomRight().y < nucleotide.getTopLeft().y doesn't seem to affect it.
-
-
-            //return ellipse.getTopLeft().y + offset < nucleotide.getBottomRight().y;
-            // let ellipseBottomLeft = this.getRotatedRectCoordinates(ellipse, ellipse.getTopLeft());
-            // let ellipseTopRight = this.getRotatedRectCoordinates(ellipse, ellipse.getBottomRight());
-            // let nucleotideBottomLeft = this.getRotatedRectCoordinates(nucleotide, nucleotide.getTopLeft());
-            // let nucleotideTopRight = this.getRotatedRectCoordinates(nucleotide, nucleotide.getBottomRight());
-            // return !(ellipseTopRight.x <= nucleotideBottomLeft.x ||
-            //         ellipseTopRight.y <= nucleotideBottomLeft.y ||
-            //         ellipseBottomLeft.x >= nucleotideTopRight.x ||
-            //         ellipseBottomLeft.y >= nucleotideTopRight.y);
+        if (nucDispObj && this.level.levelConfig.lvlType == "dna_replication") {
+            // actually make correct bounding boxes for ellipse and nucleotide
+            var bbBinding = ellipse.getBounds();
+            var bbNucleotide = nucDispObj.getBounds();
+            var inters = Phaser.Geom.Rectangle.Intersection(bbBinding, bbNucleotide);
+            return inters.width > 0 && inters.height > 0;
+        } else if (nucDispObj && this.level.levelConfig.lvlType == "codon_transcription") {
+            let offset = 100;
+            return (ellipse.getTopLeft().y + offset < nucDispObj.getBottomRight().y &&
+                    ellipse.getBottomRight().y > nucDispObj.getTopLeft().y);
         }
         return false;
     }
