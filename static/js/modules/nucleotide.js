@@ -13,7 +13,7 @@ class Nucleotide {
         this.allNucleotides = {
             "A": {
                 shortname: "adenine",
-                color: 0xF56C2,
+                color: 0xF56C26,
                 matches: ["T", "U"],
                 classification: "purine",
                 display: {
@@ -28,13 +28,13 @@ class Nucleotide {
                 },
                 codonSize: {
                     width: 50,
-                    height: 65,
-                    offsetY: 19.7,
+                    height: 50,
+                    offsetY: 0,
                 },
             },
             "T": {
                 shortname: "thymine",
-                color: 0x22f2DD,
+                color: 0x22F2DD,
                 matches: ["A"],
                 classification: "pyrimidine",
                 display: {
@@ -49,7 +49,7 @@ class Nucleotide {
                 },
                 codonSize: {
                     width: 50,
-                    height: 105,
+                    height: 50,
                     offsetY: 0,
                 },
             },
@@ -70,8 +70,8 @@ class Nucleotide {
                 },
                 codonSize: {
                     width: 50,
-                    height: 65,
-                    offsetY: 19.7,
+                    height: 50,
+                    offsetY: 0,
                 },
             },
             "G": {
@@ -91,7 +91,7 @@ class Nucleotide {
                 },
                 codonSize: {
                     width: 50,
-                    height: 105,
+                    height: 50,
                     offsetY: 0,
                 },
             },
@@ -112,7 +112,7 @@ class Nucleotide {
                 },
                 codonSize: {
                     width: 50,
-                    height: 105,
+                    height: 50,
                     offsetY: 0,
                 },
             },

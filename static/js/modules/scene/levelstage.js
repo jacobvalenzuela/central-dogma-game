@@ -28,14 +28,14 @@ class LevelStage extends Phaser.Scene {
      */
     init(data) {
         // Color Constants
-        let ORANGE = 0xFE5832;
+        let ORANGE = 0xF56C26; // Adenine
         let DARK_BLUE = 0x002664;
-        let CYAN = 0x21EEE9;
+        let CYAN = 0x22F2DD; // Thymine
         let BLUE = 0x006FFF;
         let WHITE = 0xFFFFFF;
-        let DARKER_BLUE = 0x0e1e2d;
+        let DARKER_BLUE = 0x103B75; // Cytosine
         let BLACK = 0x1e1e1e;
-        let GOLD = 0xF5B222;
+        let GOLD = 0xF5B222; // Guanine
 
         this.levelConfig = data.level;
         this.gameObj = data.gameObj;
@@ -248,7 +248,7 @@ class LevelStage extends Phaser.Scene {
             scale = 0.20;
             nt.setAngle(180); // Makes button face correct way.
         } else if (this.levelConfig.lvlType == "codon_transcription") {
-            scale = 0.55;
+            scale = .60;
             nt.setAngle(180);
         }
         nt.setScale(scale);

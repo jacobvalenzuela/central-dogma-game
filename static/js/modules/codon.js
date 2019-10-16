@@ -245,40 +245,52 @@ class Codon {
         let width = 0;
         let height = 0;
         for (let i = 0; i < this.nucleotides.length; i++) {
-            let nt = this.nucleotides[i];
-            // Old method of grabbing codon sprites
-            // let cdnt = this.level.add.image(-50, -125, "codontide_" + nt.getShortName());
-
-            // Finding and setting up the correct animation
-
-            /*
-            let cdnt;
-            if (nt.getShortName() != "uracil") {
-                cdnt = this.level.add.sprite(0, 0, "nt_" + nt.getShortName() + "_basic_animated");
-                this.level.anims.create({
-                    key: "idle_" + nt.getShortName(),
-                    frames: this.level.anims.generateFrameNumbers("nt_" + nt.getShortName() + "_basic_animated", { start: 0, end: 3}),
-                    frameRate: 30,
-                    repeat: -1
-                });
-                cdnt.anims.play("idle_" + nt.getShortName());
-            } else {
-                let cdnt = this.level.add.image(-50, -125, "codontide_" + nt.getShortName());
+            let nt = this.nucleotides[i]; // Current nucleotide
+            let cdnt; // Current codon
+            let ntShortName = nt.getShortName();
+            if (ntShortName == "uracil") {
+                // Not scientifically accurate but necessary to reuse graphics
+                ntShortName = "thymine"; 
             }
-            */
-            let cdnt = this.level.add.image(-50, -125, "codontide_" + nt.getShortName());
+
+            // Setting up correct animation
+            cdnt = this.level.add.sprite(0, 0, "nt_" + ntShortName + "_basic_animated");
+            this.level.anims.create({
+                key: "idle_" + ntShortName,
+                frames: this.level.anims.generateFrameNumbers("nt_" + ntShortName + "_basic_animated", { start: 0, end: 3}),
+                frameRate: 30,
+                repeat: -1
+            });
+            cdnt.anims.play("idle_" + ntShortName);
+
+            
             let size = nt.getCodonSize();
             cdnt.setSize(size.width, size.height);
-            cdnt.setDisplaySize(size.width * 0.5, size.height * 0.5);
-            cdnt.setPosition(cdnt.x + size.width * i, cdnt.y + size.offsetY);
+
+            // Multiplying it by 2 because for some reason they were reduced in width to being with.
+            // Couldn't find where it was originally being set.
+            cdnt.setDisplaySize(size.width * 2, size.height);
+
+            // How far away from main input line to space codons.
+            // Magic, meaningless numbers to just align the graphics.
+            // (distance to space vertically, distance to space horizontally)
+            cdnt.setPosition(cdnt.x - 55 + (size.width + 5) * i, cdnt.y - 90 + size.offsetY * 5); 
+
+            // Makes the codons actually face each other.
+            cdnt.setAngle(270);
+
             this.containerObj.add(cdnt);
             this.ntCodonObj.push(cdnt);
+            
+            // What is this doing? Game breaks if I remove it :/
             width += size.width;
             if (height == 0) {
                 height += size.height;
             }
+            
         }
         
+        // Creating appropriate amino acid
         if (this.amminoAcid.class == "nonpolar") {
             this.amminoAcidErrorObj = this._genCircle(30, 60, 0xfc0e33);
             this.amminoAcidObj = this._genCircle(25, 50, this.amminoAcid.color);
