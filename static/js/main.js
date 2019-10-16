@@ -19,7 +19,7 @@ import Game from "./modules/game.js";
         {
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
             // "ntSequence": "ATATTTTAAATATATATATA",
-            "ntSequence": "AAAAAAAAAAAAAAAAAA",
+            "ntSequence": "AA",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "AT the Beginning!",

@@ -98,8 +98,7 @@ class LevelStage extends Phaser.Scene {
         this.graphics.fillRect(185, 50, 160, 45).setDepth(0.5);
 
         // Binding Pocket
-        // this.ntHighlightEllipse = this.game.add.ellipse(160, 490, 230, 125, 0xfffaa8, 1);
-        this.ntHighlightEllipse = this.game.add.ellipse(190, 400, 230, 50, 0xfffaa8, 1);
+        this.ntHighlightEllipse = this.game.add.ellipse(160, 490, 230, 125, 0xfffaa8, 1);
         this.ntHighlightEllipse.setDepth(1);
         this.ntHighlightEllipse.setAngle(16);
         this.ntHighlightEllipse.setAlpha(1.0);
@@ -399,11 +398,10 @@ class LevelStage extends Phaser.Scene {
 
         // Otherwise we're actually dragging
         } else if (this.positionManager.ntTouchingBindingPocket()) {
+
             let angle = image.angle;
             let clickedNT = image.getData("nucleotide");
-            // ntTouchingBindingPocket also uses getHeadNucleotide, so we call it twice...
             let headNT = this.positionManager.getHeadNucleotide();
-            // getHeadNucleotide is only triggering once...
             let cloned = clickedNT.clone();
             if (this.levelConfig.lvlType == "dna_replication") {
                 cloned.setDisplay("nucleotide");

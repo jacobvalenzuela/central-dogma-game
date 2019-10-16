@@ -485,28 +485,32 @@ class PositionManager {
      * Increments the nucleotides position by one
      */
     next() {
-        // Look at the front of the line of nucleotides, 
-        // and do stuff if we actually have a nucleotide and not a null object.
+        // Right now the problem is that I'm trying to find a way to instantly delete the nucleotide once it leaves the binding pocket.
+        // I want to remove it instantly so that it makes room for the next nucleotide.
+
+        // Check if the first nucleotide in the line is past the binding pocket, and if so delete it.
+        // Only applies to dna_replicaiton levels because codons "correct" is handled differently.
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            let ellipse = this.level.ntHighlightEllipse;
+            let front = this.getHeadNucleotide();
+            let correctAreaOffset = 75; // Number of pixels above bottom right corner of binding pocket.
+            if (front && front.getObject().getTopRight().y > ellipse.getBottomRight().y - correctAreaOffset) {
+                this.removeHeadNucleotide();
+                this.processIncorrectNucleotide(front);
+            }
+        }
+
+
+
+        // Checks the very front of the nucleotides (very end of path)
+        // and if we have an object, delete it and handle incorrect
+        // match logic.
+
+        // TODO: Seperate out incorrect match logic to its own function.
         let head = this.levelNucleotides[0];
         if (head) {
             this.removeHeadNucleotide();
-            this.level.scorekeeping.incrementIncorrectSequences();
-            let cloned = this.getValidMatchNT(head);
-            if (this.level.levelConfig.lvlType == "dna_replication") {
-                cloned.setDisplay("nucleotide");
-            } else if (this.level.levelConfig.lvlType == "codon_transcription") {
-                cloned.setDisplay("codon");
-            }
-            cloned.setPosition(head.getObject().x, head.getObject().y);
-            cloned.setVisible(true);
-            cloned.setScale(0.18);
-            cloned.setAngle(180);
-            cloned.setMissing(true);
-            this.addToDNAOutput(cloned);
-            this.level.shuffleNTBtnAngle();
-            if (this.level.levelConfig.lvlType == "codon_transcription") {
-                this.level.shuffleNTBtnOpts();
-            }
+            this.processIncorrectNucleotide(head);
         }
         // levelNucleotides is a collection of all nucleotides and null objects along the line.
         // It shortens the array each tick by 1.
@@ -532,6 +536,51 @@ class PositionManager {
     }
 
     /**
+     * Given the nucleotide the player just missed,
+     * will add on to the DNA output the correct nucleotide.
+     * @param {Nucleotide} missedNucleotide - Nucleotide player got wrong.
+     */
+    processIncorrectNucleotide(missedNucleotide) {
+        this.level.scorekeeping.incrementIncorrectSequences();
+        let cloned = this.getValidMatchNT(missedNucleotide);
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            cloned.setDisplay("nucleotide");
+        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            cloned.setDisplay("codon");
+        }
+        cloned.setPosition(missedNucleotide.getObject().x, missedNucleotide.getObject().y);
+        cloned.setVisible(true);
+        cloned.setScale(0.18);
+        cloned.setAngle(180);
+        cloned.setMissing(true);
+        this.addToDNAOutput(cloned);
+        this.level.shuffleNTBtnAngle();
+        if (this.level.levelConfig.lvlType == "codon_transcription") {
+            this.level.shuffleNTBtnOpts();
+        }
+    }
+
+    /**
+     * THIS FUNCTION IS CURRENTLY UNUSED.
+     * What nucleotide, if any, is currently in the binding pocket?
+     * @returns {Nucleotide} First nucleotide currently in the binding pocket.
+     */ 
+     nucleotideInBindingPocket() {
+        for (let i = 0; i < this.levelNucleotides.length; i++) {
+            if (this.levelNucleotides[i]) {
+                var bbBinding = this.level.ntHighlightEllipse.getBounds();
+                var bbNucleotide = this.levelNucleotides[i].getObject().getBounds();
+                var inters = Phaser.Geom.Rectangle.Intersection(bbBinding, bbNucleotide);
+                if (inters.width > 0 && inters.height > 0) {
+                    console.log(this.levelNucleotides[i].getShortName() + " is touching binding pocket.");
+                } else {
+                    console.log("Nothing touching binding pocket.");
+                }
+            }
+        }
+     }
+
+    /**
      * From the given nucleotide, find the matching NT pair that works
      * @param {Nucleotide} nucleotide - Nucleotide to reference from
      * @returns {Nucleotide} matching nucleotide
@@ -550,6 +599,7 @@ class PositionManager {
 
     /**
      * Removes the head nucleotide from the incoming call stack.
+     * Doesn't add anything to the DNA output.
      */
     removeHeadNucleotide() {
         for (let i = 0; i < this.levelNucleotides.length; i++) {
@@ -580,11 +630,10 @@ class PositionManager {
             }
             return null;
         }
-        if (this.ntTouchingBindingPocket()) {
-            for (let i = 0; i < this.levelNucleotides.length; i++) {
-                if (this.levelNucleotides[i] != null) {
-                    return this.levelNucleotides[i];
-                }
+
+        for (let i = 0; i < this.levelNucleotides.length; i++) {
+            if (this.levelNucleotides[i]) {
+                return this.levelNucleotides[i];
             }
         }
         return null;
@@ -723,6 +772,7 @@ class PositionManager {
             var bbBinding = ellipse.getBounds();
             var bbNucleotide = nucDispObj.getBounds();
             var inters = Phaser.Geom.Rectangle.Intersection(bbBinding, bbNucleotide);
+            console.log(inters.width > 0 && inters.height > 0);
             return inters.width > 0 && inters.height > 0;
         } else if (nucDispObj && this.level.levelConfig.lvlType == "codon_transcription") {
             let offset = 100;
@@ -731,6 +781,7 @@ class PositionManager {
         }
         return false;
     }
+
 
     /**
      * Rotates the given coordinate about the object angle
