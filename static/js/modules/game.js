@@ -154,6 +154,9 @@ class Game {
         this.game.load.svg("codontide_guanine", "static/img/codontide/g_codon.svg");
         this.game.load.svg("codontide_uracil", "static/img/codontide/u_codon.svg");
 
+        // Codons Level
+        this.game.load.image("bindingsite", "static/img/bindingsite.png");
+
         this.game.scene.add("listlevels", ListLevels, false, {levels: this.levels});
         for (let i = 0; i < this.levels.length; i++) {
             let level = this.levels[i];

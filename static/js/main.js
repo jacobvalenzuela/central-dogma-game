@@ -18,14 +18,15 @@ import Game from "./modules/game.js";
     let game = new Game([
         {
             // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
-            // "ntSequence": "ATATTTTAAATATATATATA",
-            "ntSequence": "AA",
+            "ntSequence": "ATATTTTAAATATATATATA",
+            //"ntSequence": "AA",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "AT the Beginning!",
             "description": "You can include whatever description you want here. Maybe even add a picture or some kind of explanation. But it probably shouldn't be a wall of text.",
             "speed": 50,
             "popups": {
+                "intro": "Tap on the nucleotides to submit.",
                 "firstCorrectMatch": "Good work! <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> binds with <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>!",
                 "error5Match": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>, both nucleotides help make up DNA!"
             },
@@ -59,7 +60,9 @@ import Game from "./modules/game.js";
             "name": "Back AT it Again...",
             "description": "I'm back at it again to show you that the description can indeed actually change. All this data is stored with the level files so it's very easy to change.",
             "speed": 25,
-            "popups": {},
+            "popups": {
+                "intro": "Tap on the nucleotides to submit."
+            },
             "rotateNT": false,
             "ntType": "basic",
             "lvlType": "dna_replication",
@@ -90,7 +93,9 @@ import Game from "./modules/game.js";
             "name": "AT's all Folks!",
             "description": "Hopefully this is something useful, at least education wise for providing a little more context. If not this space can be potentially used for other things like high score, pointing to other resources, etc.",
             "speed": 1,
-            "popups": {},
+            "popups": {
+                "intro": "Tap on the nucleotides to submit."
+            },
             "rotateNT": false,
             "ntType": "basic",
             "lvlType": "dna_replication",
@@ -184,6 +189,9 @@ import Game from "./modules/game.js";
             "unlocked": true,
             "name": "Mixing Things Up",
             "speed": 20,
+            "popups": {
+                "intro": "Tap on the nucleotides to submit."
+            },
             "rotateNT": false,
             "ntType": "basic",
             "lvlType": "dna_replication",
@@ -212,6 +220,9 @@ import Game from "./modules/game.js";
             "unlocked": true,
             "name": "Adding a Bit of a Twist",
             "speed": 60,
+            "popups": {
+                "intro": "Tap on the nucleotides to rotate and drag to submit."
+            },
             "rotateNT": true,
             "ntType": "hbonds",
             "lvlType": "dna_replication",
@@ -305,6 +316,5 @@ import Game from "./modules/game.js";
             },
         },
     ]);
-
     window.game = new Phaser.Game(game.config);
 })();

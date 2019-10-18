@@ -27,6 +27,7 @@ class LevelStage extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
+
         // Color Constants
         let ORANGE = 0xF56C26; // Adenine
         let DARK_BLUE = 0x002664;
@@ -96,15 +97,6 @@ class LevelStage extends Phaser.Scene {
 
         this.graphics.fillStyle(GOLD, 1.0);
         this.graphics.fillRect(185, 50, 160, 45).setDepth(0.5);
-
-        // Binding Pocket
-        this.ntHighlightEllipse = this.game.add.ellipse(160, 490, 230, 125, 0xfffaa8, 1);
-        this.ntHighlightEllipse.setDepth(1);
-        this.ntHighlightEllipse.setAngle(16);
-        this.ntHighlightEllipse.setAlpha(1.0);
-
-        this.game.add.text(90, 534, "Binding Pocket", 
-            {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1).setAngle(19); //.setAlpha(0.5);
 
         // UI Labels
         // '\'Open Sans\', sans-serif'
@@ -187,18 +179,51 @@ class LevelStage extends Phaser.Scene {
 
         this.positionManager = new PositionManager(this, this.levelConfig.speed);
         this.positionManager.setPositions(false);
-
         let optbtns = this.gameObj.levels[this.level].controls;
-        if (!optbtns) {
-            if (this.levelConfig.lvlType == "dna_replication") {
+
+        // Binding Pocket
+        this.ntHighlightEllipse = this.game.add.ellipse(160, 490, 230, 125, 0xfffaa8, 1);
+        this.ntHighlightEllipse.setDepth(1);
+        this.ntHighlightEllipse.setAngle(16);
+        this.ntHighlightEllipse.setAlpha(1.0);
+
+        // Conditional rendering for each level type
+        if (this.levelConfig.lvlType == "dna_replication") {
+            if (!optbtns) {
                 optbtns = ["T", "A", "G", "C"];
-            } else if (this.levelConfig.lvlType == "codon_transcription") {
+            }
+
+            // Label for the now visible binding pocket.
+            this.game.add.text(90, 534, "Binding Pocket", 
+            {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1).setAngle(19);
+
+        } else if (this.levelConfig.lvlType == "codon_transcription") {
+            if (!optbtns) {
                 optbtns = this.genCodonBtnOpts();
             }
+            // On codon levels, we remove the ellipse and add in the APE sites.
+            // We still need the ellipse for collision purposes though.
+            this.ntHighlightEllipse.setAlpha(0);
+
+            // Top to bottom each binding site, equally spaced by 120px (if scale is 1.2x)
+            this.game.add.image(60, 373, "bindingsite").setDepth(1).setScale(1.2).setAlpha(0.25);
+            this.game.add.text(120, 335, "A",
+            {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
+
+            this.game.add.image(60, 493, "bindingsite").setDepth(1).setScale(1.2).setAlpha(0.25);
+            this.game.add.text(120, 455, "P",
+            {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
+
+            this.game.add.image(60, 613, "bindingsite").setDepth(1).setScale(1.2).setAlpha(0.25);
+            this.game.add.text(120, 575, "E",
+            {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
         }
+
         for (let i = 0; i < optbtns.length; i++) {
             this.makeNTBtn(optbtns[i]);
         }
+
+        // Won't rotate buttons that don't need to be rotated.
         this.shuffleNTBtnAngle();
 
         this.scene.remove("levelcomplete" + this.level);
@@ -506,6 +531,25 @@ class LevelStage extends Phaser.Scene {
                 that.popupmanager.destroy();
             }
         });
+    }
+
+    spawnBackgroundParticles(amount) {
+        let velocityX;
+        let velocityY;
+        let scale;
+        for (let i = 0; i <= amount; i++) {
+            velocityX = Math.random() * 100;
+            velocityY = Math.random() * 100;
+            scale = Math.random();
+            let particle = this.physics.add.sprite();
+            particle.setScale(scale)
+            particle.setVelocityX(velocityX);
+            particle.setVelocityY(velocityY);
+            // Create particle circle with a random size
+            // Assign it a random direction and speed
+            // Make sure it has no collision
+            // And can loop around off screen
+        }
     }
 }
 

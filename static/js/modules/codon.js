@@ -240,7 +240,7 @@ class Codon {
     _genObjects() {
         this.containerObj = this.level.add.container();
         this.connectLineObj = this.level.add.line(0, 0, 0, -50, 0, 50);
-        this.connectLineObj.setStrokeStyle(1, 0x000);
+        this.connectLineObj.setStrokeStyle(3, 0xFFFFFF);
         this.containerObj.add(this.connectLineObj);
         let width = 0;
         let height = 0;
@@ -366,32 +366,33 @@ class Codon {
 
     _genCircle(x, y, fillColor) {
         let cir = this.level.add.circle(x, y, 55, fillColor);
-        cir.setStrokeStyle(1, 0x000);
+        let glow = this.level.add.circle(x, y, 60, 0xFFFFFF);
+        cir.setStrokeStyle(3, 0xFFFFFF);
         return cir;
     }
 
     _genSquare(x, y, fillColor) {
         let square = this.level.add.rectangle(x, y, 110, 110, fillColor);
-        square.setStrokeStyle(1, 0x000);
+        square.setStrokeStyle(3, 0xFFFFFF);
         return square;
     }
 
     _genDiamond(x, y, fillColor) {
         let square = this.level.add.rectangle(x, y, 110, 110, fillColor);
-        square.setStrokeStyle(1, 0x000);
+        square.setStrokeStyle(3, 0xFFFFFF);
         square.setAngle(45);
         return square;
     }
 
     _genTriangle(x, y, fillColor) {
         let tri = this.level.add.triangle(x, y, 0, 100, 50, 0, 100, 100, fillColor);
-        tri.setStrokeStyle(1, 0x000);
+        tri.setStrokeStyle(3, 0xFFFFFF);
         return tri;
     }
 
     _genOctagon(x, y, fillColor) {
         let oct = this.level.add.polygon(x, y, [[21, -51], [-21, -51], [-51, -21], [-51, 21], [-21, 51], [21, 51], [51, 21], [51, -21]], fillColor);
-        oct.setStrokeStyle(1, 0x000);
+        oct.setStrokeStyle(3, 0xFFFFFF);
         return oct;
     }
 

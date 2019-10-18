@@ -772,7 +772,6 @@ class PositionManager {
             var bbBinding = ellipse.getBounds();
             var bbNucleotide = nucDispObj.getBounds();
             var inters = Phaser.Geom.Rectangle.Intersection(bbBinding, bbNucleotide);
-            console.log(inters.width > 0 && inters.height > 0);
             return inters.width > 0 && inters.height > 0;
         } else if (nucDispObj && this.level.levelConfig.lvlType == "codon_transcription") {
             let offset = 100;
