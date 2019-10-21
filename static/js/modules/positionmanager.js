@@ -4,6 +4,14 @@ import AudioPlayer from "./audioplayer.js";
 /**
  * Class representing the manager that will manipulate nucleotide positions
  */
+
+// Some symbolic constants
+let UNSHIFT_FACTOR = {
+    'dna_replication': 3, 'codon_transcription': 1
+};
+let PATH_POINTS_FACTOR = 30;
+let PADDING_COMP_FACTOR = 22;
+
 class PositionManager {
     /**
      * Creates a position manager
@@ -12,76 +20,22 @@ class PositionManager {
      */
     constructor (level, defaultTimerDelay) {
         this.autoMoveTimer = null;
-        this.pathPointsFactor = 30;
+        this.pathPointsFactor = PATH_POINTS_FACTOR;
         this.level = level;
         this.defaultTimerDelay = defaultTimerDelay;
         this.gameObj = level.gameObj;
         this.game = level;
-        this.levelNucleotides = [];
-        this.hasFrozenHead = false;
         this.audioplayer = new AudioPlayer();
 
-        // One of the many if special cases to distinguish codon and dna levels
-        // All this code below is for path line drawing
-        if (this.level.levelConfig.lvlType == "dna_replication") {
-            // This loop is important, says how many total "spots" along line.
-            for (let i = 0; i < this.level.nucleotides.length * this.pathPointsFactor; i++) {
-                let prevIdx = Math.floor((i - 1) / this.pathPointsFactor);
-                let currIdx = Math.floor(i / this.pathPointsFactor);
-                let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
-
-                if (currIdx === nextIdx) {
-                    // Spaces out nucleotides
-                    this.levelNucleotides.push(null);
-                    this.levelNucleotides.push(null);
-                    continue;
-                }
-                this.levelNucleotides.push(this.level.nucleotides[currIdx]);
-            }
-
-        // Controls the spacing between codons as they travel the path.
-        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
-            
-            // Initial spacing before first codon.
-            for (let i = 0; i < 120; i++) {
-                this.levelNucleotides.push(null);
-            }
-
-            // Fills up the rest of the level sequence.
-            for (let i = 0; i < this.level.nucleotides.length; i++) {
-                // How much spacing to add between each codon.
-                for (let j = 0; j < 50; j++) {
-                    this.levelNucleotides.push(null);
-                }
-                this.levelNucleotides.push(this.level.nucleotides[i]);
-            }
-        }
-        
+        // this is the list of nucleotide objects that are the main game elements of the game
+        this.levelNucleotides = [];
         this.compLevelNucleotides = [];
-        let paddingComp = 22 * this.pathPointsFactor;
-        for (let i = 0; i < paddingComp; i++) {
-            this.compLevelNucleotides.push(null);
-        }
-        for (let i = 0; i < this.levelNucleotides.length; i++) {
-            let nucleotide = this.levelNucleotides[i];
-            if (nucleotide && this.level.levelConfig.lvlType == "dna_replication") {
-                let newcleotide = new Nucleotide(this.level, nucleotide.matches[0], this.level.ntType);
-                this.compLevelNucleotides.push(newcleotide);
-            } else {
-                this.compLevelNucleotides.push(null);
-            }
-        }
-        let unshiftFactor = 0;
-        if (this.level.levelConfig.lvlType == "dna_replication") {
-            unshiftFactor = 3;
-        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
-            unshiftFactor = 1;
-        }
-        for (let i = 0; i < this.pathPointsFactor * unshiftFactor; i++) {
-            this.levelNucleotides.unshift(null);
-            this.compLevelNucleotides.unshift(null);
-        }
         this.selectedNucleotides = [];
+
+        this.hasFrozenHead = false;
+
+        this.initLevelNucleotides();
+        this.initCompLevelNucleotides();
 
         this.level.graphics.lineStyle(1, 0x6c757d, 0.6);
         if (this.level.levelConfig.lvlType == "dna_replication") {
@@ -103,8 +57,6 @@ class PositionManager {
             this.inputVertPath = new Phaser.Curves.Path(182, 147);
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
         } else if (this.level.levelConfig.lvlType == "codon_transcription") {
-            // this.inputVertPath = new Phaser.Curves.Path(77, 140);
-            // this.inputVertPath.cubicBezierTo(55, 800, 15, 160, 75, 440);
             this.inputVertPath = new Phaser.Curves.Path(55, 140);
             this.inputVertPath.lineTo(55, 740);
         }
@@ -123,7 +75,7 @@ class PositionManager {
             this.inputVertPathDispl = new Phaser.Curves.Path(70, 140);
             this.inputVertPathDispl.cubicBezierTo(40, 600, 20, 160, 55, 440);
         }
-        
+
         this.inputVertPathDispl.draw(this.level.graphics);
         if (this.level.levelConfig.lvlType == "dna_replication") {
             this.outputVertPath = new Phaser.Curves.Path(245, 450);
@@ -132,7 +84,7 @@ class PositionManager {
             this.outputVertPath = new Phaser.Curves.Path(180, 450);
             this.outputVertPath.cubicBezierTo(220, 710, 180, 600, 120, 700);
         }
-        
+
         // this.outputVertPath.draw(this.level.graphics);
         this.outputVertPathPts = this.outputVertPath.getPoints(5 * this.pathPointsFactor);
         if (this.level.levelConfig.lvlType == "dna_replication") {
@@ -152,13 +104,83 @@ class PositionManager {
             this.outputRowPath = new Phaser.Curves.Path(220, 710);
             this.outputRowPath.lineTo(400, 710);
         }
-        
         this.outputRowPath.draw(this.level.graphics);
 
         // Determines the amount of points on the output path line
         this.outputRowPathPts = this.outputRowPath.getPoints(30 * this.pathPointsFactor);
     }
 
+    initLevelNucleotides() {
+        // One of the many if special cases to distinguish codon and dna levels
+        // All this code below is for path line drawing
+        if (this.level.levelConfig.lvlType == "dna_replication") {
+            this.initDNAReplication();
+        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            this.initCodonTranscription();
+        }
+
+    }
+    // initialize levelNucleotides in its own method
+    initDNAReplication() {
+        // This loop is important, says how many total "spots" along line.
+        // Controls the spacing between codons as they travel the path.
+        for (let i = 0; i < this.level.nucleotides.length * this.pathPointsFactor; i++) {
+            let prevIdx = Math.floor((i - 1) / this.pathPointsFactor);
+            let currIdx = Math.floor(i / this.pathPointsFactor);
+            let nextIdx = Math.floor((i + 1) / this.pathPointsFactor);
+
+            if (currIdx === nextIdx) {
+                // Spaces out nucleotides
+                this.levelNucleotides.push(null);
+                this.levelNucleotides.push(null);
+                continue;
+            }
+            this.levelNucleotides.push(this.level.nucleotides[currIdx]);
+        }
+    }
+
+    initCodonTranscription() {
+        // Initial spacing before first codon.
+        for (let i = 0; i < 120; i++) {
+            this.levelNucleotides.push(null);
+        }
+
+        // Fills up the rest of the level sequence.
+        for (let i = 0; i < this.level.nucleotides.length; i++) {
+            // How much spacing to add between each codon.
+            for (let j = 0; j < 50; j++) {
+                this.levelNucleotides.push(null);
+            }
+            this.levelNucleotides.push(this.level.nucleotides[i]);
+        }
+    }
+
+    initCompLevelNucleotides() {
+        let paddingComp = PADDING_COMP_FACTOR * this.pathPointsFactor;
+        for (let i = 0; i < paddingComp; i++) {
+            this.compLevelNucleotides.push(null);
+        }
+        for (let i = 0; i < this.levelNucleotides.length; i++) {
+            let nucleotide = this.levelNucleotides[i];
+            if (nucleotide && this.level.levelConfig.lvlType == "dna_replication") {
+                let newcleotide = new Nucleotide(this.level, nucleotide.matches[0], this.level.ntType);
+                this.compLevelNucleotides.push(newcleotide);
+            } else {
+                this.compLevelNucleotides.push(null);
+            }
+        }
+
+        let unshiftFactor = UNSHIFT_FACTOR[this.level.levelConfig.lvlType];
+
+        for (let i = 0; i < this.pathPointsFactor * unshiftFactor; i++) {
+            this.levelNucleotides.unshift(null);
+            this.compLevelNucleotides.unshift(null);
+        }
+
+    }
+
+
+    // CONSTRUCTOR STUFF END
     /**
      * Update the nucleotides position
      * @param {boolean} [animate=true] - Whether the positions should animate to make a smoother transition
@@ -492,6 +514,7 @@ class PositionManager {
 
         // Check if the first nucleotide in the line is past the binding pocket, and if so delete it.
         // Only applies to dna_replicaiton levels because codons "correct" is handled differently.
+        /*
         if (this.level.levelConfig.lvlType == "dna_replication") {
             let ellipse = this.level.ntHighlightEllipse;
             let front = this.getHeadNucleotide();
@@ -500,9 +523,7 @@ class PositionManager {
                 this.removeHeadNucleotide();
                 this.processIncorrectNucleotide(front);
             }
-        }
-
-
+        }*/
 
         // Checks the very front of the nucleotides (very end of path)
         // and if we have an object, delete it and handle incorrect
@@ -511,8 +532,9 @@ class PositionManager {
         // TODO: Seperate out incorrect match logic to its own function.
         let head = this.levelNucleotides[0];
         if (head) {
-            this.removeHeadNucleotide();
+            console.log('removeHeadNucleotide() - at head');
             this.processIncorrectNucleotide(head);
+            this.removeHeadNucleotide();
         }
         // levelNucleotides is a collection of all nucleotides and null objects along the line.
         // It shortens the array each tick by 1.
@@ -530,11 +552,11 @@ class PositionManager {
                     that.level.endGame();
                 }
             });
-        } else if (this.level.levelConfig.lvlType == "codon_transcription" && !this.hasFrozenHead && this.getHeadNucleotide() && this.getHeadNucleotide().getObject().y > 490) {
+        } else if (this.level.levelConfig.lvlType == "codon_transcription" && !this.hasFrozenHead &&
+                   this.getHeadNucleotide() && this.getHeadNucleotide().getObject().y > 490) {
             this.hasFrozenHead = true;
             this.tempPauseNTMoveTime(1000);
         }
-        
     }
 
     /**
@@ -614,9 +636,10 @@ class PositionManager {
                 this._fadeOut(removed, function () {
                     removed.destroy();
                 });
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -647,6 +670,7 @@ class PositionManager {
      * @param {Nucleotide} nucleotide - The nucleotide that should be added to the output stack
      */
     addToDNAOutput(nucleotide) {
+        var retval = false;
         this.hasFrozenHead = false;
         nucleotide.setScale(0.3);
         let firstPoint = this.outputVertPathPts[0];
@@ -660,6 +684,12 @@ class PositionManager {
         }
         this.updateNTMoveTimer(this.defaultTimerDelay / 2);
         // Matching animation?
+        // So there is one problem here: Remove is called with a delay
+        // What does that mean ? When removeHeadNucleotide() is called,
+        // the state of the nucleotide queue can be already different
+        // than what it was when we called the _animatePosition() function.
+        // In that case, the "head removal" is going to have removed
+        // the head nucleotide first, we need to make sure, the order is correct
         let that = this;
         this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
             that._animatePosition(nucleotide, point.x, point.y);
@@ -673,7 +703,8 @@ class PositionManager {
             that.updateNTMoveTimer(that.defaultTimerDelay);
             that.level.ntBtnsEnabled = true;
             if (!nucleotide.missingNT) {
-                that.removeHeadNucleotide();
+                console.log('removeHeadNucleotide() - addToDNAOutput');
+                retval = that.removeHeadNucleotide();
                 if (that.level.levelConfig.lvlType == "codon_transcription") {
                     that.level.shuffleNTBtnOpts();
                 }
