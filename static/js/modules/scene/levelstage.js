@@ -49,6 +49,7 @@ class LevelStage extends Phaser.Scene {
         this.objects = {};
         this.nucleotides = [];
         this.ntButtons = [];
+        this.ntButtonCurrent = null;
         this.btnLocations = {
             0: [310, 340],
             1: [310, 440],
@@ -69,16 +70,6 @@ class LevelStage extends Phaser.Scene {
         // Background
         this.graphics.fillStyle(BLACK, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
-
-        //this.game.add.image(180, 360, "bg").setAlpha(0.5);
-
-        //let bgtile = this.add.tileSprite(0, 42, 360, 740, "bg");
-        /*let background = game.add.tileSprite(0,
-            this.game.height - this.game.cache.getImage("bg").height,
-            this.game.width,
-            this.game.cache.getImage("bg").height,
-            "bg");
-        */
 
         // Header background space
         this.graphics.fillStyle(WHITE, 1);
@@ -219,9 +210,37 @@ class LevelStage extends Phaser.Scene {
             {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
         }
 
+        // Creates nucleotide buttons
         for (let i = 0; i < optbtns.length; i++) {
             this.makeNTBtn(optbtns[i]);
         }
+
+        console.log(this.ntButtons[0]);
+
+        // Keyboard Controls (must be instantiated after creating original nucleotide buttons)
+        this.input.keyboard.on('keydown-ONE', function(event) {
+            this.onKeyboardInput(0);
+        }, this);
+
+        this.input.keyboard.on('keydown-TWO', function(event) {
+            this.onKeyboardInput(1);
+
+        }, this);
+
+        this.input.keyboard.on('keydown-THREE', function(event) {
+            this.onKeyboardInput(2);
+
+        }, this);
+
+        this.input.keyboard.on('keydown-FOUR', function(event) {
+            this.onKeyboardInput(3);
+        }, this);
+
+        this.input.keyboard.on('keydown-SPACE', function(event) {
+            if (this.positionManager.ntTouchingBindingPocket() && this.rotateNT) {
+                this.processNucleotideSubmission(this.ntButtonCurrent); 
+            } 
+        }, this);        
 
         // Won't rotate buttons that don't need to be rotated.
         this.shuffleNTBtnAngle();
@@ -345,6 +364,7 @@ class LevelStage extends Phaser.Scene {
         for (let i = 0; i < optbtns.length; i++) {
             this.makeNTBtn(optbtns[i]);
         }
+        
     }
 
     /**
@@ -417,77 +437,15 @@ class LevelStage extends Phaser.Scene {
         // Rotates 90 degrees if not dragged but tapped.
         let distance = image.getData("distanceDragged");
         if (distance < 15 && this.rotateNT) {
-            let nt = image.getData("nucleotide");
-            nt.setAngle(nt.getAngle() + 90);
-            console.log("Angle set to " + nt.getAngle());
+            this.rotateNucleotideButton(image.getData("nucleotide"));
 
-        // Otherwise we're actually dragging
+        // Otherwise we're actually dragging and want to submit answer.
         } else if (this.positionManager.ntTouchingBindingPocket()) {
 
             let angle = image.angle;
             let clickedNT = image.getData("nucleotide");
-            let headNT = this.positionManager.getHeadNucleotide();
-            let cloned = clickedNT.clone();
-            if (this.levelConfig.lvlType == "dna_replication") {
-                cloned.setDisplay("nucleotide");
-            } else {
-                cloned.setDisplay("codon");
-            }
-            cloned.setPosition(clickedNT.getObject().x, clickedNT.getObject().y);
-            cloned.setVisible(true);
-            cloned.setScale(0.18);
-            cloned.setAngle(clickedNT.getAngle());
-            this.shuffleNTBtnAngle();
-            this.ntBtnsEnabled = false;
+            this.processNucleotideSubmission(clickedNT, angle);
 
-
-            if (!clickedNT.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != -180)) {
-                
-                // Wrong Match
-                let correctnt = this.positionManager.getValidMatchNT(headNT);
-                this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
-                this.popupmanager.emitEvent("error5Match", headNT, correctnt);
-                cloned.setError(true);
-                this.scorekeeping.incrementIncorrectSequences();
-                this.incorrectSound.play();
-
-            } else {
-
-                // Correct Match
-                this.popupmanager.emitEvent("correctMatch", headNT, cloned);
-                this.popupmanager.emitEvent("firstCorrectMatch", headNT, cloned);
-                this.scorekeeping.incrementSequencesMade();
-                this.correctSound.play();
-                let headNTName = null;
-                let pairNTName = null;
-                if (this.levelConfig.lvlType == "dna_replication") {
-                    headNTName = headNT.getShortName();
-                    pairNTName = cloned.getShortName();
-                } else if (this.levelConfig.lvlType == "codon_transcription") {
-                    headNTName = headNT.nucleotides[0].getShortName();
-                    pairNTName = cloned.nucleotides[0].getShortName();
-                }
-
-                // Particle explosion upon correct match
-                let that = this;
-                this.game.time.addEvent({
-                    delay: 100,
-                    loop: false,
-                    callback: function () {
-                        that.ntparticle[headNTName].resume();
-                        that.ntparticle[headNTName].explode(50);
-                        that.game.time.addEvent({
-                            delay: 100,
-                            callback: function () {
-                                that.ntparticle[pairNTName].resume();
-                                that.ntparticle[pairNTName].explode(50);
-                            },
-                            loop: false
-                        });
-                    }
-                });
-            }
-            this.positionManager.addToDNAOutput(cloned);
             if (this.levelConfig.lvlType == "dna_replication") {
                 // Default angle nucleotide respawns with in a non-rotational level.
                 image.getData("nucleotide").setAngle(180);
@@ -495,6 +453,99 @@ class LevelStage extends Phaser.Scene {
         }
         image.setData("startedDragging", false);
     }
+
+    /**
+     * Processes the keyboard input depending on nucleotide level type.
+     * @param {int} num- Numbers 1-4, depending on which nucleotide we're rotating.
+     */
+    onKeyboardInput(num) {
+        this.ntButtonCurrent = this.ntButtons[num];
+        if (this.positionManager.ntTouchingBindingPocket() && !this.rotateNT) {
+            this.processNucleotideSubmission(this.ntButtonCurrent);
+        } else if (this.positionManager.ntTouchingBindingPocket() && this.rotateNT) {
+            this.rotateNucleotideButton(this.ntButtonCurrent);
+        }
+    }
+
+    /**
+     * Rotates nucleotide, intended for button controls.
+     * @param {nucleotide} ntButton- Nucleotide button to be rotated.
+     */
+    rotateNucleotideButton(ntButton) {
+        ntButton.setAngle(ntButton.getAngle() + 90);
+        // console.log("Angle set to " + nt.getAngle());
+    }
+
+    /**
+     * Processes logic for nucleotide submissions
+     * @param {nucleotide} submission - Nucleotide we're trying to submit
+     * @param {int} angle - Optional angle for rotation levels
+     */
+    processNucleotideSubmission(submission, angle = 0) {
+        let headNT = this.positionManager.getHeadNucleotide();
+        let cloned = submission.clone();
+        if (this.levelConfig.lvlType == "dna_replication") {
+            cloned.setDisplay("nucleotide");
+        } else {
+            cloned.setDisplay("codon");
+        }
+        cloned.setPosition(submission.getObject().x, submission.getObject().y);
+        cloned.setVisible(true);
+        cloned.setScale(0.18);
+        cloned.setAngle(submission.getAngle());
+        this.shuffleNTBtnAngle();
+        this.ntBtnsEnabled = false;
+
+        if (!submission.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != -180)) {
+                
+            // Wrong Match
+            let correctnt = this.positionManager.getValidMatchNT(headNT);
+            this.popupmanager.emitEvent("errorMatch", headNT, correctnt);
+            this.popupmanager.emitEvent("error5Match", headNT, correctnt);
+            cloned.setError(true);
+            this.scorekeeping.incrementIncorrectSequences();
+            this.incorrectSound.play();
+
+        } else {
+
+            // Correct Match
+            this.popupmanager.emitEvent("correctMatch", headNT, cloned);
+            this.popupmanager.emitEvent("firstCorrectMatch", headNT, cloned);
+            this.scorekeeping.incrementSequencesMade();
+            this.correctSound.play();
+            let headNTName = null;
+            let pairNTName = null;
+            if (this.levelConfig.lvlType == "dna_replication") {
+                headNTName = headNT.getShortName();
+                pairNTName = cloned.getShortName();
+            } else if (this.levelConfig.lvlType == "codon_transcription") {
+                headNTName = headNT.nucleotides[0].getShortName();
+                pairNTName = cloned.nucleotides[0].getShortName();
+            }
+
+            // Particle explosion upon correct match
+            let that = this;
+            this.game.time.addEvent({
+                delay: 100,
+                loop: false,
+                callback: function () {
+                    that.ntparticle[headNTName].resume();
+                    that.ntparticle[headNTName].explode(50);
+                    that.game.time.addEvent({
+                        delay: 100,
+                        callback: function () {
+                            that.ntparticle[pairNTName].resume();
+                            that.ntparticle[pairNTName].explode(50);
+                        },
+                        loop: false
+                    });
+                }
+            });
+        }
+        this.positionManager.addToDNAOutput(cloned);
+    }
+
+    k
 
     /**
      * Ends the level. show level complete screen
