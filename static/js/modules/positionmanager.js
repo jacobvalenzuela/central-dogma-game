@@ -6,11 +6,14 @@ import AudioPlayer from "./audioplayer.js";
  */
 
 // Some symbolic constants
-let UNSHIFT_FACTOR = {
-    'dna_replication': 3, 'codon_transcription': 1
-};
 let PATH_POINTS_FACTOR = 30;
+let VERT_PATH_POINTS_FACTOR = 7;
 let PADDING_COMP_FACTOR = 22;
+let LT_DNA_REPLICATION = 'dna_replication';
+let LT_CODON_TRANSCRIPTION = 'codon_transcription';
+let UNSHIFT_FACTOR = {
+    LT_DNA_REPLICATION: 3, LT_CODON_TRANSCRIPTION: 1
+};
 
 class PositionManager {
     /**
@@ -38,10 +41,10 @@ class PositionManager {
         this.initCompLevelNucleotides();
 
         this.level.graphics.lineStyle(1, 0x6c757d, 0.6);
-        if (this.level.levelConfig.lvlType == "dna_replication") {
+        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.inputRowPath = new Phaser.Curves.Path(0, 140);
             this.inputRowPath.lineTo(175, 140);
-        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+        } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.inputRowPath = new Phaser.Curves.Path(740, 140);
             this.inputRowPath.lineTo(70, 140);
         }
@@ -49,58 +52,57 @@ class PositionManager {
         this.initRectPathPts = this.inputRowPath.getSpacedPoints(26 * this.pathPointsFactor);
         this.inputComplRowPath = new Phaser.Curves.Path(0, 126);
         this.inputComplRowPath.lineTo(363.46153846153845, 126);
-        if (this.level.levelConfig.lvlType == "dna_replication") {
+        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.inputComplRowPath.draw(this.level.graphics);
         }
         this.inputCompRectPathPts = this.inputComplRowPath.getSpacedPoints(54 * this.pathPointsFactor);
-        if (this.level.levelConfig.lvlType == "dna_replication") {
+        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.inputVertPath = new Phaser.Curves.Path(182, 147);
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
-        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+        } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.inputVertPath = new Phaser.Curves.Path(55, 140);
             this.inputVertPath.lineTo(55, 740);
         }
         // this.inputVertPath.draw(this.level.graphics);
-        let numVertPathPts = 7 * this.pathPointsFactor;
+        let numVertPathPts = VERT_PATH_POINTS_FACTOR * this.pathPointsFactor;
 
         // VERTICAL PATH
         // Change the getPoints below to alter the points on the main incoming path. Will change speed traveled along path.
         // For some reason, changing this allows nucleotides to drift beyond the binding pocket.
-        if (this.level.levelConfig.lvlType == "dna_replication") {
+        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
             this.inputVertPathDispl = new Phaser.Curves.Path(175, 140);
             this.inputVertPathDispl.cubicBezierTo(-20, 640, 320, 320, -80, 440);
-        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+        } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
             this.inputVertPathDispl = new Phaser.Curves.Path(70, 140);
             this.inputVertPathDispl.cubicBezierTo(40, 600, 20, 160, 55, 440);
         }
-
         this.inputVertPathDispl.draw(this.level.graphics);
-        if (this.level.levelConfig.lvlType == "dna_replication") {
+
+        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.outputVertPath = new Phaser.Curves.Path(245, 450);
             this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
-        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+        } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.outputVertPath = new Phaser.Curves.Path(180, 450);
             this.outputVertPath.cubicBezierTo(220, 710, 180, 600, 120, 700);
         }
 
-        // this.outputVertPath.draw(this.level.graphics);
         this.outputVertPathPts = this.outputVertPath.getPoints(5 * this.pathPointsFactor);
-        if (this.level.levelConfig.lvlType == "dna_replication") {
+        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.outputVertPathDispl = new Phaser.Curves.Path(285, 500);
             this.outputVertPathDispl.cubicBezierTo(155, 710, 250, 600, 130, 670);
-        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+        } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.outputVertPathDispl = new Phaser.Curves.Path(200, 450);
             this.outputVertPathDispl.cubicBezierTo(220, 710, 200, 600, 130, 700);
         }
-
         // Drawing the actual curve
         this.outputVertPathDispl.draw(this.level.graphics);
-        if (this.level.levelConfig.lvlType == "dna_replication") {
+
+        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.outputRowPath = new Phaser.Curves.Path(155, 710);
             this.outputRowPath.lineTo(400, 710);
-        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+        } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.outputRowPath = new Phaser.Curves.Path(220, 710);
             this.outputRowPath.lineTo(400, 710);
         }
@@ -113,9 +115,9 @@ class PositionManager {
     initLevelNucleotides() {
         // One of the many if special cases to distinguish codon and dna levels
         // All this code below is for path line drawing
-        if (this.level.levelConfig.lvlType == "dna_replication") {
+        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.initDNAReplication();
-        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+        } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.initCodonTranscription();
         }
 
@@ -162,7 +164,7 @@ class PositionManager {
         }
         for (let i = 0; i < this.levelNucleotides.length; i++) {
             let nucleotide = this.levelNucleotides[i];
-            if (nucleotide && this.level.levelConfig.lvlType == "dna_replication") {
+            if (nucleotide && this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
                 let newcleotide = new Nucleotide(this.level, nucleotide.matches[0], this.level.ntType);
                 this.compLevelNucleotides.push(newcleotide);
             } else {
@@ -178,7 +180,6 @@ class PositionManager {
         }
 
     }
-
 
     // CONSTRUCTOR STUFF END
     /**
@@ -210,9 +211,9 @@ class PositionManager {
                 continue;
             }
             nucleotide.setDepth(2999 - i);
-            if (this.level.levelConfig.lvlType == "dna_replication") {
+            if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
                 nucleotide.setDisplay("nucleotide");
-            } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
                 x = x - 70;
                 nucleotide.setPosition(x, y);
                 nucleotide.setDisplay("codon");
@@ -231,7 +232,7 @@ class PositionManager {
             }
             let modifier1 = 0;
             let modifier2 = 0;
-            if (this.level.levelConfig.lvlType == "codon_transcription") {
+            if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
                 modifier1 = 0.51;
                 modifier2 = 0.51;
             }
@@ -239,10 +240,10 @@ class PositionManager {
             let scalePrev = 0;
 
             // Handles scaling of nucleotides/codons
-            if (this.level.levelConfig.lvlType == "dna_replication") {
+            if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
                 scale = this.calcInScale(i, modifier, modifier1, modifier2);
                 scalePrev = this.calcInScale(i - 1, modifier, modifier1, modifier2);
-            } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
                 scale = 0.8;
                 scalePrev = 0.8;
                 if (i == initVertPathPts.length - 1) {
@@ -305,9 +306,9 @@ class PositionManager {
             }
             let x = outputRectPathsPts[i].x;
             let y = outputRectPathsPts[i].y;
-            if (this.level.levelConfig.lvlType == "dna_replication") {
+            if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
                 nucleotide.setDisplay("rectangle");
-            } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+            } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
                 nucleotide.setDisplay("circle");
             }
             if (animate) {
@@ -363,7 +364,7 @@ class PositionManager {
 
     /**
      * Start the nucleotides move timer
-     * @param {number} delay - timer delay 
+     * @param {number} delay - timer delay
      */
     startNTMoveTimer(delay) {
         if (this.autoMoveTimer) {
@@ -515,7 +516,7 @@ class PositionManager {
         // Check if the first nucleotide in the line is past the binding pocket, and if so delete it.
         // Only applies to dna_replicaiton levels because codons "correct" is handled differently.
         /*
-        if (this.level.levelConfig.lvlType == "dna_replication") {
+        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             let ellipse = this.level.ntHighlightEllipse;
             let front = this.getHeadNucleotide();
             let correctAreaOffset = 75; // Number of pixels above bottom right corner of binding pocket.
@@ -552,7 +553,8 @@ class PositionManager {
                     that.level.endGame();
                 }
             });
-        } else if (this.level.levelConfig.lvlType == "codon_transcription" && !this.hasFrozenHead &&
+        } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION &&
+                   !this.hasFrozenHead &&
                    this.getHeadNucleotide() && this.getHeadNucleotide().getObject().y > 490) {
             this.hasFrozenHead = true;
             this.tempPauseNTMoveTime(1000);
@@ -568,9 +570,9 @@ class PositionManager {
         this.level.scorekeeping.incrementIncorrectSequences();
         this.audioplayer.playIncorrectSound();
         let cloned = this.getValidMatchNT(missedNucleotide);
-        if (this.level.levelConfig.lvlType == "dna_replication") {
+        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             cloned.setDisplay("nucleotide");
-        } else if (this.level.levelConfig.lvlType == "codon_transcription") {
+        } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             cloned.setDisplay("codon");
         }
         cloned.setPosition(missedNucleotide.getObject().x, missedNucleotide.getObject().y);
@@ -580,30 +582,10 @@ class PositionManager {
         cloned.setMissing(true);
         this.addToDNAOutput(cloned);
         this.level.shuffleNTBtnAngle();
-        if (this.level.levelConfig.lvlType == "codon_transcription") {
+        if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.level.shuffleNTBtnOpts();
         }
     }
-
-    /**
-     * THIS FUNCTION IS CURRENTLY UNUSED.
-     * What nucleotide, if any, is currently in the binding pocket?
-     * @returns {Nucleotide} First nucleotide currently in the binding pocket.
-     */ 
-     nucleotideInBindingPocket() {
-        for (let i = 0; i < this.levelNucleotides.length; i++) {
-            if (this.levelNucleotides[i]) {
-                var bbBinding = this.level.ntHighlightEllipse.getBounds();
-                var bbNucleotide = this.levelNucleotides[i].getObject().getBounds();
-                var inters = Phaser.Geom.Rectangle.Intersection(bbBinding, bbNucleotide);
-                if (inters.width > 0 && inters.height > 0) {
-                    console.log(this.levelNucleotides[i].getShortName() + " is touching binding pocket.");
-                } else {
-                    console.log("Nothing touching binding pocket.");
-                }
-            }
-        }
-     }
 
     /**
      * From the given nucleotide, find the matching NT pair that works
@@ -693,7 +675,7 @@ class PositionManager {
         let that = this;
         this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
             that._animatePosition(nucleotide, point.x, point.y);
-            if (that.level.levelConfig.lvlType == "codon_transcription") {
+            if (that.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
                 nucleotide.removeCodonDisplay("codon");
             }
             that.selectedNucleotides.push(nucleotide);
@@ -705,7 +687,7 @@ class PositionManager {
             if (!nucleotide.missingNT) {
                 console.log('removeHeadNucleotide() - addToDNAOutput');
                 retval = that.removeHeadNucleotide();
-                if (that.level.levelConfig.lvlType == "codon_transcription") {
+                if (that.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
                     that.level.shuffleNTBtnOpts();
                 }
             }
@@ -767,7 +749,7 @@ class PositionManager {
                 nucDispObj = nucleotide.getObject();
 
                 // Codon Levels
-                if (this.level.levelConfig.lvlType == "codon_transcription") {
+                if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
                     let wrapped = nucDispObj;
                     nucDispObj = {
                         getX: function() {
@@ -801,13 +783,13 @@ class PositionManager {
             }
         }
 
-        if (nucDispObj && this.level.levelConfig.lvlType == "dna_replication") {
+        if (nucDispObj && this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             // actually make correct bounding boxes for ellipse and nucleotide
             var bbBinding = ellipse.getBounds();
             var bbNucleotide = nucDispObj.getBounds();
             var inters = Phaser.Geom.Rectangle.Intersection(bbBinding, bbNucleotide);
             return inters.width > 0 && inters.height > 0;
-        } else if (nucDispObj && this.level.levelConfig.lvlType == "codon_transcription") {
+        } else if (nucDispObj && this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             let offset = 100;
             return (ellipse.getTopLeft().y + offset < nucDispObj.getBottomRight().y &&
                     ellipse.getBottomRight().y > nucDispObj.getTopLeft().y);
