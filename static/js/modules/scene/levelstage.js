@@ -48,14 +48,19 @@ class LevelStage extends Phaser.Scene {
         this.scorekeeping = null;
         this.objects = {};
         this.nucleotides = [];
-        this.ntButtons = [];
-        this.ntButtonCurrent = null;
-        this.btnLocations = {
+        this.buttons = [];
+        this.buttonCurrent = null;
+        this.btnLocationNucleotides = {
             0: [310, 340],
             1: [310, 440],
             2: [310, 540],
             3: [310, 640]
-        }
+        };
+        this.btnLocationCodons = {
+            0: [310, 370],
+            1: [310, 490],
+            2: [310, 610]
+        };
         this.ntBtnsEnabled = true;
         this.scorekeeping = new GameScore(this.game);
         this.popupmanager = new PopupManager(this);
@@ -212,35 +217,49 @@ class LevelStage extends Phaser.Scene {
 
         // Creates nucleotide buttons
         for (let i = 0; i < optbtns.length; i++) {
-            this.makeNTBtn(optbtns[i]);
+            this.makeBtn(optbtns[i]);
         }
 
-        console.log(this.ntButtons[0]);
+        // Keyboard Controls (must be instantiated after creating level specific buttons)
 
-        // Keyboard Controls (must be instantiated after creating original nucleotide buttons)
-        this.input.keyboard.on('keydown-ONE', function(event) {
-            this.onKeyboardInput(0);
-        }, this);
+        if (this.levelConfig.lvlType == "dna_replication") {
+            this.input.keyboard.on('keydown-T', function(event) {
+                this.onKeyboardInput(0);
+            }, this);
+    
+            this.input.keyboard.on('keydown-A', function(event) {
+                this.onKeyboardInput(1);
+    
+            }, this);
+    
+            this.input.keyboard.on('keydown-G', function(event) {
+                this.onKeyboardInput(2);
+    
+            }, this);
+    
+            this.input.keyboard.on('keydown-C', function(event) {
+                this.onKeyboardInput(3);
+            }, this);
+    
+            this.input.keyboard.on('keydown-SPACE', function(event) {
+                if (this.positionManager.ntTouchingBindingPocket() && this.rotateNT && this.buttonCurrent) {
+                    this.processNucleotideSubmission(this.buttonCurrent); 
+                } 
+            }, this);
+        } else if (this.levelConfig.lvlType == "codon_transcription") {
+            this.input.keyboard.on('keydown-ONE', function(event) {
+                this.onKeyboardInput(0);
+            }, this);
+    
+            this.input.keyboard.on('keydown-TWO', function(event) {
+                this.onKeyboardInput(1);
+            }, this);
+    
+            this.input.keyboard.on('keydown-THREE', function(event) {
+                this.onKeyboardInput(2);
+            }, this);
+        }
 
-        this.input.keyboard.on('keydown-TWO', function(event) {
-            this.onKeyboardInput(1);
-
-        }, this);
-
-        this.input.keyboard.on('keydown-THREE', function(event) {
-            this.onKeyboardInput(2);
-
-        }, this);
-
-        this.input.keyboard.on('keydown-FOUR', function(event) {
-            this.onKeyboardInput(3);
-        }, this);
-
-        this.input.keyboard.on('keydown-SPACE', function(event) {
-            if (this.positionManager.ntTouchingBindingPocket() && this.rotateNT) {
-                this.processNucleotideSubmission(this.ntButtonCurrent); 
-            } 
-        }, this);        
 
         // Won't rotate buttons that don't need to be rotated.
         this.shuffleNTBtnAngle();
@@ -273,24 +292,26 @@ class LevelStage extends Phaser.Scene {
     }
 
     /**
-     * Makes a nucleotide button
+     * Makes a nucleotide or codon button
      * @param {string} type - the nucleotide type
      */
-    makeNTBtn(type) {
+    makeBtn(type) {
         let nt = null;
         if (this.levelConfig.lvlType == "dna_replication") {
             nt = new Nucleotide(this, type, this.ntType);
             nt.setDisplay("nucleotide");
+            nt.setPosition(this.btnLocationNucleotides[this.buttons.length][0], this.btnLocationNucleotides[this.buttons.length][1]);
         } else if (this.levelConfig.lvlType == "codon_transcription") {
             nt = new Codon(this, type);
             nt.setDisplay("codon");
+            nt.setPosition(this.btnLocationCodons[this.buttons.length][0], this.btnLocationCodons[this.buttons.length][1]);
         }
         nt.setVisible(true);
-        nt.setPosition(this.btnLocations[this.ntButtons.length][0], this.btnLocations[this.ntButtons.length][1]);
+        
         let scale = 0;
         if (this.levelConfig.lvlType == "dna_replication") {
             scale = 0.20;
-            nt.setAngle(180); // Makes button face correct way.
+            nt.setAngle(180);
         } else if (this.levelConfig.lvlType == "codon_transcription") {
             scale = .60;
             nt.setAngle(180);
@@ -302,14 +323,24 @@ class LevelStage extends Phaser.Scene {
         this.game.input.on("dragstart", this.bindFn(this.onDragNTBtnStart));
         this.game.input.on("drag", this.bindFn(this.onDragNTBtn));
         this.game.input.on("dragend", this.bindFn(this.onDragNTBtnEnd));
-        this.ntButtons.push(nt);
+        this.buttons.push(nt);
     }
 
     genCodonBtnOpts() {
         let head = this.positionManager.getHeadNucleotide(true);
         let codonOptions = ["U", "C", "A", "G"];
         let actualOptions = [head.matches];
-        for (let i = 0; i < 2; i++) {
+        let maxOtherOptions = 2;
+        
+        // This is a bit weird and undocumented, but there is an optional
+        // variable that can be included in level config called 'maxButtons'.
+        // This is to specify how many OTHER buttons to use in codon levels
+        // besides the correct button choice.
+        if (typeof this.levelConfig.maxButtons !== 'undefined') {
+            console.log(this.levelConfig.maxButtons);
+            maxOtherOptions = this.levelConfig.maxButtons;
+        }
+        for (let i = 0; i < maxOtherOptions; i++) {
             let nt1 = this.getRandomInArray(codonOptions);
             let nt2 = this.getRandomInArray(codonOptions);
             let nt3 = this.getRandomInArray(codonOptions);
@@ -343,9 +374,9 @@ class LevelStage extends Phaser.Scene {
             return;
         }
         let angles = [0, 90, 180, 270];
-        for (let i = 0; i < this.ntButtons.length; i++) {
+        for (let i = 0; i < this.buttons.length; i++) {
             let angle = angles[Math.floor(Math.random()*angles.length)];
-            this.ntButtons[i].setAngle(angle);
+            this.buttons[i].setAngle(angle);
         }
     }
 
@@ -356,13 +387,13 @@ class LevelStage extends Phaser.Scene {
         if (!this.positionManager.getHeadNucleotide(true)) {
             return;
         }
-        for (let i = 0; i < this.ntButtons.length; i++) {
-            this.ntButtons[i].destroy();
+        for (let i = 0; i < this.buttons.length; i++) {
+            this.buttons[i].destroy();
         }
-        this.ntButtons = [];
+        this.buttons = [];
         let optbtns = this.genCodonBtnOpts();
         for (let i = 0; i < optbtns.length; i++) {
-            this.makeNTBtn(optbtns[i]);
+            this.makeBtn(optbtns[i]);
         }
         
     }
@@ -459,11 +490,11 @@ class LevelStage extends Phaser.Scene {
      * @param {int} num- Numbers 1-4, depending on which nucleotide we're rotating.
      */
     onKeyboardInput(num) {
-        this.ntButtonCurrent = this.ntButtons[num];
+        this.buttonCurrent = this.buttons[num];
         if (this.positionManager.ntTouchingBindingPocket() && !this.rotateNT) {
-            this.processNucleotideSubmission(this.ntButtonCurrent);
-        } else if (this.positionManager.ntTouchingBindingPocket() && this.rotateNT) {
-            this.rotateNucleotideButton(this.ntButtonCurrent);
+            this.processNucleotideSubmission(this.buttonCurrent);
+        } else if (this.rotateNT) {
+            this.rotateNucleotideButton(this.buttonCurrent);
         }
     }
 

@@ -586,7 +586,7 @@ class PositionManager {
      * @returns {Nucleotide} matching nucleotide
      */
     getValidMatchNT(nucleotide) {
-        let btns = this.level.ntButtons;
+        let btns = this.level.buttons;
         let cloned = null;
         for (let i = 0; i < btns.length; i++) {
             let btn = btns[i];
