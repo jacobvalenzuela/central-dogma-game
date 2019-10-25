@@ -33,9 +33,12 @@ class TitleScreen extends Phaser.Scene {
         this.playedIntro = false;
 
         // Background color
+
+        this.tileSprite = this.game.add.tileSprite(180, 360, 360, 740, "bg");
+        // keeping background color incase image fails to load.
         this.graphics.fillStyle(0xF1F1F2, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
-        this.game.add.image(180, 360, "bg");
+        
 
         let isblogo = this.game.add.image(180, 320, "logo_isb").setScale(0.35);
         this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.20).setAlpha(0);
@@ -83,6 +86,11 @@ class TitleScreen extends Phaser.Scene {
             },
             loop: false
         });
+    }
+
+    update() {
+        // Causes scrolling background
+        this.tileSprite.tilePositionX += 0.25;
     }
 
     /**

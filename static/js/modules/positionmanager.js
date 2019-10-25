@@ -1,4 +1,5 @@
 import Nucleotide from "./nucleotide.js";
+import AudioPlayer from "./audioplayer.js";
 
 /**
  * Class representing the manager that will manipulate nucleotide positions
@@ -18,6 +19,7 @@ class PositionManager {
         this.game = level;
         this.levelNucleotides = [];
         this.hasFrozenHead = false;
+        this.audioplayer = new AudioPlayer();
 
         // One of the many if special cases to distinguish codon and dna levels
         // All this code below is for path line drawing
@@ -542,6 +544,7 @@ class PositionManager {
      */
     processIncorrectNucleotide(missedNucleotide) {
         this.level.scorekeeping.incrementIncorrectSequences();
+        this.audioplayer.playIncorrectSound();
         let cloned = this.getValidMatchNT(missedNucleotide);
         if (this.level.levelConfig.lvlType == "dna_replication") {
             cloned.setDisplay("nucleotide");

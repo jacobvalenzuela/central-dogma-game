@@ -4,6 +4,7 @@ import Nucleotide from "../nucleotide.js";
 import PositionManager from "../positionmanager.js";
 import LevelComplete from "./levelcomplete.js";
 import Codon from "../codon.js";
+import AudioPlayer from "../audioplayer.js";
 
 /**
  * Represents the level stage scene
@@ -27,7 +28,6 @@ class LevelStage extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
-
         // Color Constants
         let ORANGE = 0xF56C26; // Adenine
         let DARK_BLUE = 0x002664;
@@ -69,12 +69,15 @@ class LevelStage extends Phaser.Scene {
         this.graphics = this.game.add.graphics();
 
         // Sound Effects
-        this.incorrectSound = game.sound.add("incorrect");
-        this.correctSound = game.sound.add("correct");
+        this.audioplayer = new AudioPlayer();
 
         // Background
-        this.graphics.fillStyle(BLACK, 1.0);
-        this.graphics.fillRect(0, 0, 360, 740);
+
+        this.tileSprite = this.game.add.tileSprite(180, 360, 360, 740, "bg_ingame");
+        // keeping background color incase image fails to load.
+        //this.graphics.fillStyle(BLACK, 1.0);
+        //this.graphics.fillRect(0, 0, 360, 740);
+        
 
         // Header background space
         this.graphics.fillStyle(WHITE, 1);
@@ -88,10 +91,10 @@ class LevelStage extends Phaser.Scene {
         this.graphics.fillStyle(DARK_BLUE, 1.0);
         this.graphics.fillRect(15, 50, 75, 45).setDepth(0.5);
 
-        this.graphics.fillStyle(ORANGE, 1.0);
+        this.graphics.fillStyle(DARK_BLUE, 1.0);
         this.graphics.fillRect(100, 50, 75, 45).setDepth(0.5);
 
-        this.graphics.fillStyle(GOLD, 1.0);
+        this.graphics.fillStyle(ORANGE, 1.0);
         this.graphics.fillRect(185, 50, 160, 45).setDepth(0.5);
 
         // UI Labels
@@ -178,10 +181,9 @@ class LevelStage extends Phaser.Scene {
         let optbtns = this.gameObj.levels[this.level].controls;
 
         // Binding Pocket
+        // Invisible, we're only using this for collision detection.
         this.ntHighlightEllipse = this.game.add.ellipse(160, 490, 230, 125, 0xfffaa8, 1);
-        this.ntHighlightEllipse.setDepth(1);
-        this.ntHighlightEllipse.setAngle(16);
-        this.ntHighlightEllipse.setAlpha(1.0);
+        this.ntHighlightEllipse.setAlpha(0); 
 
         // Conditional rendering for each level type
         if (this.levelConfig.lvlType == "dna_replication") {
@@ -189,9 +191,26 @@ class LevelStage extends Phaser.Scene {
                 optbtns = ["T", "A", "G", "C"];
             }
 
-            // Label for the now visible binding pocket.
+            // Binding Pocket Graphic
+            this.ntHighlightEllipseMask = this.game.add.image(160, 490, "binding_pocket");
+            this.ntHighlightEllipseMask.setDepth(1);
+            this.ntHighlightEllipseMask.setAngle(16);
+            this.ntHighlightEllipseMask.setScale(0.95);
+            this.ntHighlightEllipseMask.setAlpha(0.75);
+            this.tweens.add({
+                targets: this.ntHighlightEllipseMask,
+                scale: 1.05,
+                duration: 1000,
+                alpha: 1,
+                ease: 'Power1',
+                yoyo: true,
+                repeat: -1
+            });
+
+            // Label for binding pocket.
             this.game.add.text(90, 534, "Binding Pocket", 
             {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1).setAngle(19);
+
 
         } else if (this.levelConfig.lvlType == "codon_transcription") {
             if (!optbtns) {
@@ -202,6 +221,8 @@ class LevelStage extends Phaser.Scene {
             this.ntHighlightEllipse.setAlpha(0);
 
             // Top to bottom each binding site, equally spaced by 120px (if scale is 1.2x)
+
+            /*
             this.game.add.image(60, 373, "bindingsite").setDepth(1).setScale(1.2).setAlpha(0.25);
             this.game.add.text(120, 335, "A",
             {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
@@ -213,6 +234,7 @@ class LevelStage extends Phaser.Scene {
             this.game.add.image(60, 613, "bindingsite").setDepth(1).setScale(1.2).setAlpha(0.25);
             this.game.add.text(120, 575, "E",
             {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
+            */
         }
 
         // Creates nucleotide buttons
@@ -279,6 +301,12 @@ class LevelStage extends Phaser.Scene {
         this.popupmanager.emitEvent("intro");
     }
 
+    update() {
+        // Causes scrolling background
+        this.tileSprite.tilePositionX -= 0.05;
+        this.tileSprite.tilePositionY += 0.25; 
+    }
+
     /**
      * Changes the context of the function `this` keyword to the class. Moves the `this` reference to the first parameter instead.
      * @param {function} fn - The function used to bind to the class
@@ -337,7 +365,6 @@ class LevelStage extends Phaser.Scene {
         // This is to specify how many OTHER buttons to use in codon levels
         // besides the correct button choice.
         if (typeof this.levelConfig.maxButtons !== 'undefined') {
-            console.log(this.levelConfig.maxButtons);
             maxOtherOptions = this.levelConfig.maxButtons;
         }
         for (let i = 0; i < maxOtherOptions; i++) {
@@ -487,7 +514,7 @@ class LevelStage extends Phaser.Scene {
 
     /**
      * Processes the keyboard input depending on nucleotide level type.
-     * @param {int} num- Numbers 1-4, depending on which nucleotide we're rotating.
+     * @param {int} num- Numbers 1-4, depending on which button (1 = top button) we want to rotate/submit.
      */
     onKeyboardInput(num) {
         this.buttonCurrent = this.buttons[num];
@@ -535,7 +562,7 @@ class LevelStage extends Phaser.Scene {
             this.popupmanager.emitEvent("error5Match", headNT, correctnt);
             cloned.setError(true);
             this.scorekeeping.incrementIncorrectSequences();
-            this.incorrectSound.play();
+            this.audioplayer.playIncorrectSound();
 
         } else {
 
@@ -543,7 +570,7 @@ class LevelStage extends Phaser.Scene {
             this.popupmanager.emitEvent("correctMatch", headNT, cloned);
             this.popupmanager.emitEvent("firstCorrectMatch", headNT, cloned);
             this.scorekeeping.incrementSequencesMade();
-            this.correctSound.play();
+            this.audioplayer.playCorrectSound();
             let headNTName = null;
             let pairNTName = null;
             if (this.levelConfig.lvlType == "dna_replication") {
@@ -613,25 +640,6 @@ class LevelStage extends Phaser.Scene {
                 that.popupmanager.destroy();
             }
         });
-    }
-
-    spawnBackgroundParticles(amount) {
-        let velocityX;
-        let velocityY;
-        let scale;
-        for (let i = 0; i <= amount; i++) {
-            velocityX = Math.random() * 100;
-            velocityY = Math.random() * 100;
-            scale = Math.random();
-            let particle = this.physics.add.sprite();
-            particle.setScale(scale)
-            particle.setVelocityX(velocityX);
-            particle.setVelocityY(velocityY);
-            // Create particle circle with a random size
-            // Assign it a random direction and speed
-            // Make sure it has no collision
-            // And can loop around off screen
-        }
     }
 }
 
