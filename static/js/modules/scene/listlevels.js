@@ -32,6 +32,7 @@ class ListLevels extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
+        console.log("Global score right now: " + this.data.GLOBAL_SCORE);
 
         // Initialization
         this.camera = this.cameras.main;

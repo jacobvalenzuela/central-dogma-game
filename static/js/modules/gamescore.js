@@ -19,6 +19,8 @@ class GameScore {
         if (this.game.levelConfig.lvlType == "codon_transcription") {
             this.initialNTCount = this.initialNTCount / 3;
         }
+        this.globalscore = this.game.globalscore
+        this.currentScore;
     }
 
     /**
@@ -82,7 +84,7 @@ class GameScore {
      * Uodate the score text.
      */
     updateScore() {
-        let score = this.getScore();
+        let score = this.getScore() + this.globalscore;
         this.scoreTxt.setText(this.leftPad(score, this.maxScoreDigits));
     }
 
@@ -168,7 +170,8 @@ class GameScore {
      * @returns {number} the score accumulated so far
      */
     getScore() {
-        return this.sequencesMade * 100;
+        this.currentScore = (this.sequencesMade * 100);
+        return this.currentScore;
     }
 
     leftPad(number, targetLength) {

@@ -28,6 +28,7 @@ class LevelStage extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
+
         // Color Constants
         let ORANGE = 0xF56C26; // Adenine
         let DARK_BLUE = 0x002664;
@@ -38,6 +39,7 @@ class LevelStage extends Phaser.Scene {
         let BLACK = 0x1e1e1e;
         let GOLD = 0xF5B222; // Guanine
 
+        this.data = data;
         this.levelConfig = data.level;
         this.gameObj = data.gameObj;
         this.game = this;
@@ -62,6 +64,9 @@ class LevelStage extends Phaser.Scene {
             2: [310, 610]
         };
         this.ntBtnsEnabled = true;
+
+        // Attaches global score to the current game.
+        this.game.globalscore = data.gameObj.GLOBAL_SCORE;
         this.scorekeeping = new GameScore(this.game);
         this.popupmanager = new PopupManager(this);
 
@@ -629,6 +634,10 @@ class LevelStage extends Phaser.Scene {
             sequencedinfo: this.levelConfig.sequencedinfo,
             knowledgepanel: this.levelConfig.knowledgepanel,
         });
+
+        // Adds current score to global score
+        this.data.gameObj.GLOBAL_SCORE += this.scorekeeping.getScore();
+
         let that = this;
         this.time.addEvent({
             delay: 300,
@@ -640,6 +649,7 @@ class LevelStage extends Phaser.Scene {
                 that.popupmanager.destroy();
             }
         });
+        
     }
 }
 

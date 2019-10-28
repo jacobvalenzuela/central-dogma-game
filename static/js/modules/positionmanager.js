@@ -661,8 +661,10 @@ class PositionManager {
         nucleotide.setPosition(firstPoint.x, firstPoint.y);
         if (nucleotide.errorNT || nucleotide.missingNT) {
             // Shakes screen and flashes red upon a wrong match
-            this.level.camera.flash(300, 255, 30, 30);
-            this.level.camera.shake(400, 0.02);
+            if (!this.level.gameObj.GLOBAL_IS_EPILEPTIC) {
+                this.level.camera.flash(300, 255, 30, 30);
+                this.level.camera.shake(400, 0.02);
+            }
         }
         this.updateNTMoveTimer(this.defaultTimerDelay / 2);
         // Matching animation?
@@ -705,8 +707,11 @@ class PositionManager {
         nucleotide.setPosition(firstPoint.x, firstPoint.y);
 
         // Shakes screen and flashes red upon a wrong match
-        this.level.camera.flash(300, 255, 30, 30);
-        this.level.camera.shake(400, 0.01);
+        if(!this.level.gameObj.GLOBAL_IS_EPILEPTIC) {
+            this.level.camera.flash(300, 255, 30, 30);
+            this.level.camera.shake(400, 0.02);
+        }
+
         let that = this;
         this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
             that._fadeOut(nucleotide);

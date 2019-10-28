@@ -35,6 +35,8 @@ class LevelComplete extends Phaser.Scene {
         this.knowledgepanel = data.knowledgepanel;
         this.sequencedinfo = data.sequencedinfo;
 
+        this.quizPointWorth = 500;
+
         this.gameObj = data.gameObj;
         this.camera = this.cameras.main;
         this.camera.setAlpha(0);
@@ -622,8 +624,8 @@ class LevelComplete extends Phaser.Scene {
             if (cdapi.isLoggedIn()) {
                 cdapi.logQuestionResponse(that.level, answeredOption, + correctness, cdapi.getCurrentSession());
             }
-            if (correctness) {
-                let bonustxt = that.add.text(180, 269, "+500 BONUS!", 
+            if (correctness) { // Upon selecting correct quiz answer
+                let bonustxt = that.add.text(180, 269, "+" + that.quizPointWorth + " BONUS!", 
                     {fontFamily: '\'Bevan\', cursive', fontSize: '29pt', color: '#78D863', align: 'center'});
                 bonustxt.setOrigin(0.5);
                 that.tweens.add({ targets: bonustxt, y: 60, duration: 1900, ease: 'Power3' });
@@ -675,6 +677,7 @@ class LevelComplete extends Phaser.Scene {
                 }
             });
         });
+
         this.tweens.add({
             targets: this.quizOverlay,
             y: 360,

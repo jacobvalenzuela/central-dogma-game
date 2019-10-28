@@ -14,6 +14,8 @@ class Game {
      * @param {LevelJSONDefinition} levels 
      */
     constructor (levels) {
+        this.GLOBAL_SCORE = 0;
+        this.GLOBAL_IS_EPILEPTIC = false;
         this.config = {
             type: Phaser.WEBGL,
             // canvas: document.getElementsByTagName("canvas")[0],
