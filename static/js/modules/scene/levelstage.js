@@ -76,13 +76,12 @@ class LevelStage extends Phaser.Scene {
         // Sound Effects
         this.audioplayer = new AudioPlayer();
 
-        // Background
+        // Background Color and Floaties
+        this.graphics.fillStyle(BLACK, 1.0);
+        this.graphics.fillRect(0, 0, 360, 740);
 
-        this.tileSprite = this.game.add.tileSprite(180, 360, 360, 740, "bg_ingame");
-        // keeping background color incase image fails to load.
-        //this.graphics.fillStyle(BLACK, 1.0);
-        //this.graphics.fillRect(0, 0, 360, 740);
-        
+        this.floaty = this.physics.add.group();
+        this.backgroundFloaties = this.spawnBackgroundFloaties(15);
 
         // Header background space
         this.graphics.fillStyle(WHITE, 1);
@@ -307,9 +306,8 @@ class LevelStage extends Phaser.Scene {
     }
 
     update() {
-        // Causes scrolling background
-        this.tileSprite.tilePositionX -= 0.05;
-        this.tileSprite.tilePositionY += 0.25; 
+        // Allows background floaties to wrap
+        this.physics.world.wrap(this.floaty, 50);
     }
 
     /**
@@ -650,6 +648,35 @@ class LevelStage extends Phaser.Scene {
             }
         });
         
+    }
+
+    /**
+     * Generates floaties that randomly move and grow/shrink in the background.
+     * @param {INT} n - How many floaties to spawn.
+     * @returns {Array} - An array with all the floaties.
+     */    
+    spawnBackgroundFloaties(n) {
+        let allFloaties = [];
+        for (let i = 0; i < n; i++) {
+            // Settings for background floaties
+            let scale = 0.20 * Math.random(); // roughly their size
+            let speed = 35; // their potential max speed
+            let screenWidth = 360; // width of box to randomly spawn floaties
+            let screenHeight = 720; // height of box to randomly spawn floaties
+
+            let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff');
+            myFloaty.setScale(scale).setDepth(0.5).setAlpha(0.15);
+            myFloaty.setVelocity(Phaser.Math.Between(-speed * Math.random(), speed * Math.random()), Phaser.Math.Between(-speed * Math.random(), speed * Math.random()));
+            this.tweens.add({
+                targets: myFloaty,
+                scale: scale + 0.07,
+                duration: 1000 + (Math.random() * 5000),
+                ease: 'Power1',
+                yoyo: true,
+                repeat: -1
+            });
+            allFloaties.push(myFloaty);
+        }
     }
 }
 

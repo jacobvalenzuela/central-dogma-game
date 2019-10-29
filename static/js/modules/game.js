@@ -44,6 +44,13 @@ class Game {
             scene: {
                 preload: this.bindFn(this.preload),
                 create: this.bindFn(this.create),
+            },
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 0 },
+                    debug: false
+                }
             }
         }
         this.levels = levels;
@@ -180,6 +187,10 @@ class Game {
         // Sounds
         this.game.load.audio("incorrect", "static/audio/sounds/Incorrect.wav");
         this.game.load.audio("correct", "static/audio/sounds/Correct.wav");
+        
+        // Etc.
+        this.game.load.image("fluff", "static/img/amoeba.png");
+    
     }
 
     /**
