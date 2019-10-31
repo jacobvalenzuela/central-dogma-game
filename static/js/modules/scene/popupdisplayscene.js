@@ -29,6 +29,7 @@ class PopupDisplayScene extends Phaser.Scene {
         let that = this;
         this.fadeIn(function () {
             that.input.on("pointerdown", that.bindFn(that.exitPopup));
+            that.input.keyboard.on('keydown-SPACE', that.bindFn(that.exitPopup));
         });
 
         this.text = this.add.rexTagText(180, 200, data.text, {

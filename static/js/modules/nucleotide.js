@@ -188,7 +188,7 @@ class Nucleotide {
         this.squareObjMiss.setDepth(10);
 
         this.letterText = this.level.add.text(0, 0, this.rep, 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#fff'}).setOrigin(0.5);
+            {fontFamily: 'Teko, sans-serif', fontSize: '24pt', color: '#FFFFFF'}).setOrigin(0.5);
         this.letterText.setDepth(3);
         this.letterText.setVisible(false);
     }

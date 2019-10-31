@@ -710,6 +710,7 @@ class PositionManager {
         if(!this.level.gameObj.GLOBAL_IS_EPILEPTIC) {
             this.level.camera.flash(300, 255, 30, 30);
             this.level.camera.shake(400, 0.02);
+            //console.log("Is eptileptic: " + this.level.gameObj.GLOBAL_IS_EPILEPTIC + " and we're in here");
         }
 
         let that = this;

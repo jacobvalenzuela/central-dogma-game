@@ -348,15 +348,25 @@ class Codon {
         this.amminoAcidMissObj.setVisible(false);
         this.circleMissObj.setVisible(false);
 
-        this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '11pt', color: '#fff'}).setOrigin(0.5);
-        this.amminoAcidAbbrText.setVisible(false);
-        this.amminoAcidAbbrText.setStroke(0x000, 1);
+        // Conditional rendering to make the text appear in the right spot on specific shapes
+        if (this.amminoAcid.class == "basic") {
+            this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
+                {fontFamily: 'Teko, sans-serif', fontSize: '24pt', color: '#FFFFFF'}).setOrigin(0.10, 0.5);
+        } else if (this.amminoAcid.class == "stop") {
+            this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
+                {fontFamily: 'Teko, sans-serif', fontSize: '24pt', color: '#FFFFFF'}).setOrigin(0.40, 0.5);
+        } else {
+            this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
+                {fontFamily: 'Teko, sans-serif', fontSize: '24pt', color: '#FFFFFF'}).setOrigin(0.5);
+        }
+
+        //this.amminoAcidAbbrText.setVisible(false);
+        //this.amminoAcidAbbrText.setStroke(0x000, 1);
 
         for (let i = 0; i < this.nucleotides.length; i++) {
             let txt = this.nucleotides[i].rep;
             let nttxt = this.level.add.text(0, 0, txt, 
-                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '11pt', color: '#fff'}).setOrigin(0.5);
+                {fontFamily: 'Teko, sans-serif', fontSize: '14pt', color: '#FFFFFF'}).setOrigin(0.5);
             nttxt.setVisible(false);
             // nttxt.setStroke(0x000, 3);
             this.ntLetterText.push(nttxt);

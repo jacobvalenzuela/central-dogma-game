@@ -5,6 +5,7 @@ import PositionManager from "../positionmanager.js";
 import LevelComplete from "./levelcomplete.js";
 import Codon from "../codon.js";
 import AudioPlayer from "../audioplayer.js";
+import BackgroundFloater from "../backgroundfloater.js";
 
 /**
  * Represents the level stage scene
@@ -18,10 +19,6 @@ class LevelStage extends Phaser.Scene {
     constructor (config) {
         super(config);
     }
-
-
-
-
 
     /**
      * Initalizes the level with the graphics, positioning, and scorekeeping
@@ -82,6 +79,8 @@ class LevelStage extends Phaser.Scene {
 
         this.floaty = this.physics.add.group();
         this.backgroundFloaties = this.spawnBackgroundFloaties(15);
+        //this.floaterSpawner = new BackgroundFloater(this);
+        //this.backgroundFloaties = this.floaterSpawner.spawnBackgroundFloaties(15);
 
         // Header background space
         this.graphics.fillStyle(WHITE, 1);
@@ -104,14 +103,16 @@ class LevelStage extends Phaser.Scene {
         // UI Labels
         // '\'Open Sans\', sans-serif'
         this.game.add.text(29, 53, "REMAINING", 
-            {fontFamily: 'Teko', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
+            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
         this.game.add.text(116, 53, "ACCURACY", 
-            {fontFamily: 'Teko', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
+            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
         this.game.add.text(195, 62, "SCORE:", 
-            {fontFamily: 'Teko', fontSize: '20pt', color: '#FFFFFF'}).setDepth(1);
+            {fontFamily: 'Teko, sans-serif', fontSize: '20pt', color: '#FFFFFF'}).setDepth(1);
 
+        // What is the point of these markers?
+        /*
         if (this.levelConfig.lvlType == "dna_replication") {
             this.game.add.text(4, 105, "5'", 
                 {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
@@ -131,7 +132,8 @@ class LevelStage extends Phaser.Scene {
 
         this.game.add.text(340, 690, "3'", 
             {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
-        
+        */
+
         let ntParticleConfig = {
             x: 150,
             y: 510,
@@ -403,7 +405,9 @@ class LevelStage extends Phaser.Scene {
         if (!this.rotateNT) {
             return;
         }
-        let angles = [0, 90, 180, 270];
+        // We don't include 180 because we never want the nucleotide to
+        // ever spawn with the already correct angle.
+        let angles = [0, 90, 270];
         for (let i = 0; i < this.buttons.length; i++) {
             let angle = angles[Math.floor(Math.random()*angles.length)];
             this.buttons[i].setAngle(angle);
@@ -606,8 +610,6 @@ class LevelStage extends Phaser.Scene {
         this.positionManager.addToDNAOutput(cloned);
     }
 
-    k
-
     /**
      * Ends the level. show level complete screen
      */
@@ -659,17 +661,21 @@ class LevelStage extends Phaser.Scene {
         let allFloaties = [];
         for (let i = 0; i < n; i++) {
             // Settings for background floaties
-            let scale = 0.20 * Math.random(); // roughly their size
-            let speed = 35; // their potential max speed
+            let maxScale = 0.20 * Math.random(); // their potential max size
+            let maxSpeed = 35; // their potential max speed
             let screenWidth = 360; // width of box to randomly spawn floaties
             let screenHeight = 720; // height of box to randomly spawn floaties
 
             let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff');
-            myFloaty.setScale(scale).setDepth(0.5).setAlpha(0.15);
-            myFloaty.setVelocity(Phaser.Math.Between(-speed * Math.random(), speed * Math.random()), Phaser.Math.Between(-speed * Math.random(), speed * Math.random()));
+            myFloaty.setScale(maxScale).setDepth(0.5).setAlpha(0.15);
+
+            // Randoly sets speed to some percentage of its max speed, in a random direction
+            myFloaty.setVelocity(Phaser.Math.Between(-maxSpeed * Math.random(), maxSpeed * Math.random()), 
+                                 Phaser.Math.Between(-maxSpeed * Math.random(), maxSpeed * Math.random()));
+            
             this.tweens.add({
                 targets: myFloaty,
-                scale: scale + 0.07,
+                maxScale: maxScale + 0.07,
                 duration: 1000 + (Math.random() * 5000),
                 ease: 'Power1',
                 yoyo: true,

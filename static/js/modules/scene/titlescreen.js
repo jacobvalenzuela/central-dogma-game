@@ -34,25 +34,31 @@ class TitleScreen extends Phaser.Scene {
 
         // Background color
 
-        this.tileSprite = this.game.add.tileSprite(180, 360, 360, 740, "bg");
+        // this.tileSprite = this.game.add.tileSprite(180, 360, 360, 740, "bg");
         // keeping background color incase image fails to load.
-        this.graphics.fillStyle(0xF1F1F2, 1.0);
+        this.graphics.fillStyle(0xfdfdfd, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
         
 
         let isblogo = this.game.add.image(180, 320, "logo_isb").setScale(0.35);
-        this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.20).setAlpha(0);
+        this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.20).setAlpha(0).setDepth(1);
 
         let dogmaLogo = this.game.add.sprite(185, 280, "logo_dogma_intro", 0).setScale(1.4);
         this.dogmaLogo = dogmaLogo;
 
         // Menu Buttons
-        this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.5).setAlpha(0).setInteractive();
+        this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.5).setAlpha(0).setInteractive().setDepth(1);
         this.playBtn.setVisible(false);
         this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClick));
-        this.playBtn.addListener("pointerdown", this.bindFn(this.onPlayClickHold));
-        this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClickRelease));
-        this.playBtn.addListener("dragend", this.bindFn(this.onPlayClickRelease));
+        this.playBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        this.playBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        this.playBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+
+        this.effectDisableBtn = this.game.add.image(260, 600, "effect_disable_btn").setScale(0.5).setAlpha(0).setInteractive().setDepth(1);
+        // this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onEffectDisableClick));
+        this.effectDisableBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        this.effectDisableBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
         let animDelay = 1;
         if (this.skipToLevelsList) {
@@ -86,11 +92,8 @@ class TitleScreen extends Phaser.Scene {
             },
             loop: false
         });
-    }
-
-    update() {
-        // Causes scrolling background
-        this.tileSprite.tilePositionX += 0.25;
+        this.floaty = this.physics.add.group();
+        this.backgroundFloaties = this.spawnBackgroundFloaties(25);
     }
 
     /**
@@ -104,6 +107,7 @@ class TitleScreen extends Phaser.Scene {
         this.playedIntro = true;
         this.fadeIn(this.playBtn);
         this.fadeIn(this.isblogo);
+        this.fadeIn( this.effectDisableBtn)
     }
 
     /**
@@ -180,25 +184,40 @@ class TitleScreen extends Phaser.Scene {
 
         this.fadeOut(this.dogmaLogo);
         this.fadeOut(this.playBtn);
+        this.fadeOut(this.effectDisableBtn);
 
         this.scene.launch("listlevels");
         this.scene.moveAbove("titlescreen", "listlevels");
     }
 
-    /**
-     * Make play button smaller
-     * @param {Phaser.GameObjects.Image} img - the play button
-     */
-    onPlayClickHold(img) {
-        this.playBtn.setScale(0.45);
+    onEffectDisableClick(img) {
+        
+        this.data.gameObj.GLOBAL_IS_EPILEPTIC = !this.data.gameObj.GLOBAL_IS_EPILEPTIC;
+
+        // If user is epileptic, they want to disable the screen effects
+        // means the button should be faded.
+        if(this.data.gameObj.GLOBAL_IS_EPILEPTIC) {
+            img.setAlpha(0.66);
+        } else {
+            img.setAlpha(1.0);
+        }
+
     }
 
     /**
-     * Make play button regular sized
+     * Make button smaller
      * @param {Phaser.GameObjects.Image} img - the play button
      */
-    onPlayClickRelease(img) {
-        this.playBtn.setScale(0.50);
+    onButtonClickHold(img) {
+        img.setScale(0.45);
+    }
+
+    /**
+     * Make button regular sized
+     * @param {Phaser.GameObjects.Image} img - the play button
+     */
+    onButtonClickRelease(img) {
+        img.setScale(0.50);
     }
 
     /**
@@ -212,6 +231,38 @@ class TitleScreen extends Phaser.Scene {
             fn.bind(clas, event, ...args)();
         };
     }
+    /**
+     * Generates floaties that randomly move and grow/shrink in the background.
+     * @param {INT} n - How many floaties to spawn.
+     * @returns {Array} - An array with all the floaties.
+     */    
+    spawnBackgroundFloaties(n) {
+        let allFloaties = [];
+        for (let i = 0; i < n; i++) {
+            // Settings for background floaties
+            let maxScale = 0.20 * Math.random(); // their potential max size
+            let maxSpeed = 35; // their potential max speed
+            let screenWidth = 360; // width of box to randomly spawn floaties
+            let screenHeight = 720; // height of box to randomly spawn floaties
+
+            let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff_dark');
+            myFloaty.setScale(maxScale).setDepth(0.5).setAlpha(0.15);
+
+            // Randoly sets speed to some percentage of its max speed, in a random direction
+            myFloaty.setVelocity(Phaser.Math.Between(-maxSpeed * Math.random(), maxSpeed * Math.random()), 
+                                 Phaser.Math.Between(-maxSpeed * Math.random(), maxSpeed * Math.random()));
+            
+            this.tweens.add({
+                targets: myFloaty,
+                maxScale: maxScale + 0.07,
+                duration: 1000 + (Math.random() * 5000),
+                ease: 'Power1',
+                yoyo: true,
+                repeat: -1
+            });
+            allFloaties.push(myFloaty);
+        }
+    }    
 }
 
 export default TitleScreen;
