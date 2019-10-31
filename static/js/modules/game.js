@@ -169,7 +169,7 @@ class Game {
         // Codons Level
         this.game.load.image("bindingsite", "static/img/bindingsite.png");
 
-        this.game.scene.add("listlevels", ListLevels, false, {levels: this.levels});
+        this.game.scene.add("listlevels", ListLevels, false, {gameObj: this, levels: this.levels});
         for (let i = 0; i < this.levels.length; i++) {
             let level = this.levels[i];
             this.game.scene.add("levelpre" + i, PreLevelStage, false, {gameObj: this, lvlNum: i, level: level});
