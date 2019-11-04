@@ -36,6 +36,12 @@ class LevelStage extends Phaser.Scene {
         let BLACK = 0x1e1e1e;
         let GOLD = 0xF5B222; // Guanine
 
+        let HL_ELLIPSE_X = 160;
+        let HL_ELLIPSE_Y = 490;
+        let HL_ELLIPSE_WIDTH = 230;
+        let HL_ELLIPSE_HEIGHT = 125;
+        let HL_ELLIPSE_COLOR = 0xfffaa8
+
         this.data = data;
         this.levelConfig = data.level;
         this.gameObj = data.gameObj;
@@ -188,8 +194,22 @@ class LevelStage extends Phaser.Scene {
 
         // Binding Pocket
         // Invisible, we're only using this for collision detection.
-        this.ntHighlightEllipse = this.game.add.ellipse(160, 490, 230, 125, 0xfffaa8, 1);
-        this.ntHighlightEllipse.setAlpha(0); 
+        this.ntHighlightEllipse = this.game.add.ellipse(HL_ELLIPSE_X, HL_ELLIPSE_Y,
+                                                        HL_ELLIPSE_WIDTH, HL_ELLIPSE_HEIGHT,
+                                                        HL_ELLIPSE_COLOR, 1);
+        this.ntHighlightEllipse.setAlpha(1);
+        this.ntHighlightEllipse.setVisible(true);
+        this.ntHighlightEllipse.setAngle(16);
+        this.ntHighlightEllipse.setDepth(1000);
+        this.tweens.add({
+            targets: this.ntHighlightEllipse,
+            scale: 1.05,
+            duration: 1000,
+            alpha: 1,
+            ease: 'Power1',
+            yoyo: true,
+            repeat: -1
+        });
 
         // Conditional rendering for each level type
         if (this.levelConfig.lvlType == "dna_replication") {
@@ -197,24 +217,8 @@ class LevelStage extends Phaser.Scene {
                 optbtns = ["T", "A", "G", "C"];
             }
 
-            // Binding Pocket Graphic
-            this.ntHighlightEllipseMask = this.game.add.image(160, 490, "binding_pocket");
-            this.ntHighlightEllipseMask.setDepth(1);
-            this.ntHighlightEllipseMask.setAngle(16);
-            this.ntHighlightEllipseMask.setScale(0.95);
-            this.ntHighlightEllipseMask.setAlpha(0.75);
-            this.tweens.add({
-                targets: this.ntHighlightEllipseMask,
-                scale: 1.05,
-                duration: 1000,
-                alpha: 1,
-                ease: 'Power1',
-                yoyo: true,
-                repeat: -1
-            });
-
             // Label for binding pocket.
-            this.game.add.text(90, 534, "Binding Pocket", 
+            this.game.add.text(90, 534, "Binding Pocket",
             {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1).setAngle(19);
 
 
@@ -225,6 +229,7 @@ class LevelStage extends Phaser.Scene {
             // On codon levels, we remove the ellipse and add in the APE sites.
             // We still need the ellipse for collision purposes though.
             this.ntHighlightEllipse.setAlpha(0);
+            this.ntHighlightEllipse.setVisible(false);
 
             // Top to bottom each binding site, equally spaced by 120px (if scale is 1.2x)
 
@@ -271,6 +276,7 @@ class LevelStage extends Phaser.Scene {
     
             this.input.keyboard.on('keydown-SPACE', function(event) {
                 if (this.positionManager.ntTouchingBindingPocket() && this.rotateNT && this.buttonCurrent) {
+                    console.log('keydown-SPACE, ntTouchingBindingPocket');
                     this.processNucleotideSubmission(this.buttonCurrent); 
                 } 
             }, this);
@@ -506,7 +512,7 @@ class LevelStage extends Phaser.Scene {
 
         // Otherwise we're actually dragging and want to submit answer.
         } else if (this.positionManager.ntTouchingBindingPocket()) {
-
+            console.log('onDragNTBtnEnd(), ntTouchingBindingPocket');
             let angle = image.angle;
             let clickedNT = image.getData("nucleotide");
             this.processNucleotideSubmission(clickedNT, angle);
@@ -526,6 +532,7 @@ class LevelStage extends Phaser.Scene {
     onKeyboardInput(num) {
         this.buttonCurrent = this.buttons[num];
         if (this.positionManager.ntTouchingBindingPocket() && !this.rotateNT) {
+            console.log('onKeyboardInput(), ntTouchingBindingPocket');
             this.processNucleotideSubmission(this.buttonCurrent);
         } else if (this.rotateNT) {
             this.rotateNucleotideButton(this.buttonCurrent);
@@ -547,6 +554,7 @@ class LevelStage extends Phaser.Scene {
      * @param {int} angle - Optional angle for rotation levels
      */
     processNucleotideSubmission(submission, angle = 0) {
+        console.log('processNucleotideSubmission()');
         let headNT = this.positionManager.getHeadNucleotide();
         let cloned = submission.clone();
         if (this.levelConfig.lvlType == "dna_replication") {
@@ -562,7 +570,7 @@ class LevelStage extends Phaser.Scene {
         this.ntBtnsEnabled = false;
 
         if (!submission.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != -180)) {
-                
+
             // Wrong Match
             let correctnt = this.positionManager.getValidMatchNT(headNT);
             this.popupmanager.emitEvent("errorMatch", headNT, correctnt);

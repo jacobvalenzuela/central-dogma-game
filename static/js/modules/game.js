@@ -104,13 +104,12 @@ class Game {
         this.game.load.image("left_arrow_btn", "static/img/leftArrowBtn.png");
         this.game.load.image("go_btn", "static/img/goBtn.png");
         this.game.load.image("effect_disable_btn", 'static/img/effectDisableBtn.png');
-        this.game.load.image("binding_pocket", "static/img/bindingpocket.png");
 
         // ADENINE
         this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");
         this.game.load.image("nt_adenine_basic", "static/img/nucleotide/adenine/Adenine_basic@3x.png");
 
-        this.game.load.spritesheet("nt_adenine_basic_animated", 
+        this.game.load.spritesheet("nt_adenine_basic_animated",
             "static/img/nucleotide/adenine/Adenine_basic_animated.png",
             { frameWidth: 600, frameHeight: 300 }
         );
