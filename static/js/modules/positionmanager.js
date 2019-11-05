@@ -533,7 +533,6 @@ class PositionManager {
         // TODO: Seperate out incorrect match logic to its own function.
         let head = this.levelNucleotides[0];
         if (head) {
-            console.log('removeHeadNucleotide() - at head');
             this.processIncorrectNucleotide(head);
             this.removeHeadNucleotide();
         }
@@ -597,6 +596,13 @@ class PositionManager {
         let cloned = null;
         for (let i = 0; i < btns.length; i++) {
             let btn = btns[i];
+            // cloned is null because it's not being matched here
+            // And in-game, this occurs when you miss a codon
+            // AFTER doing nothing and missing it naturally.
+            
+            // we know that the nucleotide passed all the way into
+            // here is the "head" nucleotide we just missed.
+            // (head is passed to processIncorrectNucleotide() to getValidMatchNT())
             if (nucleotide.validMatchWith(btn)) {
                 cloned = btn.clone();
             }

@@ -232,20 +232,41 @@ class LevelStage extends Phaser.Scene {
             this.ntHighlightEllipse.setVisible(false);
 
             // Top to bottom each binding site, equally spaced by 120px (if scale is 1.2x)
+            this.bindingSiteObjects = [];
+            this.bindingSiteObjects.push(this.game.add.image(100, 378, "bindingsite").setDepth(3000).setScale(1.0).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.text(85, 405, "Accepter Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#000000'}).setDepth(3000).setAlpha(1));
+            
+            this.bindingSiteObjects.push(this.game.add.image(100, 495, "bindingsite").setDepth(0.5).setScale(1.0).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.text(85, 522, "Peptidyl Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#000000'}).setDepth(0.5).setAlpha(1));
+        
+            this.bindingSiteObjects.push(this.game.add.image(100, 612, "bindingsite").setDepth(3000).setScale(1.0).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.text(85, 639, "Exit Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#000000'}).setDepth(3000).setAlpha(1));
 
-            /*
-            this.game.add.image(60, 373, "bindingsite").setDepth(1).setScale(1.2).setAlpha(0.25);
-            this.game.add.text(120, 335, "A",
-            {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
-
-            this.game.add.image(60, 493, "bindingsite").setDepth(1).setScale(1.2).setAlpha(0.25);
-            this.game.add.text(120, 455, "P",
-            {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
-
-            this.game.add.image(60, 613, "bindingsite").setDepth(1).setScale(1.2).setAlpha(0.25);
-            this.game.add.text(120, 575, "E",
-            {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
-            */
+            for (let i = 0; i < this.bindingSiteObjects.length; i++) {
+                // indices:
+                // 0, 1 = top binding site
+                // 2, 3 = middle binding site
+                // 4, 5 = bottom binding site
+                // "initialMovement" used to alternate site movement.
+                let initialMovement = '';
+                if (i == 2 || i == 3) {
+                    initialMovement = '-=10';
+                } else {
+                    initialMovement = '+=10';
+                }
+                
+                this.tweens.add({
+                    targets: this.bindingSiteObjects[i],
+                    duration: 1000,
+                    x: initialMovement,
+                    ease: 'Quad.easeInOut',
+                    yoyo: true,
+                    repeat: -1
+                });
+            }
         }
 
         // Creates nucleotide buttons
