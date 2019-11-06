@@ -625,7 +625,8 @@ class LevelComplete extends Phaser.Scene {
                 cdapi.logQuestionResponse(that.level, answeredOption, + correctness, cdapi.getCurrentSession());
             }
             if (correctness) { // Upon selecting correct quiz answer
-                console.log('GLOBAL SCORE: ' + that.gameObj.GLOBAL_SCORE);
+                console.log(that);
+                that.gameObj.GLOBAL_SCORE += that.quizPointWorth;
                 let bonustxt = that.add.text(180, 269, "+" + that.quizPointWorth + " BONUS!", 
                     {fontFamily: '\'Bevan\', cursive', fontSize: '29pt', color: '#78D863', align: 'center'});
                 bonustxt.setOrigin(0.5);

@@ -55,7 +55,7 @@ class TitleScreen extends Phaser.Scene {
         this.playBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
         this.effectDisableBtn = this.game.add.image(260, 600, "effect_disable_btn").setScale(0.5).setAlpha(0).setInteractive().setDepth(1);
-        // this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onEffectDisableClick));
+        this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onEffectDisableClick));
         this.effectDisableBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         this.effectDisableBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
@@ -191,16 +191,16 @@ class TitleScreen extends Phaser.Scene {
     }
 
     onEffectDisableClick(img) {
-        
-        this.data.gameObj.GLOBAL_IS_EPILEPTIC = !this.data.gameObj.GLOBAL_IS_EPILEPTIC;
+        this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC = !this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC;
 
         // If user is epileptic, they want to disable the screen effects
         // means the button should be faded.
-        if(this.data.gameObj.GLOBAL_IS_EPILEPTIC) {
+        if(this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC) {
             img.setAlpha(0.66);
         } else {
             img.setAlpha(1.0);
         }
+        
 
     }
 

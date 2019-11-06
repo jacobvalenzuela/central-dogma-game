@@ -150,7 +150,7 @@ class PositionManager {
         // Fills up the rest of the level sequence.
         for (let i = 0; i < this.level.nucleotides.length; i++) {
             // How much spacing to add between each codon.
-            for (let j = 0; j < 50; j++) {
+            for (let j = 0; j < 51; j++) {
                 this.levelNucleotides.push(null);
             }
             this.levelNucleotides.push(this.level.nucleotides[i]);
@@ -568,6 +568,13 @@ class PositionManager {
     processIncorrectNucleotide(missedNucleotide) {
         this.level.scorekeeping.incrementIncorrectSequences();
         this.audioplayer.playIncorrectSound();
+
+        // Regen buttons (one wuill have correct option)
+        if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
+            this.level.shuffleNTBtnOpts();
+        }
+
+        // Find that correct option and process it to output stack
         let cloned = this.getValidMatchNT(missedNucleotide);
         if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             cloned.setDisplay("nucleotide");
@@ -581,9 +588,7 @@ class PositionManager {
         cloned.setMissing(true);
         this.addToDNAOutput(cloned);
         this.level.shuffleNTBtnAngle();
-        if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
-            this.level.shuffleNTBtnOpts();
-        }
+
     }
 
     /**
@@ -592,18 +597,23 @@ class PositionManager {
      * @returns {Nucleotide} matching nucleotide
      */
     getValidMatchNT(nucleotide) {
+        console.log(nucleotide);
         let btns = this.level.buttons;
+        console.log(btns);
         let cloned = null;
         for (let i = 0; i < btns.length; i++) {
             let btn = btns[i];
             // cloned is null because it's not being matched here
+            // (never a validMatchWith(btn) so cloned stays null)
             // And in-game, this occurs when you miss a codon
             // AFTER doing nothing and missing it naturally.
             
             // we know that the nucleotide passed all the way into
             // here is the "head" nucleotide we just missed.
             // (head is passed to processIncorrectNucleotide() to getValidMatchNT())
+            
             if (nucleotide.validMatchWith(btn)) {
+                console.log("found a match");
                 cloned = btn.clone();
             }
         }

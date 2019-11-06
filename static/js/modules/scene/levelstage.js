@@ -233,17 +233,17 @@ class LevelStage extends Phaser.Scene {
 
             // Top to bottom each binding site, equally spaced by 120px (if scale is 1.2x)
             this.bindingSiteObjects = [];
-            this.bindingSiteObjects.push(this.game.add.image(100, 378, "bindingsite").setDepth(3000).setScale(1.0).setAlpha(1));
-            this.bindingSiteObjects.push(this.game.add.text(85, 405, "Accepter Site",
-            {fontFamily: 'Teko', fontSize: '16pt', color: '#000000'}).setDepth(3000).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.image(100, 378, "bindingsite").setDepth(3000).setScale(1.0).setAlpha(0.8));
+            this.bindingSiteObjects.push(this.game.add.text(85, 390, "Accepter Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1));
             
             this.bindingSiteObjects.push(this.game.add.image(100, 495, "bindingsite").setDepth(0.5).setScale(1.0).setAlpha(1));
-            this.bindingSiteObjects.push(this.game.add.text(85, 522, "Peptidyl Site",
-            {fontFamily: 'Teko', fontSize: '16pt', color: '#000000'}).setDepth(0.5).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.text(85, 507, "Peptidyl Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(0.5).setAlpha(1));
         
-            this.bindingSiteObjects.push(this.game.add.image(100, 612, "bindingsite").setDepth(3000).setScale(1.0).setAlpha(1));
-            this.bindingSiteObjects.push(this.game.add.text(85, 639, "Exit Site",
-            {fontFamily: 'Teko', fontSize: '16pt', color: '#000000'}).setDepth(3000).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.image(100, 612, "bindingsite").setDepth(3000).setScale(1.0).setAlpha(0.8));
+            this.bindingSiteObjects.push(this.game.add.text(85, 624, "Exit Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1));
 
             for (let i = 0; i < this.bindingSiteObjects.length; i++) {
                 // indices:
@@ -390,6 +390,7 @@ class LevelStage extends Phaser.Scene {
         let head = this.positionManager.getHeadNucleotide(true);
         let codonOptions = ["U", "C", "A", "G"];
         let actualOptions = [head.matches];
+        console.log(actualOptions);
         let maxOtherOptions = 2;
         
         // This is a bit weird and undocumented, but there is an optional
@@ -398,6 +399,8 @@ class LevelStage extends Phaser.Scene {
         // besides the correct button choice.
         if (typeof this.levelConfig.maxButtons !== 'undefined') {
             maxOtherOptions = this.levelConfig.maxButtons;
+        } else {
+            maxOtherOptions = 2; // 2 by default
         }
         for (let i = 0; i < maxOtherOptions; i++) {
             let nt1 = this.getRandomInArray(codonOptions);
@@ -406,6 +409,7 @@ class LevelStage extends Phaser.Scene {
             let option = nt1 + nt2 + nt3;
             actualOptions.push(option);
         }
+        console.log(actualOptions);
         return this.shuffleArray(actualOptions);
     }
 
@@ -533,7 +537,7 @@ class LevelStage extends Phaser.Scene {
 
         // Otherwise we're actually dragging and want to submit answer.
         } else if (this.positionManager.ntTouchingBindingPocket()) {
-            console.log('onDragNTBtnEnd(), ntTouchingBindingPocket');
+            //console.log('onDragNTBtnEnd(), ntTouchingBindingPocket');
             let angle = image.angle;
             let clickedNT = image.getData("nucleotide");
             this.processNucleotideSubmission(clickedNT, angle);
@@ -575,7 +579,7 @@ class LevelStage extends Phaser.Scene {
      * @param {int} angle - Optional angle for rotation levels
      */
     processNucleotideSubmission(submission, angle = 0) {
-        console.log('processNucleotideSubmission()');
+        //console.log('processNucleotideSubmission()');
         let headNT = this.positionManager.getHeadNucleotide();
         let cloned = submission.clone();
         if (this.levelConfig.lvlType == "dna_replication") {

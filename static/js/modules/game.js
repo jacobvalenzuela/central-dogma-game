@@ -137,6 +137,12 @@ class Game {
             { frameWidth: 600, frameHeight: 300 }
         );
 
+        // URACIL
+        this.game.load.spritesheet("nt_uracil_basic_animated", 
+            "static/img/nucleotide/uracil/Uracil_basic_animated.png",
+            { frameWidth: 600, frameHeight: 300 }
+        );
+
         // GUANINE
         this.game.load.image("nt_guanine_backbone", "static/img/nucleotide/guanine/Guanine_Backbone@3x.png");
         this.game.load.image("nt_guanine_basic", "static/img/nucleotide/guanine/Guanine_basic@3x.png");
@@ -199,7 +205,7 @@ class Game {
      */
     create() {
         this.game.scene.add("titlescreen", TitleScreen, true, {
-            "gameObj": this
+            gameObj: this
         });
 
         // let singleLvl = new LevelStage(this, this.level);
