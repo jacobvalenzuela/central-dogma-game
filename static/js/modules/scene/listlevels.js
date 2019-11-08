@@ -69,7 +69,6 @@ class ListLevels extends Phaser.Scene {
             }
         })
 
-
         // Level Selection Descriptors
         this.levelBrowseTitle = this.add.text(20, 160, "", 
             {fontFamily: 'Teko', fontSize: '36pt', color: '#000', align: 'center'});
@@ -618,6 +617,7 @@ class ListLevels extends Phaser.Scene {
             this.curLevel++;
             this.displayLevel(this.curLevel);
         }
+        this.updateGoButton();
     }
 
     /**
@@ -627,6 +627,19 @@ class ListLevels extends Phaser.Scene {
         if (this.curLevel > 0) {
             this.curLevel--;
             this.displayLevel(this.curLevel);
+        }
+        this.updateGoButton();
+    }
+
+    /**
+     * Changes the appearence of the go button depending on the current level.
+     * @param {Int} - Given the current level, if locked, the go button will be transparent.
+     */
+    updateGoButton() {
+        if (this.levels[this.curLevel].unlocked) {
+            this.goBtn.setAlpha(1.0);
+        } else {
+            this.goBtn.setAlpha(0.5);
         }
     }
 

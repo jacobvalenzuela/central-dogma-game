@@ -3,6 +3,7 @@ import ListLevels from "./scene/listlevels.js";
 import PreLevelStage from "./scene/prelevelstage.js";
 import TitleScreen from "./scene/titlescreen.js";
 import LevelStage from "./scene/levelstage.js";
+import PauseScreen from "./scene/pause.js";
 
 /**
  * Class representing the game object. Handles the creation of the basic
@@ -104,6 +105,8 @@ class Game {
         this.game.load.image("left_arrow_btn", "static/img/leftArrowBtn.png");
         this.game.load.image("go_btn", "static/img/goBtn.png");
         this.game.load.image("effect_disable_btn", 'static/img/effectDisableBtn.png');
+        this.game.load.image("pause_btn", "static/img/pauseBtn.png");
+        this.game.load.image("resume_btn", "static/img/resumeBtn.png");
 
         // ADENINE
         this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");
@@ -174,12 +177,14 @@ class Game {
         // Codons Level
         this.game.load.image("bindingsite", "static/img/bindingsite.png");
 
+        // Adding Game Scenes
         this.game.scene.add("listlevels", ListLevels, false, {gameObj: this, levels: this.levels});
         for (let i = 0; i < this.levels.length; i++) {
             let level = this.levels[i];
             this.game.scene.add("levelpre" + i, PreLevelStage, false, {gameObj: this, lvlNum: i, level: level});
             this.game.scene.add("level" + i, LevelStage, false, {gameObj: this, lvlNum: i, level: level});
         }
+        this.game.scene.add("pauseScreen", PauseScreen, false, {gameObj: this, levels: this.levels});
 
         this.game.load.html("html_login", "static/html/login.html");
         this.game.load.html("html_register", "static/html/register.html");
@@ -194,6 +199,11 @@ class Game {
         this.game.load.audio("incorrect", "static/audio/sounds/Incorrect.wav");
         this.game.load.audio("correct", "static/audio/sounds/Correct.wav");
         
+        // Level Carousel Selector Images
+        this.game.load.image("level1", "static/img/levelCarouselImages/1.png");
+        this.game.load.image("level2", "static/img/levelCarouselImages/2.png");
+        this.game.load.image("level3", "static/img/levelCarouselImages/3.png");
+
         // Etc.
         this.game.load.image("fluff", "static/img/fluff.png");
         this.game.load.image("fluff_dark", "static/img/fluff_dark.png");

@@ -33,7 +33,7 @@ class GameScore {
         this.updateSequenceNTs();
         this.accuracyTxt = this.game.add.text(140, 80, "100%", 
             {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
-        this.scoreTxt = this.game.add.text(295, 73, "0000000", 
+        this.scoreTxt = this.game.add.text(240, 73, "0000000", 
             {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
     }
 

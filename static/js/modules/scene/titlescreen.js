@@ -96,6 +96,11 @@ class TitleScreen extends Phaser.Scene {
         this.backgroundFloaties = this.spawnBackgroundFloaties(25);
     }
 
+    update() {
+        // Allows background floaties to wrap
+        this.physics.world.wrap(this.floaty, 50);
+    }
+    
     /**
      * Display the UI (button) so game may be started faster
      */

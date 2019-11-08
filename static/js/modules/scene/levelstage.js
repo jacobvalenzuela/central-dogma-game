@@ -104,7 +104,7 @@ class LevelStage extends Phaser.Scene {
         this.graphics.fillRect(100, 50, 75, 45).setDepth(0.5);
 
         this.graphics.fillStyle(ORANGE, 1.0);
-        this.graphics.fillRect(185, 50, 160, 45).setDepth(0.5);
+        this.graphics.fillRect(185, 50, 115, 45).setDepth(0.5);
 
         // UI Labels
         // '\'Open Sans\', sans-serif'
@@ -114,31 +114,21 @@ class LevelStage extends Phaser.Scene {
         this.game.add.text(116, 53, "ACCURACY", 
             {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
-        this.game.add.text(195, 62, "SCORE:", 
-            {fontFamily: 'Teko, sans-serif', fontSize: '20pt', color: '#FFFFFF'}).setDepth(1);
+        this.game.add.text(195, 53, "SCORE", 
+            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
-        // What is the point of these markers?
-        /*
-        if (this.levelConfig.lvlType == "dna_replication") {
-            this.game.add.text(4, 105, "5'", 
-                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+            console.log(this);
+
+        // Pause Button
+        this.pauseBtn = this.game.add.image(330, 72, "pause_btn").setDepth(1).setScale(0.23).setInteractive();
+        this.pauseBtn.addListener("pointerdown", this.bindFn(function(){
+            console.log("pressed");
+            this.scene.pause();
             
-            this.game.add.text(345, 105, "3'", 
-                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
-        }
+            this.scene.launch('pauseScreen', this);
+        }, this));
 
-        this.game.add.text(4, 150, "3'", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
-        this.game.add.text(4, 530, "5'", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
-
-        this.game.add.text(257, 497, "5'", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
-
-        this.game.add.text(340, 690, "3'", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
-        */
 
         let ntParticleConfig = {
             x: 150,

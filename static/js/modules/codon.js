@@ -248,12 +248,7 @@ class Codon {
             let nt = this.nucleotides[i]; // Current nucleotide
             let cdnt; // Current codon
             let ntShortName = nt.getShortName();
-            /*
-            if (ntShortName == "uracil") {
-                // Not scientifically accurate but necessary to reuse graphics
-                ntShortName = "thymine"; 
-            }
-            */
+            
             // Setting up correct animation
             cdnt = this.level.add.sprite(0, 0, "nt_" + ntShortName + "_basic_animated");
             this.level.anims.create({
