@@ -177,6 +177,9 @@ class Game {
         // Codons Level
         this.game.load.image("bindingsite", "static/img/bindingsite.png");
 
+        // Binding Pocket
+        this.game.load.image("bindingpocket", "static/img/bindingpocket.png");
+
         // Adding Game Scenes
         this.game.scene.add("listlevels", ListLevels, false, {gameObj: this, levels: this.levels});
         for (let i = 0; i < this.levels.length; i++) {

@@ -117,7 +117,10 @@ class LevelStage extends Phaser.Scene {
         this.game.add.text(195, 53, "SCORE", 
             {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
-            console.log(this);
+        console.log(this.data);
+
+        this.game.add.text(185, 100, "LV. " + (this.data.lvlNum + 1) + ": " + this.data.level.name, 
+            {fontFamily: 'Teko, sans-serif', fontSize: '14pt', color: '#FFFFFF'}).setDepth(1);
 
         // Pause Button
         this.pauseBtn = this.game.add.image(330, 72, "pause_btn").setDepth(1).setScale(0.23).setInteractive();
@@ -187,19 +190,37 @@ class LevelStage extends Phaser.Scene {
         this.ntHighlightEllipse = this.game.add.ellipse(HL_ELLIPSE_X, HL_ELLIPSE_Y,
                                                         HL_ELLIPSE_WIDTH, HL_ELLIPSE_HEIGHT,
                                                         HL_ELLIPSE_COLOR, 1);
-        this.ntHighlightEllipse.setAlpha(1);
+        this.ntHighlightEllipse.setAlpha(0);
         this.ntHighlightEllipse.setVisible(true);
         this.ntHighlightEllipse.setAngle(16);
         this.ntHighlightEllipse.setDepth(1000);
+
+        this.bindingPocket = this.game.add.image(HL_ELLIPSE_X, HL_ELLIPSE_Y, "bindingpocket");
+        this.bindingPocket.setAngle(16);
+        this.bindingPocket.setDepth(1000);
+        this.bindingPocket.setScale(1.1)
+
+        
         this.tweens.add({
-            targets: this.ntHighlightEllipse,
-            scale: 1.05,
-            duration: 1000,
+            targets: this.bindingPocket,
+            scaleX: 1.20,
+            duration: 2460,
             alpha: 1,
-            ease: 'Power1',
+            ease: 'Sine',
             yoyo: true,
             repeat: -1
         });
+
+        this.tweens.add({
+            targets: this.bindingPocket,
+            scaleY: 1.20,
+            duration: 1064,
+            alpha: 1,
+            ease: 'Sine',
+            yoyo: true,
+            repeat: -1
+        });
+        
 
         // Conditional rendering for each level type
         if (this.levelConfig.lvlType == "dna_replication") {
@@ -223,17 +244,17 @@ class LevelStage extends Phaser.Scene {
 
             // Top to bottom each binding site, equally spaced by 120px (if scale is 1.2x)
             this.bindingSiteObjects = [];
-            this.bindingSiteObjects.push(this.game.add.image(100, 378, "bindingsite").setDepth(3000).setScale(1.0).setAlpha(0.8));
-            this.bindingSiteObjects.push(this.game.add.text(85, 390, "Accepter Site",
-            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.image(60, 378, "bindingsite").setDepth(3000).setScale(1.0).setAlpha(0.8));
+            this.bindingSiteObjects.push(this.game.add.text(95, 420, "Accepter Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1).setAngle(270));
             
-            this.bindingSiteObjects.push(this.game.add.image(100, 495, "bindingsite").setDepth(0.5).setScale(1.0).setAlpha(1));
-            this.bindingSiteObjects.push(this.game.add.text(85, 507, "Peptidyl Site",
-            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(0.5).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.image(60, 495, "bindingsite").setDepth(0.5).setScale(1.0).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.text(95, 537, "Peptidyl Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(0.5).setAlpha(1).setAngle(270));
         
-            this.bindingSiteObjects.push(this.game.add.image(100, 612, "bindingsite").setDepth(3000).setScale(1.0).setAlpha(0.8));
-            this.bindingSiteObjects.push(this.game.add.text(85, 624, "Exit Site",
-            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.image(60, 612, "bindingsite").setDepth(3000).setScale(1.0).setAlpha(0.8));
+            this.bindingSiteObjects.push(this.game.add.text(95, 654, "Exit Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1).setAngle(270));
 
             for (let i = 0; i < this.bindingSiteObjects.length; i++) {
                 // indices:
@@ -243,14 +264,14 @@ class LevelStage extends Phaser.Scene {
                 // "initialMovement" used to alternate site movement.
                 let initialMovement = '';
                 if (i == 2 || i == 3) {
-                    initialMovement = '-=10';
+                    initialMovement = '-=5';
                 } else {
-                    initialMovement = '+=10';
+                    initialMovement = '+=5';
                 }
                 
                 this.tweens.add({
                     targets: this.bindingSiteObjects[i],
-                    duration: 1000,
+                    duration: 2000,
                     x: initialMovement,
                     ease: 'Quad.easeInOut',
                     yoyo: true,
