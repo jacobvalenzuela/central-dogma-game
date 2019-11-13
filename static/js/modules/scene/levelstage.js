@@ -195,33 +195,6 @@ class LevelStage extends Phaser.Scene {
         this.ntHighlightEllipse.setAngle(16);
         this.ntHighlightEllipse.setDepth(1000);
 
-        this.bindingPocket = this.game.add.image(HL_ELLIPSE_X, HL_ELLIPSE_Y, "bindingpocket");
-        this.bindingPocket.setAngle(16);
-        this.bindingPocket.setDepth(1000);
-        this.bindingPocket.setScale(1.1)
-
-        
-        this.tweens.add({
-            targets: this.bindingPocket,
-            scaleX: 1.20,
-            duration: 2460,
-            alpha: 1,
-            ease: 'Sine',
-            yoyo: true,
-            repeat: -1
-        });
-
-        this.tweens.add({
-            targets: this.bindingPocket,
-            scaleY: 1.20,
-            duration: 1064,
-            alpha: 1,
-            ease: 'Sine',
-            yoyo: true,
-            repeat: -1
-        });
-        
-
         // Conditional rendering for each level type
         if (this.levelConfig.lvlType == "dna_replication") {
             if (!optbtns) {
@@ -232,6 +205,31 @@ class LevelStage extends Phaser.Scene {
             this.game.add.text(90, 534, "Binding Pocket",
             {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1).setAngle(19);
 
+            // Binding pocket
+            this.bindingPocket = this.game.add.image(HL_ELLIPSE_X, HL_ELLIPSE_Y, "bindingpocket");
+            this.bindingPocket.setAngle(16);
+            this.bindingPocket.setDepth(1000);
+            this.bindingPocket.setScale(1.1)
+    
+            this.tweens.add({
+                targets: this.bindingPocket,
+                scaleX: 1.20,
+                duration: 2460,
+                alpha: 1,
+                ease: 'Sine',
+                yoyo: true,
+                repeat: -1
+            });
+    
+            this.tweens.add({
+                targets: this.bindingPocket,
+                scaleY: 1.20,
+                duration: 1064,
+                alpha: 1,
+                ease: 'Sine',
+                yoyo: true,
+                repeat: -1
+            });
 
         } else if (this.levelConfig.lvlType == "codon_transcription") {
             if (!optbtns) {
