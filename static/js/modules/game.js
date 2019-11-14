@@ -107,6 +107,7 @@ class Game {
         this.game.load.image("effect_disable_btn", 'static/img/effectDisableBtn.png');
         this.game.load.image("pause_btn", "static/img/pauseBtn.png");
         this.game.load.image("resume_btn", "static/img/resumeBtn.png");
+        this.game.load.image("next_btn", "static/img/nextBtn.png");
 
         // ADENINE
         this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");

@@ -551,7 +551,7 @@ class LevelStage extends Phaser.Scene {
             let clickedNT = image.getData("nucleotide");
             this.processNucleotideSubmission(clickedNT, angle);
 
-            if (this.levelConfig.lvlType == "dna_replication") {
+            if (this.levelConfig.lvlType == "dna_replication" && !this.rotateNT) {
                 // Default angle nucleotide respawns with in a non-rotational level.
                 image.getData("nucleotide").setAngle(180);
             }

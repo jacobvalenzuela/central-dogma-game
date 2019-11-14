@@ -50,7 +50,12 @@ class LevelComplete extends Phaser.Scene {
 
         let that = this;
 
+        // Invisible, non interactable (yet) UI
+        this.homeBtn = this.add.image(180, 520, "home_btn").setScale(0.5).setAlpha(0).setDepth(100);
+        this.nextBtn = this.add.image(180, 620, "next_btn").setScale(0.5).setAlpha(0).setDepth(100);
+
         this.fadeIn(function () {
+            // Level Complete
             let rectbg = that.add.rectangle(180, -100, 300, 250, DARK_BLUE);
             rectbg.setStrokeStyle(2, WHITE, 1);
             that.rectbg = rectbg;
@@ -72,6 +77,8 @@ class LevelComplete extends Phaser.Scene {
                         {fontFamily: 'Teko', fontSize: '35pt', color: '#FFFFFF', align: 'center'});
                     scoreTxt.setOrigin(0.5);
                     that.scoreTxt = scoreTxt;
+
+                    // Score up animation
                     that.time.addEvent({
                         delay: 600,
                         loop: false,
@@ -104,8 +111,9 @@ class LevelComplete extends Phaser.Scene {
                                         that.tweens.add({ targets: lvlcompTxt, alpha: 0, duration: 400, ease: 'power4' });
                                         that.tweens.add({ targets: rectbg, alpha: 0, duration: 400, ease: 'power4' });
 
-                                        let homeBtn = that.add.image(180, 520, "home_btn").setScale(0.5).setAlpha(0).setInteractive();
-                                        that.homeBtn = homeBtn;
+
+
+                                        // Sequenced Molecule Popup
                                         that.sequencedInfoOverlay = that.add.dom(180, 300).createFromCache('html_sequencedinfo');
                                         that.sequencedInfoOverlay.setAlpha(0);
                                         that.sequencedInfoOverlay.getChildByID("sequencedinfo-molecule-name").textContent = that.sequencedinfo.name;
@@ -123,6 +131,8 @@ class LevelComplete extends Phaser.Scene {
                                         that.countdownText.addListener("pointerup", function () {
                                             that.cntTimer = 1;
                                         });
+
+                                        // Knowledge Panel Popup
                                         that.countDownTimer(function () {
                                             that.sequencedInfoOverlay.destroy();
                                             that.knowledgePanelOverlay = that.add.dom(180, 300).createFromCache("html_knowledgepanel");
@@ -133,13 +143,17 @@ class LevelComplete extends Phaser.Scene {
                                             that.cntTimer = 10;
                                             that.countdownText.setPosition(310, 400).setText(that.cntTimer).setVisible(true);
                                             that.countDownTimer(function () {
-                                                that.fadeInObj(homeBtn);
-                                                homeBtn.addListener("pointerup", that.bindFn(that.onHomeClick));
-                                                homeBtn.addListener("pointerdown", that.bindFn(that.onHomeClickHold));
-                                                homeBtn.addListener("pointerup", that.bindFn(that.onHomeClickRelease));
-                                                homeBtn.addListener("dragend", that.bindFn(that.onHomeClickRelease));
+
+                                                // Does the quiz after the knowledge panel fades
+                                                that.doQuiz();
+
+                                                
                                             });
                                         });
+
+                                        
+
+                                        // Introduces draggable NTs
                                         that.fadeInObj(that.sequencedInfoOverlay);
                                         that.makeDraggableNTs();
                                     }
@@ -573,6 +587,25 @@ class LevelComplete extends Phaser.Scene {
             return;
         }
         this.homeBtn.removeInteractive();
+        this.scene.stop("level" + this.level);
+        this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
+    }
+
+    /**
+     * Triggered on next click
+     * @param {Phaser.GameObjects.Image} img - next button img obj
+     */
+    onNextClick(img) {
+        if (img != this.nextBtn) {
+            return;
+        }
+        this.nextBtn.removeInteractive();
+        this.scene.stop("level" + this.level);
+        let newNum = Number(this.level) + Number(1);
+        this.scene.start("levelpre" + newNum);
+    }    
+
+    doQuiz() {
         this.quizOverlay = this.add.dom(180, 900).createFromCache("html_quiz");
         this.quizOverlay.setScale(1.1);
         this.quizOverlay.getChildByID("quiz-question").textContent = this.quiz.question;
@@ -625,7 +658,6 @@ class LevelComplete extends Phaser.Scene {
                 cdapi.logQuestionResponse(that.level, answeredOption, + correctness, cdapi.getCurrentSession());
             }
             if (correctness) { // Upon selecting correct quiz answer
-                console.log(that);
                 that.gameObj.GLOBAL_SCORE += that.quizPointWorth;
                 let bonustxt = that.add.text(180, 269, "+" + that.quizPointWorth + " BONUS!", 
                     {fontFamily: '\'Bevan\', cursive', fontSize: '29pt', color: '#78D863', align: 'center'});
@@ -666,13 +698,16 @@ class LevelComplete extends Phaser.Scene {
                             delay: delayscore,
                             callback: function () {
                                 that.tweens.add({ targets: that.knowledgePanelOverlay, alpha: 0, duration: 500});
+                                
+                                that.presentEndscreenOptions();
+
+                                /*
                                 that.camera.fadeOut(600, 0, 0, 0, function (camera, progress) {
                                     if (progress < 0.9) {
                                         return;
                                     }
-                                    this.scene.stop("level" + that.level);
-                                    this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: that.gameObj, fadeIn: true});
                                 });
+                                */
                             }
                         });
                     });
@@ -688,6 +723,27 @@ class LevelComplete extends Phaser.Scene {
         });
     }
 
+    presentEndscreenOptions() {
+        this.homeBtn.setInteractive();
+        this.homeBtn.addListener("pointerup", this.bindFn(this.onHomeClick));
+        this.homeBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        this.homeBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        this.homeBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));    
+        this.fadeInObj(this.homeBtn);
+
+        // The next button won't show up if there isn't a next level to play.
+        if (this.level < this.gameObj.levels.length - 1) {
+            this.nextBtn.setInteractive();
+            this.nextBtn.addListener("pointerup", this.bindFn(this.onNextClick));
+            this.nextBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+            this.nextBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+            this.nextBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));   
+            this.fadeInObj(this.nextBtn);
+        }
+
+    
+    }
+
     shuffleArray(a) {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -698,21 +754,18 @@ class LevelComplete extends Phaser.Scene {
 
     /**
      * If button is held
-     * @param {Phaser.GameObjects.Image} img - home button img obj
+     * @param {Phaser.GameObjects.Image} img - button img obj
      */
-    onHomeClickHold(img) {
-        if (img != this.homeBtn) {
-            return;
-        }
-        this.homeBtn.setScale(0.45);
+    onButtonClickHold(img) {
+        img.setScale(0.45);
     }
 
     /**
-     * If home button is released
-     * @param {Phaser.GameObjects.Image} img - home button img obj
+     * If button is released
+     * @param {Phaser.GameObjects.Image} img - button img obj
      */
-    onHomeClickRelease(img) {
-        this.homeBtn.setScale(0.50);
+    onButtonClickRelease(img) {
+        img.setScale(0.50);
     }
 }
 
