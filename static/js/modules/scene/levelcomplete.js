@@ -56,7 +56,7 @@ class LevelComplete extends Phaser.Scene {
 
         this.fadeIn(function () {
             // Level Complete
-            let rectbg = that.add.rectangle(180, -100, 300, 250, DARK_BLUE);
+            let rectbg = that.add.rectangle(180, -100, 300, 250, BLUE);
             rectbg.setStrokeStyle(2, WHITE, 1);
             that.rectbg = rectbg;
             that.moveToY(rectbg, 240, function () {
@@ -65,7 +65,7 @@ class LevelComplete extends Phaser.Scene {
                 lvlcompTxt.setOrigin(0.5).setScale(0);
                 that.animateScale(lvlcompTxt, 1.12, function () {
                     that.animateScale(lvlcompTxt, 1);
-                    let scoreRect = that.add.rectangle(180, 260, 200, 100, BLUE);
+                    let scoreRect = that.add.rectangle(180, 260, 200, 100, ORANGE);
                     scoreRect.setAlpha(0).setStrokeStyle(2, WHITE, 1);
                     that.scoreRect = scoreRect;
                     that.fadeInObj(scoreRect);
@@ -88,73 +88,86 @@ class LevelComplete extends Phaser.Scene {
                                     delay: 600,
                                     loop: false,
                                     callback: function () {
-                                        let accStampBg = that.add.image(270, 300, "nt_thymine_basic").setScale(0.36).setAngle(15);
+                                        let accStampBg = that.add.rectangle(360, 165, 125, 100, BLUE).setDepth(1).setStrokeStyle(2, WHITE, 1);
                                         that.fadeInObj(accStampBg);
-                                        that.animateScale(accStampBg, 0.26);
-                                        let accStampLbl = that.add.text(265, 320, "%", 
-                                            {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
-                                        that.fadeInObj(accStampLbl);
-                                        that.animateScale(accStampLbl, 1);
-                                        let accStampTxt = that.add.text(271, 295, data.accuracy, 
-                                            {fontFamily: 'Teko', fontSize: '20pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
+ 
+  
+                                        let accStampTxt = that.add.text(280, 180, data.accuracy + "%" + " Accurate!", 
+                                            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
                                         that.fadeInObj(accStampTxt);
                                         that.animateScale(accStampTxt, 1);
                                         
+                                        let mutationCount = 0;
+                                        for (let i = 0; i < data.nucleotides.length; i++) {
+                                            if (Boolean(data.nucleotides[i].errorNT)) {
+                                                mutationCount++;
+                                            }
+                                        }
+
+                                        let mutationTxt = that.add.text(280, 180, mutationCount + " Mutations\nIntroduced!", 
+                                            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
+                                        that.fadeInObj(mutationTxt);
+                                        that.animateScale(mutationTxt, 1);
+                                        console.log("Number of mutations is: " + mutationCount);
+            
+                                        
+                                        // These animations determine the final position of the ui elements...
                                         that.tweens.add({ targets: scoreRect, x: 180, y: 100, duration: 300, ease: 'power4' });
                                         that.tweens.add({ targets: scoreLabTxt, x: 180, y: 75, duration: 300, ease: 'power4' });
                                         that.tweens.add({ targets: scoreTxt, x: 180, y: 110, duration: 300, ease: 'power4' });
 
-                                        that.tweens.add({ targets: accStampBg, x: 270, y: 145, duration: 300, ease: 'power4' });
-                                        that.tweens.add({ targets: accStampLbl, x: 265, y: 160, duration: 300, ease: 'power4' });
-                                        that.tweens.add({ targets: accStampTxt, x: 271, y: 140, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: accStampBg, x: 270, y: 180, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: accStampTxt, x: 271, y: 155, duration: 300, ease: 'power4' });
+
+                                        that.tweens.add({ targets: mutationTxt, x: 271, y: 195, duration: 300, ease: 'power4' });
 
                                         that.tweens.add({ targets: lvlcompTxt, alpha: 0, duration: 400, ease: 'power4' });
                                         that.tweens.add({ targets: rectbg, alpha: 0, duration: 400, ease: 'power4' });
 
 
-
-                                        // Sequenced Molecule Popup
-                                        that.sequencedInfoOverlay = that.add.dom(180, 300).createFromCache('html_sequencedinfo');
-                                        that.sequencedInfoOverlay.setAlpha(0);
-                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-molecule-name").textContent = that.sequencedinfo.name;
-                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-description").innerHTML = that.sequencedinfo.description;
-                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-img").src = that.sequencedinfo.imgurl;
-                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").href = that.sequencedinfo.infourl;
-                                        that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").addEventListener("click", function () {
-                                            if (cdapi.isLoggedIn()) {
-                                                cdapi.logHyperlinkVisited(this.href);
-                                            }
-                                        });
-                                        that.countdownText = that.add.text(310, 570, that.cntTimer, 
-                                            {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF', align: 'center'});
-                                        that.countdownText.setInteractive();
-                                        that.countdownText.addListener("pointerup", function () {
-                                            that.cntTimer = 1;
-                                        });
-
-                                        // Knowledge Panel Popup
-                                        that.countDownTimer(function () {
-                                            that.sequencedInfoOverlay.destroy();
-                                            that.knowledgePanelOverlay = that.add.dom(180, 300).createFromCache("html_knowledgepanel");
-                                            that.knowledgePanelOverlay.setAlpha(0);
-                                            that.knowledgePanelOverlay.getChildByID("knowledgepanel-description").innerHTML = that.knowledgepanel.description;
-                                            that.knowledgePanelOverlay.getChildByID("knowledgepanel-img").src = that.knowledgepanel.imgurl;
-                                            that.fadeInObj(that.knowledgePanelOverlay);
-                                            that.cntTimer = 10;
-                                            that.countdownText.setPosition(310, 400).setText(that.cntTimer).setVisible(true);
-                                            that.countDownTimer(function () {
-
-                                                // Does the quiz after the knowledge panel fades
-                                                that.doQuiz();
-
-                                                
+                                        console.log(data);
+                                        if (!Boolean(data.gameObj.GLOBAL_DISABLE_EDUCATION)) {
+                                            // Sequenced Molecule Popup
+                                            that.sequencedInfoOverlay = that.add.dom(180, 300).createFromCache('html_sequencedinfo');
+                                            that.sequencedInfoOverlay.setAlpha(0);
+                                            that.sequencedInfoOverlay.getChildByID("sequencedinfo-molecule-name").textContent = that.sequencedinfo.name;
+                                            that.sequencedInfoOverlay.getChildByID("sequencedinfo-description").innerHTML = that.sequencedinfo.description;
+                                            that.sequencedInfoOverlay.getChildByID("sequencedinfo-img").src = that.sequencedinfo.imgurl;
+                                            that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").href = that.sequencedinfo.infourl;
+                                            that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").addEventListener("click", function () {
+                                                if (cdapi.isLoggedIn()) {
+                                                    cdapi.logHyperlinkVisited(this.href);
+                                                }
                                             });
-                                        });
+                                            that.countdownText = that.add.text(310, 570, that.cntTimer, 
+                                                {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF', align: 'center'});
+                                            that.countdownText.setInteractive();
+                                            that.countdownText.addListener("pointerup", function () {
+                                                that.cntTimer = 1;
+                                            });
 
-                                        
+                                            // Knowledge Panel Popup
+                                            that.countDownTimer(function () {
+                                                that.sequencedInfoOverlay.destroy();
+                                                that.knowledgePanelOverlay = that.add.dom(180, 300).createFromCache("html_knowledgepanel");
+                                                that.knowledgePanelOverlay.setAlpha(0);
+                                                that.knowledgePanelOverlay.getChildByID("knowledgepanel-description").innerHTML = that.knowledgepanel.description;
+                                                that.knowledgePanelOverlay.getChildByID("knowledgepanel-img").src = that.knowledgepanel.imgurl;
+                                                that.fadeInObj(that.knowledgePanelOverlay);
+                                                that.cntTimer = 10;
+                                                that.countdownText.setPosition(310, 400).setText(that.cntTimer).setVisible(true);
+                                                that.countDownTimer(function () {
+                                                    // Does the quiz after the knowledge panel fades
+                                                    that.doQuiz();
+                                                });
+                                            });
+
+                                            that.fadeInObj(that.sequencedInfoOverlay);
+                                        } else {
+                                            that.presentEndscreenOptions();
+                                        }
 
                                         // Introduces draggable NTs
-                                        that.fadeInObj(that.sequencedInfoOverlay);
                                         that.makeDraggableNTs();
                                     }
                                 });
@@ -200,13 +213,14 @@ class LevelComplete extends Phaser.Scene {
             if (this.lvlType == "dna_replication") {
                 nt.setDisplay("nucleotide");
                 nt.setScale(0.25);
+                nt.showLetter(true);
             } else if (this.lvlType == "codon_transcription") {
                 nt.setDisplay("codon");
                 nt.removeCodonDisplay("codon");
                 nt.setScale(0.55);
+                nt.showLetter(false);
             }
             nt.setVisible(true);
-            nt.showLetter(true);
             nt.setAngle(270);
             nt.setError(cfnt.errorNT);
             nt.setMissing(cfnt.missingNT);

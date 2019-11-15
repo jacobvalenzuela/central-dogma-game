@@ -98,32 +98,33 @@ class LevelStage extends Phaser.Scene {
 
         // UI Colored Boxes
         this.graphics.fillStyle(DARK_BLUE, 1.0);
-        this.graphics.fillRect(15, 50, 75, 45).setDepth(0.5);
+        this.graphics.fillRect(15, 65, 75, 45).setDepth(0.5);
 
         this.graphics.fillStyle(DARK_BLUE, 1.0);
-        this.graphics.fillRect(100, 50, 75, 45).setDepth(0.5);
+        this.graphics.fillRect(100, 65, 75, 45).setDepth(0.5);
 
         this.graphics.fillStyle(ORANGE, 1.0);
-        this.graphics.fillRect(185, 50, 115, 45).setDepth(0.5);
+        this.graphics.fillRect(185, 65, 115, 45).setDepth(0.5);
 
         // UI Labels
         // '\'Open Sans\', sans-serif'
-        this.game.add.text(29, 53, "REMAINING", 
+        this.game.add.text(29, 68, "REMAINING", 
             {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
-        this.game.add.text(116, 53, "ACCURACY", 
+        this.game.add.text(116, 68, "ACCURACY", 
             {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
-        this.game.add.text(195, 53, "SCORE", 
+        this.game.add.text(195, 68, "SCORE", 
             {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
         console.log(this.data);
 
-        this.game.add.text(185, 100, "LV. " + (this.data.lvlNum + 1) + ": " + this.data.level.name, 
+        // Level Name
+        this.game.add.text(16, 45, "LV. " + (this.data.lvlNum + 1) + ": " + this.data.level.name, 
             {fontFamily: 'Teko, sans-serif', fontSize: '14pt', color: '#FFFFFF'}).setDepth(1);
 
         // Pause Button
-        this.pauseBtn = this.game.add.image(330, 72, "pause_btn").setDepth(1).setScale(0.23).setInteractive();
+        this.pauseBtn = this.game.add.image(330, 87, "pause_btn").setDepth(1).setScale(0.23).setInteractive();
         this.pauseBtn.addListener("pointerdown", this.bindFn(function(){
             console.log("pressed");
             this.scene.pause();
@@ -202,15 +203,29 @@ class LevelStage extends Phaser.Scene {
             }
 
             // Label for binding pocket.
+            /*
             this.game.add.text(90, 534, "Binding Pocket",
             {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1).setAngle(19);
+            */
+            this.game.add.text(77, 475, "Binding Pocket",
+            {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1);
 
             // Binding pocket
-            this.bindingPocket = this.game.add.image(HL_ELLIPSE_X, HL_ELLIPSE_Y, "bindingpocket");
-            this.bindingPocket.setAngle(16);
+            this.bindingPocket = this.game.add.image(153, 433, "bindingpocket");
+            //this.bindingPocket.setAngle(16);
             this.bindingPocket.setDepth(1000);
-            this.bindingPocket.setScale(1.1)
+            this.bindingPocket.setScale(0.75)
     
+            this.tweens.add({
+                targets: this.bindingPocket,
+                alpha: 0.5,
+                duration: 1000,
+                ease: 'linear',
+                yoyo: true,
+                repeat: -1
+            })
+
+            /*
             this.tweens.add({
                 targets: this.bindingPocket,
                 scaleX: 1.20,
@@ -230,6 +245,7 @@ class LevelStage extends Phaser.Scene {
                 yoyo: true,
                 repeat: -1
             });
+            */
 
         } else if (this.levelConfig.lvlType == "codon_transcription") {
             if (!optbtns) {

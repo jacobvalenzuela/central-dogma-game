@@ -345,10 +345,10 @@ class Codon {
         this.circleMissObj.setVisible(false);
 
         // Conditional rendering to make the text appear in the right spot on specific shapes
-        if (this.amminoAcid.class == "basic") {
+        if (this.amminoAcid.class == "basic") { // Triangles
             this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
                 {fontFamily: 'Teko, sans-serif', fontSize: '24pt', color: '#FFFFFF'}).setOrigin(0.10, 0.5);
-        } else if (this.amminoAcid.class == "stop") {
+        } else if (this.amminoAcid.class == "stop") { // Stop
             this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
                 {fontFamily: 'Teko, sans-serif', fontSize: '24pt', color: '#FFFFFF'}).setOrigin(0.40, 0.5);
         } else {

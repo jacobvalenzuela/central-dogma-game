@@ -536,7 +536,6 @@ class ListLevels extends Phaser.Scene {
             loop: false,
             callback: function () {
                 that.scene.stop("titlescreen");
-                console.log(level);
                 that.scene.start("levelpre" + level);
             }
         });

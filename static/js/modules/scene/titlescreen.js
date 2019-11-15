@@ -60,6 +60,12 @@ class TitleScreen extends Phaser.Scene {
         this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         this.effectDisableBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
+        this.educationDisableBtn = this.game.add.image(105, 600, "education_disable_btn").setScale(0.5).setAlpha(0).setInteractive().setDepth(1);
+        this.educationDisableBtn.addListener("pointerup", this.bindFn(this.onEducationDisableClick));
+        this.educationDisableBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        this.educationDisableBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        this.educationDisableBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+
         let animDelay = 1;
         if (this.skipToLevelsList) {
             animDelay = 0;
@@ -112,7 +118,8 @@ class TitleScreen extends Phaser.Scene {
         this.playedIntro = true;
         this.fadeIn(this.playBtn);
         this.fadeIn(this.isblogo);
-        this.fadeIn( this.effectDisableBtn)
+        this.fadeIn(this.effectDisableBtn);
+        this.fadeIn(this.educationDisableBtn);
     }
 
     /**
@@ -190,11 +197,16 @@ class TitleScreen extends Phaser.Scene {
         this.fadeOut(this.dogmaLogo);
         this.fadeOut(this.playBtn);
         this.fadeOut(this.effectDisableBtn);
+        this.fadeOut(this.educationDisableBtn);
 
         this.scene.launch("listlevels");
         this.scene.moveAbove("titlescreen", "listlevels");
     }
 
+    /**
+     * Toggles epilepsy setting
+     * @param {Phaser.GameObjects.Image} img - the epilepsy toggle button
+     */
     onEffectDisableClick(img) {
         this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC = !this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC;
 
@@ -205,9 +217,20 @@ class TitleScreen extends Phaser.Scene {
         } else {
             img.setAlpha(1.0);
         }
-        
-
     }
+
+    /**
+     * Toggles education setting
+     * @param {Phaser.GameObjects.Image} img - the education toggle button
+     */
+    onEducationDisableClick(img) {
+        this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION = !this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION;
+        if(this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION) {
+            img.setAlpha(0.66);
+        } else {
+            img.setAlpha(1.0);
+        }
+    }    
 
     /**
      * Make button smaller

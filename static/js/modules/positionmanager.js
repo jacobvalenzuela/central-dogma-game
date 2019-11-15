@@ -482,6 +482,7 @@ class PositionManager {
      * @param {function} [callback=null] - function to be called after done fading
      */
     _fadeOut(nucleotide, callback=null) {
+        console.log("we here");
         let currentAlpha = nucleotide.getObject().alpha;
         let newAlpha = currentAlpha / 1.5;
         if (newAlpha < 0.1) {
@@ -494,6 +495,18 @@ class PositionManager {
             }
         } else {
             nucleotide.getObject().setAlpha(newAlpha);
+
+            // In order to fade out the letters as well, we need to access the 
+            // text in different ways depending on if it's a codon or a nucleotide.
+            if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
+                nucleotide.letterText.setAlpha(newAlpha);
+            } /*else {
+                for (let i = 0; i < nucleotide.nucleotides.length; i++) {
+                    nucleotide.nucleotides[i].setAlpha(newAlpha);
+                }
+            }*/
+
+            
             nucleotide.updateErrorDisplay();
             let that = this;
             this.game.time.addEvent({
@@ -726,7 +739,6 @@ class PositionManager {
         if(!this.level.gameObj.GLOBAL_IS_EPILEPTIC) {
             this.level.camera.flash(300, 255, 30, 30);
             this.level.camera.shake(400, 0.02);
-            //console.log("Is eptileptic: " + this.level.gameObj.GLOBAL_IS_EPILEPTIC + " and we're in here");
         }
 
         let that = this;

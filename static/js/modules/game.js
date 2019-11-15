@@ -17,6 +17,7 @@ class Game {
     constructor (levels) {
         this.GLOBAL_SCORE = 0;
         this.GLOBAL_IS_EPILEPTIC = false;
+        this.GLOBAL_DISABLE_EDUCATION = true;
         this.config = {
             type: Phaser.WEBGL,
             // canvas: document.getElementsByTagName("canvas")[0],
@@ -108,6 +109,7 @@ class Game {
         this.game.load.image("pause_btn", "static/img/pauseBtn.png");
         this.game.load.image("resume_btn", "static/img/resumeBtn.png");
         this.game.load.image("next_btn", "static/img/nextBtn.png");
+        this.game.load.image("education_disable_btn", "static/img/educationDisableBtn.png");
 
         // ADENINE
         this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");
