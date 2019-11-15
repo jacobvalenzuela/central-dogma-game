@@ -214,9 +214,12 @@ class TitleScreen extends Phaser.Scene {
         // means the button should be faded.
         if(this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC) {
             img.setAlpha(0.66);
+            this.displayAlert("Screen shake/flash disabled.");
         } else {
             img.setAlpha(1.0);
+            this.displayAlert("Screen shake/flash enabled.");
         }
+        
     }
 
     /**
@@ -227,8 +230,10 @@ class TitleScreen extends Phaser.Scene {
         this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION = !this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION;
         if(this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION) {
             img.setAlpha(0.66);
+            this.displayAlert("Education features disabled.");
         } else {
             img.setAlpha(1.0);
+            this.displayAlert("Education features enabled.");
         }
     }    
 
@@ -290,7 +295,31 @@ class TitleScreen extends Phaser.Scene {
             });
             allFloaties.push(myFloaty);
         }
-    }    
+    }
+    
+    displayAlert(text) {
+        let alert = this.game.add.text(50, 50, text,
+        {fontFamily: 'Teko', fontSize: '20pt', color: '#000000'}).setDepth(1).setAlpha(0);
+        this.tweens.add({
+            targets: alert,
+            alpha: 1,
+            duration: 200,
+            ease: 'Linear'
+        });
+        let that = this;
+        that.time.addEvent({
+            delay: 1000,
+            loop: false,
+            callback: function() {
+                that.tweens.add({
+                    targets: alert,
+                    alpha: 0,
+                    duration: 200,
+                    ease: 'Linear'
+                });
+            }
+        });
+    }
 }
 
 export default TitleScreen;
