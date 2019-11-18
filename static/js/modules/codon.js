@@ -316,9 +316,9 @@ class Codon {
         this.containerObj.setAngle(90);
         this.containerObj.setSize(width, height + this.connectLineObj.height + this.amminoAcidObj.height);
 
-        let rectTop = this.level.add.rectangle(0, -3.333, 10, 3.333, this.nucleotides[0].getColor());
-        let rectMid = this.level.add.rectangle(0, 0, 10, 3.333, this.nucleotides[1].getColor());
-        let rectBot = this.level.add.rectangle(0, 3.333, 10, 3.333, this.nucleotides[2].getColor());
+        let rectTop = this.level.add.rectangle(-3.333, 0, 3.333, 10, this.nucleotides[2].getColor());
+        let rectMid = this.level.add.rectangle(0, 0, 3.333, 10, this.nucleotides[1].getColor());
+        let rectBot = this.level.add.rectangle(3.333, 0, 3.333, 10, this.nucleotides[0].getColor());
         this.containerObjRect = this.level.add.container(0, 0, [rectTop, rectMid, rectBot]);
         this.circleErrorObj = this.level.add.circle(0, 0, 6, 0xfc0e33);
         this.circleObj = this.level.add.circle(0, 0, 5, this.getAmminoColor());

@@ -199,6 +199,10 @@ class TitleScreen extends Phaser.Scene {
         this.fadeOut(this.effectDisableBtn);
         this.fadeOut(this.educationDisableBtn);
 
+        this.effectDisableBtn.setInteractive(false);
+        this.educationDisableBtn.setInteractive(false);
+
+
         this.scene.launch("listlevels");
         this.scene.moveAbove("titlescreen", "listlevels");
     }

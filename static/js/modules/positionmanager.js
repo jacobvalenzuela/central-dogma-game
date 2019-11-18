@@ -40,13 +40,14 @@ class PositionManager {
         this.initLevelNucleotides();
         this.initCompLevelNucleotides();
 
+        // Top, incoming, input row/line
         this.level.graphics.lineStyle(1, 0x6c757d, 0.6);
         if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.inputRowPath = new Phaser.Curves.Path(0, 140);
             this.inputRowPath.lineTo(175, 140);
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.inputRowPath = new Phaser.Curves.Path(740, 140);
-            this.inputRowPath.lineTo(70, 140);
+            this.inputRowPath.lineTo(150, 140);
         }
         this.inputRowPath.draw(this.level.graphics);
         this.initRectPathPts = this.inputRowPath.getSpacedPoints(26 * this.pathPointsFactor);
@@ -59,9 +60,10 @@ class PositionManager {
         if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.inputVertPath = new Phaser.Curves.Path(182, 147);
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
+        // Vertical path that codons follow
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
-            this.inputVertPath = new Phaser.Curves.Path(55, 140);
-            this.inputVertPath.lineTo(55, 740);
+            this.inputVertPath = new Phaser.Curves.Path(150, 140);
+            this.inputVertPath.lineTo(150, 785);
         }
         // this.inputVertPath.draw(this.level.graphics);
         let numVertPathPts = VERT_PATH_POINTS_FACTOR * this.pathPointsFactor;
@@ -73,10 +75,11 @@ class PositionManager {
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
             this.inputVertPathDispl = new Phaser.Curves.Path(175, 140);
             this.inputVertPathDispl.cubicBezierTo(-20, 640, 320, 320, -80, 440);
+        // Actual vertical line drawn
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
-            this.inputVertPathDispl = new Phaser.Curves.Path(70, 140);
-            this.inputVertPathDispl.cubicBezierTo(40, 600, 20, 160, 55, 440);
+            this.inputVertPathDispl = new Phaser.Curves.Path(150, 140); // start
+            this.inputVertPathDispl.cubicBezierTo(150, 785, 130, 160, 165, 440); // end
         }
         this.inputVertPathDispl.draw(this.level.graphics);
 
@@ -643,7 +646,15 @@ class PositionManager {
             if (removed) {
                 this.hasFrozenHead = false;
                 this.levelNucleotides[i] = null;
-                this._animatePosition(removed, removed.getObject().x - 40, removed.getObject().y + 130);
+                
+                if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
+                    // In codon levels, we want the codon to animate downwards into exit area.
+                    this._animatePosition(removed, removed.getObject().x, removed.getObject().y + 130);
+                } else {
+                    // In nucleotide levels, we want the nucleotide to animate left downward.
+                    this._animatePosition(removed, removed.getObject().x - 40, removed.getObject().y + 130);
+                }
+               
                 this._fadeOut(removed, function () {
                     removed.destroy();
                 });

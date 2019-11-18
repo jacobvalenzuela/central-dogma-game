@@ -51,9 +51,10 @@ class ListLevels extends Phaser.Scene {
 
 
         // Level Selection UI/Functionality
-        this.leftLevelBtn = this.add.image(60, 650, "left_arrow_btn").setScale(0.25).setInteractive();
-        this.rightLevelBtn = this.add.image(300, 650, "right_arrow_btn").setScale(0.25).setInteractive();
-        this.goBtn = this.add.image(180, 650, "go_btn").setScale(0.40).setInteractive();
+        this.leftLevelBtn = this.add.image(60, 620, "left_arrow_btn").setScale(0.25).setInteractive();
+        this.rightLevelBtn = this.add.image(300, 620, "right_arrow_btn").setScale(0.25).setInteractive();
+        this.goBtn = this.add.image(180, 620, "go_btn").setScale(0.40).setInteractive();
+        this.backBtn = this.add.image(50, 690, "back_btn").setScale(0.30).setInteractive();
 
         this.leftLevelBtn.on("pointerdown", () => {
             this.browseLeft();
@@ -67,6 +68,10 @@ class ListLevels extends Phaser.Scene {
             if (this.levels[this.curLevel].unlocked == true) {
                this.startPrelevel(this.curLevel); 
             }
+        })
+
+        this.backBtn.on("pointerdown", () => {
+            this.backButtondown();
         })
 
         // Level Selection Descriptors
@@ -568,6 +573,19 @@ class ListLevels extends Phaser.Scene {
         }
         img.setScale(0.20);
     }
+
+    backButtondown() {
+        this.camera.fadeOut(400);
+        let that = this;        
+        this.time.addEvent({
+            delay: 400,
+            loop: false,
+            callback: function () {
+                that.scene.stop("listlevels");
+                that.scene.launch("titlescreen");
+            }
+        });
+    }    
 
     /**
      * Changes the context of the function `this` keyword to the class. Moves the `this` reference to the first parameter instead.
