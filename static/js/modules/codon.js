@@ -248,11 +248,7 @@ class Codon {
             let nt = this.nucleotides[i]; // Current nucleotide
             let cdnt; // Current codon
             let ntShortName = nt.getShortName();
-            if (ntShortName == "uracil") {
-                // Not scientifically accurate but necessary to reuse graphics
-                ntShortName = "thymine"; 
-            }
-
+            
             // Setting up correct animation
             cdnt = this.level.add.sprite(0, 0, "nt_" + ntShortName + "_basic_animated");
             this.level.anims.create({
@@ -320,9 +316,9 @@ class Codon {
         this.containerObj.setAngle(90);
         this.containerObj.setSize(width, height + this.connectLineObj.height + this.amminoAcidObj.height);
 
-        let rectTop = this.level.add.rectangle(0, -3.333, 10, 3.333, this.nucleotides[0].getColor());
-        let rectMid = this.level.add.rectangle(0, 0, 10, 3.333, this.nucleotides[1].getColor());
-        let rectBot = this.level.add.rectangle(0, 3.333, 10, 3.333, this.nucleotides[2].getColor());
+        let rectTop = this.level.add.rectangle(-3.333, 0, 3.333, 10, this.nucleotides[2].getColor());
+        let rectMid = this.level.add.rectangle(0, 0, 3.333, 10, this.nucleotides[1].getColor());
+        let rectBot = this.level.add.rectangle(3.333, 0, 3.333, 10, this.nucleotides[0].getColor());
         this.containerObjRect = this.level.add.container(0, 0, [rectTop, rectMid, rectBot]);
         this.circleErrorObj = this.level.add.circle(0, 0, 6, 0xfc0e33);
         this.circleObj = this.level.add.circle(0, 0, 5, this.getAmminoColor());
@@ -349,10 +345,10 @@ class Codon {
         this.circleMissObj.setVisible(false);
 
         // Conditional rendering to make the text appear in the right spot on specific shapes
-        if (this.amminoAcid.class == "basic") {
+        if (this.amminoAcid.class == "basic") { // Triangles
             this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
                 {fontFamily: 'Teko, sans-serif', fontSize: '24pt', color: '#FFFFFF'}).setOrigin(0.10, 0.5);
-        } else if (this.amminoAcid.class == "stop") {
+        } else if (this.amminoAcid.class == "stop") { // Stop
             this.amminoAcidAbbrText = this.level.add.text(0, 0, this.amminoAcidAbbr, 
                 {fontFamily: 'Teko, sans-serif', fontSize: '24pt', color: '#FFFFFF'}).setOrigin(0.40, 0.5);
         } else {

@@ -34,19 +34,19 @@ class PositionManager {
         this.levelNucleotides = [];
         this.compLevelNucleotides = [];
         this.selectedNucleotides = [];
-
         this.hasFrozenHead = false;
 
         this.initLevelNucleotides();
         this.initCompLevelNucleotides();
 
+        // Top, incoming, input row/line
         this.level.graphics.lineStyle(1, 0x6c757d, 0.6);
         if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.inputRowPath = new Phaser.Curves.Path(0, 140);
             this.inputRowPath.lineTo(175, 140);
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.inputRowPath = new Phaser.Curves.Path(740, 140);
-            this.inputRowPath.lineTo(70, 140);
+            this.inputRowPath.lineTo(150, 140);
         }
         this.inputRowPath.draw(this.level.graphics);
         this.initRectPathPts = this.inputRowPath.getSpacedPoints(26 * this.pathPointsFactor);
@@ -59,9 +59,10 @@ class PositionManager {
         if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.inputVertPath = new Phaser.Curves.Path(182, 147);
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
+        // Vertical path that codons follow
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
-            this.inputVertPath = new Phaser.Curves.Path(55, 140);
-            this.inputVertPath.lineTo(55, 740);
+            this.inputVertPath = new Phaser.Curves.Path(150, 140);
+            this.inputVertPath.lineTo(150, 785);
         }
         // this.inputVertPath.draw(this.level.graphics);
         let numVertPathPts = VERT_PATH_POINTS_FACTOR * this.pathPointsFactor;
@@ -73,10 +74,11 @@ class PositionManager {
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
             this.inputVertPathDispl = new Phaser.Curves.Path(175, 140);
             this.inputVertPathDispl.cubicBezierTo(-20, 640, 320, 320, -80, 440);
+        // Actual vertical line drawn
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
-            this.inputVertPathDispl = new Phaser.Curves.Path(70, 140);
-            this.inputVertPathDispl.cubicBezierTo(40, 600, 20, 160, 55, 440);
+            this.inputVertPathDispl = new Phaser.Curves.Path(150, 140); // start
+            this.inputVertPathDispl.cubicBezierTo(150, 785, 130, 160, 165, 440); // end
         }
         this.inputVertPathDispl.draw(this.level.graphics);
 
@@ -150,7 +152,7 @@ class PositionManager {
         // Fills up the rest of the level sequence.
         for (let i = 0; i < this.level.nucleotides.length; i++) {
             // How much spacing to add between each codon.
-            for (let j = 0; j < 50; j++) {
+            for (let j = 0; j < 51; j++) {
                 this.levelNucleotides.push(null);
             }
             this.levelNucleotides.push(this.level.nucleotides[i]);
@@ -482,6 +484,7 @@ class PositionManager {
      * @param {function} [callback=null] - function to be called after done fading
      */
     _fadeOut(nucleotide, callback=null) {
+        console.log("we here");
         let currentAlpha = nucleotide.getObject().alpha;
         let newAlpha = currentAlpha / 1.5;
         if (newAlpha < 0.1) {
@@ -494,6 +497,18 @@ class PositionManager {
             }
         } else {
             nucleotide.getObject().setAlpha(newAlpha);
+
+            // In order to fade out the letters as well, we need to access the 
+            // text in different ways depending on if it's a codon or a nucleotide.
+            if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
+                nucleotide.letterText.setAlpha(newAlpha);
+            } /*else {
+                for (let i = 0; i < nucleotide.nucleotides.length; i++) {
+                    nucleotide.nucleotides[i].setAlpha(newAlpha);
+                }
+            }*/
+
+            
             nucleotide.updateErrorDisplay();
             let that = this;
             this.game.time.addEvent({
@@ -510,32 +525,11 @@ class PositionManager {
      * Increments the nucleotides position by one
      */
     next() {
-        // Right now the problem is that I'm trying to find a way to instantly delete the nucleotide once it leaves the binding pocket.
-        // I want to remove it instantly so that it makes room for the next nucleotide.
 
-        // Check if the first nucleotide in the line is past the binding pocket, and if so delete it.
-        // Only applies to dna_replicaiton levels because codons "correct" is handled differently.
-        /*
-        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
-            let ellipse = this.level.ntHighlightEllipse;
-            let front = this.getHeadNucleotide();
-            let correctAreaOffset = 75; // Number of pixels above bottom right corner of binding pocket.
-            if (front && front.getObject().getTopRight().y > ellipse.getBottomRight().y - correctAreaOffset) {
-                this.removeHeadNucleotide();
-                this.processIncorrectNucleotide(front);
-            }
-        }*/
-
-        // Checks the very front of the nucleotides (very end of path)
-        // and if we have an object, delete it and handle incorrect
-        // match logic.
-
-        // TODO: Seperate out incorrect match logic to its own function.
         let head = this.levelNucleotides[0];
         if (head) {
-            console.log('removeHeadNucleotide() - at head');
             this.processIncorrectNucleotide(head);
-            this.removeHeadNucleotide();
+            //this.removeHeadNucleotide();
         }
         // levelNucleotides is a collection of all nucleotides and null objects along the line.
         // It shortens the array each tick by 1.
@@ -557,7 +551,9 @@ class PositionManager {
                    !this.hasFrozenHead &&
                    this.getHeadNucleotide() && this.getHeadNucleotide().getObject().y > 490) {
             this.hasFrozenHead = true;
-            this.tempPauseNTMoveTime(1000);
+
+            // Wait time for codon level
+            this.tempPauseNTMoveTime(2000);
         }
     }
 
@@ -569,6 +565,10 @@ class PositionManager {
     processIncorrectNucleotide(missedNucleotide) {
         this.level.scorekeeping.incrementIncorrectSequences();
         this.audioplayer.playIncorrectSound();
+
+
+
+        // Find that correct option and process it to output stack
         let cloned = this.getValidMatchNT(missedNucleotide);
         if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             cloned.setDisplay("nucleotide");
@@ -582,6 +582,10 @@ class PositionManager {
         cloned.setMissing(true);
         this.addToDNAOutput(cloned);
         this.level.shuffleNTBtnAngle();
+
+        this.removeHeadNucleotide();
+
+         // Regen buttons (one wuill have correct option)
         if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.level.shuffleNTBtnOpts();
         }
@@ -593,11 +597,23 @@ class PositionManager {
      * @returns {Nucleotide} matching nucleotide
      */
     getValidMatchNT(nucleotide) {
+        console.log(nucleotide);
         let btns = this.level.buttons;
+        console.log(btns);
         let cloned = null;
         for (let i = 0; i < btns.length; i++) {
             let btn = btns[i];
+            // cloned is null because it's not being matched here
+            // (never a validMatchWith(btn) so cloned stays null)
+            // And in-game, this occurs when you miss a codon
+            // AFTER doing nothing and missing it naturally.
+            
+            // we know that the nucleotide passed all the way into
+            // here is the "head" nucleotide we just missed.
+            // (head is passed to processIncorrectNucleotide() to getValidMatchNT())
+            
             if (nucleotide.validMatchWith(btn)) {
+                console.log("found a match");
                 cloned = btn.clone();
             }
         }
@@ -614,7 +630,15 @@ class PositionManager {
             if (removed) {
                 this.hasFrozenHead = false;
                 this.levelNucleotides[i] = null;
-                this._animatePosition(removed, removed.getObject().x - 40, removed.getObject().y + 130);
+                
+                if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
+                    // In codon levels, we want the codon to animate downwards into exit area.
+                    this._animatePosition(removed, removed.getObject().x, removed.getObject().y + 130);
+                } else {
+                    // In nucleotide levels, we want the nucleotide to animate left downward.
+                    this._animatePosition(removed, removed.getObject().x - 40, removed.getObject().y + 130);
+                }
+               
                 this._fadeOut(removed, function () {
                     removed.destroy();
                 });
@@ -667,13 +691,6 @@ class PositionManager {
             }
         }
         this.updateNTMoveTimer(this.defaultTimerDelay / 2);
-        // Matching animation?
-        // So there is one problem here: Remove is called with a delay
-        // What does that mean ? When removeHeadNucleotide() is called,
-        // the state of the nucleotide queue can be already different
-        // than what it was when we called the _animatePosition() function.
-        // In that case, the "head removal" is going to have removed
-        // the head nucleotide first, we need to make sure, the order is correct
         let that = this;
         this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
             that._animatePosition(nucleotide, point.x, point.y);
@@ -710,7 +727,6 @@ class PositionManager {
         if(!this.level.gameObj.GLOBAL_IS_EPILEPTIC) {
             this.level.camera.flash(300, 255, 30, 30);
             this.level.camera.shake(400, 0.02);
-            //console.log("Is eptileptic: " + this.level.gameObj.GLOBAL_IS_EPILEPTIC + " and we're in here");
         }
 
         let that = this;

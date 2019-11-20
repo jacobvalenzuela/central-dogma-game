@@ -62,9 +62,9 @@ class LevelStage extends Phaser.Scene {
             3: [310, 640]
         };
         this.btnLocationCodons = {
-            0: [310, 370],
-            1: [310, 490],
-            2: [310, 610]
+            0: [310, 410],
+            1: [310, 540],
+            2: [310, 650]
         };
         this.ntBtnsEnabled = true;
 
@@ -98,47 +98,41 @@ class LevelStage extends Phaser.Scene {
 
         // UI Colored Boxes
         this.graphics.fillStyle(DARK_BLUE, 1.0);
-        this.graphics.fillRect(15, 50, 75, 45).setDepth(0.5);
+        this.graphics.fillRect(15, 65, 75, 45).setDepth(0.5);
 
         this.graphics.fillStyle(DARK_BLUE, 1.0);
-        this.graphics.fillRect(100, 50, 75, 45).setDepth(0.5);
+        this.graphics.fillRect(100, 65, 75, 45).setDepth(0.5);
 
         this.graphics.fillStyle(ORANGE, 1.0);
-        this.graphics.fillRect(185, 50, 160, 45).setDepth(0.5);
+        this.graphics.fillRect(185, 65, 115, 45).setDepth(0.5);
 
         // UI Labels
         // '\'Open Sans\', sans-serif'
-        this.game.add.text(29, 53, "REMAINING", 
+        this.game.add.text(29, 68, "REMAINING", 
             {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
-        this.game.add.text(116, 53, "ACCURACY", 
+        this.game.add.text(116, 68, "ACCURACY", 
             {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
-        this.game.add.text(195, 62, "SCORE:", 
-            {fontFamily: 'Teko, sans-serif', fontSize: '20pt', color: '#FFFFFF'}).setDepth(1);
+        this.game.add.text(195, 68, "SCORE", 
+            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
-        // What is the point of these markers?
-        /*
-        if (this.levelConfig.lvlType == "dna_replication") {
-            this.game.add.text(4, 105, "5'", 
-                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
+        console.log(this.data);
+
+        // Level Name
+        this.game.add.text(16, 45, "LV. " + (this.data.lvlNum + 1) + ": " + this.data.level.name, 
+            {fontFamily: 'Teko, sans-serif', fontSize: '14pt', color: '#FFFFFF'}).setDepth(1);
+
+        // Pause Button
+        this.pauseBtn = this.game.add.image(330, 87, "pause_btn").setDepth(1).setScale(0.23).setInteractive();
+        this.pauseBtn.addListener("pointerdown", this.bindFn(function(){
+            console.log("pressed");
+            this.scene.pause();
             
-            this.game.add.text(345, 105, "3'", 
-                {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
-        }
+            this.scene.launch('pauseScreen', this);
+        }, this));
 
-        this.game.add.text(4, 150, "3'", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
 
-        this.game.add.text(4, 530, "5'", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
-
-        this.game.add.text(257, 497, "5'", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
-
-        this.game.add.text(340, 690, "3'", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '8pt', color: '#000'});
-        */
 
         let ntParticleConfig = {
             x: 150,
@@ -197,10 +191,12 @@ class LevelStage extends Phaser.Scene {
         this.ntHighlightEllipse = this.game.add.ellipse(HL_ELLIPSE_X, HL_ELLIPSE_Y,
                                                         HL_ELLIPSE_WIDTH, HL_ELLIPSE_HEIGHT,
                                                         HL_ELLIPSE_COLOR, 1);
-        this.ntHighlightEllipse.setAlpha(1);
+        this.ntHighlightEllipse.setAlpha(0);
         this.ntHighlightEllipse.setVisible(true);
         this.ntHighlightEllipse.setAngle(16);
         this.ntHighlightEllipse.setDepth(1000);
+
+        // WW: Display the highlight ellipse
         this.tweens.add({
             targets: this.ntHighlightEllipse,
             scale: 1.05,
@@ -224,9 +220,49 @@ class LevelStage extends Phaser.Scene {
             }
 
             // Label for binding pocket.
+            /*
             this.game.add.text(90, 534, "Binding Pocket",
             {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1).setAngle(19);
+            */
+            this.game.add.text(77, 475, "Binding Pocket",
+            {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1);
 
+            // Binding pocket
+            this.bindingPocket = this.game.add.image(153, 433, "bindingpocket");
+            //this.bindingPocket.setAngle(16);
+            this.bindingPocket.setDepth(1000);
+            this.bindingPocket.setScale(0.75)
+    
+            this.tweens.add({
+                targets: this.bindingPocket,
+                alpha: 0.5,
+                duration: 1000,
+                ease: 'linear',
+                yoyo: true,
+                repeat: -1
+            })
+
+            /*
+            this.tweens.add({
+                targets: this.bindingPocket,
+                scaleX: 1.20,
+                duration: 2460,
+                alpha: 1,
+                ease: 'Sine',
+                yoyo: true,
+                repeat: -1
+            });
+    
+            this.tweens.add({
+                targets: this.bindingPocket,
+                scaleY: 1.20,
+                duration: 1064,
+                alpha: 1,
+                ease: 'Sine',
+                yoyo: true,
+                repeat: -1
+            });
+            */
 
         } else if (this.levelConfig.lvlType == "codon_transcription") {
             if (!optbtns) {
@@ -238,20 +274,41 @@ class LevelStage extends Phaser.Scene {
             this.ntHighlightEllipse.setVisible(false);
 
             // Top to bottom each binding site, equally spaced by 120px (if scale is 1.2x)
+            this.bindingSiteObjects = [];
+            this.bindingSiteObjects.push(this.game.add.image(150, 363, "bindingsite").setDepth(3000).setScale(1.3).setAlpha(0.8));
+            this.bindingSiteObjects.push(this.game.add.text(85, 410, "Accepter Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1).setAngle(270));
+            
+            this.bindingSiteObjects.push(this.game.add.image(150, 494, "bindingsite").setDepth(0.5).setScale(1.3).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.text(85, 537, "Peptidyl Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(0.5).setAlpha(1).setAngle(270));
+        
+            this.bindingSiteObjects.push(this.game.add.image(150, 625, "bindingsite").setDepth(3000).setScale(1.3).setAlpha(0.8));
+            this.bindingSiteObjects.push(this.game.add.text(85, 654, "Exit Site",
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1).setAngle(270));
 
-            /*
-            this.game.add.image(60, 373, "bindingsite").setDepth(1).setScale(1.2).setAlpha(0.25);
-            this.game.add.text(120, 335, "A",
-            {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
-
-            this.game.add.image(60, 493, "bindingsite").setDepth(1).setScale(1.2).setAlpha(0.25);
-            this.game.add.text(120, 455, "P",
-            {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
-
-            this.game.add.image(60, 613, "bindingsite").setDepth(1).setScale(1.2).setAlpha(0.25);
-            this.game.add.text(120, 575, "E",
-            {fontFamily: 'Teko', fontSize: '60pt', color: '#FFFFFF'}).setDepth(2).setAlpha(0.75);
-            */
+            for (let i = 0; i < this.bindingSiteObjects.length; i++) {
+                // indices:
+                // 0, 1 = top binding site
+                // 2, 3 = middle binding site
+                // 4, 5 = bottom binding site
+                // "initialMovement" used to alternate site movement.
+                let initialMovement = '';
+                if (i == 2 || i == 3) {
+                    initialMovement = '-=5';
+                } else {
+                    initialMovement = '+=5';
+                }
+                
+                this.tweens.add({
+                    targets: this.bindingSiteObjects[i],
+                    duration: 2000,
+                    x: initialMovement,
+                    ease: 'Quad.easeInOut',
+                    yoyo: true,
+                    repeat: -1
+                });
+            }
         }
 
         // Creates nucleotide buttons
@@ -375,7 +432,8 @@ class LevelStage extends Phaser.Scene {
         let head = this.positionManager.getHeadNucleotide(true);
         let codonOptions = ["U", "C", "A", "G"];
         let actualOptions = [head.matches];
-        let maxOtherOptions = 2;
+        console.log(actualOptions);
+        let maxOtherOptions;
         
         // This is a bit weird and undocumented, but there is an optional
         // variable that can be included in level config called 'maxButtons'.
@@ -383,6 +441,8 @@ class LevelStage extends Phaser.Scene {
         // besides the correct button choice.
         if (typeof this.levelConfig.maxButtons !== 'undefined') {
             maxOtherOptions = this.levelConfig.maxButtons;
+        } else {
+            maxOtherOptions = 2; // 2 by default
         }
         for (let i = 0; i < maxOtherOptions; i++) {
             let nt1 = this.getRandomInArray(codonOptions);
@@ -391,6 +451,7 @@ class LevelStage extends Phaser.Scene {
             let option = nt1 + nt2 + nt3;
             actualOptions.push(option);
         }
+        console.log(actualOptions);
         return this.shuffleArray(actualOptions);
     }
 
@@ -518,12 +579,12 @@ class LevelStage extends Phaser.Scene {
 
         // Otherwise we're actually dragging and want to submit answer.
         } else if (this.positionManager.ntTouchingBindingPocket()) {
-            console.log('onDragNTBtnEnd(), ntTouchingBindingPocket');
+            //console.log('onDragNTBtnEnd(), ntTouchingBindingPocket');
             let angle = image.angle;
             let clickedNT = image.getData("nucleotide");
             this.processNucleotideSubmission(clickedNT, angle);
 
-            if (this.levelConfig.lvlType == "dna_replication") {
+            if (this.levelConfig.lvlType == "dna_replication" && !this.rotateNT) {
                 // Default angle nucleotide respawns with in a non-rotational level.
                 image.getData("nucleotide").setAngle(180);
             }
@@ -560,7 +621,7 @@ class LevelStage extends Phaser.Scene {
      * @param {int} angle - Optional angle for rotation levels
      */
     processNucleotideSubmission(submission, angle = 0) {
-        console.log('processNucleotideSubmission()');
+        //console.log('processNucleotideSubmission()');
         let headNT = this.positionManager.getHeadNucleotide();
         let cloned = submission.clone();
         if (this.levelConfig.lvlType == "dna_replication") {

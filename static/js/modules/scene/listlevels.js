@@ -51,9 +51,10 @@ class ListLevels extends Phaser.Scene {
 
 
         // Level Selection UI/Functionality
-        this.leftLevelBtn = this.add.image(60, 650, "left_arrow_btn").setScale(0.25).setInteractive();
-        this.rightLevelBtn = this.add.image(300, 650, "right_arrow_btn").setScale(0.25).setInteractive();
-        this.goBtn = this.add.image(180, 650, "go_btn").setScale(0.40).setInteractive();
+        this.leftLevelBtn = this.add.image(60, 620, "left_arrow_btn").setScale(0.25).setInteractive();
+        this.rightLevelBtn = this.add.image(300, 620, "right_arrow_btn").setScale(0.25).setInteractive();
+        this.goBtn = this.add.image(180, 620, "go_btn").setScale(0.40).setInteractive();
+        this.backBtn = this.add.image(50, 690, "back_btn").setScale(0.30).setInteractive();
 
         this.leftLevelBtn.on("pointerdown", () => {
             this.browseLeft();
@@ -69,6 +70,9 @@ class ListLevels extends Phaser.Scene {
             }
         })
 
+        this.backBtn.on("pointerdown", () => {
+            this.backButtondown();
+        })
 
         // Level Selection Descriptors
         this.levelBrowseTitle = this.add.text(20, 160, "", 
@@ -570,6 +574,19 @@ class ListLevels extends Phaser.Scene {
         img.setScale(0.20);
     }
 
+    backButtondown() {
+        this.camera.fadeOut(400);
+        let that = this;        
+        this.time.addEvent({
+            delay: 400,
+            loop: false,
+            callback: function () {
+                that.scene.stop("listlevels");
+                that.scene.launch("titlescreen");
+            }
+        });
+    }    
+
     /**
      * Changes the context of the function `this` keyword to the class. Moves the `this` reference to the first parameter instead.
      * @param {function} fn - The function used to bind to the class
@@ -618,6 +635,7 @@ class ListLevels extends Phaser.Scene {
             this.curLevel++;
             this.displayLevel(this.curLevel);
         }
+        this.updateGoButton();
     }
 
     /**
@@ -627,6 +645,19 @@ class ListLevels extends Phaser.Scene {
         if (this.curLevel > 0) {
             this.curLevel--;
             this.displayLevel(this.curLevel);
+        }
+        this.updateGoButton();
+    }
+
+    /**
+     * Changes the appearence of the go button depending on the current level.
+     * @param {Int} - Given the current level, if locked, the go button will be transparent.
+     */
+    updateGoButton() {
+        if (this.levels[this.curLevel].unlocked) {
+            this.goBtn.setAlpha(1.0);
+        } else {
+            this.goBtn.setAlpha(0.5);
         }
     }
 

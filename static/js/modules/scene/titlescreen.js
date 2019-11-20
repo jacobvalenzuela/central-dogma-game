@@ -46,19 +46,29 @@ class TitleScreen extends Phaser.Scene {
         let dogmaLogo = this.game.add.sprite(185, 280, "logo_dogma_intro", 0).setScale(1.4);
         this.dogmaLogo = dogmaLogo;
 
+        // Notifications
+        this.alert = this.game.add.text(50, 50, "",
+            {fontFamily: 'Teko', fontSize: '20pt', color: '#000000'}).setDepth(1).setAlpha(0);
+
         // Menu Buttons
-        this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.5).setAlpha(0).setInteractive().setDepth(1);
+        this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.5).setAlpha(0).setDepth(1);
         this.playBtn.setVisible(false);
         this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClick));
         this.playBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         this.playBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         this.playBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
-        this.effectDisableBtn = this.game.add.image(260, 600, "effect_disable_btn").setScale(0.5).setAlpha(0).setInteractive().setDepth(1);
-        // this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onEffectDisableClick));
+        this.effectDisableBtn = this.game.add.image(260, 600, "effect_disable_btn").setScale(0.5).setAlpha(0).setDepth(1);
+        this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onEffectDisableClick));
         this.effectDisableBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         this.effectDisableBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+
+        this.educationDisableBtn = this.game.add.image(105, 600, "education_disable_btn").setScale(0.5).setAlpha(0).setDepth(1);
+        this.educationDisableBtn.addListener("pointerup", this.bindFn(this.onEducationDisableClick));
+        this.educationDisableBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        this.educationDisableBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        this.educationDisableBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
         let animDelay = 1;
         if (this.skipToLevelsList) {
@@ -76,13 +86,13 @@ class TitleScreen extends Phaser.Scene {
                     that.game.anims.create({
                         key: "logo_dogma_anim",
                         frames: that.game.anims.generateFrameNumbers("logo_dogma_intro", null),
-                        frameRate: 30,
+                        frameRate: 60,
                         repeat: 0,
                         delay: 500  * animDelay
                     });
                     dogmaLogo.anims.play("logo_dogma_anim");
                     that.introWaitTimer = that.game.time.addEvent({
-                        delay: 3600  * animDelay,
+                        delay: 2000  * animDelay,
                         callback: function () {
                             that.displayUI();
                         },
@@ -96,6 +106,11 @@ class TitleScreen extends Phaser.Scene {
         this.backgroundFloaties = this.spawnBackgroundFloaties(25);
     }
 
+    update() {
+        // Allows background floaties to wrap
+        this.physics.world.wrap(this.floaty, 50);
+    }
+    
     /**
      * Display the UI (button) so game may be started faster
      */
@@ -107,7 +122,11 @@ class TitleScreen extends Phaser.Scene {
         this.playedIntro = true;
         this.fadeIn(this.playBtn);
         this.fadeIn(this.isblogo);
-        this.fadeIn( this.effectDisableBtn)
+        this.fadeIn(this.effectDisableBtn);
+        this.fadeIn(this.educationDisableBtn);
+        this.playBtn.setInteractive();
+        this.effectDisableBtn.setInteractive();
+        this.educationDisableBtn.setInteractive();
     }
 
     /**
@@ -159,7 +178,7 @@ class TitleScreen extends Phaser.Scene {
             image.setAlpha(newAlpha);
             let that = this;
             this.game.time.addEvent({
-                delay: 40,
+                delay: 20,
                 callback: function () {
                     that.fadeOut(image, callback);
                 },
@@ -185,24 +204,49 @@ class TitleScreen extends Phaser.Scene {
         this.fadeOut(this.dogmaLogo);
         this.fadeOut(this.playBtn);
         this.fadeOut(this.effectDisableBtn);
+        this.fadeOut(this.educationDisableBtn);
+
+        this.effectDisableBtn.setInteractive(false);
+        this.educationDisableBtn.setInteractive(false);
+
 
         this.scene.launch("listlevels");
         this.scene.moveAbove("titlescreen", "listlevels");
     }
 
+    /**
+     * Toggles epilepsy setting
+     * @param {Phaser.GameObjects.Image} img - the epilepsy toggle button
+     */
     onEffectDisableClick(img) {
-        
-        this.data.gameObj.GLOBAL_IS_EPILEPTIC = !this.data.gameObj.GLOBAL_IS_EPILEPTIC;
+        this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC = !this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC;
 
         // If user is epileptic, they want to disable the screen effects
         // means the button should be faded.
-        if(this.data.gameObj.GLOBAL_IS_EPILEPTIC) {
+        if(this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC) {
             img.setAlpha(0.66);
+            this.displayAlert("Screen shake/flash disabled.");
         } else {
             img.setAlpha(1.0);
+            this.displayAlert("Screen shake/flash enabled.");
         }
-
+        
     }
+
+    /**
+     * Toggles education setting
+     * @param {Phaser.GameObjects.Image} img - the education toggle button
+     */
+    onEducationDisableClick(img) {
+        this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION = !this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION;
+        if(this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION) {
+            img.setAlpha(0.66);
+            this.displayAlert("Education features disabled.");
+        } else {
+            img.setAlpha(1.0);
+            this.displayAlert("Education features enabled.");
+        }
+    }    
 
     /**
      * Make button smaller
@@ -262,7 +306,30 @@ class TitleScreen extends Phaser.Scene {
             });
             allFloaties.push(myFloaty);
         }
-    }    
+    }
+    
+    displayAlert(text) {
+        this.alert.setText(text);
+        this.tweens.add({
+            targets: this.alert,
+            alpha: 1,
+            duration: 200,
+            ease: 'Linear'
+        });
+        let that = this;
+        that.time.addEvent({
+            delay: 1000,
+            loop: false,
+            callback: function() {
+                that.tweens.add({
+                    targets: that.alert,
+                    alpha: 0,
+                    duration: 200,
+                    ease: 'Linear'
+                });
+            }
+        });
+    }
 }
 
 export default TitleScreen;

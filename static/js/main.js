@@ -156,7 +156,7 @@ import Game from "./modules/game.js";
         },        
 
         {
-            "ntSequence": "CGCGCGCGGGGCCGCGCGGC",
+            "ntSequence": "CCCCCCCCCC",
             "controls": ["G", "C"],
             "unlocked": true,
             "name": "Clash of the Cs and Gs",
