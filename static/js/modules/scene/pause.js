@@ -28,13 +28,15 @@ class PauseScreen extends Phaser.Scene {
         homeBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         homeBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         homeBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
-        /*
+        
         homeBtn.addListener("pointerup", this.bindFn(function(){
+            // You can't scene.stop the popupmanager because it has multiple scenes.
+            // the destroy() function will do it for us.
+            data.popupmanager.destroy();
             this.scene.stop("level" + data.level);
             this.scene.stop();
             this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: data.gameObj, fadeIn: true});
         }));
-        */
         
         let resumeBtn = this.add.image(180, 500, "resume_btn").setScale(0.5).setInteractive();
         resumeBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));

@@ -62,9 +62,9 @@ class LevelStage extends Phaser.Scene {
             3: [310, 640]
         };
         this.btnLocationCodons = {
-            0: [310, 370],
-            1: [310, 490],
-            2: [310, 610]
+            0: [310, 410],
+            1: [310, 540],
+            2: [310, 650]
         };
         this.ntBtnsEnabled = true;
 
@@ -416,7 +416,7 @@ class LevelStage extends Phaser.Scene {
         let codonOptions = ["U", "C", "A", "G"];
         let actualOptions = [head.matches];
         console.log(actualOptions);
-        let maxOtherOptions = 2;
+        let maxOtherOptions;
         
         // This is a bit weird and undocumented, but there is an optional
         // variable that can be included in level config called 'maxButtons'.

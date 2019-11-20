@@ -34,7 +34,6 @@ class PositionManager {
         this.levelNucleotides = [];
         this.compLevelNucleotides = [];
         this.selectedNucleotides = [];
-
         this.hasFrozenHead = false;
 
         this.initLevelNucleotides();
@@ -526,31 +525,11 @@ class PositionManager {
      * Increments the nucleotides position by one
      */
     next() {
-        // Right now the problem is that I'm trying to find a way to instantly delete the nucleotide once it leaves the binding pocket.
-        // I want to remove it instantly so that it makes room for the next nucleotide.
 
-        // Check if the first nucleotide in the line is past the binding pocket, and if so delete it.
-        // Only applies to dna_replicaiton levels because codons "correct" is handled differently.
-        /*
-        if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
-            let ellipse = this.level.ntHighlightEllipse;
-            let front = this.getHeadNucleotide();
-            let correctAreaOffset = 75; // Number of pixels above bottom right corner of binding pocket.
-            if (front && front.getObject().getTopRight().y > ellipse.getBottomRight().y - correctAreaOffset) {
-                this.removeHeadNucleotide();
-                this.processIncorrectNucleotide(front);
-            }
-        }*/
-
-        // Checks the very front of the nucleotides (very end of path)
-        // and if we have an object, delete it and handle incorrect
-        // match logic.
-
-        // TODO: Seperate out incorrect match logic to its own function.
         let head = this.levelNucleotides[0];
         if (head) {
             this.processIncorrectNucleotide(head);
-            this.removeHeadNucleotide();
+            //this.removeHeadNucleotide();
         }
         // levelNucleotides is a collection of all nucleotides and null objects along the line.
         // It shortens the array each tick by 1.
@@ -572,7 +551,9 @@ class PositionManager {
                    !this.hasFrozenHead &&
                    this.getHeadNucleotide() && this.getHeadNucleotide().getObject().y > 490) {
             this.hasFrozenHead = true;
-            this.tempPauseNTMoveTime(1000);
+
+            // Wait time for codon level
+            this.tempPauseNTMoveTime(2000);
         }
     }
 
@@ -585,10 +566,7 @@ class PositionManager {
         this.level.scorekeeping.incrementIncorrectSequences();
         this.audioplayer.playIncorrectSound();
 
-        // Regen buttons (one wuill have correct option)
-        if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
-            this.level.shuffleNTBtnOpts();
-        }
+
 
         // Find that correct option and process it to output stack
         let cloned = this.getValidMatchNT(missedNucleotide);
@@ -605,6 +583,12 @@ class PositionManager {
         this.addToDNAOutput(cloned);
         this.level.shuffleNTBtnAngle();
 
+        this.removeHeadNucleotide();
+
+         // Regen buttons (one wuill have correct option)
+        if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
+            this.level.shuffleNTBtnOpts();
+        }
     }
 
     /**
@@ -707,13 +691,6 @@ class PositionManager {
             }
         }
         this.updateNTMoveTimer(this.defaultTimerDelay / 2);
-        // Matching animation?
-        // So there is one problem here: Remove is called with a delay
-        // What does that mean ? When removeHeadNucleotide() is called,
-        // the state of the nucleotide queue can be already different
-        // than what it was when we called the _animatePosition() function.
-        // In that case, the "head removal" is going to have removed
-        // the head nucleotide first, we need to make sure, the order is correct
         let that = this;
         this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
             that._animatePosition(nucleotide, point.x, point.y);
