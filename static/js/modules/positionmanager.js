@@ -792,9 +792,10 @@ class PositionManager {
         if (nucDispObj && this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             // actually make correct bounding boxes for ellipse and nucleotide
             var bbBinding = ellipse.getBounds();
-            var bbNucleotide = nucDispObj.getBounds();
-            var inters = Phaser.Geom.Rectangle.Intersection(bbBinding, bbNucleotide);
-            return inters.width > 0 && inters.height > 0;
+            var bottomLeft = nucDispObj.getBottomLeft();
+            var cont = Phaser.Geom.Rectangle.ContainsPoint(bbBinding, bottomLeft);
+            console.log(cont);
+            return cont;
         } else if (nucDispObj && this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             let offset = 100;
             return (ellipse.getTopLeft().y + offset < nucDispObj.getBottomRight().y &&

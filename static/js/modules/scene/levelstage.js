@@ -210,6 +210,12 @@ class LevelStage extends Phaser.Scene {
             yoyo: true,
             repeat: -1
         });
+        var bb = this.ntHighlightEllipse.getBounds();
+        this.bbox = this.game.add.rectangle(bb.x, bb.y, bb.width, bb.height,
+                                            0xff0000);
+        this.bbox.setVisible(true);
+        this.bbox.setDepth(1001);
+        this.bbox.setAlpha(0.5);
 
         // Conditional rendering for each level type
         if (this.levelConfig.lvlType == "dna_replication") {
