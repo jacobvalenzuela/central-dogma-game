@@ -484,7 +484,6 @@ class PositionManager {
      * @param {function} [callback=null] - function to be called after done fading
      */
     _fadeOut(nucleotide, callback=null) {
-        console.log("we here");
         let currentAlpha = nucleotide.getObject().alpha;
         let newAlpha = currentAlpha / 1.5;
         if (newAlpha < 0.1) {
@@ -759,7 +758,6 @@ class PositionManager {
      * @returns {boolean} if the head nucleotide touch the binding pocket
      */
     ntTouchingBindingPocket() {
-        let ellipse = this.level.ntHighlightEllipse;
         let nucleotide = null;
         let nucDispObj = null;
 
@@ -806,16 +804,35 @@ class PositionManager {
         }
 
         if (nucDispObj && this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
-            // actually make correct bounding boxes for ellipse and nucleotide
-            var bbBinding = ellipse.getBounds();
-            var bottomLeft = nucDispObj.getBottomLeft();
+            // actually make correct bounding boxes for binding pocket and nucleotide
+            let bindingPocket = this.level.bindingPocket;
+            var bbBinding = new Phaser.Geom.Rectangle(bindingPocket.x, bindingPocket.y,
+                                                      bindingPocket.width * bindingPocket.scale,
+                                                      bindingPocket.height * bindingPocket.scale);
+            // Pay attention here what the actual bounds are !!!
+            // x = e.g. 76.56
+            // y = e.g. 556.319
+            // height: 300
+            // width: 600
+            // scale is 0.3195576875552662
+            // so if we take the lower value (300 of these)
+            // 300 * 0.319 = 95.7
+            // WW: These are some hacked in values that seem to work, but we need to find out
+            // WHY !!!!
+            console.log(nucDispObj);
+            //var bottomLeft = new Phaser.Math.Vector2(nucDispObj.x + 50,
+            //                                         nucDispObj.y + 70);
+            var offset = (nucDispObj.height * nucDispObj.scale) - 10;
+            var bottomLeft = new Phaser.Math.Vector2(nucDispObj.x + offset,
+                                                     nucDispObj.y + offset);
+
             var cont = Phaser.Geom.Rectangle.ContainsPoint(bbBinding, bottomLeft);
-            console.log(cont);
             return cont;
         } else if (nucDispObj && this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             let offset = 100;
-            return (ellipse.getTopLeft().y + offset < nucDispObj.getBottomRight().y &&
-                    ellipse.getBottomRight().y > nucDispObj.getTopLeft().y);
+            let bindingPocket = this.level.ntHighlightEllipse;
+            return (bindingPocket.getTopLeft().y + offset < nucDispObj.getBottomRight().y &&
+                    bindingPocket.getBottomRight().y > nucDispObj.getTopLeft().y);
         }
         return false;
     }

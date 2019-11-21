@@ -197,6 +197,7 @@ class LevelStage extends Phaser.Scene {
         this.ntHighlightEllipse.setDepth(1000);
 
         // WW: Display the highlight ellipse
+        /*
         this.tweens.add({
             targets: this.ntHighlightEllipse,
             scale: 1.05,
@@ -205,14 +206,7 @@ class LevelStage extends Phaser.Scene {
             ease: 'Power1',
             yoyo: true,
             repeat: -1
-        });
-        var bb = this.ntHighlightEllipse.getBounds();
-        this.bbox = this.game.add.rectangle(bb.x, bb.y, bb.width, bb.height,
-                                            0xff0000);
-        this.bbox.setVisible(true);
-        this.bbox.setDepth(1001);
-        this.bbox.setAlpha(0.5);
-
+        });*/
         // Conditional rendering for each level type
         if (this.levelConfig.lvlType == "dna_replication") {
             if (!optbtns) {
@@ -232,7 +226,18 @@ class LevelStage extends Phaser.Scene {
             //this.bindingPocket.setAngle(16);
             this.bindingPocket.setDepth(1000);
             this.bindingPocket.setScale(0.75)
-    
+
+            // WW: just visualize the bounding box for debugging purposes
+            /*
+            var bb = this.bindingPocket;
+            this.bbox = this.game.add.rectangle(bb.x, bb.y, bb.width, bb.height,
+                                                0xff0000);
+            this.bbox.setScale(bb.scale);
+            this.bbox.setVisible(true);
+            this.bbox.setDepth(1001);
+            this.bbox.setAlpha(0.5);
+            */
+
             this.tweens.add({
                 targets: this.bindingPocket,
                 alpha: 0.5,
