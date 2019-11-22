@@ -88,10 +88,11 @@ class LevelComplete extends Phaser.Scene {
                                     delay: 600,
                                     loop: false,
                                     callback: function () {
-                                        let accStampBg = that.add.rectangle(360, 165, 125, 100, BLUE).setDepth(1).setStrokeStyle(2, WHITE, 1);
+                                        // Popup elements that go on top of the score box
+                                        // Conveys accuracy and mutation information
+                                        let accStampBg = that.add.rectangle(125, 150, 180, 50, BLUE).setDepth(1).setStrokeStyle(2, WHITE, 1);
                                         that.fadeInObj(accStampBg);
  
-  
                                         let accStampTxt = that.add.text(280, 180, data.accuracy + "%" + " Accurate!", 
                                             {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
                                         that.fadeInObj(accStampTxt);
@@ -104,11 +105,10 @@ class LevelComplete extends Phaser.Scene {
                                             }
                                         }
 
-                                        let mutationTxt = that.add.text(280, 180, mutationCount + " Mutations\nIntroduced!", 
+                                        let mutationTxt = that.add.text(280, 180, mutationCount + " Mutations Introduced!", 
                                             {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
                                         that.fadeInObj(mutationTxt);
                                         that.animateScale(mutationTxt, 1);
-                                        console.log("Number of mutations is: " + mutationCount);
             
                                         
                                         // These animations determine the final position of the ui elements...
@@ -116,10 +116,10 @@ class LevelComplete extends Phaser.Scene {
                                         that.tweens.add({ targets: scoreLabTxt, x: 180, y: 75, duration: 300, ease: 'power4' });
                                         that.tweens.add({ targets: scoreTxt, x: 180, y: 110, duration: 300, ease: 'power4' });
 
-                                        that.tweens.add({ targets: accStampBg, x: 270, y: 180, duration: 300, ease: 'power4' });
-                                        that.tweens.add({ targets: accStampTxt, x: 271, y: 155, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: accStampBg, x: 220, y: 165, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: accStampTxt, x: 190, y: 155, duration: 300, ease: 'power4' });
 
-                                        that.tweens.add({ targets: mutationTxt, x: 271, y: 195, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: mutationTxt, x: 220, y: 175, duration: 300, ease: 'power4' });
 
                                         that.tweens.add({ targets: lvlcompTxt, alpha: 0, duration: 400, ease: 'power4' });
                                         that.tweens.add({ targets: rectbg, alpha: 0, duration: 400, ease: 'power4' });

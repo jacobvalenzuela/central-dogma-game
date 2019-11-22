@@ -288,9 +288,9 @@ class Codon {
         
         // Creating appropriate amino acid
         if (this.amminoAcid.class == "nonpolar") {
-            this.amminoAcidErrorObj = this._genCircle(30, 60, 0xfc0e33);
+            this.amminoAcidErrorObj = this._genCircle(17, 40, 0xfc0e33);
             this.amminoAcidObj = this._genCircle(25, 50, this.amminoAcid.color);
-            this.amminoAcidMissObj = this._genCircle(18, 40, 0xffffff);
+            this.amminoAcidMissObj = this._genCircle(17, 40, 0xffffff);
         } else if (this.amminoAcid.class == "polar") {
             this.amminoAcidErrorObj = this._genSquare(0, 25, 0xfc0e33);
             this.amminoAcidObj = this._genSquare(0, 25, this.amminoAcid.color);
@@ -300,19 +300,19 @@ class Codon {
             this.amminoAcidObj = this._genDiamond(0, 25, this.amminoAcid.color);
             this.amminoAcidMissObj = this._genDiamond(0, 25, 0xffffff);
         } else if (this.amminoAcid.class == "basic") {
-            this.amminoAcidErrorObj = this._genTriangle(0, 25, 0xfc0e33);
+            this.amminoAcidErrorObj = this._genTriangle(0, 30, 0xfc0e33);
             this.amminoAcidObj = this._genTriangle(0, 25, this.amminoAcid.color);
-            this.amminoAcidMissObj = this._genTriangle(0, 25, 0xffffff);
+            this.amminoAcidMissObj = this._genTriangle(0, 30, 0xffffff); //33
         } else /*if (this.amminoAcid.class == "stop")*/ {
-            this.amminoAcidErrorObj = this._genOctagon(60, 85, 0xfc0e33);
+            this.amminoAcidErrorObj = this._genOctagon(35, 60, 0xfc0e33);
             this.amminoAcidObj = this._genOctagon(50, 75, this.amminoAcid.color);
-            this.amminoAcidMissObj = this._genOctagon(34, 60, 0xffffff);
+            this.amminoAcidMissObj = this._genOctagon(35, 60, 0xffffff);
         }
-        this.amminoAcidErrorObj.setScale(1.3);
+        this.amminoAcidErrorObj.setScale(0.7);
         this.amminoAcidMissObj.setScale(0.7);
-        this.containerObj.add(this.amminoAcidErrorObj);
         this.containerObj.add(this.amminoAcidObj);
         this.containerObj.add(this.amminoAcidMissObj);
+        this.containerObj.add(this.amminoAcidErrorObj);
         this.containerObj.setAngle(90);
         this.containerObj.setSize(width, height + this.connectLineObj.height + this.amminoAcidObj.height);
 
@@ -372,7 +372,6 @@ class Codon {
 
     _genCircle(x, y, fillColor) {
         let cir = this.level.add.circle(x, y, 55, fillColor);
-        let glow = this.level.add.circle(x, y, 60, 0xFFFFFF);
         cir.setStrokeStyle(3, 0xFFFFFF);
         return cir;
     }

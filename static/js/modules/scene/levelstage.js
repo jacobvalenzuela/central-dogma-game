@@ -280,7 +280,7 @@ class LevelStage extends Phaser.Scene {
 
             // Top to bottom each binding site, equally spaced by 120px (if scale is 1.2x)
             this.bindingSiteObjects = [];
-            this.bindingSiteObjects.push(this.game.add.image(150, 363, "bindingsite").setDepth(3000).setScale(1.3).setAlpha(0.8));
+            this.bindingSiteObjects.push(this.game.add.image(150, 363, "bindingsite").setDepth(3000).setScale(1.3).setAlpha(0.6));
             this.bindingSiteObjects.push(this.game.add.text(85, 410, "Accepter Site",
             {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1).setAngle(270));
             
@@ -288,7 +288,7 @@ class LevelStage extends Phaser.Scene {
             this.bindingSiteObjects.push(this.game.add.text(85, 537, "Peptidyl Site",
             {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(0.5).setAlpha(1).setAngle(270));
         
-            this.bindingSiteObjects.push(this.game.add.image(150, 625, "bindingsite").setDepth(3000).setScale(1.3).setAlpha(0.8));
+            this.bindingSiteObjects.push(this.game.add.image(150, 625, "bindingsite").setDepth(3000).setScale(1.3).setAlpha(0.6));
             this.bindingSiteObjects.push(this.game.add.text(85, 654, "Exit Site",
             {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1).setAngle(270));
 

@@ -279,7 +279,7 @@ import Game from "./modules/game.js";
             "ntSequence": "AUGGCAACCAAACCGGGUCAUUGACCCACUGACCAUGGGUUUUAG",
             "unlocked": true,
             "name": "Codon Training II",
-            "speed": 50,
+            "speed": 30,
             "rotateNT": false,
             "ntType": "basic",
             "lvlType": "codon_transcription",
