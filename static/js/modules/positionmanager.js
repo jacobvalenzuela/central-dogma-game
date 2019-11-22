@@ -40,13 +40,13 @@ class PositionManager {
         this.initCompLevelNucleotides();
 
         // Top, incoming, input row/line
-        
+
+        this.level.graphics.lineStyle(3, 0x22F2DD, 1.0); // cyan line
         if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
-            this.level.graphics.lineStyle(3, 0x22F2DD, 1.0);
+           
             this.inputRowPath = new Phaser.Curves.Path(0, 140);
             this.inputRowPath.lineTo(175, 140);
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
-            this.level.graphics.lineStyle(3, 0xFF74F8, 1.0);
             this.inputRowPath = new Phaser.Curves.Path(740, 140);
             this.inputRowPath.lineTo(150, 140);
         }
@@ -84,6 +84,7 @@ class PositionManager {
         }
         this.inputVertPathDispl.draw(this.level.graphics);
 
+        this.level.graphics.lineStyle(3, 0xFF74F8, 1.0); // purple line
         if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.outputVertPath = new Phaser.Curves.Path(245, 450);
             this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
