@@ -171,6 +171,7 @@ class Game {
         this.game.load.image("ntparticle_cytosine", "static/img/nucleotide_particle/cytosine_particle.png");
         this.game.load.image("ntparticle_guanine", "static/img/nucleotide_particle/guanine_particle.png");
         this.game.load.image("ntparticle_thymine", "static/img/nucleotide_particle/thymine_particle.png");
+        this.game.load.image("ntparticle_white", "static/img/nucleotide_particle/white_particle.png");
 
         // Codons
         this.game.load.svg("codontide_adenine", "static/img/codontide/a_codon.svg");

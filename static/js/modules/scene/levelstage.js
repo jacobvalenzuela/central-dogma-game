@@ -117,8 +117,6 @@ class LevelStage extends Phaser.Scene {
         this.game.add.text(195, 68, "SCORE", 
             {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
-        console.log(this.data);
-
         // Level Name
         this.game.add.text(16, 45, "LV. " + (this.data.lvlNum + 1) + ": " + this.data.level.name, 
             {fontFamily: 'Teko, sans-serif', fontSize: '14pt', color: '#FFFFFF'}).setDepth(1);
@@ -126,13 +124,9 @@ class LevelStage extends Phaser.Scene {
         // Pause Button
         this.pauseBtn = this.game.add.image(330, 87, "pause_btn").setDepth(1).setScale(0.23).setInteractive();
         this.pauseBtn.addListener("pointerdown", this.bindFn(function(){
-            console.log("pressed");
             this.scene.pause();
-            
             this.scene.launch('pauseScreen', this);
         }, this));
-
-
 
         let ntParticleConfig = {
             x: 150,
@@ -142,7 +136,8 @@ class LevelStage extends Phaser.Scene {
             scale: { start: 0.5, end: 0 },
             active: false,
             lifespan: 600,
-            gravityY: 800
+            gravityY: 800,
+            tint: 0xFFFFFF // white by default
         };
         this.ntparticle = {
             "adenine": this.add.particles("ntparticle_adenine").createEmitter(ntParticleConfig),
@@ -150,6 +145,8 @@ class LevelStage extends Phaser.Scene {
             "guanine": this.add.particles("ntparticle_guanine").createEmitter(ntParticleConfig),
             "thymine": this.add.particles("ntparticle_thymine").createEmitter(ntParticleConfig),
             "uracil": this.add.particles("ntparticle_thymine").createEmitter(ntParticleConfig),
+            "white": this.add.particles("ntparticle_white").createEmitter(ntParticleConfig),
+            "tinted": this.add.particles("ntparticle_white").createEmitter(ntParticleConfig)
         }
 
         for (let i = 0; i < Object.keys(this.ntparticle).length; i++) {
@@ -344,7 +341,6 @@ class LevelStage extends Phaser.Scene {
     
             this.input.keyboard.on('keydown-SPACE', function(event) {
                 if (this.positionManager.ntTouchingBindingPocket() && this.rotateNT && this.buttonCurrent) {
-                    console.log('keydown-SPACE, ntTouchingBindingPocket');
                     this.processNucleotideSubmission(this.buttonCurrent); 
                 } 
             }, this);
@@ -437,7 +433,6 @@ class LevelStage extends Phaser.Scene {
         let head = this.positionManager.getHeadNucleotide(true);
         let codonOptions = ["U", "C", "A", "G"];
         let actualOptions = [head.matches];
-        console.log(actualOptions);
         let maxOtherOptions;
         
         // This is a bit weird and undocumented, but there is an optional
@@ -456,7 +451,6 @@ class LevelStage extends Phaser.Scene {
             let option = nt1 + nt2 + nt3;
             actualOptions.push(option);
         }
-        console.log(actualOptions);
         return this.shuffleArray(actualOptions);
     }
 
@@ -584,7 +578,6 @@ class LevelStage extends Phaser.Scene {
 
         // Otherwise we're actually dragging and want to submit answer.
         } else if (this.positionManager.ntTouchingBindingPocket()) {
-            //console.log('onDragNTBtnEnd(), ntTouchingBindingPocket');
             let angle = image.angle;
             let clickedNT = image.getData("nucleotide");
             this.processNucleotideSubmission(clickedNT, angle);
@@ -604,7 +597,6 @@ class LevelStage extends Phaser.Scene {
     onKeyboardInput(num) {
         this.buttonCurrent = this.buttons[num];
         if (this.positionManager.ntTouchingBindingPocket() && !this.rotateNT) {
-            console.log('onKeyboardInput(), ntTouchingBindingPocket');
             this.processNucleotideSubmission(this.buttonCurrent);
         } else if (this.rotateNT) {
             this.rotateNucleotideButton(this.buttonCurrent);
@@ -617,7 +609,6 @@ class LevelStage extends Phaser.Scene {
      */
     rotateNucleotideButton(ntButton) {
         ntButton.setAngle(ntButton.getAngle() + 90);
-        // console.log("Angle set to " + nt.getAngle());
     }
 
     /**
@@ -626,7 +617,6 @@ class LevelStage extends Phaser.Scene {
      * @param {int} angle - Optional angle for rotation levels
      */
     processNucleotideSubmission(submission, angle = 0) {
-        //console.log('processNucleotideSubmission()');
         let headNT = this.positionManager.getHeadNucleotide();
         let cloned = submission.clone();
         if (this.levelConfig.lvlType == "dna_replication") {
@@ -664,23 +654,57 @@ class LevelStage extends Phaser.Scene {
                 headNTName = headNT.getShortName();
                 pairNTName = cloned.getShortName();
             } else if (this.levelConfig.lvlType == "codon_transcription") {
+                // on codon levels, it'll just pick the first nucleotide in
+                // the codon to base its colors off of.
                 headNTName = headNT.nucleotides[0].getShortName();
                 pairNTName = cloned.nucleotides[0].getShortName();
             }
 
+            
             // Particle explosion upon correct match
             let that = this;
+            let particle1, particle2; // particles to explode upon correct match.
+
+            if (this.levelConfig.lvlType == "dna_replication") {    
+                particle1 = that.ntparticle[headNTName];
+                particle2 = that.ntparticle[pairNTName];
+            } else if (this.levelConfig.lvlType == "codon_transcription") {
+                // we define particle1 and particle2 to be different on codon levels
+                // because codons consist of three nucleotides.. would make sense to
+                // use amino acid color instead.
+
+                // get the letters of the 3 nucleotides that make up the codon.
+                let codonLetters = "";
+                for (let i = 0; i < 3; i++) {
+                    codonLetters += cloned.nucleotides[i].getShortName()[0].toUpperCase();
+                }
+
+                // creates a temporary codon in order to lookup its amino acid color
+                let codonLookup = new Codon(this, codonLetters);
+                let aminoAcidCode = codonLookup.allCodons[codonLetters];
+
+                // color of amino acid in decimal form.
+                let aminoAcidColorCode = codonLookup.allAmminoAcids[aminoAcidCode].color
+                aminoAcidColorCode = "0x" + aminoAcidColorCode.toString(16);
+
+                // Actually tinting and setting particle emitters
+                that.ntparticle["tinted"].tint.onChange(aminoAcidColorCode);
+                particle1 = that.ntparticle["tinted"];
+                particle2 = that.ntparticle["white"];
+                
+            }
+
             this.game.time.addEvent({
                 delay: 100,
                 loop: false,
                 callback: function () {
-                    that.ntparticle[headNTName].resume();
-                    that.ntparticle[headNTName].explode(50);
+                    particle1.resume();
+                    particle1.explode(50);
                     that.game.time.addEvent({
                         delay: 100,
                         callback: function () {
-                            that.ntparticle[pairNTName].resume();
-                            that.ntparticle[pairNTName].explode(50);
+                            particle2.resume();
+                            particle2.explode(50);
                         },
                         loop: false
                     });
