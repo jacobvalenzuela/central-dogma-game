@@ -68,6 +68,9 @@ class LevelStage extends Phaser.Scene {
         };
         this.ntBtnsEnabled = true;
 
+        // UI Object Group
+        this.uiGroup = this.game.add.group();
+
         // Attaches global score to the current game.
         this.game.globalscore = data.gameObj.GLOBAL_SCORE;
         this.scorekeeping = new GameScore(this.game);
@@ -90,11 +93,11 @@ class LevelStage extends Phaser.Scene {
 
         // Header background space
         this.graphics.fillStyle(WHITE, 1);
-        this.graphics.fillRect(0, 0, 360, 42);
+        this.uiGroup.add(this.graphics.fillRect(0, 0, 360, 42).setDepth(6000));
 
         // Header logos
-        this.game.add.image(75, 30, "logo_dogma").setScale(0.15).setDepth(1);
-        this.game.add.image(300, 22, "logo_isb").setScale(0.15).setDepth(1);
+        this.uiGroup.add(this.game.add.image(75, 30, "logo_dogma").setScale(0.15).setDepth(3000));
+        this.uiGroup.add(this.game.add.image(300, 22, "logo_isb").setScale(0.15).setDepth(3000));
 
         // UI Colored Boxes
         this.graphics.fillStyle(DARK_BLUE, 1.0);
@@ -375,11 +378,15 @@ class LevelStage extends Phaser.Scene {
         this.scorekeeping.start();
         this.positionManager.start();
         this.popupmanager.emitEvent("intro");
+        console.log(this.game);
     }
 
     update() {
         // Allows background floaties to wrap
         this.physics.world.wrap(this.floaty, 50);
+        
+        //this.uiGroup.depth=10000;
+        //this.physics.world.bringToTop(this.uiGroup);
     }
 
     /**

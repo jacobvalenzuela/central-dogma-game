@@ -48,7 +48,10 @@ class PositionManager {
             this.inputRowPath.lineTo(175, 140);
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.inputRowPath = new Phaser.Curves.Path(740, 140);
-            this.inputRowPath.lineTo(150, 140);
+            // the y value used to be 140, but I changed it to -100 to hide
+            // the incoming input path. Leaving note incase someone wants to
+            // make input path visible again.
+            this.inputRowPath.lineTo(150, -100); 
         }
         this.inputRowPath.draw(this.level.graphics);
         this.initRectPathPts = this.inputRowPath.getSpacedPoints(26 * this.pathPointsFactor);
@@ -63,8 +66,12 @@ class PositionManager {
             this.inputVertPath.cubicBezierTo(25, 640, 320, 320, 15, 440);
         // Vertical path that codons follow
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
-            this.inputVertPath = new Phaser.Curves.Path(150, 140);
+            // changed input path start point from 140 to -100 to
+            // make codons come from off screen.
+            // doesn't change appearence of line.
+            this.inputVertPath = new Phaser.Curves.Path(150, -100);
             this.inputVertPath.lineTo(150, 785);
+            
         }
         // this.inputVertPath.draw(this.level.graphics);
         let numVertPathPts = VERT_PATH_POINTS_FACTOR * this.pathPointsFactor;
@@ -79,8 +86,11 @@ class PositionManager {
         // Actual vertical line drawn
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.initVertPathPts = this.inputVertPath.getPoints(numVertPathPts + this.pathPointsFactor).slice(0, numVertPathPts - this.pathPointsFactor);
-            this.inputVertPathDispl = new Phaser.Curves.Path(150, 140); // start
+            // y start point for path used to be 140 changed it to -100 so that
+            // line comes from off the screen
+            this.inputVertPathDispl = new Phaser.Curves.Path(150, -100); // start
             this.inputVertPathDispl.cubicBezierTo(150, 785, 130, 160, 165, 440); // end
+            this.inputVertPathDispl.z = 1;
         }
         this.inputVertPathDispl.draw(this.level.graphics);
 
@@ -153,9 +163,10 @@ class PositionManager {
         }
 
         // Fills up the rest of the level sequence.
+        let spacing = 35;
         for (let i = 0; i < this.level.nucleotides.length; i++) {
             // How much spacing to add between each codon.
-            for (let j = 0; j < 51; j++) {
+            for (let j = 0; j < spacing; j++) {
                 this.levelNucleotides.push(null);
             }
             this.levelNucleotides.push(this.level.nucleotides[i]);
