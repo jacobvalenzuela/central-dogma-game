@@ -104,7 +104,7 @@ class LevelStage extends Phaser.Scene {
         this.graphics.fillRect(15, 65, 75, 45).setDepth(0.5);
 
         this.graphics.fillStyle(DARK_BLUE, 1.0);
-        this.graphics.fillRect(100, 65, 75, 45).setDepth(0.5);
+        this.graphics.fillRect(100, 65, 75, 45).setDepth(5000);
 
         this.graphics.fillStyle(ORANGE, 1.0);
         this.graphics.fillRect(185, 65, 115, 45).setDepth(0.5);
@@ -115,7 +115,7 @@ class LevelStage extends Phaser.Scene {
             {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
 
         this.game.add.text(116, 68, "ACCURACY", 
-            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
+            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(6000);
 
         this.game.add.text(195, 68, "SCORE", 
             {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
@@ -284,9 +284,9 @@ class LevelStage extends Phaser.Scene {
             this.bindingSiteObjects.push(this.game.add.text(85, 410, "Accepter Site",
             {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1).setAngle(270));
             
-            this.bindingSiteObjects.push(this.game.add.image(150, 494, "bindingsite").setDepth(0.5).setScale(1.3).setAlpha(1));
+            this.bindingSiteObjects.push(this.game.add.image(150, 494, "bindingsite").setDepth(1).setScale(1.3).setAlpha(0.85));
             this.bindingSiteObjects.push(this.game.add.text(85, 537, "Peptidyl Site",
-            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(0.5).setAlpha(1).setAngle(270));
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(1).setAlpha(1).setAngle(270));
         
             this.bindingSiteObjects.push(this.game.add.image(150, 625, "bindingsite").setDepth(3000).setScale(1.3).setAlpha(0.6));
             this.bindingSiteObjects.push(this.game.add.text(85, 654, "Exit Site",

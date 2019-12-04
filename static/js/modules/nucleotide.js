@@ -154,6 +154,7 @@ class Nucleotide {
     _genNTObjs() {
         // Finding and setting up the correct animation
         this.imgObj = this.level.add.sprite(0, 0, "nt_" + this.getShortName() + "_basic_animated");
+        this.imgObj.setDepth(-2);
         this.level.anims.create({
             key: "idle_" + this.getShortName(),
             frames: this.level.anims.generateFrameNumbers("nt_" + this.getShortName() + "_basic_animated", { start: 0, end: 3}),

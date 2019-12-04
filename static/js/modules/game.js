@@ -100,6 +100,7 @@ class Game {
         this.game.load.image("play_btn", "static/img/playBtn.png");
         this.game.load.image("home_btn", "static/img/homeBtn.png");
         this.game.load.image("back_btn", "static/img/backBtn.png");
+        this.game.load.image("levels_btn", "static/img/levelsBtn.png");
         this.game.load.image("bg", "static/img/bg.png");
         this.game.load.image("bg_ingame", "static/img/bg_ingame.png");
         this.game.load.svg("signin_user_icn", "static/img/sign_in/user-solid.svg");

@@ -24,21 +24,7 @@ class PauseScreen extends Phaser.Scene {
         this.add.text(120, 150, "PAUSED", 
         {fontFamily: 'Teko, sans-serif', fontSize: '40pt', color: '#FFFFFF'}).setDepth(1);
         
-        let homeBtn = this.add.image(180, 400, "home_btn").setScale(0.5).setInteractive();
-        homeBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
-        homeBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
-        homeBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
-        
-        homeBtn.addListener("pointerup", this.bindFn(function(){
-            // You can't scene.stop the popupmanager because it has multiple scenes.
-            // the destroy() function will do it for us.
-            data.popupmanager.destroy();
-            this.scene.stop("level" + data.level);
-            this.scene.stop();
-            this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: data.gameObj, fadeIn: true});
-        }));
-        
-        let resumeBtn = this.add.image(180, 500, "resume_btn").setScale(0.5).setInteractive();
+        let resumeBtn = this.add.image(180, 350, "resume_btn").setScale(0.5).setInteractive();
         resumeBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         resumeBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         resumeBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
@@ -46,7 +32,35 @@ class PauseScreen extends Phaser.Scene {
             this.scene.resume("level" + data.level);
             this.scene.stop();
         }));
-        console.log(data);
+
+        let levelsBtn = this.add.image(180, 450, "levels_btn").setScale(0.5).setInteractive();
+        levelsBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        levelsBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        levelsBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+        
+        levelsBtn.addListener("pointerup", this.bindFn(function(){
+            // You can't scene.stop the popupmanager because it has multiple scenes.
+            // the destroy() function will do it for us.
+            data.popupmanager.destroy();
+            this.scene.stop("level" + data.level);
+            this.scene.stop();
+            this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: data.gameObj, fadeIn: true});
+        }));
+
+        let homeBtn = this.add.image(180, 550, "home_btn").setScale(0.5).setInteractive();
+        homeBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        homeBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        homeBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+        
+        homeBtn.addListener("pointerup", this.bindFn(function(){
+            data.popupmanager.destroy();
+            this.scene.stop("level" + data.level);
+            this.scene.stop();
+            this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
+        }));
+
+
+        
         
         
     }

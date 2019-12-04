@@ -274,7 +274,7 @@ class Codon {
 
             // Makes the codons actually face each other.
             cdnt.setAngle(270);
-
+            
             this.containerObj.add(cdnt);
             this.ntCodonObj.push(cdnt);
             

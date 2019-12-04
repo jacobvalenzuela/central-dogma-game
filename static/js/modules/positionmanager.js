@@ -90,7 +90,7 @@ class PositionManager {
             // line comes from off the screen
             this.inputVertPathDispl = new Phaser.Curves.Path(150, -100); // start
             this.inputVertPathDispl.cubicBezierTo(150, 785, 130, 160, 165, 440); // end
-            this.inputVertPathDispl.z = 1;
+            //this.inputVertPathDispl.z = 1;
         }
         this.inputVertPathDispl.draw(this.level.graphics);
 
