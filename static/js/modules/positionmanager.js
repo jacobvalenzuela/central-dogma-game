@@ -226,7 +226,7 @@ class PositionManager {
             if (!nucleotide) {
                 continue;
             }
-            nucleotide.setDepth(2999 - i);
+            //nucleotide.setDepth(2999 - i);
             if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
                 nucleotide.setDisplay("nucleotide");
             } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {

@@ -367,7 +367,6 @@ class Codon {
             // nttxt.setStroke(0x000, 3);
             this.ntLetterText.push(nttxt);
         }
-        this.setDepth(1);
     }
 
     _genCircle(x, y, fillColor) {
@@ -426,7 +425,7 @@ class Codon {
         
         this.amminoAcidErrorObj.setDepth(depth - 2);
         this.circleErrorObj.setDepth(depth - 2);
-        
+        console.log("DEPTH SET TO " + depth);
     }
 
     setDisplay(type) {

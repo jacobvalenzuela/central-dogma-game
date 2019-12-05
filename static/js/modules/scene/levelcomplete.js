@@ -51,7 +51,7 @@ class LevelComplete extends Phaser.Scene {
         let that = this;
 
         // Invisible, non interactable (yet) UI
-        this.homeBtn = this.add.image(180, 520, "home_btn").setScale(0.5).setAlpha(0).setDepth(100);
+        this.levelsBtn = this.add.image(180, 520, "levels_btn").setScale(0.5).setAlpha(0).setDepth(100);
         this.nextBtn = this.add.image(180, 620, "next_btn").setScale(0.5).setAlpha(0).setDepth(100);
 
         this.fadeIn(function () {
@@ -596,11 +596,11 @@ class LevelComplete extends Phaser.Scene {
      * Triggered on home click
      * @param {Phaser.GameObjects.Image} img - home button img obj
      */
-    onHomeClick(img) {
-        if (img != this.homeBtn) {
+    onLevelsClick(img) {
+        if (img != this.levelsBtn) {
             return;
         }
-        this.homeBtn.removeInteractive();
+        this.levelsBtn.removeInteractive();
         this.scene.stop("level" + this.level);
         this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
     }
@@ -738,12 +738,12 @@ class LevelComplete extends Phaser.Scene {
     }
 
     presentEndscreenOptions() {
-        this.homeBtn.setInteractive();
-        this.homeBtn.addListener("pointerup", this.bindFn(this.onHomeClick));
-        this.homeBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
-        this.homeBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
-        this.homeBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));    
-        this.fadeInObj(this.homeBtn);
+        this.levelsBtn.setInteractive();
+        this.levelsBtn.addListener("pointerup", this.bindFn(this.onLevelsClick));
+        this.levelsBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        this.levelsBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        this.levelsBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));    
+        this.fadeInObj(this.levelsBtn);
 
         // The next button won't show up if there isn't a next level to play.
         if (this.level < this.gameObj.levels.length - 1) {

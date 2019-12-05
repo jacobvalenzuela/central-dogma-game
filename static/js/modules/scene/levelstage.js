@@ -68,9 +68,6 @@ class LevelStage extends Phaser.Scene {
         };
         this.ntBtnsEnabled = true;
 
-        // UI Object Group
-        this.uiGroup = this.game.add.group();
-
         // Attaches global score to the current game.
         this.game.globalscore = data.gameObj.GLOBAL_SCORE;
         this.scorekeeping = new GameScore(this.game);
@@ -82,32 +79,33 @@ class LevelStage extends Phaser.Scene {
         // Sound Effects
         this.audioplayer = new AudioPlayer();
 
-        // Background Color and Floaties
-        this.graphics.fillStyle(BLACK, 1.0);
-        this.graphics.fillRect(0, 0, 360, 740);
-
+        // Background floaties
         this.floaty = this.physics.add.group();
         this.backgroundFloaties = this.spawnBackgroundFloaties(15);
         //this.floaterSpawner = new BackgroundFloater(this);
         //this.backgroundFloaties = this.floaterSpawner.spawnBackgroundFloaties(15);
 
+        // Background Color
+        this.graphics.fillStyle(BLACK, 1.0);
+        this.graphics.fillRect(0, 0, 360, 740);
+
         // Header background space
         this.graphics.fillStyle(WHITE, 1);
-        this.uiGroup.add(this.graphics.fillRect(0, 0, 360, 42).setDepth(6000));
+        this.graphics.fillRect(0, 0, 360, 42);
 
         // Header logos
-        this.uiGroup.add(this.game.add.image(75, 30, "logo_dogma").setScale(0.15).setDepth(3000));
-        this.uiGroup.add(this.game.add.image(300, 22, "logo_isb").setScale(0.15).setDepth(3000));
+        this.game.add.image(75, 30, "logo_dogma").setScale(0.15);
+        this.game.add.image(300, 22, "logo_isb").setScale(0.15);
 
         // UI Colored Boxes
         this.graphics.fillStyle(DARK_BLUE, 1.0);
-        this.graphics.fillRect(15, 65, 75, 45).setDepth(0.5);
+        this.graphics.fillRect(15, 65, 75, 45);
 
         this.graphics.fillStyle(DARK_BLUE, 1.0);
-        this.graphics.fillRect(100, 65, 75, 45).setDepth(5000);
+        this.graphics.fillRect(100, 65, 75, 45);
 
         this.graphics.fillStyle(ORANGE, 1.0);
-        this.graphics.fillRect(185, 65, 115, 45).setDepth(0.5);
+        this.graphics.fillRect(185, 65, 115, 45);
 
         // UI Labels
         // '\'Open Sans\', sans-serif'
@@ -181,6 +179,18 @@ class LevelStage extends Phaser.Scene {
                 this.nucleotides.push(codon);
             }
         }
+
+        console.log(this.nucleotides);
+
+        // sets the depth of all the codons appropriately
+        // (so they move behind the UI)
+        if (this.levelConfig.lvlType == "codon_transcription") {
+            for (let i = 0; i < this.nucleotides.length; i++) {
+                this.nucleotides[i].setDepth(5);
+            }
+        }
+
+
 
         this.positionManager = new PositionManager(this, this.levelConfig.speed);
         this.positionManager.setPositions(false);
@@ -384,9 +394,6 @@ class LevelStage extends Phaser.Scene {
     update() {
         // Allows background floaties to wrap
         this.physics.world.wrap(this.floaty, 50);
-        
-        //this.uiGroup.depth=10000;
-        //this.physics.world.bringToTop(this.uiGroup);
     }
 
     /**

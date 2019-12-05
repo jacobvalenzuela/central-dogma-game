@@ -17,7 +17,7 @@ class Game {
     constructor (levels) {
         this.GLOBAL_SCORE = 0;
         this.GLOBAL_IS_EPILEPTIC = false;
-        this.GLOBAL_DISABLE_EDUCATION = false;
+        this.GLOBAL_DISABLE_EDUCATION = true;
         this.config = {
             type: Phaser.WEBGL,
             // canvas: document.getElementsByTagName("canvas")[0],
