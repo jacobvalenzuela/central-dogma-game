@@ -29,12 +29,12 @@ class GameScore {
     init() {
         this.initialized = true;
         this.sequenceNTsTxt = this.game.add.text(50, 95, "0", 
-            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(105);
         this.updateSequenceNTs();
         this.accuracyTxt = this.game.add.text(140, 95, "100%", 
-            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(6000);
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(105);
         this.scoreTxt = this.game.add.text(240, 95, "0000000", 
-            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(1);
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(105);
     }
 
     /**

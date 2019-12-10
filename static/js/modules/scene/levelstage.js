@@ -74,8 +74,15 @@ class LevelStage extends Phaser.Scene {
         this.popupmanager = new PopupManager(this);
 
         this.camera = this.game.cameras.cameras[0];
+
+        // Main graphics object to draw some of the HUD with.
         this.graphics = this.game.add.graphics();
 
+        // Secondary graphics object to draw with,
+        // We need this to render HUD that needs to cover gameplay objects.
+        this.graphicsOverlay = this.game.add.graphics();
+        this.graphicsOverlay.setDepth(100);
+;
         // Sound Effects
         this.audioplayer = new AudioPlayer();
 
@@ -90,37 +97,38 @@ class LevelStage extends Phaser.Scene {
         this.graphics.fillRect(0, 0, 360, 740);
 
         // Header background space
-        this.graphics.fillStyle(WHITE, 1);
-        this.graphics.fillRect(0, 0, 360, 42);
+        this.graphicsOverlay.fillStyle(WHITE, 1);
+        this.graphicsOverlay.fillRect(0, 0, 360, 42);
 
         // Header logos
-        this.game.add.image(75, 30, "logo_dogma").setScale(0.15);
-        this.game.add.image(300, 22, "logo_isb").setScale(0.15);
+        this.game.add.image(75, 30, "logo_dogma").setScale(0.15).setDepth(101);
+        this.game.add.image(300, 22, "logo_isb").setScale(0.15).setDepth(101);
 
         // UI Colored Boxes
-        this.graphics.fillStyle(DARK_BLUE, 1.0);
-        this.graphics.fillRect(15, 65, 75, 45);
+        this.graphicsOverlay.fillStyle(DARK_BLUE, 1.0);
+        this.graphicsOverlay.fillRect(15, 65, 75, 45);
 
-        this.graphics.fillStyle(DARK_BLUE, 1.0);
-        this.graphics.fillRect(100, 65, 75, 45);
+        this.graphicsOverlay.fillStyle(DARK_BLUE, 1.0);
+        this.graphicsOverlay.fillRect(100, 65, 75, 45);
 
-        this.graphics.fillStyle(ORANGE, 1.0);
-        this.graphics.fillRect(185, 65, 115, 45);
+        this.graphicsOverlay.fillStyle(ORANGE, 1.0);
+        this.graphicsOverlay.fillRect(185, 65, 115, 45);
+
 
         // UI Labels
         // '\'Open Sans\', sans-serif'
         this.game.add.text(29, 68, "REMAINING", 
-            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
+            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(105);
 
         this.game.add.text(116, 68, "ACCURACY", 
-            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(6000);
+            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(105);
 
         this.game.add.text(195, 68, "SCORE", 
-            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(1);
+            {fontFamily: 'Teko, sans-serif', fontSize: '10pt', color: '#FFFFFF'}).setDepth(105);
 
         // Level Name
         this.game.add.text(16, 45, "LV. " + (this.data.lvlNum + 1) + ": " + this.data.level.name, 
-            {fontFamily: 'Teko, sans-serif', fontSize: '14pt', color: '#FFFFFF'}).setDepth(1);
+            {fontFamily: 'Teko, sans-serif', fontSize: '14pt', color: '#FFFFFF'}).setDepth(105);
 
         // Pause Button
         this.pauseBtn = this.game.add.image(330, 87, "pause_btn").setDepth(1).setScale(0.23).setInteractive();
@@ -180,18 +188,6 @@ class LevelStage extends Phaser.Scene {
             }
         }
 
-        console.log(this.nucleotides);
-
-        // sets the depth of all the codons appropriately
-        // (so they move behind the UI)
-        if (this.levelConfig.lvlType == "codon_transcription") {
-            for (let i = 0; i < this.nucleotides.length; i++) {
-                this.nucleotides[i].setDepth(5);
-            }
-        }
-
-
-
         this.positionManager = new PositionManager(this, this.levelConfig.speed);
         this.positionManager.setPositions(false);
         let optbtns = this.gameObj.levels[this.level].controls;
@@ -238,7 +234,7 @@ class LevelStage extends Phaser.Scene {
             this.bindingPocket.setScale(0.75)
 
             // WW: just visualize the bounding box for debugging purposes
-            /*
+            
             var bb = this.bindingPocket;
             this.bbox = this.game.add.rectangle(bb.x, bb.y, bb.width, bb.height,
                                                 0xff0000);
@@ -246,7 +242,7 @@ class LevelStage extends Phaser.Scene {
             this.bbox.setVisible(true);
             this.bbox.setDepth(1001);
             this.bbox.setAlpha(0.5);
-            */
+            
 
             this.tweens.add({
                 targets: this.bindingPocket,

@@ -112,6 +112,9 @@ class Game {
         this.game.load.image("resume_btn", "static/img/resumeBtn.png");
         this.game.load.image("next_btn", "static/img/nextBtn.png");
         this.game.load.image("education_disable_btn", "static/img/educationDisableBtn.png");
+        this.game.load.image("leadererboard_btn", "static/img/leaderboard.png");
+        this.game.load.image("profile_btn", "static/img/signin.png");
+        this.game.load.image("credits_btn", "static/img/CreditsBtn.png");
 
         // ADENINE
         this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");

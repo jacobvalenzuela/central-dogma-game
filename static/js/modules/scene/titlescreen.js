@@ -51,24 +51,31 @@ class TitleScreen extends Phaser.Scene {
             {fontFamily: 'Teko', fontSize: '20pt', color: '#000000'}).setDepth(1).setAlpha(0);
 
         // Menu Buttons
+
+        // Play Button
         this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.5).setAlpha(0).setDepth(1);
         this.playBtn.setVisible(false);
-        this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClick));
         this.playBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         this.playBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         this.playBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
-        this.effectDisableBtn = this.game.add.image(260, 600, "effect_disable_btn").setScale(0.5).setAlpha(0).setDepth(1);
-        this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onEffectDisableClick));
+        // Effect Disable Button
+        this.effectDisableBtn = this.game.add.image(180, 580, "effect_disable_btn").setScale(0.5).setAlpha(0).setDepth(1);
         this.effectDisableBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         this.effectDisableBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
-        this.educationDisableBtn = this.game.add.image(105, 600, "education_disable_btn").setScale(0.5).setAlpha(0).setDepth(1);
-        this.educationDisableBtn.addListener("pointerup", this.bindFn(this.onEducationDisableClick));
+        // Education Button
+        this.educationDisableBtn = this.game.add.image(180, 640, "education_disable_btn").setScale(0.5).setAlpha(0).setDepth(1);
         this.educationDisableBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         this.educationDisableBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         this.educationDisableBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+
+        // Credits Button
+        this.creditsButton = this.game.add.image(180, 700, "credits_btn").setScale(0.5).setAlpha(0).setDepth(1);
+        this.creditsButton.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        this.creditsButton.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        this.creditsButton.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
         let animDelay = 1;
         if (this.skipToLevelsList) {
@@ -120,13 +127,25 @@ class TitleScreen extends Phaser.Scene {
         }
         this.playBtn.setVisible(true);
         this.playedIntro = true;
+
+        // Fade in all UI
         this.fadeIn(this.playBtn);
         this.fadeIn(this.isblogo);
         this.fadeIn(this.effectDisableBtn);
         this.fadeIn(this.educationDisableBtn);
+        this.fadeIn(this.creditsButton);
+
+        // Makes UI Interactive
         this.playBtn.setInteractive();
+        this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClick));
+
         this.effectDisableBtn.setInteractive();
+        this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onEffectDisableClick));
+
         this.educationDisableBtn.setInteractive();
+        this.educationDisableBtn.addListener("pointerup", this.bindFn(this.onEducationDisableClick));
+
+        this.creditsButton.setInteractive();
     }
 
     /**
@@ -201,14 +220,18 @@ class TitleScreen extends Phaser.Scene {
         this.playBtn.removeListener("pointerup");
         this.playBtn.removeListener("dragend");
 
+        // Fades out UI
         this.fadeOut(this.dogmaLogo);
         this.fadeOut(this.playBtn);
         this.fadeOut(this.effectDisableBtn);
         this.fadeOut(this.educationDisableBtn);
+        this.fadeOut(this.creditsButton);
 
+        // Removes interactivity from UI
         this.effectDisableBtn.setInteractive(false);
         this.educationDisableBtn.setInteractive(false);
-
+        this.playBtn.setInteractive(false);
+        this.creditsButton.setInteractive(false);
 
         this.scene.launch("listlevels");
         this.scene.moveAbove("titlescreen", "listlevels");

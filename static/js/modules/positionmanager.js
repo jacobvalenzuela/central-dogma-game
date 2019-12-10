@@ -169,6 +169,8 @@ class PositionManager {
             for (let j = 0; j < spacing; j++) {
                 this.levelNucleotides.push(null);
             }
+            // Sets initial depth of codons (to go behind UI and to weave correctly between binding pockets)
+            this.level.nucleotides[i].setDepth(5);
             this.levelNucleotides.push(this.level.nucleotides[i]);
         }
     }

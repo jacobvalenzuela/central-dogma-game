@@ -44,10 +44,8 @@ class ListLevels extends Phaser.Scene {
         this.curLevel = 0;
 
         // Background and Title
-        // this.graphics.fillStyle(0x002664, 0.75);
-        // this.graphics.fillRect(20, 100, 320, 600);
-        this.add.text(20, 60, "LEVEL SELECTION", 
-            {fontFamily: 'Teko', fontSize: '24pt', color: '#000'});
+        this.add.text(20, 90, "LEVEL SELECTION", 
+            {fontFamily: 'Teko', fontSize: '40pt', color: '#000'});
 
 
         // Level Selection UI/Functionality
@@ -86,11 +84,17 @@ class ListLevels extends Phaser.Scene {
 
 
         // Sign in UI
-        this.userbtn = this.add.image(40, 30, "nt_thymine_basic").setScale(0.17).setAngle(15).setInteractive();
+        this.add.text(20, 60, "PROFILE", 
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#000'});
+        this.userbtn = this.add.image(44, 30, "profile_btn").setScale(0.4).setInteractive();
         this.signInIcn = this.add.image(40, 30, "signin_signin_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
         this.userIcn = this.add.image(40, 30, "signin_user_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
         this.updateSignInIcon();
 
+        // Leaderboard UI
+        this.add.text(80, 60, "SCORES", 
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#000'});
+        this.leaderboardBtn = this.add.image(104, 30, "leadererboard_btn").setScale(0.4).setInteractive();
 
         // Functionality to skip DOGMA animation, also fades in content.
         let that = this;
