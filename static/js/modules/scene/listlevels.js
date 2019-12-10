@@ -92,15 +92,16 @@ class ListLevels extends Phaser.Scene {
         this.updateSignInIcon();
 
         // Leaderboard UI
-        this.add.text(80, 60, "SCORES", 
+        this.add.text(80, 60, "SESSION", 
             {fontFamily: 'Teko', fontSize: '16pt', color: '#000'});
-        this.leaderboardBtn = this.add.image(104, 30, "leadererboard_btn").setScale(0.4).setInteractive();
+        this.sessionbtn = this.add.image(104, 30, "leadererboard_btn").setScale(0.4).setInteractive();
 
         // Functionality to skip DOGMA animation, also fades in content.
         let that = this;
         this.fadeIn(function () {
             that.displayLevel(that.curLevel);
             that.userbtn.addListener("pointerup", that.bindFn(that.onUserButtonClick));
+            that.sessionbtn.addListener("pointerup", that.bindFn(that.onSessionButtonClick));
         });
 
         this.domOverlay = null;
