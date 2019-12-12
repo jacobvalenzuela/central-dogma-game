@@ -116,6 +116,11 @@ class Game {
         this.game.load.image("profile_btn", "static/img/signin.png");
         this.game.load.image("credits_btn", "static/img/CreditsBtn.png");
 
+        // Icons
+        this.game.load.image("rotateIcon", "static/img/rotateIcon.png");
+        this.game.load.image("swipeIcon", "static/img/swipeIcon.png");
+        this.game.load.image("tapIcon", "static/img/tapIcon.png");
+
         // ADENINE
         this.game.load.image("nt_adenine_backbone", "static/img/nucleotide/adenine/Adenine_Backbone@3x.png");
         this.game.load.image("nt_adenine_basic", "static/img/nucleotide/adenine/Adenine_basic@3x.png");

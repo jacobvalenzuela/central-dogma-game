@@ -163,6 +163,7 @@ class LevelStage extends Phaser.Scene {
             this.ntparticle[nt].manager.setDepth(5000);
         }
 
+        // Adds in nucleotide/codon sequence
         let nucleotides = this.gameObj.levels[this.level].ntSequence;
         if (this.levelConfig.lvlType == "dna_replication") {
             for (let i = 0; i < nucleotides.length; i++) {
@@ -213,11 +214,42 @@ class LevelStage extends Phaser.Scene {
             yoyo: true,
             repeat: -1
         });*/
+
+
         // Conditional rendering for each level type
         if (this.levelConfig.lvlType == "dna_replication") {
             if (!optbtns) {
                 optbtns = ["T", "A", "G", "C"];
             }
+
+            // Creating appropriate UI behind nucleotide buttons depending on how many nucleotides there are
+            this.createThreeBorderRectangle(260, 285, 100, 102.5 * optbtns.length, WHITE, WHITE);
+
+            // Top UI Box Label
+            let topLabel = "";
+            this.levelConfig.rotateNT ? topLabel = "TAP TO ROTATE\nSWIPE TO SUBMIT" : topLabel = "\nTAP/SWIPE"
+            if (this.levelConfig.rotateNT) {
+                this.game.add.image(275, 220, "tapIcon").setScale(0.2);
+                this.game.add.text(290, 220, "TO", 
+                    {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
+                this.game.add.image(322, 225, "rotateIcon").setScale(0.15);
+                this.game.add.image(275, 260, "swipeIcon").setScale(0.2);
+                this.game.add.text(290, 260, "TO SUBMIT", 
+                    {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
+            } else {
+                this.game.add.image(283, 245, "tapIcon").setScale(0.2);
+                this.game.add.text(298, 245, "OR", 
+                    {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
+                this.game.add.image(328, 245, "swipeIcon").setScale(0.2);
+                this.game.add.text(273, 265, "TO SUBMIT", 
+                    {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
+            }
+
+
+
+            // Bottom UI Box Label
+            this.game.add.text(265, 265 + (102.5 * optbtns.length), "Nucleotides", 
+                {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
 
             // Label for binding pocket.
             /*
@@ -235,6 +267,7 @@ class LevelStage extends Phaser.Scene {
 
             // WW: just visualize the bounding box for debugging purposes
             
+            /*
             var bb = this.bindingPocket;
             this.bbox = this.game.add.rectangle(bb.x, bb.y, bb.width, bb.height,
                                                 0xff0000);
@@ -242,7 +275,7 @@ class LevelStage extends Phaser.Scene {
             this.bbox.setVisible(true);
             this.bbox.setDepth(1001);
             this.bbox.setAlpha(0.5);
-            
+            */
 
             this.tweens.add({
                 targets: this.bindingPocket,
@@ -251,29 +284,7 @@ class LevelStage extends Phaser.Scene {
                 ease: 'linear',
                 yoyo: true,
                 repeat: -1
-            })
-
-            /*
-            this.tweens.add({
-                targets: this.bindingPocket,
-                scaleX: 1.20,
-                duration: 2460,
-                alpha: 1,
-                ease: 'Sine',
-                yoyo: true,
-                repeat: -1
             });
-    
-            this.tweens.add({
-                targets: this.bindingPocket,
-                scaleY: 1.20,
-                duration: 1064,
-                alpha: 1,
-                ease: 'Sine',
-                yoyo: true,
-                repeat: -1
-            });
-            */
 
         } else if (this.levelConfig.lvlType == "codon_transcription") {
             if (!optbtns) {
@@ -320,6 +331,22 @@ class LevelStage extends Phaser.Scene {
                     repeat: -1
                 });
             }
+
+            // Creating appropriate UI behind amino acid buttons
+            this.createThreeBorderRectangle(230, 340, 131, 270, WHITE, WHITE);
+
+            // Top UI Box Label
+            this.game.add.image(273, 285, "tapIcon").setScale(0.2);
+            this.game.add.text(288, 285, "OR", 
+                {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
+            this.game.add.image(318, 285, "swipeIcon").setScale(0.2);
+            this.game.add.text(263, 305, "TO SUBMIT", 
+                {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
+
+                
+            // Bottom UI Box Label
+            this.game.add.text(235, 590, "Amino Acids", 
+            {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
         }
 
         // Creates nucleotide buttons
@@ -328,7 +355,6 @@ class LevelStage extends Phaser.Scene {
         }
 
         // Keyboard Controls (must be instantiated after creating level specific buttons)
-
         if (this.levelConfig.lvlType == "dna_replication") {
             this.input.keyboard.on('keydown-T', function(event) {
                 this.onKeyboardInput(0);
@@ -797,6 +823,45 @@ class LevelStage extends Phaser.Scene {
             });
             allFloaties.push(myFloaty);
         }
+    }
+
+    /**
+     * Draws a rectangle with the left border missing
+     * @param {INT} x - X-coordinate of the top left corner.
+     * @param {INT} y - Y-coordinate of the top left corner.
+     * @param {INT} width - Width of entire rectangle.
+     * @param {INT} height - Height of entire rectangle.
+     * @param {HEXCODE} fillColor - Color to fill rectantle with.
+     * @param {HEXCODE} borderColor - Color to border rectantle with.
+     */  
+    createThreeBorderRectangle(x, y, width, height, fillColor, borderColor) {
+        // Creating appropriate UI behind nucleotide buttons depending on how many nucleotides there are
+        this.graphics.fillStyle(fillColor, 0.33);
+        this.graphics.fillRect(x, y, width, height);
+        
+        // Line top
+        this.graphics.lineStyle(5, borderColor, 1.0);
+        this.graphics.beginPath();
+        this.graphics.moveTo(x, y);
+        this.graphics.lineTo(x + width, y);
+        this.graphics.closePath();
+        this.graphics.strokePath();
+
+        // Line right
+        this.graphics.lineStyle(5, borderColor, 1.0);
+        this.graphics.beginPath();
+        this.graphics.moveTo(x + width, y);
+        this.graphics.lineTo(x + width, y + height);
+        this.graphics.closePath();
+        this.graphics.strokePath();
+
+        // Line bottom
+        this.graphics.lineStyle(5, borderColor, 1.0);
+        this.graphics.beginPath();
+        this.graphics.moveTo(x + width, y + height);
+        this.graphics.lineTo(x, y + height);
+        this.graphics.closePath();
+        this.graphics.strokePath();
     }
 }
 
