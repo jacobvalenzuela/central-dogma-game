@@ -47,7 +47,7 @@ class TitleScreen extends Phaser.Scene {
         this.dogmaLogo = dogmaLogo;
 
         // Notifications
-        this.alert = this.game.add.text(50, 50, "",
+        this.alert = this.game.add.text(68, 390, "",
             {fontFamily: 'Teko', fontSize: '20pt', color: '#000000'}).setDepth(1).setAlpha(0);
 
         // Menu Buttons

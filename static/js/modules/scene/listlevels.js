@@ -44,8 +44,14 @@ class ListLevels extends Phaser.Scene {
         this.curLevel = 0;
 
         // Background and Title
-        this.add.text(20, 90, "LEVEL SELECTION", 
+        this.add.text(26, 90, "- LEVEL SELECTION -", 
             {fontFamily: 'Teko', fontSize: '40pt', color: '#000'});
+
+        this.graphics.fillStyle(0xF56C26, 0.25);
+        this.graphics.fillRect(18, 157, 320, 45);
+
+        this.graphics.fillStyle(0x006FFF, 0.25);
+        this.graphics.fillRect(18, 212, 320, 45);
 
 
         // Level Selection UI/Functionality

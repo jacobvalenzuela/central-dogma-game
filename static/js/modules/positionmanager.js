@@ -15,6 +15,11 @@ let UNSHIFT_FACTOR = {
     LT_DNA_REPLICATION: 3, LT_CODON_TRANSCRIPTION: 1
 };
 
+// Color constants
+let CYAN = 0x22F2DD;
+let PURPLE = 0xFF74F8;
+let LIME = 0xA6FF4D;
+
 class PositionManager {
     /**
      * Creates a position manager

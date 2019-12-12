@@ -248,7 +248,7 @@ class LevelStage extends Phaser.Scene {
 
 
             // Bottom UI Box Label
-            this.game.add.text(265, 265 + (102.5 * optbtns.length), "Nucleotides", 
+            this.game.add.text(265, 290 + (102.5 * optbtns.length), "Nucleotides", 
                 {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
 
             // Label for binding pocket.
@@ -256,11 +256,11 @@ class LevelStage extends Phaser.Scene {
             this.game.add.text(90, 534, "Binding Pocket",
             {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1).setAngle(19);
             */
-            this.game.add.text(77, 475, "Binding Pocket",
+            this.game.add.text(100, 460, "Binding Pocket",
             {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1);
 
             // Binding pocket
-            this.bindingPocket = this.game.add.image(153, 433, "bindingpocket");
+            this.bindingPocket = this.game.add.image(170, 400, "bindingpocket");
             //this.bindingPocket.setAngle(16);
             this.bindingPocket.setDepth(1000);
             this.bindingPocket.setScale(0.75)
@@ -345,7 +345,7 @@ class LevelStage extends Phaser.Scene {
 
                 
             // Bottom UI Box Label
-            this.game.add.text(235, 590, "Amino Acids", 
+            this.game.add.text(235, 615, "Amino Acids", 
             {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
         }
 
@@ -836,7 +836,7 @@ class LevelStage extends Phaser.Scene {
      */  
     createThreeBorderRectangle(x, y, width, height, fillColor, borderColor) {
         // Creating appropriate UI behind nucleotide buttons depending on how many nucleotides there are
-        this.graphics.fillStyle(fillColor, 0.33);
+        this.graphics.fillStyle(fillColor, 0.15);
         this.graphics.fillRect(x, y, width, height);
         
         // Line top
