@@ -24,7 +24,7 @@ class PauseScreen extends Phaser.Scene {
         this.add.text(120, 150, "PAUSED", 
         {fontFamily: 'Teko, sans-serif', fontSize: '40pt', color: '#FFFFFF'}).setDepth(1);
         
-        let resumeBtn = this.add.image(180, 350, "resume_btn").setScale(0.5).setInteractive().setAlpha(0.3);
+        let resumeBtn = this.add.image(180, 350, "resume_btn").setScale(0.5).setInteractive().setAlpha(1.0);
         resumeBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         resumeBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         resumeBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
@@ -33,7 +33,7 @@ class PauseScreen extends Phaser.Scene {
             this.scene.stop();
         }));
 
-        let levelsBtn = this.add.image(180, 450, "levels_btn").setScale(0.5).setInteractive().setAlpha(0.3);
+        let levelsBtn = this.add.image(180, 450, "levels_btn").setScale(0.5).setInteractive().setAlpha(1.0);
         levelsBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         levelsBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         levelsBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
@@ -47,7 +47,7 @@ class PauseScreen extends Phaser.Scene {
             this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: data.gameObj, fadeIn: true});
         }));
 
-        let homeBtn = this.add.image(180, 550, "home_btn").setScale(0.5).setInteractive().setAlpha(0.3);
+        let homeBtn = this.add.image(180, 550, "home_btn").setScale(0.5).setInteractive().setAlpha(1.0);
         homeBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         homeBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         homeBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));

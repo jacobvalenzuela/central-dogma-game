@@ -129,14 +129,14 @@ class PopupManager {
      * @param {string} eventType - The type of event that just got fired
      * @param {JSON} values - The values that should be used to render the event template string
      */
-    displayPopup(eventType, values) {
+    displayPopup(eventType, values, callback=null) {
         let rendered = Mustache.render(this.popupsConfig[eventType], values);
         let sceneName = "popupDisplay" + this.popupCnt;
         let levelSceneName = "level" + this.level.level;
         this.level.scene.add(sceneName, PopupDisplayScene, false, {text: rendered, manager: this});
         let that = this;
         this.level.time.addEvent({
-            delay: 300,
+            delay: 200,
             loop: false,
             callback: function () {
                 that.level.scene.launch(sceneName);

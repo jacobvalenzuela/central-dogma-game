@@ -46,7 +46,8 @@ class PositionManager {
 
         // Top, incoming, input row/line
 
-        this.level.graphics.lineStyle(3, 0x22F2DD, 1.0); // cyan line
+        // input line (change this color to change input line color)
+        this.level.graphics.lineStyle(3, this.getCorrectInputLineColor(), 1.0); 
         if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
            
             this.inputRowPath = new Phaser.Curves.Path(0, 140);
@@ -99,7 +100,8 @@ class PositionManager {
         }
         this.inputVertPathDispl.draw(this.level.graphics);
 
-        this.level.graphics.lineStyle(3, 0xFF74F8, 1.0); // purple line
+        // output line (change this color to change output line color)
+        this.level.graphics.lineStyle(3, this.getCorrectOutputLineColor(), 1.0);
         if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.outputVertPath = new Phaser.Curves.Path(245, 450);
             this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
@@ -879,6 +881,34 @@ class PositionManager {
         let y = rotatedY + center.y;
 
         return new Phaser.Math.Vector2(x, y);
+    }
+
+    /**
+     * Will check the current level's "process" and return the appropriate 
+     * color hexcode for drawing a line for sequence input.
+     * @returns {String} Appropriate color hexcode
+     */
+    getCorrectInputLineColor() {
+        if (this.level.levelConfig.process == "dna replication" || this.level.levelConfig.process == "transcription") {
+            return CYAN;
+        } else { // "the only other process left is translation, which has an incoming line of RNA."
+            return PURPLE;
+        }
+    }
+
+    /**
+     * Will check the current level's "process" and return the appropriate 
+     * color hexcode for drawing a line for sequence output.
+     * @returns {String} Appropriate color hexcode
+     */
+    getCorrectOutputLineColor() {
+        if (this.level.levelConfig.process == "dna replication") {
+            return CYAN;
+        } else if (this.level.levelConfig.process == "transcription") {
+            return PURPLE;
+        } else { // "the only other process left is translation, which has an outoing line of protein."
+            return LIME;
+        }
     }
 }
 
