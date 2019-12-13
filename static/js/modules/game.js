@@ -212,9 +212,10 @@ class Game {
         this.game.load.html("html_quiz", "static/html/quiz.html");
 
 
-        // Sounds
+        // Audio
         this.game.load.audio("incorrect", "static/audio/sounds/Incorrect.wav");
         this.game.load.audio("correct", "static/audio/sounds/Correct.wav");
+        this.game.load.audio("bgmusic1", "static/audio/music/shinyTech2.mp3");
         
         // Level Carousel Selector Images
         this.game.load.image("level1", "static/img/levelCarouselImages/1.png");

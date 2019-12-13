@@ -86,6 +86,10 @@ class LevelStage extends Phaser.Scene {
         // Sound Effects
         this.audioplayer = new AudioPlayer();
 
+        // Stops any previously playing music and starts music
+        this.game.sound.stopAll();
+        this.audioplayer.playBgMusic1();
+
         // Background floaties
         this.floaty = this.physics.add.group();
         this.backgroundFloaties = this.spawnBackgroundFloaties(15);

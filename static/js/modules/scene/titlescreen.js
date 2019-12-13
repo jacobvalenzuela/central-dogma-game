@@ -16,6 +16,10 @@ class TitleScreen extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
+
+        // Stops all music that might be previously playing.
+        this.game.sound.stopAll();
+
         this.skipToLevelsList = false;
         if (data.skipToLevelsList) {
             this.skipToLevelsList = true;
