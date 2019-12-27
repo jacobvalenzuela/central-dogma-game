@@ -104,6 +104,12 @@ class LevelStage extends Phaser.Scene {
         this.graphicsOverlay.fillStyle(WHITE, 1);
         this.graphicsOverlay.fillRect(0, 0, 360, 42);
 
+        // Additional black space on codon levels to block out codons from behind the UI.
+        if (this.levelConfig.lvlType == "codon_transcription") {
+            this.graphicsOverlay.fillStyle(BLACK, 1);
+            this.graphicsOverlay.fillRect(0, 42, 360, 68); 
+        }
+
         // Header logos
         this.game.add.image(75, 30, "logo_dogma").setScale(0.15).setDepth(101);
         this.game.add.image(300, 22, "logo_isb").setScale(0.15).setDepth(101);
@@ -135,7 +141,7 @@ class LevelStage extends Phaser.Scene {
             {fontFamily: 'Teko, sans-serif', fontSize: '14pt', color: '#FFFFFF'}).setDepth(105);
 
         // Pause Button
-        this.pauseBtn = this.game.add.image(330, 87, "pause_btn").setDepth(1).setScale(0.23).setInteractive();
+        this.pauseBtn = this.game.add.image(330, 87, "pause_btn").setDepth(101).setScale(0.23).setInteractive();
         this.pauseBtn.addListener("pointerdown", this.bindFn(function(){
             this.scene.pause();
             this.scene.launch('pauseScreen', this);
@@ -249,11 +255,11 @@ class LevelStage extends Phaser.Scene {
                     {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
             }
 
-
-
             // Bottom UI Box Label
-            this.game.add.text(265, 290 + (102.5 * optbtns.length), "Nucleotides", 
-                {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
+            this.game.add.text(273, 290 + (102.5 * optbtns.length), "Nucleotides", 
+                {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#000000'}).setDepth(105);
+            this.graphics.fillStyle(WHITE, 1.0);
+            this.graphics.fillRoundedRect(268, 287 + (102.5 * optbtns.length), 83, 27, 10);
 
             // Label for binding pocket.
             /*
@@ -349,8 +355,10 @@ class LevelStage extends Phaser.Scene {
 
                 
             // Bottom UI Box Label
-            this.game.add.text(235, 615, "Amino Acids", 
-            {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
+            this.game.add.text(255, 615, "Amino Acids", 
+            {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#000000'}).setDepth(105);
+            this.graphics.fillStyle(WHITE, 1.0);
+            this.graphics.fillRoundedRect(250, 610, 85, 27, 10);
         }
 
         // Creates nucleotide buttons
