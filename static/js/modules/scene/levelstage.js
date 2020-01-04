@@ -258,8 +258,8 @@ class LevelStage extends Phaser.Scene {
             // Bottom UI Box Label
             this.game.add.text(273, 290 + (102.5 * optbtns.length), "Nucleotides", 
                 {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#000000'}).setDepth(105);
-            this.graphics.fillStyle(WHITE, 1.0);
-            this.graphics.fillRoundedRect(268, 287 + (102.5 * optbtns.length), 83, 27, 10);
+            this.graphicsOverlay.fillStyle(WHITE, 1.0);
+            this.graphicsOverlay.fillRoundedRect(268, 287 + (102.5 * optbtns.length), 83, 27, 10);
 
             // Label for binding pocket.
             /*
