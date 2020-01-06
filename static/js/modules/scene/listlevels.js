@@ -98,7 +98,7 @@ class ListLevels extends Phaser.Scene {
         this.updateSignInIcon();
 
         // Leaderboard UI
-        this.add.text(80, 60, "SESSION", 
+        this.add.text(80, 60, "LEADERS", 
             {fontFamily: 'Teko', fontSize: '16pt', color: '#000'});
         this.sessionbtn = this.add.image(104, 30, "leadererboard_btn").setScale(0.4).setInteractive();
 
@@ -130,9 +130,10 @@ class ListLevels extends Phaser.Scene {
     onUserButtonClick() {
         if (!cdapi.isLoggedIn()) {
             this.showLoginOverlay();
-        } else {
-            this.showSessionsOverlay();
         }
+    }
+    onSessionButtonClick() {
+        this.showSessionsOverlay();
     }
 
     showSessionMgrOverlay(duration=500) {
@@ -286,7 +287,7 @@ class ListLevels extends Phaser.Scene {
                 }
             }
         });
-        
+
         this.updateSessionOverlay();
 
         let that = this;
@@ -339,6 +340,7 @@ class ListLevels extends Phaser.Scene {
                     that.updateSessionOverlayLeaderboard([]);
                 });
         } else {
+            /*
             let currentSession = cdapi.getCurrentSession();
             cdapi.sessionInfo(currentSession)
                 .then(function (data) {
@@ -362,7 +364,7 @@ class ListLevels extends Phaser.Scene {
                 .catch(function () {
                     cdapi.setCurrentSession(null);
                     that.updateSessionOverlayLeaderboard([]);
-                });
+                });*/
         }
     }
 
@@ -375,7 +377,7 @@ class ListLevels extends Phaser.Scene {
         } else {
             this.domOverlay.getChildByID("sessions-session-name-displ").textContent = currentSession;
         }
-        
+
         if (leaderboard.length) {
             this.domOverlay.getChildByID("sessions-no-scores-notice").classList.add("hidden");
             for (let i = 0; i < leaderboard.length; i++) {
@@ -421,12 +423,11 @@ class ListLevels extends Phaser.Scene {
             } else if (event.target.id == "login-button") {
                 event.preventDefault();
                 let username = this.domOverlay.getChildByID("login-username").value;
-                let password = this.domOverlay.getChildByID("login-password").value;
-                if (!username || !password) {
+                if (!username) {
                     return;
                 }
                 let that = this;
-                cdapi.login(username, password)
+                cdapi.login(username)
                     .then(function (data) {
                         if (data.status == "ok") {
                             that.updateSignInIcon();

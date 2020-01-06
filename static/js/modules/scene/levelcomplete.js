@@ -56,6 +56,12 @@ class LevelComplete extends Phaser.Scene {
 
         this.fadeIn(function () {
             // Level Complete
+            if (cdapi.isLoggedIn()) {
+                cdapi.logLevelCompletion(that.level, {
+                    "score": that.score
+                });
+            }
+
             let rectbg = that.add.rectangle(180, -100, 300, 250, BLUE);
             rectbg.setStrokeStyle(2, WHITE, 1);
             that.rectbg = rectbg;
@@ -701,18 +707,20 @@ class LevelComplete extends Phaser.Scene {
                         newScore = newScore + 500;
                         delayscore = 600;
                     }
+                    /*
                     if (cdapi.isLoggedIn()) {
                         cdapi.logLevelCompletion(that.level, {
                             "score": newScore,
                             "session_code": cdapi.getCurrentSession(),
                         });
                     }
+                    */
                     that.scoreUp(that.scoreTxt, newScore, function () {
                         that.time.addEvent({
                             delay: delayscore,
                             callback: function () {
                                 that.tweens.add({ targets: that.knowledgePanelOverlay, alpha: 0, duration: 500});
-                                
+
                                 that.presentEndscreenOptions();
 
                                 /*

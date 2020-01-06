@@ -114,9 +114,9 @@
                                    return data;
                                });
     };
-    cdapi.login = async (username, password) => {
+    cdapi.login = async (username) => {
         return await postJSON(BASE_URL + "/user/login",
-                              {"username": username, "password": password}).then(data => {
+                              {"username": username}).then(data => {
                                   if (data.status == "ok") {
                                       window.localStorage.setItem("loginToken", data.access_token);
                                       loggedIn = true;
