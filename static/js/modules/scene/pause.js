@@ -17,7 +17,7 @@ class PauseScreen extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
-        console.log(this);
+        console.log(data);
         var gra = this.add.graphics();
         gra.fillStyle(0x000000, 0.50);
         gra.fillRect(0, 0, 360, 740);
@@ -29,7 +29,7 @@ class PauseScreen extends Phaser.Scene {
         resumeBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         resumeBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
         resumeBtn.addListener("pointerup", this.bindFn(function(){
-            this.scene.resume("level" + data.level);
+            this.scene.launch("countdownResumeScreen", data);
             this.scene.stop();
         }));
 
@@ -44,6 +44,12 @@ class PauseScreen extends Phaser.Scene {
             data.popupmanager.destroy();
             this.scene.stop("level" + data.level);
             this.scene.stop();
+
+            /*
+            let newobj = data;
+            newobj.levels = data.gameObj.levels;
+            this.scene.launch("listlevels", newobj);
+            */
             this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: data.gameObj, fadeIn: true});
         }));
 

@@ -5,6 +5,7 @@ import TitleScreen from "./scene/titlescreen.js";
 import LevelStage from "./scene/levelstage.js";
 import PauseScreen from "./scene/pause.js";
 import AboutScreen from "./scene/about.js";
+import CountdownResumeScreen from './scene/countdownResume.js';
 
 /**
  * Class representing the game object. Handles the creation of the basic
@@ -204,6 +205,7 @@ class Game {
         }
         this.game.scene.add("pauseScreen", PauseScreen, false, {gameObj: this, levels: this.levels});
         this.game.scene.add("aboutScreen", AboutScreen, false, {gameObj: this, levels: this.levels});
+        this.game.scene.add("countdownResumeScreen", CountdownResumeScreen, false, {gameObj: this, levels: this.levels});
 
         this.game.load.html("html_login", "static/html/login.html");
         this.game.load.html("html_register", "static/html/register.html");

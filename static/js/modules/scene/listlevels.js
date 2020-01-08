@@ -11,28 +11,12 @@ class ListLevels extends Phaser.Scene {
         super(config);
     }
 
-
-    // Process for making a new level selection screen
-    // Position two arrows in the level selection scene, which when clicked will either increment/decrement curLevel
-    // Each arrow, when clicked, will call the increment/decrment method of the ListLevels object, then update the display.
-    // onLvlClick() starts the scene based on button clicked, but can be adapted to start a given scene/level number.
-    // When levels are cycled, their name should be displayed, a small description, and its difficulty.
-    // ^^ for that, potentially use tweens to make it appear on screen in an interesting way.
-    // ^^ also for that, let's use some associated color in the background.
-
-    // TODO
-    // Write increment method DONE
-    // Write decrement method DONE
-    // Write a startPreLevel(levelNum) method. DONE
-    // Write a displayLevel(levelNum) method. DONE
-    // Add a description field to the level json object found in main.js. DONEish. *only on the first three levels...
-
     /**
      * Initalizes the list levels. Fades in and populate the level list
      * @param {JSON} data 
      */
     init(data) {
-        console.log("Global score right now: " + data.gameObj.GLOBAL_SCORE);
+        console.log(data);
 
         // Initialization
         this.camera = this.cameras.main;
@@ -98,7 +82,7 @@ class ListLevels extends Phaser.Scene {
         this.updateSignInIcon();
 
         // Leaderboard UI
-        this.add.text(80, 60, "SESSION", 
+        this.add.text(80, 60, "LEADERS", 
             {fontFamily: 'Teko', fontSize: '16pt', color: '#000'});
         this.sessionbtn = this.add.image(104, 30, "leadererboard_btn").setScale(0.4).setInteractive();
 
@@ -135,6 +119,10 @@ class ListLevels extends Phaser.Scene {
         }
     }
 
+    onSessionButtonClick() {
+        this.showSessionsOverlay();
+    }
+    
     showSessionMgrOverlay(duration=500) {
         if (this.domOverlay) {
             return;
@@ -384,6 +372,7 @@ class ListLevels extends Phaser.Scene {
                 let tn = document.createTextNode(entry.username + " - ");
                 let strong = document.createElement("strong");
                 strong.textContent = entry.score;
+                console.log(entry);
                 li.appendChild(tn);
                 li.appendChild(strong);
                 this.domOverlay.getChildByID("sessions-leaderboard-list").appendChild(li);
@@ -557,10 +546,12 @@ class ListLevels extends Phaser.Scene {
         });
         this.camera.setBounds(0, 0, 360, 740);
         this.camera.pan(this.goBtn.x, this.goBtn.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
+        /*
         let titleScreenScene = this.scene.manager.getScene("titlescreen");
         this.scene.manager.resume("titlescreen");
         titleScreenScene.camera.setBounds(0, 0, 360, 740);
         titleScreenScene.camera.pan(this.goBtn.x, this.goBtn.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
+        */
     }    
 
     /**

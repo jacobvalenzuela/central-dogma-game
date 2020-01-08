@@ -96,7 +96,8 @@ class PopupDisplayScene extends Phaser.Scene {
      * @param {Phaser.GameObjects} objClicked - the object clicked
      */
     exitPopup(inputPlugin, pointer, objClicked) {
-        this.manager.level.scene.resume();
+        console.log(this.manager);
+        this.scene.launch("countdownResumeScreen", this.manager.level);
         this.scene.stop();
     }
 }

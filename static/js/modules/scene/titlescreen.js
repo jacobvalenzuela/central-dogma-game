@@ -220,10 +220,12 @@ class TitleScreen extends Phaser.Scene {
         this.fadeOut(this.playBtn, function () {
             that.playBtn.setVisible(false);
         });
+        /*
         this.playBtn.removeListener("pointerup");
         this.playBtn.removeListener("pointerdown");
         this.playBtn.removeListener("pointerup");
         this.playBtn.removeListener("dragend");
+        */
 
         // Fades out UI
         this.fadeOut(this.dogmaLogo);
