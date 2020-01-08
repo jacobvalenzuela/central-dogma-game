@@ -150,6 +150,7 @@ class TitleScreen extends Phaser.Scene {
         this.educationDisableBtn.addListener("pointerup", this.bindFn(this.onEducationDisableClick));
 
         this.creditsButton.setInteractive();
+        this.creditsButton.addListener("pointerup", this.bindFn(this.onCreditsClick));
     }
 
     /**
@@ -273,7 +274,24 @@ class TitleScreen extends Phaser.Scene {
             img.setAlpha(1.0);
             this.displayAlert("Education features enabled.");
         }
-    }    
+    }
+    
+    /**
+     * Show credits/about page
+     * @param {Phaser.GameObjects.Image} img - the credits/about button
+     */
+    onCreditsClick(img) {
+        this.camera.fadeOut(400);
+        let that = this;        
+        this.time.addEvent({
+            delay: 400,
+            loop: false,
+            callback: function () {
+                that.scene.launch("aboutScreen");
+                that.scene.stop("titlescreen");
+            }
+        });
+    }
 
     /**
      * Make button smaller
