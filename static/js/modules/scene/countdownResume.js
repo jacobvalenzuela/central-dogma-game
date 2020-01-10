@@ -17,8 +17,6 @@ class CountdownResumeScreen extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
-        console.log("COUNTDOWN SCREEN DATA");
-        console.log(data);
 
         var gra = this.add.graphics();
         gra.fillStyle(0x000000, 0.50);
@@ -30,7 +28,7 @@ class CountdownResumeScreen extends Phaser.Scene {
 
         let that = this;
         this.time.addEvent({
-            delay: 1100,
+            delay: 11,
             loop: true,
             callback: function() {
                 curTime = curTime - 1;

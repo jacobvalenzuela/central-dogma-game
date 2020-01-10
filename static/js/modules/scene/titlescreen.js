@@ -249,16 +249,16 @@ class TitleScreen extends Phaser.Scene {
      * @param {Phaser.GameObjects.Image} img - the epilepsy toggle button
      */
     onEffectDisableClick(img) {
-        this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC = !this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC;
+        this.data.parent.gameObj.GLOBAL.ACTIVE_EFFECTS = !this.data.parent.gameObj.GLOBAL.ACTIVE_EFFECTS;
 
         // If user is epileptic, they want to disable the screen effects
         // means the button should be faded.
-        if(this.data.parent.gameObj.GLOBAL_IS_EPILEPTIC) {
-            img.setAlpha(0.66);
-            this.displayAlert("Screen shake/flash disabled.");
-        } else {
+        if(this.data.parent.gameObj.GLOBAL.ACTIVE_EFFECTS) {
             img.setAlpha(1.0);
             this.displayAlert("Screen shake/flash enabled.");
+        } else {
+            img.setAlpha(0.66);
+            this.displayAlert("Screen shake/flash disabled.");
         }
         
     }
@@ -268,13 +268,13 @@ class TitleScreen extends Phaser.Scene {
      * @param {Phaser.GameObjects.Image} img - the education toggle button
      */
     onEducationDisableClick(img) {
-        this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION = !this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION;
-        if(this.data.parent.gameObj.GLOBAL_DISABLE_EDUCATION) {
-            img.setAlpha(0.66);
-            this.displayAlert("Education features disabled.");
-        } else {
+        this.data.parent.gameObj.GLOBAL.ACTIVE_EDUCATION = !this.data.parent.gameObj.GLOBAL.ACTIVE_EDUCATION;
+        if(this.data.parent.gameObj.GLOBAL.ACTIVE_EDUCATION) {
             img.setAlpha(1.0);
             this.displayAlert("Education features enabled.");
+        } else {
+            img.setAlpha(0.66);
+            this.displayAlert("Education features disabled.");
         }
     }
     

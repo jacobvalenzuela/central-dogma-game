@@ -425,7 +425,6 @@ class Codon {
         
         this.amminoAcidErrorObj.setDepth(depth - 2);
         this.circleErrorObj.setDepth(depth - 2);
-        console.log("DEPTH SET TO " + depth);
     }
 
     setDisplay(type) {

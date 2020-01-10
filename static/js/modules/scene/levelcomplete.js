@@ -97,6 +97,8 @@ class LevelComplete extends Phaser.Scene {
                                             {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
                                         that.fadeInObj(accStampTxt);
                                         that.animateScale(accStampTxt, 1);
+
+                                        
                                         
                                         let mutationCount = 0;
                                         for (let i = 0; i < data.nucleotides.length; i++) {
@@ -104,6 +106,11 @@ class LevelComplete extends Phaser.Scene {
                                                 mutationCount++;
                                             }
                                         }
+
+                                        // Quick global updates
+                                        that.gameObj.GLOBAL.TOTAL_LEVELS_PLAYED++;
+                                        that.gameObj.GLOBAL.TOTAL_MUTATIONS += mutationCount;
+                                        that.gameObj.GLOBAL.TOTAL_MISSED += Math.round( (data.nucleotides.length - (data.nucleotides.length * (data.accuracy/100))));
 
                                         let mutationTxt = that.add.text(280, 180, mutationCount + " Mutations Introduced!", 
                                             {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
@@ -126,7 +133,7 @@ class LevelComplete extends Phaser.Scene {
 
 
                                         console.log(data);
-                                        if (!Boolean(data.gameObj.GLOBAL_DISABLE_EDUCATION)) {
+                                        if (Boolean(data.gameObj.GLOBAL.ACTIVE_EDUCATION)) {
                                             // Sequenced Molecule Popup
                                             that.sequencedInfoOverlay = that.add.dom(180, 300).createFromCache('html_sequencedinfo');
                                             that.sequencedInfoOverlay.setAlpha(0);
@@ -672,7 +679,8 @@ class LevelComplete extends Phaser.Scene {
                 cdapi.logQuestionResponse(that.level, answeredOption, + correctness, cdapi.getCurrentSession());
             }
             if (correctness) { // Upon selecting correct quiz answer
-                that.gameObj.GLOBAL_SCORE += that.quizPointWorth;
+                that.gameObj.GLOBAL.SCORE += that.quizPointWorth;
+                that.gameObj.GLOBAL.QUIZ_QUESTIONS_CORRECT++;
                 let bonustxt = that.add.text(180, 269, "+" + that.quizPointWorth + " BONUS!", 
                     {fontFamily: '\'Bevan\', cursive', fontSize: '29pt', color: '#78D863', align: 'center'});
                 bonustxt.setOrigin(0.5);
@@ -683,6 +691,8 @@ class LevelComplete extends Phaser.Scene {
                         that.tweens.add({ targets: bonustxt, alpha: 0, duration: 1500, ease: 'Power3' });
                     }
                 });
+            } else {
+                that.gameObj.GLOBAL.QUIZ_QUESTIONS_WRONG++;
             }
             that.time.addEvent({
                 delay: 2500,

@@ -17,9 +17,19 @@ class Game {
      * @param {LevelJSONDefinition} levels 
      */
     constructor (levels) {
-        this.GLOBAL_SCORE = 0;
-        this.GLOBAL_IS_EPILEPTIC = false;
-        this.GLOBAL_DISABLE_EDUCATION = true;
+        //this.GLOBAL_SCORE = 0;
+        //this.GLOBAL_IS_EPILEPTIC = false;
+        //this.GLOBAL_DISABLE_EDUCATION = true;
+        this.GLOBAL = {
+            SCORE: 0,
+            ACTIVE_EFFECTS: true,
+            ACTIVE_EDUCATION: false,
+            QUIZ_QUESTIONS_CORRECT: 0,
+            QUIZ_QUESTIONS_WRONG: 0,
+            TOTAL_MISSED: 0,
+            TOTAL_MUTATIONS: 0,
+            TOTAL_LEVELS_PLAYED: 0
+        };
         this.config = {
             type: Phaser.WEBGL,
             // canvas: document.getElementsByTagName("canvas")[0],

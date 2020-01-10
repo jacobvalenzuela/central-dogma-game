@@ -560,6 +560,8 @@ class PositionManager {
 
         this.selectedNucleotides.push(null);
         this.setPositions(true);
+
+        // If we try next and find that we have no more objects, end the game.
         if (this.getLevelNTCount() == 0) {
             let that = this;
             this.level.time.addEvent({
@@ -569,13 +571,22 @@ class PositionManager {
                     that.level.endGame();
                 }
             });
+        // If we're in a codon level and 
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION &&
                    !this.hasFrozenHead &&
                    this.getHeadNucleotide() && this.getHeadNucleotide().getObject().y > 490) {
             this.hasFrozenHead = true;
 
+            console.log("CUR DELAY: " + this.autoMoveTimer.delay);
+
             // Wait time for codon level
             this.tempPauseNTMoveTime(2000);
+
+            // Store the current delay
+            // Stop the move timer.
+            // Wait.
+            // Start the move timer with the old delay.
+            
         }
     }
 
@@ -619,9 +630,7 @@ class PositionManager {
      * @returns {Nucleotide} matching nucleotide
      */
     getValidMatchNT(nucleotide) {
-        console.log(nucleotide);
         let btns = this.level.buttons;
-        console.log(btns);
         let cloned = null;
         for (let i = 0; i < btns.length; i++) {
             let btn = btns[i];
@@ -635,7 +644,6 @@ class PositionManager {
             // (head is passed to processIncorrectNucleotide() to getValidMatchNT())
             
             if (nucleotide.validMatchWith(btn)) {
-                console.log("found a match");
                 cloned = btn.clone();
             }
         }
@@ -675,16 +683,6 @@ class PositionManager {
      * @returns {Nucleotide} the head nucleotide
      */
     getHeadNucleotide(ignorePocket=false) {
-        if (ignorePocket) {
-            for (let i = 0; i < this.levelNucleotides.length; i++) {
-                let nucleotide = this.levelNucleotides[i];
-                if (nucleotide) {
-                    return nucleotide;
-                }
-            }
-            return null;
-        }
-
         for (let i = 0; i < this.levelNucleotides.length; i++) {
             if (this.levelNucleotides[i]) {
                 return this.levelNucleotides[i];
@@ -699,7 +697,7 @@ class PositionManager {
      */
     addToDNAOutput(nucleotide) {
         var retval = false;
-        this.hasFrozenHead = false;
+        //this.hasFrozenHead = false;
         nucleotide.setScale(0.3);
         let firstPoint = this.outputVertPathPts[0];
         let secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
@@ -707,12 +705,12 @@ class PositionManager {
         nucleotide.setPosition(firstPoint.x, firstPoint.y);
         if (nucleotide.errorNT || nucleotide.missingNT) {
             // Shakes screen and flashes red upon a wrong match
-            if (!this.level.gameObj.GLOBAL_IS_EPILEPTIC) {
+            if (this.level.gameObj.GLOBAL.ACTIVE_EFFECTS) {
                 this.level.camera.flash(300, 255, 30, 30);
                 this.level.camera.shake(400, 0.02);
             }
         }
-        this.updateNTMoveTimer(this.defaultTimerDelay / 2);
+        //this.updateNTMoveTimer(this.defaultTimerDelay);
         let that = this;
         this._animatePosition(nucleotide, secPoint.x, secPoint.y, function () {
             that._animatePosition(nucleotide, point.x, point.y);
@@ -723,10 +721,9 @@ class PositionManager {
             for (let i = 0; i < (that.pathPointsFactor * 2); i++) {
                 that.selectedNucleotides.push(null);
             }
-            that.updateNTMoveTimer(that.defaultTimerDelay);
+            //that.updateNTMoveTimer(that.defaultTimerDelay);
             that.level.ntBtnsEnabled = true;
             if (!nucleotide.missingNT) {
-                console.log('removeHeadNucleotide() - addToDNAOutput');
                 retval = that.removeHeadNucleotide();
                 if (that.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
                     that.level.shuffleNTBtnOpts();
@@ -746,7 +743,7 @@ class PositionManager {
         nucleotide.setPosition(firstPoint.x, firstPoint.y);
 
         // Shakes screen and flashes red upon a wrong match
-        if(!this.level.gameObj.GLOBAL_IS_EPILEPTIC) {
+        if(this.level.gameObj.GLOBAL.ACTIVE_EFFECTS) {
             this.level.camera.flash(300, 255, 30, 30);
             this.level.camera.shake(400, 0.02);
         }
@@ -842,7 +839,6 @@ class PositionManager {
             // 300 * 0.319 = 95.7
             // WW: These are some hacked in values that seem to work, but we need to find out
             // WHY !!!!
-            console.log(nucDispObj);
             //var bottomLeft = new Phaser.Math.Vector2(nucDispObj.x + 50,
             //                                         nucDispObj.y + 70);
             var offset = (nucDispObj.height * nucDispObj.scale) - 10;

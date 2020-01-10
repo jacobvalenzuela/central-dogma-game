@@ -5,7 +5,7 @@
       border-radius: 10px;
       height: 370px;
       margin: 20px auto 0;
-      width: 298px;
+      width: 320px;
     }
     .sessions h1 {
       background-image: linear-gradient(top, #f1f3f3, #d4dae0);
@@ -133,11 +133,11 @@
     }
 
     .sessions .leaderboard-container {
-        max-height: 130px;
+        /* max-height: 130px; */
         overflow-y: scroll;
     }
 
-    .sessions .leaderboard-container ol {
+    .sessions .leaderboard-container ol, tr {
         margin: 0;
         font-family: 'Teko', "Helvetica", sans-serif;
         color: white;
@@ -152,29 +152,108 @@
       color: white;
       font-size: 16px;
     }
+
+    table, table td, table th {
+      border-top: 1px solid white;
+      border-bottom: 1px solid white;
+      
+    }
+
   </style>
   
   <div class="sessions">
-    <h1>Join a Session</h1>
-    <input type="text" placeholder="Name" id="sessions-name-input" name="name">
-    <a href="#" class="forgot" id="sessions-manager">Manage Your Sessions</a>
-    <input type="submit" value="join" name="sessionsButton" id="sessions-join-button">
-    <div class="error hidden" id="sessions-error-message">This session does not exist!</div>
-    <br>
+    <!--
+      <h1>Join a Session</h1>
+      <input type="text" placeholder="Name" id="sessions-name-input" name="name">
+      <a href="#" class="forgot" id="sessions-manager">Manage Your Sessions</a>
+      <input type="submit" value="join" name="sessionsButton" id="sessions-join-button">
+      <div class="error hidden" id="sessions-error-message">This session does not exist!</div>
+      <br>      
+    -->
+
     <h1>Leaderboard (Current Session: <strong id="sessions-session-name-displ">None</strong>)</h1>
     <div class="leaderboard-container">
         <p class="hidden" id="sessions-no-scores-notice">There are no scores.</p>
-        <ol id="sessions-leaderboard-list">
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-            <li>Name - <strong>2000</strong></li>
-        </ol>
+        <table id="sessions-leaderboard-table">
+          <tr>
+            <th>Name</th>
+            <th>Score</th>
+            <th>Quiz Accuracy</th>
+            <th>Missed</th>
+            <th>Mutations</th>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>2000</td>
+            <td>80%</td>
+            <td>20</td>
+            <td>20</td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>2000</td>
+            <td>80%</td>
+            <td>20</td>
+            <td>20</td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>2000</td>
+            <td>80%</td>
+            <td>20</td>
+            <td>20</td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>2000</td>
+            <td>80%</td>
+            <td>20</td>
+            <td>20</td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>2000</td>
+            <td>80%</td>
+            <td>20</td>
+            <td>20</td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>2000</td>
+            <td>80%</td>
+            <td>20</td>
+            <td>20</td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>2000</td>
+            <td>80%</td>
+            <td>20</td>
+            <td>20</td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td>2000</td>
+            <td>80%</td>
+            <td>20</td>
+            <td>20</td>
+          </tr>
+        </table>
+
+        <!--
+          <ol id="sessions-leaderboard-list">
+              <li>Name - <strong>2000</strong></li>
+              <li>Name - <strong>2000</strong></li>
+              <li>Name - <strong>2000</strong></li>
+              <li>Name - <strong>2000</strong></li>
+              <li>Name - <strong>2000</strong></li>
+              <li>Name - <strong>2000</strong></li>
+              <li>Name - <strong>2000</strong></li>
+              <li>Name - <strong>2000</strong></li>
+              <li>Name - <strong>2000</strong></li>
+              <li>Name - <strong>2000</strong></li>
+          </ol>
+        -->
+
     </div>
   </div>
