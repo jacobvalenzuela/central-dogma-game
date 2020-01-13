@@ -22,13 +22,18 @@ class CountdownResumeScreen extends Phaser.Scene {
         gra.fillStyle(0x000000, 0.50);
         gra.fillRect(0, 0, 360, 740);
 
+        this.add.text(65, 120, "GET READY", 
+            {fontFamily: 'Teko, sans-serif', fontSize: '60pt', color: '#FFFFFF'}).setDepth(1);
+
         let curTime = 3;
-        let text = this.add.text(165, 150, curTime, 
+        let text = this.add.text(165, 250, curTime, 
         {fontFamily: 'Teko, sans-serif', fontSize: '120pt', color: '#FFFFFF'}).setDepth(1);
+
+
 
         let that = this;
         this.time.addEvent({
-            delay: 11,
+            delay: 1000,
             loop: true,
             callback: function() {
                 curTime = curTime - 1;

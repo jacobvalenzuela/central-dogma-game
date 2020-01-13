@@ -29,12 +29,12 @@ class ListLevels extends Phaser.Scene {
 
         // Background and Title
         this.add.text(26, 90, "- LEVEL SELECTION -", 
-            {fontFamily: 'Teko', fontSize: '40pt', color: '#000'});
+            {fontFamily: 'Teko', fontSize: '40pt', color: '#FFFFFF'});
 
-        this.graphics.fillStyle(0xF56C26, 0.25);
+        this.graphics.fillStyle(0xFF8040, 0.4);
         this.graphics.fillRect(18, 157, 320, 45);
 
-        this.graphics.fillStyle(0x006FFF, 0.25);
+        this.graphics.fillStyle(0x006FFF, 0.4);
         this.graphics.fillRect(18, 212, 320, 45);
 
 
@@ -64,18 +64,18 @@ class ListLevels extends Phaser.Scene {
 
         // Level Selection Descriptors
         this.levelBrowseTitle = this.add.text(20, 160, "", 
-            {fontFamily: 'Teko', fontSize: '36pt', color: '#000', align: 'center'});
+            {fontFamily: 'Teko', fontSize: '36pt', color: '#FFFFFF', align: 'center'});
 
         this.levelBrowseSubtitle = this.add.text(20, 220, "", 
-            {fontFamily: 'Teko', fontSize: '28pt', color: '#000', align: 'center'}); 
+            {fontFamily: 'Teko', fontSize: '28pt', color: '#FFFFFF', align: 'center'}); 
 
         this.levelBrowseDesc = this.add.text(20, 300, "", 
-            {fontFamily: 'Teko', fontSize: '20pt', color: '#000', align: 'left', wordWrap: { width: 320, useAdvancedWrap: true } });                                  
+            {fontFamily: 'Teko', fontSize: '20pt', color: '#FFFFFF', align: 'left', wordWrap: { width: 320, useAdvancedWrap: true } });                                  
 
 
         // Sign in UI
         this.add.text(20, 60, "PROFILE", 
-            {fontFamily: 'Teko', fontSize: '16pt', color: '#000'});
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#FFFFFF'});
         this.userbtn = this.add.image(44, 30, "profile_btn").setScale(0.4).setInteractive();
         this.signInIcn = this.add.image(40, 30, "signin_signin_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
         this.userIcn = this.add.image(40, 30, "signin_user_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
@@ -83,7 +83,7 @@ class ListLevels extends Phaser.Scene {
 
         // Leaderboard UI
         this.add.text(80, 60, "LEADERS", 
-            {fontFamily: 'Teko', fontSize: '16pt', color: '#000'});
+            {fontFamily: 'Teko', fontSize: '16pt', color: '#FFFFFF'});
         this.sessionbtn = this.add.image(104, 30, "leadererboard_btn").setScale(0.4).setInteractive();
 
         // Functionality to skip DOGMA animation, also fades in content.

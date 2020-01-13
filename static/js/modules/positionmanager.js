@@ -95,7 +95,7 @@ class PositionManager {
             // y start point for path used to be 140 changed it to -100 so that
             // line comes from off the screen
             this.inputVertPathDispl = new Phaser.Curves.Path(150, -100); // start
-            this.inputVertPathDispl.cubicBezierTo(150, 785, 130, 160, 165, 440); // end
+            this.inputVertPathDispl.cubicBezierTo(150, 785, 150, 160, 150, 440); // end
             //this.inputVertPathDispl.z = 1;
         }
         this.inputVertPathDispl.draw(this.level.graphics);
@@ -106,8 +106,8 @@ class PositionManager {
             this.outputVertPath = new Phaser.Curves.Path(245, 450);
             this.outputVertPath.cubicBezierTo(145, 710, 180, 600, 100, 700);
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
-            this.outputVertPath = new Phaser.Curves.Path(180, 450);
-            this.outputVertPath.cubicBezierTo(220, 710, 180, 600, 120, 700);
+            this.outputVertPath = new Phaser.Curves.Path(170, 450);
+            this.outputVertPath.cubicBezierTo(200, 710, 170, 600, 170, 700);
         }
 
         this.outputVertPathPts = this.outputVertPath.getPoints(5 * this.pathPointsFactor);
@@ -116,16 +116,16 @@ class PositionManager {
             this.outputVertPathDispl.cubicBezierTo(155, 710, 250, 600, 130, 670);
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
             this.outputVertPathDispl = new Phaser.Curves.Path(170, 450);
-            this.outputVertPathDispl.cubicBezierTo(220, 710, 200, 600, 130, 700);
+            this.outputVertPathDispl.cubicBezierTo(200, 710, 170, 600, 170, 700);
         }
+
         // Drawing the actual curve
         this.outputVertPathDispl.draw(this.level.graphics);
-
         if (this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
             this.outputRowPath = new Phaser.Curves.Path(155, 710);
             this.outputRowPath.lineTo(400, 710);
         } else if (this.level.levelConfig.lvlType == LT_CODON_TRANSCRIPTION) {
-            this.outputRowPath = new Phaser.Curves.Path(220, 710);
+            this.outputRowPath = new Phaser.Curves.Path(200, 710);
             this.outputRowPath.lineTo(400, 710);
         }
         this.outputRowPath.draw(this.level.graphics);
@@ -146,6 +146,12 @@ class PositionManager {
     }
     // initialize levelNucleotides in its own method
     initDNAReplication() {
+
+        // Initial spacing before first codon.
+        for (let i = 0; i < 120; i++) {
+            this.levelNucleotides.push(null);
+        }
+
         // This loop is important, says how many total "spots" along line.
         // Controls the spacing between codons as they travel the path.
         for (let i = 0; i < this.level.nucleotides.length * this.pathPointsFactor; i++) {

@@ -22,9 +22,13 @@ class AboutScreen extends Phaser.Scene {
         console.log(this);
         var graphics = this.add.graphics();
 
+        // Background color
+        graphics.fillStyle(0x1e1e1e, 1.0);
+        graphics.fillRect(0, 0, 360, 740);
+
         // Text
         this.add.text(26, 90, "ABOUT", 
-        {fontFamily: 'Teko', fontSize: '40pt', color: '#000'});
+        {fontFamily: 'Teko', fontSize: '40pt', color: '#FFFFFF'});
 
 
         // Back button
@@ -102,7 +106,7 @@ class AboutScreen extends Phaser.Scene {
             let screenWidth = 360; // width of box to randomly spawn floaties
             let screenHeight = 720; // height of box to randomly spawn floaties
 
-            let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff_dark');
+            let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff');
             myFloaty.setScale(maxScale).setDepth(0.5).setAlpha(0.15);
 
             // Randoly sets speed to some percentage of its max speed, in a random direction

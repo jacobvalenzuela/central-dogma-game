@@ -37,10 +37,7 @@ class TitleScreen extends Phaser.Scene {
         this.playedIntro = false;
 
         // Background color
-
-        // this.tileSprite = this.game.add.tileSprite(180, 360, 360, 740, "bg");
-        // keeping background color incase image fails to load.
-        this.graphics.fillStyle(0xfdfdfd, 1.0);
+        this.graphics.fillStyle(0x1e1e1e, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
         
 
@@ -52,7 +49,7 @@ class TitleScreen extends Phaser.Scene {
 
         // Notifications
         this.alert = this.game.add.text(68, 390, "",
-            {fontFamily: 'Teko', fontSize: '20pt', color: '#000000'}).setDepth(1).setAlpha(0);
+            {fontFamily: 'Teko', fontSize: '20pt', color: '#FFFFFF'}).setDepth(1).setAlpha(0);
 
         // Menu Buttons
 
@@ -336,7 +333,7 @@ class TitleScreen extends Phaser.Scene {
             let screenWidth = 360; // width of box to randomly spawn floaties
             let screenHeight = 720; // height of box to randomly spawn floaties
 
-            let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff_dark');
+            let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff');
             myFloaty.setScale(maxScale).setDepth(0.5).setAlpha(0.15);
 
             // Randoly sets speed to some percentage of its max speed, in a random direction
