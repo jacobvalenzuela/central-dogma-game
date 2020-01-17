@@ -125,14 +125,23 @@
                               });
     };
 
-    cdapi.globalLeaderboard = async () => {
+    cdapi.globalLeaderboard = async (sortby) => {
         const url = BASE_URL + "/leaderboard";
-        return await getJSON(url);
+        return await postJSON(url, {orderby: sortby});
     };
-    cdapi.sessionLeaderboard = async (sessionId) => {
+    cdapi.sessionLeaderboard = async (sessionId, sortby) => {
         const url = BASE_URL + "/leaderboard/" + sessionId;
-        return await getJSON(url);
+        return await postJSON(url, {orderby: sortby});
     };
+    cdapi.levelGlobalLeaderboard = async (levelId, sortby) => {
+        const url = BASE_URL + "/level_leaderboard/" + levelId;
+        return await postJSON(url, {orderby: sortby});
+    };
+    cdapi.levelSessionLeaderboard = async (sessionId, levelId, sortby) => {
+        const url = BASE_URL + "/level_leaderboard/" + sessionId + '/' + levelId;
+        return await postJSON(url, {orderby: sortby});
+    };
+
     cdapi.sessionInfo = async (sessionId) => {
         return await getAuth(BASE_URL + "/session/" + sessionId);
     };
@@ -152,6 +161,9 @@
     };
     cdapi.logLevelCompletion = async (levelId, params) => {
         return await postJSONAuth(BASE_URL + "/game/" + levelId, params);
+    };
+    cdapi.levelData = async (levelId, params) => {
+        return await postJSONAuth(BASE_URL + "/leveldata/" + levelId, params);
     };
     cdapi.logQuestionResponse = async (questionId, answerOption, correctness, sessionCode) => {
         if (sessionCode !== null) {
