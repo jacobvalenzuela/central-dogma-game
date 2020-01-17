@@ -26,8 +26,6 @@ class LevelStage extends Phaser.Scene {
      */
     init(data) {
 
-        console.log(data.gameObj.GLOBAL);
-
         // Color Constants
         let ORANGE = 0xF56C26; // Adenine
         let DARK_BLUE = 0x002664;
@@ -84,7 +82,7 @@ class LevelStage extends Phaser.Scene {
         // We need this to render HUD that needs to cover gameplay objects.
         this.graphicsOverlay = this.game.add.graphics();
         this.graphicsOverlay.setDepth(100);
-;
+
         // Sound Effects
         this.audioplayer = new AudioPlayer();
 
@@ -421,10 +419,18 @@ class LevelStage extends Phaser.Scene {
     }
 
     start() {
+
+        // Start initial quiz screen
+        this.scene.pause();
+        this.scene.launch('quizScreen', this);
+
+
+        // Starts actual game
+        
         this.scorekeeping.start();
         this.positionManager.start();
         this.popupmanager.emitEvent("intro");
-        console.log(this.game);
+        
     }
 
     update() {

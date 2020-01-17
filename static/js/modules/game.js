@@ -6,6 +6,7 @@ import LevelStage from "./scene/levelstage.js";
 import PauseScreen from "./scene/pause.js";
 import AboutScreen from "./scene/about.js";
 import CountdownResumeScreen from './scene/countdownResume.js';
+import QuizScreen from './scene/quiz.js';
 
 /**
  * Class representing the game object. Handles the creation of the basic
@@ -127,6 +128,7 @@ class Game {
         this.game.load.image("leadererboard_btn", "static/img/leaderboard.png");
         this.game.load.image("profile_btn", "static/img/signin.png");
         this.game.load.image("credits_btn", "static/img/CreditsBtn.png");
+        this.game.load.image("submit_btn", "static/img/submitBtn.png");
 
         // Icons
         this.game.load.image("rotateIcon", "static/img/rotateIcon.png");
@@ -216,7 +218,12 @@ class Game {
         this.game.scene.add("pauseScreen", PauseScreen, false, {gameObj: this, levels: this.levels});
         this.game.scene.add("aboutScreen", AboutScreen, false, {gameObj: this, levels: this.levels});
         this.game.scene.add("countdownResumeScreen", CountdownResumeScreen, false, {gameObj: this, levels: this.levels});
+        this.game.scene.add("quizScreen", QuizScreen, false, {gameObj: this, levels: this.levels});
 
+        // JSON
+        this.game.load.json("quizQuestions", "static/json/quizquestions.json");
+
+        // HTML
         this.game.load.html("html_login", "static/html/login.html");
         this.game.load.html("html_register", "static/html/register.html");
         this.game.load.html("html_sessions", "static/html/sessions.html");

@@ -1,0 +1,39 @@
+{
+    "questions": [
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "All ___ have DNA.",
+            "options": ["solid objects", "human cells", "living organisms", "chemical compounds"],
+            "correct": 2
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "The term 'double helix' refers to: ",
+            "options": ["the type of cell that contains DNA", "the number of DNA molecules in each cell", "the size of a DNA molecule", "the shape of a DNA molecule"],
+            "correct": 3
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "How is DNA similar to a fingerprint?",
+            "options": ["both are unique to each individual", "both have a double helix shape", "both are found in the nucleus of every cell in the body", "both determine physical traits such as height and eye color"],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "DNA can best be compared to a building's ___. ",
+            "options": ["bricks", "blueprint", "residents", "rooms"],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "Which part of the term 'deoxyribonucleic acid' indicates where DNA is located?",
+            "options": ["Oxy", "Ribo", "Nucleic", "Acid"],
+            "correct": 2
+        }
+    ]
+}

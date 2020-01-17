@@ -7,6 +7,9 @@ class GameScore {
      * @param {LevelStage} game - The level scene that the score is bound to
      */
     constructor (game) {
+
+        console.log(game.levelConfig.speed);
+
         this.initialized = false;
         this.game = game;
         this.sequencesMade = 0;
@@ -170,7 +173,7 @@ class GameScore {
      * @returns {number} the score accumulated so far
      */
     getScore() {
-        this.currentScore = (this.sequencesMade * 100);
+        this.currentScore = (this.sequencesMade * (100 - this.game.levelConfig.speed) );
         return this.currentScore;
     }
 

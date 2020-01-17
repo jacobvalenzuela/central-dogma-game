@@ -21,7 +21,7 @@ class AudioPlayer {
     }
 
     playBgMusic1() {
-        this.bgmusic1.play();
+        //this.bgmusic1.play();
     }
 
 }
