@@ -26,7 +26,7 @@
             "worth": 200,
             "prompt": "DNA can best be compared to a building's ___. ",
             "options": ["bricks", "blueprint", "residents", "rooms"],
-            "correct": 0
+            "correct": 1
         },
         {
             "type": "multiple choice",

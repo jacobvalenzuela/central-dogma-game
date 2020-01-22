@@ -18,6 +18,13 @@ class QuizScreen extends Phaser.Scene {
      */
     init(data) {
         console.log(data);
+        // Color Constants
+        let ORANGE = 0xFE5832;
+        let DARK_BLUE = 0x002664;
+        let CYAN = 0x21EEE9;
+        let BLUE = 0x006FFF;
+        let WHITE = 0xFFFFFF;
+        let DARKER_BLUE = 0x0e1e2d;
 
         let questions = data.cache.json.entries.entries.quizQuestions.questions;
         console.log(questions);
@@ -36,6 +43,10 @@ class QuizScreen extends Phaser.Scene {
 
 
         // Initialize Quiz Layout
+
+        this.add.rectangle(180, 140, 320, 150, BLUE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
+        this.add.rectangle(180, 430, 320, 280, ORANGE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
+
         this.prompt = this.add.text(30, 120, "", {fontFamily: 'Teko, sans-serif', fontSize: '26pt', color: '#FFFFFF', wordWrap: { width: 290, useAdvancedWrap: true }}).setAlpha(0);
         this.tweens.add({ targets: this.prompt, alpha: 1.0, duration: 600, ease: 'power4' });
 
@@ -43,6 +54,8 @@ class QuizScreen extends Phaser.Scene {
         this.tweens.add({ targets: this.pointWorth, alpha: 1.0, duration: 600, ease: 'power4' });
 
         this.choices = [this.choice1, this.choice2, this.choice3, this.choice4];
+
+
 
         this.submitBtn = this.add.image(180, 620, "submit_btn").setScale(0.40).setAlpha(0);
         this.submitBtn.addListener("pointerup", this.bindFn(function(){
