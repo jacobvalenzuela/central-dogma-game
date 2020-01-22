@@ -38,7 +38,7 @@ class QuizScreen extends Phaser.Scene {
 
         // Quiz related variables
         this.selectedChoice = null;
-        this.quizQuestion = questions[4]; //questions[Math.floor(questions.length * Math.random())];
+        this.quizQuestion = questions[Math.floor(questions.length * Math.random())];
         this.points = this.quizQuestion.worth;
 
 
