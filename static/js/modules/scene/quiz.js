@@ -38,13 +38,13 @@ class QuizScreen extends Phaser.Scene {
 
         // Quiz related variables
         this.selectedChoice = null;
-        this.quizQuestion = questions[Math.floor(questions.length * Math.random())];
+        this.quizQuestion = questions[4]; //questions[Math.floor(questions.length * Math.random())];
         this.points = this.quizQuestion.worth;
 
 
         // Initialize Quiz Layout
 
-        this.add.rectangle(180, 140, 320, 150, BLUE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
+        this.add.rectangle(180, 165, 320, 175, BLUE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
         this.add.rectangle(180, 430, 320, 280, ORANGE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
 
         this.prompt = this.add.text(30, 120, "", {fontFamily: 'Teko, sans-serif', fontSize: '26pt', color: '#FFFFFF', wordWrap: { width: 290, useAdvancedWrap: true }}).setAlpha(0);
