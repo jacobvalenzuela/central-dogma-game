@@ -34,12 +34,12 @@ class CountdownResumeScreen extends Phaser.Scene {
 
         this.add.text(55, 120, "GET READY", 
             {fontFamily: 'Teko, sans-serif', fontSize: '60pt', color: '#FFFFFF'}).setDepth(1);
-        this.add.rectangle(180, 160, 300, 75, ORANGE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
+        //this.add.rectangle(180, 160, 300, 75, ORANGE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
 
         let curTime = 3;
         let text = this.add.text(155, 250, curTime, 
         {fontFamily: 'Teko, sans-serif', fontSize: '120pt', color: '#FFFFFF'}).setDepth(1);
-        this.add.rectangle(180, 320, 75, 150, ORANGE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
+        //this.add.rectangle(180, 320, 75, 150, ORANGE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
 
         let that = this;
         this.time.addEvent({

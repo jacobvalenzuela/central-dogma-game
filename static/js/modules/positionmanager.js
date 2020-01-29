@@ -583,16 +583,21 @@ class PositionManager {
                    this.getHeadNucleotide() && this.getHeadNucleotide().getObject().y > 490) {
             this.hasFrozenHead = true;
 
-            console.log("CUR DELAY: " + this.autoMoveTimer.delay);
 
-            // Wait time for codon level
-            this.tempPauseNTMoveTime(2000);
-
-            // Store the current delay
-            // Stop the move timer.
-            // Wait.
-            // Start the move timer with the old delay.
-            
+            /*
+            Recall that these are the speed constants in the main.js file.
+            let SPEED_SLOW = 50;
+            let SPEED_MEDIUM = 33;
+            let SPEED_FAST = 1;
+            */
+            // Setting appropriate wait times
+            if (this.level.levelConfig.speed >= 50) {
+                this.tempPauseNTMoveTime(5000);
+            } else if (this.level.levelConfig.speed <= 1) {
+                this.tempPauseNTMoveTime(1000);
+            } else {
+                this.tempPauseNTMoveTime(3000);
+            }
         }
     }
 

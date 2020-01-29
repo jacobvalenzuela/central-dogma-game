@@ -64,10 +64,6 @@ class PauseScreen extends Phaser.Scene {
             this.scene.stop();
             this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
         }));
-
-
-        
-        
         
     }
     /**

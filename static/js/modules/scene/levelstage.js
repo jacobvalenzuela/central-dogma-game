@@ -567,6 +567,7 @@ class LevelStage extends Phaser.Scene {
      * @param {Phaser.GameObjects.Image} image - the image
      */
     onDragNTBtnStart (input, pointer, image) {
+        console.log(this.data);
         if (!this.ntBtnsEnabled) {
             return;
         }

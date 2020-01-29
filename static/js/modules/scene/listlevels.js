@@ -17,7 +17,6 @@ class ListLevels extends Phaser.Scene {
      */
     init(data) {
         console.log(data);
-
         // Initialization
         this.camera = this.cameras.main;
         this.camera.setAlpha(0);
@@ -386,7 +385,39 @@ class ListLevels extends Phaser.Scene {
         if (this.domOverlay) {
             return;
         }
-        this.domOverlay = this.add.dom(180, 300).createFromCache('html_login');
+
+        let html = document.createElement("html");
+        html.innerHTML = this.cache.html.entries.get("html_login");
+
+        console.log(html)
+        console.log(String(html.innerHTML));
+        this.domOverlay = this.add.dom(180, 300).createFromHTML(String(html.innerHTML));
+
+        // Adding options for adjective selector
+        let adjectiveSelector = this.domOverlay.getChildByID("adjective-selector");
+        let adjectives = ["wise", "agile", "strong", "inspiring", "heroic", "encouraging", "funny", "dexterous", "skillful", "clever"]
+        this.appendSelectOptionsRandomly(adjectiveSelector, adjectives);
+
+        // Adding options for color selector
+        let colorSelector = this.domOverlay.getChildByID("color-selector");
+        let colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "magenta", "lime", "brown", "gray", "pink", "maroon"]
+        this.appendSelectOptionsRandomly(colorSelector, colors);
+
+        // Adding options for animal selector
+        let animalSelector = this.domOverlay.getChildByID("animal-selector");
+        let animals = [ "Aardvark", "Albatross", "Alligator", "Alpaca", "Ant", "Anteater", "Antelope", "Ape", "Armadillo", "Donkey", "Baboon", "Badger", "Barracuda", "Bat", "Bear", "Beaver", "Bee", "Bison", "Boar", "Buffalo", "Butterfly", "Camel", "Capybara", "Caribou", "Cassowary", "Cat", "Caterpillar", "Cattle", "Chamois", "Cheetah", "Chicken", "Chimpanzee", "Chinchilla", "Chough", "Clam", "Cobra", "Cockroach", "Cod", "Cormorant", "Coyote", "Crab", "Crane", "Crocodile", "Crow", "Curlew", "Deer", "Dinosaur", "Dog", "Dogfish", "Dolphin", "Dotterel", "Dove", "Dragonfly", "Duck", "Dugong", "Dunlin", "Eagle", "Echidna", "Eel", "Eland", "Elephant", "Elk", "Emu", "Falcon", "Ferret", "Finch", "Fish", "Flamingo", "Fly", "Fox", "Frog", "Gaur", "Gazelle", "Gerbil", "Giraffe", "Gnat", "Gnu", "Goat", "Goldfinch", "Goldfish", "Goose", "Gorilla", "Goshawk", "Grasshopper", "Grouse", "Guanaco", "Gull", "Hamster", "Hare", "Hawk", "Hedgehog", "Heron", "Herring", "Hippopotamus", "Hornet", "Horse", "Human", "Hummingbird", "Hyena", "Ibex", "Ibis", "Jackal", "Jaguar", "Jay", "Jellyfish", "Kangaroo", "Kingfisher", "Koala", "Kookabura", "Kouprey", "Kudu", "Lapwing", "Lark", "Lemur", "Leopard", "Lion", "Llama", "Lobster", "Locust", "Loris", "Louse", "Lyrebird", "Magpie", "Mallard", "Manatee", "Mandrill", "Mantis", "Marten", "Meerkat", "Mink", "Mole", "Mongoose", "Monkey", "Moose", "Mosquito", "Mouse", "Mule", "Narwhal", "Newt", "Nightingale", "Octopus", "Okapi", "Opossum", "Oryx", "Ostrich", "Otter", "Owl", "Oyster", "Panther", "Parrot", "Partridge", "Peafowl", "Pelican", "Penguin", "Pheasant", "Pig", "Pigeon", "Pony", "Porcupine", "Porpoise", "Quail", "Quelea", "Quetzal", "Rabbit", "Raccoon", "Rail", "Ram", "Rat", "Raven", "Red deer", "Red panda", "Reindeer", "Rhinoceros", "Rook", "Salamander", "Salmon", "Sand Dollar", "Sandpiper", "Sardine", "Scorpion", "Seahorse", "Seal", "Shark", "Sheep", "Shrew", "Skunk", "Snail", "Snake", "Sparrow", "Spider", "Spoonbill", "Squid", "Squirrel", "Starling", "Stingray", "Stinkbug", "Stork", "Swallow", "Swan", "Tapir", "Tarsier", "Termite", "Tiger", "Toad", "Trout", "Turkey", "Turtle", "Viper", "Vulture", "Wallaby", "Walrus", "Wasp", "Weasel", "Whale", "Wildcat", "Wolf", "Wolverine", "Wombat", "Woodcock", "Woodpecker", "Worm", "Wren", "Yak", "Zebra" ]
+        this.appendSelectOptionsRandomly(animalSelector, animals);
+
+        // Adding options for state selector
+        let stateSelector = this.domOverlay.getChildByID("state-selector");
+        let states = ["AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY"];
+        this.appendSelectOptionsRandomly(stateSelector, states, true);
+
+        // Adding options for gender selector
+        let genderSelector = this.domOverlay.getChildByID("gender-selector");
+        let genders = ["Prefer not to say", "Female", "Male", "Non-binary/third gender", "Other"]
+        this.appendSelectOptionsRandomly(genderSelector, genders, true);
+
         this.add.tween({
             targets: [this.fadeCover],
             ease: 'Sine.easeInOut',
@@ -401,6 +432,9 @@ class ListLevels extends Phaser.Scene {
                 }
             }
         });
+        //let option = this.domOverlay.createElement("option");
+        //option.textContent = "test";
+        //this.domOverlay.getChildByID("adjective-selector").appendChild(option);
         this.domOverlay.addListener("click");
         this.domOverlay.on("click", function (event) {
             if (event.target.id === "login-register") {
@@ -703,6 +737,47 @@ class ListLevels extends Phaser.Scene {
             }
         }
     }
+
+    
+    /**
+     * Helper function to randomize form selection order.
+     * @param {Array} - The array to scramble.
+     */
+    shuffleArray(array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }  
+    }
+    
+    /**
+     * Helper function to capitalize the first letter (for selection options)
+     * @param {String} - The string to capitalize.
+     */      
+    capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    /**
+     * Helper function to populate a select HTML element with options in a random order.
+     * @param {HTMLElement} - The element to append options to.
+     * @param {array} - The options, array of strings, to scramble and append.
+     */   
+    appendSelectOptionsRandomly(selector, options, keepOrder=false) {
+        if (!keepOrder) {
+            this.shuffleArray(options);
+        }
+        for (let i = 0; i < options.length; i++) {
+            let option = document.createElement("option");
+            option.value = options[i];
+            option.textContent = this.capitalizeFirstLetter(options[i]);
+            selector.appendChild(option);
+        }
+    }
+
+    
 }
 
 export default ListLevels;

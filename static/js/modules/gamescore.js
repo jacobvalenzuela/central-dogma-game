@@ -15,6 +15,7 @@ class GameScore {
         this.sequencesMade = 0;
         this.secondsElapsed = 0;
         this.wrongSequences = 0;
+        this.knowledgePoints = 0; // points earned from quiz questions
         this.timerSec = null;
         this.timerMs = null;
         this.maxScoreDigits = 7;
@@ -147,6 +148,10 @@ class GameScore {
         this.sequencesMade++;
     }
 
+    addKnowledgePoints(points) {
+        this.knowledgePoints += points;
+    }
+
     /**
      * Returns the rate per minute of nucleotides can be made in this level.
      * @returns {number} Nucleotides rate
@@ -173,7 +178,7 @@ class GameScore {
      * @returns {number} the score accumulated so far
      */
     getScore() {
-        this.currentScore = (this.sequencesMade * (100 - this.game.levelConfig.speed) );
+        this.currentScore = (this.sequencesMade * (100 - this.game.levelConfig.speed) ) + this.knowledgePoints;
         return this.currentScore;
     }
 

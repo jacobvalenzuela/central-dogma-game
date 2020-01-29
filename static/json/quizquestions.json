@@ -34,6 +34,13 @@
             "prompt": "Which part of the term 'deoxyribonucleic acid' indicates where DNA is located?",
             "options": ["Oxy", "Ribo", "Nucleic", "Acid"],
             "correct": 2
+        }, 
+        {
+            "type": "drag and drop",
+            "worth": 200,
+            "prompt": "Cytosine, guanine, adenine, and thymine are chemicals that combine to form_____ in DNA.",
+            "options": ["GMO", "Genome", "Base pairs", "gene therapy", "traits"],
+            "correct": 2
         }
     ]
 }
