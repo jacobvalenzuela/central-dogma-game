@@ -18,19 +18,100 @@ class Game {
      * @param {LevelJSONDefinition} levels 
      */
     constructor (levels) {
-        //this.GLOBAL_SCORE = 0;
-        //this.GLOBAL_IS_EPILEPTIC = false;
-        //this.GLOBAL_DISABLE_EDUCATION = true;
         this.GLOBAL = {
-            SCORE: 0,
-            ACTIVE_EFFECTS: true,
-            ACTIVE_EDUCATION: false,
-            QUIZ_QUESTIONS_CORRECT: 0,
-            QUIZ_QUESTIONS_WRONG: 0,
-            TOTAL_MISSED: 0,
-            TOTAL_MUTATIONS: 0,
-            TOTAL_LEVELS_PLAYED: 0
+            SCORE: 0, // Overall score as an Int
+            ACTIVE_EFFECTS: true, // Boolean to indicate whether the player is playing with effects (screen shake/flash)
+            ACTIVE_EDUCATION: true, // Boolean to indicate whether the player is playing with quizzes enabled
+            QUIZ_RESULTS: [], // Array of "quiz" objects
+            LEVEL_PERFORMANCE: [] // Array of "level" objects
         };
+        
+        // QUIZ_RESULTS is an array of "quiz" objects:
+        /*
+            {
+                timestamp, String, // timestamp when question is asked
+                question: Object, // the question object
+                attempts: Int, // how many choices did the user pick (including correct answers)
+                questionNum: Int // how many questions have already been asked (including this one)
+            }
+        */
+
+        // example question object for above
+        /*
+            {
+                type: String, // the type of question (either "drag and drop" or "multiple choice")
+                worth: Int, // How much was this quiz question worth
+                prompt: String, // The question prompt
+                options: Array of Strings, // all the possible choices
+                correct: Int, // The index in the options array that is the correct answer
+            }
+        */
+
+        // LEVEL_PERFORMANCE is an array of "level" objects:
+        /*
+            {
+                timestamp, String, // timestamp when level was finished
+                level: Int, // what number level is this in the campaign
+                process: String, // what process of DNA replication was being played?
+                lvlType: String, // what type of level was this ("dna_replication" vs "codon_transcription"
+                speed: Int, // speed of the level,
+                rotateNT: Boolean, // was this level a rotational level?
+                missed: Int, // how many objects were missed
+                correct: Int, // how many objects were correct
+                error: Int, // how many objects were errored
+                total: Int, // how many objects were in the total sequence
+                levelNum: Int // how many levels were already completed (including this one)
+            }
+        */
+
+        /*
+            I need these functions:
+            SignIn(userName, sessionID) - Signs into the user account within a session.
+            No returns
+                userName - String - The username is a combination of an adjective, color, and animal.
+                sessionID - String - The name of the session.
+
+            SignOut(userName, sessionID) - Signs out of a user account within a session.
+            No returns
+                userName - String - The username is a combination of an adjective, color, and animal.
+                sessionID - String - The name of the session.
+
+            isUserSignedIn(userName, sessionID) - Checks if the given username is already signed in.
+            Returns a boolean
+                userName - String - The username is a combination of an adjective, color, and animal.
+                sessionID - String - The name of the session.
+
+            StoreNewGlobalVariable(userName, sessionID, GLOBAL) - Stores a new global object (see above) for the user.
+            No returns  
+                userName - String - The username is a combination of an adjective, color, and animal.
+                sessionID - String - The name of the session.
+                GLOBAL - Object - An object containing all the data about this current game instance.
+
+            GetTotalLeaderboard(sessionID, Parameter1, rows) - Gets a leaderboard based on given parameter for a session.
+            Returns an array of objects which look like {userName: String, value: Int}
+                sessionID - String - The name of the session. Optional variable- if excluded, will get a global leaderboard across all sessions.
+                Parameter1 - String - What to order by in DESC order
+                                      Can either be "score" (the total global scores of a single user across all game instances)
+                                      Or "levelsCompleted" (the total "level" objects of a single user across all game instances)
+                                      Or "quizzesCompleted" (the total "quiz" objects of a single user across all game instances)
+                rows - Int - How many objects to return
+
+            GetLevelLeaderboard(sessionID, level, rows) - Gets a leaderboard of scores for a level in a session.
+            Returns an array of objects which look like {userName: String, value: Int}
+                sessionID - String - The name of the session. Optional variable- if excluded, will get a global leaderboard across all sessions.
+                level - Int - What level to look for (in the "level" object)
+                rows - Int - How many objects to return
+        */
+
+        /*
+            I need these fake functions to test/develop stuff
+            isUserSignedIn(userName, sessionID) - Can just return true all the time, I just want it to write as a placeholder.
+            StoreNewGlobalVariable(userName, sessionID, GLOBAL) - Doesn't actually have to do anything, probably just going to write it as a placeholde.r
+            GetTotalLeaderboard(sessionID, Parameter1, rows)
+            GetLevelLeaderboard(sessionID, level, rows)
+        */
+
+
         this.config = {
             type: Phaser.WEBGL,
             // canvas: document.getElementsByTagName("canvas")[0],

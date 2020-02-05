@@ -101,16 +101,21 @@ class LevelComplete extends Phaser.Scene {
                                         
                                         
                                         let mutationCount = 0;
+                                        let missingCount = 0;
                                         for (let i = 0; i < data.nucleotides.length; i++) {
                                             if (Boolean(data.nucleotides[i].errorNT)) {
                                                 mutationCount++;
+                                            } else if (Boolean(data.nucleotides[i].missingNT)) {
+                                                missingCount++;
                                             }
                                         }
 
                                         // Quick global updates
+                                        /*
                                         that.gameObj.GLOBAL.TOTAL_LEVELS_PLAYED++;
                                         that.gameObj.GLOBAL.TOTAL_MUTATIONS += mutationCount;
                                         that.gameObj.GLOBAL.TOTAL_MISSED += Math.round( (data.nucleotides.length - (data.nucleotides.length * (data.accuracy/100))));
+                                        */
 
                                         let mutationTxt = that.add.text(280, 180, mutationCount + " Mutations Introduced!", 
                                             {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
@@ -122,7 +127,6 @@ class LevelComplete extends Phaser.Scene {
                                         that.tweens.add({ targets: scoreRect, x: 180, y: 100, duration: 300, ease: 'power4' });
                                         that.tweens.add({ targets: scoreLabTxt, x: 180, y: 75, duration: 300, ease: 'power4' });
                                         that.tweens.add({ targets: scoreTxt, x: 180, y: 110, duration: 300, ease: 'power4' });
-
                                         that.tweens.add({ targets: accStampBg, x: 220, y: 165, duration: 300, ease: 'power4' });
                                         that.tweens.add({ targets: accStampTxt, x: 190, y: 155, duration: 300, ease: 'power4' });
 
@@ -132,47 +136,25 @@ class LevelComplete extends Phaser.Scene {
                                         that.tweens.add({ targets: rectbg, alpha: 0, duration: 400, ease: 'power4' });
 
 
-                                        console.log(data);
-                                        if (Boolean(data.gameObj.GLOBAL.ACTIVE_EDUCATION)) {
-                                            // Sequenced Molecule Popup
-                                            that.sequencedInfoOverlay = that.add.dom(180, 300).createFromCache('html_sequencedinfo');
-                                            that.sequencedInfoOverlay.setAlpha(0);
-                                            that.sequencedInfoOverlay.getChildByID("sequencedinfo-molecule-name").textContent = that.sequencedinfo.name;
-                                            that.sequencedInfoOverlay.getChildByID("sequencedinfo-description").innerHTML = that.sequencedinfo.description;
-                                            that.sequencedInfoOverlay.getChildByID("sequencedinfo-img").src = that.sequencedinfo.imgurl;
-                                            that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").href = that.sequencedinfo.infourl;
-                                            that.sequencedInfoOverlay.getChildByID("sequencedinfo-link").addEventListener("click", function () {
-                                                if (cdapi.isLoggedIn()) {
-                                                    cdapi.logHyperlinkVisited(this.href);
-                                                }
-                                            });
-                                            that.countdownText = that.add.text(310, 570, that.cntTimer, 
-                                                {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF', align: 'center'});
-                                            that.countdownText.setInteractive();
-                                            that.countdownText.addListener("pointerup", function () {
-                                                that.cntTimer = 1;
-                                            });
-
-                                            // Knowledge Panel Popup
-                                            that.countDownTimer(function () {
-                                                that.sequencedInfoOverlay.destroy();
-                                                that.knowledgePanelOverlay = that.add.dom(180, 300).createFromCache("html_knowledgepanel");
-                                                that.knowledgePanelOverlay.setAlpha(0);
-                                                that.knowledgePanelOverlay.getChildByID("knowledgepanel-description").innerHTML = that.knowledgepanel.description;
-                                                that.knowledgePanelOverlay.getChildByID("knowledgepanel-img").src = that.knowledgepanel.imgurl;
-                                                that.fadeInObj(that.knowledgePanelOverlay);
-                                                that.cntTimer = 10;
-                                                that.countdownText.setPosition(310, 400).setText(that.cntTimer).setVisible(true);
-                                                that.countDownTimer(function () {
-                                                    // Does the quiz after the knowledge panel fades
-                                                    that.doQuiz();
-                                                });
-                                            });
-
-                                            that.fadeInObj(that.sequencedInfoOverlay);
-                                        } else {
-                                            that.presentEndscreenOptions();
+                                        console.log(that);
+                                        let levelData = data.gameObj.levels[that.level];
+                                        let performance = {
+                                            timestamp: new Date().toString(), // timestamp when level was finished
+                                            level: that.level, // what number level is this in the campaign
+                                            process: levelData.process, // what process of DNA replication was being played?
+                                            lvlType: that.lvlType, // what type of level was this ("dna_replication" vs "codon_transcription"
+                                            speed: levelData.speed, // speed of the level,
+                                            rotateNT: levelData.rotateNT, // was this level a rotational level?
+                                            missed: missingCount, // how many objects were missed
+                                            correct: data.nucleotides.length - missingCount - mutationCount, // how many objects were correct
+                                            error: mutationCount, // how many objects were errored
+                                            total: data.nucleotides.length, // how many objects were in the total sequence
+                                            levelNum: that.gameObj.GLOBAL.LEVEL_PERFORMANCE.length + 1 // how many levels were already completed (including this one)
                                         }
+                                        that.gameObj.GLOBAL.LEVEL_PERFORMANCE.push(performance)
+                                        
+                                        that.presentEndscreenOptions();
+                                        console.log(data);
 
                                         // Introduces draggable NTs
                                         that.makeDraggableNTs();
@@ -442,7 +424,7 @@ class LevelComplete extends Phaser.Scene {
             let perc = Math.floor((Math.random() * 3) + 1) / 100;
             perc = score * perc;
             sctxt = Math.min(sctxt + perc, score);
-            text.setText(sctxt);
+            text.setText(Math.floor(sctxt));
             let that = this;
             this.time.addEvent({
                 delay: 1,
@@ -679,8 +661,8 @@ class LevelComplete extends Phaser.Scene {
                 cdapi.logQuestionResponse(that.level, answeredOption, + correctness, cdapi.getCurrentSession());
             }
             if (correctness) { // Upon selecting correct quiz answer
-                that.gameObj.GLOBAL.SCORE += that.quizPointWorth;
-                that.gameObj.GLOBAL.QUIZ_QUESTIONS_CORRECT++;
+                // that.gameObj.GLOBAL.SCORE += that.quizPointWorth;
+                // that.gameObj.GLOBAL.QUIZ_QUESTIONS_CORRECT++;
                 let bonustxt = that.add.text(180, 269, "+" + that.quizPointWorth + " BONUS!", 
                     {fontFamily: '\'Bevan\', cursive', fontSize: '29pt', color: '#78D863', align: 'center'});
                 bonustxt.setOrigin(0.5);
@@ -692,7 +674,7 @@ class LevelComplete extends Phaser.Scene {
                     }
                 });
             } else {
-                that.gameObj.GLOBAL.QUIZ_QUESTIONS_WRONG++;
+                // that.gameObj.GLOBAL.QUIZ_QUESTIONS_WRONG++;
             }
             that.time.addEvent({
                 delay: 2500,

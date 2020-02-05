@@ -196,7 +196,15 @@ class PositionManager {
         for (let i = 0; i < this.levelNucleotides.length; i++) {
             let nucleotide = this.levelNucleotides[i];
             if (nucleotide && this.level.levelConfig.lvlType == LT_DNA_REPLICATION) {
-                let newcleotide = new Nucleotide(this.level, nucleotide.matches[0], this.level.ntType);
+                
+                // edge case: on transcription levels, we need to check that any instance of an
+                // adenine is actually being matched by a uracil, not a thymine.
+                let newcleotide;
+                if (this.level.gameObj.levels[this.level.level].process == "transcription" && nucleotide.rep == "A") {
+                    newcleotide = new Nucleotide(this.level, nucleotide.matches[1], this.level.ntType);
+                } else {
+                    newcleotide = new Nucleotide(this.level, nucleotide.matches[0], this.level.ntType);
+                }
                 this.compLevelNucleotides.push(newcleotide);
             } else {
                 this.compLevelNucleotides.push(null);

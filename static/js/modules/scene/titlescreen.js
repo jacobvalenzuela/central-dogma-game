@@ -37,19 +37,22 @@ class TitleScreen extends Phaser.Scene {
         this.playedIntro = false;
 
         // Background color
-        this.graphics.fillStyle(0x1e1e1e, 1.0);
+        this.graphics.fillStyle(0xFFFFFF, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
         
 
-        let isblogo = this.game.add.image(180, 320, "logo_isb").setScale(0.35);
-        this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.20).setAlpha(0).setDepth(1);
+        // Intro title screen ISB logo
+        let isblogo = this.game.add.image(180, 320, "logo_isb").setScale(0.5);
+
+        // upper right ISB logo
+        this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.30).setAlpha(0).setDepth(1);
 
         let dogmaLogo = this.game.add.sprite(185, 280, "logo_dogma_intro", 0).setScale(1.4);
         this.dogmaLogo = dogmaLogo;
 
         // Notifications
         this.alert = this.game.add.text(68, 390, "",
-            {fontFamily: 'Teko', fontSize: '20pt', color: '#FFFFFF'}).setDepth(1).setAlpha(0);
+            {fontFamily: 'Teko', fontSize: '20pt', color: '#000000'}).setDepth(1).setAlpha(0);
 
         // Menu Buttons
 
@@ -333,7 +336,7 @@ class TitleScreen extends Phaser.Scene {
             let screenWidth = 360; // width of box to randomly spawn floaties
             let screenHeight = 720; // height of box to randomly spawn floaties
 
-            let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff');
+            let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff_dark');
             myFloaty.setScale(maxScale).setDepth(0.5).setAlpha(0.15);
 
             // Randoly sets speed to some percentage of its max speed, in a random direction

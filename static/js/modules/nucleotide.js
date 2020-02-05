@@ -97,7 +97,7 @@ class Nucleotide {
             },
             "U": {
                 shortname: "uracil",
-                color: 0x808184,
+                color: 0xaa24ff,
                 matches: ["A"],
                 classification: "pyrimidine",
                 display: {

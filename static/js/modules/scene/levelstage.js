@@ -420,9 +420,12 @@ class LevelStage extends Phaser.Scene {
 
     start() {
 
-        // Start initial quiz screen
-        this.scene.pause();
-        this.scene.launch('quizScreen', this);
+        // Start initial quiz screen (if education is active)
+        if (this.data.gameObj.GLOBAL.ACTIVE_EDUCATION) {
+            this.scene.pause();
+            this.scene.launch('quizScreen', this);
+        }
+        
 
 
         // Starts actual game
@@ -789,6 +792,7 @@ class LevelStage extends Phaser.Scene {
             gameObj: this.gameObj,
             nucleotides: nucleotides,
             score: this.scorekeeping.getScore(),
+            correctCount: this.scorekeeping.sequencesMade,
             accuracy: this.scorekeeping.getAccuracy(),
             quiz: this.levelConfig.quiz,
             sequencedinfo: this.levelConfig.sequencedinfo,

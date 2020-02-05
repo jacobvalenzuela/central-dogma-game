@@ -18,6 +18,7 @@ class QuizScreen extends Phaser.Scene {
      */
     init(data) {
         console.log(data);
+        console.log(data.gameObj.GLOBAL);
         // Color Constants
         let ORANGE = 0xFE5832;
         let DARK_BLUE = 0x002664;
@@ -37,7 +38,7 @@ class QuizScreen extends Phaser.Scene {
 
         // Quiz related variables
         this.selectedChoice = null;
-        this.quizQuestion = questions[5]//questions[Math.floor(questions.length * Math.random())];
+        this.quizQuestion = questions[Math.floor(questions.length * Math.random())];
         this.points = this.quizQuestion.worth;
 
 
@@ -59,6 +60,14 @@ class QuizScreen extends Phaser.Scene {
         this.submitFeedback.setOrigin(0.5, 0.5);
         this.choices = [];
 
+        // Initializing the quiz question object to store later for this question attempt
+        this.questionResult = {
+            timestamp: new Date().toString(),
+            question: this.quizQuestion,
+            attempts: 1,
+            questionNum: data.gameObj.GLOBAL.QUIZ_RESULTS.length + 1
+        };
+
 
         this.submitBtn = this.add.image(180, 620, "submit_btn").setScale(0.40).setAlpha(0);
         this.submitBtn.addListener("pointerup", this.bindFn(function(){
@@ -76,6 +85,7 @@ class QuizScreen extends Phaser.Scene {
                 this.submitFeedback.setColor("#008000");
     
                 data.scorekeeping.addKnowledgePoints(this.points);
+                data.gameObj.GLOBAL.QUIZ_RESULTS.push(this.questionResult);
                 let that = this;
 
                 this.time.addEvent({
@@ -92,10 +102,14 @@ class QuizScreen extends Phaser.Scene {
                 this.submitFeedback.text = "Try Again";
                 this.submitFeedback.setColor("#FF0000");
                 this.halvePointsAndDisplay();
+                this.questionResult.attempts++;
     
                 for (let i = 0; i < this.choices.length; i++) { 
                     if (i == this.selectedChoice) {
+                        // sets the color of the choice to red, moves to random spot in box.
                         this.choices[i].setColor("#FF0000");
+                        this.choices[i].x = (Math.random() * 280) + 40;
+                        this.choices[i].y = 310 + (i*40);
                     }
                 }
             }
@@ -188,15 +202,61 @@ class QuizScreen extends Phaser.Scene {
             // display the submit button instantly
             this.tweens.add({ targets: this.submitBtn, alpha: 1.0, duration: 1000, ease: 'power4' });
             this.submitBtn.setInteractive();
+            let occupiedY = [];
+            
             for (let i = 0; i < question.options.length; i++) {
                 // buffer to keep items in the box
-                let buffer = 50;
+                // Represents how many pixels in from each edge to spawn choice.
+                let buffer = 120;
 
-                // from x=20 to x=340
-                let randx = (Math.random() * (320 - buffer)) + 20 + buffer;
+                let validY = false;
 
-                // from y=290 to y=570
-                let randy = (Math.random() * (280 - buffer)) + 290 + buffer;
+                let randx = (Math.random() * 280) + 40;
+
+                let randy = 310 + (i*40); // + (Math.random() * 50) // (Math.random() * (280 - buffer)) + 290 + buffer;
+                
+                // buffer to keep choices from spawning on top of each other
+                // Represents how many pixels above and below a choice that other choices
+                // can't spawn on.
+                let bufferY = 5;
+
+
+                // if occupiedY is initially empty, just push our value
+                // otherwise, check if the randy we generated is not in the range of any other
+                // randy we pushed already to occupiedY.
+                // if it is in range of one of them, regen occupiedY.
+                // if not, push randy to occupiedY.
+                /*
+                if (occupiedY.length == 0) {
+                    console.log("valid y because it's the first option.")
+                    occupiedY.push(randy);
+                } else {
+                    while (occupiedY.length <= i) {
+                        // only push randy to occupiedY IF after looking thru them all, you find you're not in their range.
+                        
+                        let alreadyOccupied = true;
+                        while (!alreadyOccupied) {
+                            for (let j = 0; j < occupiedY.length; j++) {
+                                if ( randy < (occupiedY[j] + buffer) && randy > (occupiedY[j] - buffer) ) {
+                                    alreadyOccupied = true;
+                                }
+                            }
+                            if (alreadyOccupied) {
+                                randy = (Math.random() * (280 - buffer)) + 290 + buffer;
+                            }
+                        }
+                        
+    
+                        occupiedY.push(randy);
+                        alreadyOccupied = false;
+                    }
+
+                }
+                */
+                //occupiedY.push(randy);
+                console.log("Random Y: " + randy);
+                console.log("Current Y's");
+                console.log(occupiedY);
 
                 let option;
                 option = this.add.text(randx, randy, question.options[i], {fontFamily: 'Teko, sans-serif', fontSize: '18pt', color: '#FFFFFF', wordWrap: { width: 200, useAdvancedWrap: true }}).setAlpha(0);
@@ -207,10 +267,9 @@ class QuizScreen extends Phaser.Scene {
                     option.y = dragY
                 });
 
-
-
                 this.choices[i] = option;
                 this.tweens.add({ targets: this.choices[i], alpha: 1.0, duration: 500 + (i * 350), ease: 'power4' });
+                
             }
 
             // other details:
@@ -243,6 +302,11 @@ class QuizScreen extends Phaser.Scene {
 
     halvePointsAndDisplay() {
         this.points = Math.floor(this.points / 2);
+        this.pointWorth.setColor("#FF0000");
+        setTimeout(() => { 
+            console.log("RESET COLOR")
+            this.pointWorth.setColor("#FFFFFF");
+        }, 1000);
         this.pointWorth.text = "(" + this.points + " Points)";
     }
 
