@@ -7,6 +7,7 @@ import PauseScreen from "./scene/pause.js";
 import AboutScreen from "./scene/about.js";
 import CountdownResumeScreen from './scene/countdownResume.js';
 import QuizScreen from './scene/quiz.js';
+import LoginScreen from './scene/loginscreen.js';
 
 /**
  * Class representing the game object. Handles the creation of the basic
@@ -300,6 +301,7 @@ class Game {
         this.game.scene.add("aboutScreen", AboutScreen, false, {gameObj: this, levels: this.levels});
         this.game.scene.add("countdownResumeScreen", CountdownResumeScreen, false, {gameObj: this, levels: this.levels});
         this.game.scene.add("quizScreen", QuizScreen, false, {gameObj: this, levels: this.levels});
+        this.game.scene.add("titlescreen", TitleScreen, false, {gameObj: this, levels: this.levels});
 
         // JSON
         this.game.load.json("quizQuestions", "static/json/quizquestions.json");
@@ -334,9 +336,13 @@ class Game {
      * Creates the title screen and starts it.
      */
     create() {
+        /*
         this.game.scene.add("titlescreen", TitleScreen, true, {
             gameObj: this
         });
+        */
+        
+        this.game.scene.add("loginScreen", LoginScreen, true, {gameObj: this, levels: this.levels});
 
         // let singleLvl = new LevelStage(this, this.level);
         // let titleScreen = new TitleScreen(this);

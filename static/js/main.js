@@ -19,7 +19,7 @@ import Game from "./modules/game.js";
     // 50 - takes about 5.28 seconds for 3 nucleotides
     // 33 - takes about 3.66 seconds for 3 nucleotides
     // 1 - takes about 1.95 seconds for 3 nucleotides
-    let SPEED_SLOW = 50;
+    let SPEED_SLOW = 42;
     let SPEED_MEDIUM = 33;
     let SPEED_FAST = 1;
 
