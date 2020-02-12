@@ -26,6 +26,9 @@ class Game {
             QUIZ_RESULTS: [], // Array of "quiz" objects
             LEVEL_PERFORMANCE: [] // Array of "level" objects
         };
+        this.sessionID = "";
+        this.userName = "";
+
         
         // QUIZ_RESULTS is an array of "quiz" objects:
         /*

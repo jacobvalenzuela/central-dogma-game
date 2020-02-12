@@ -41,9 +41,7 @@ class LoginScreen extends Phaser.Scene {
         let html = document.createElement("html");
         html.innerHTML = this.cache.html.entries.get("html_login");
 
-        console.log(html)
-        console.log(String(html.innerHTML));
-        this.domOverlay = this.add.dom(180, 300).createFromHTML(String(html.innerHTML));
+        this.domOverlay = this.add.dom(180, 360).createFromHTML(String(html.innerHTML));
 
         // Adding options for adjective selector
         let adjectiveSelector = this.domOverlay.getChildByID("adjective-selector");
@@ -65,9 +63,14 @@ class LoginScreen extends Phaser.Scene {
         let states = ["AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY"];
         this.appendSelectOptionsRandomly(stateSelector, states, true);
 
+        // Adding options for grade selector
+        let gradeSelector = this.domOverlay.getChildByID("grade-selector");
+        let grades = ["K-8", "9", "10", "11", "12", "Undergraduate", "Other", "NA"]
+        this.appendSelectOptionsRandomly(gradeSelector, grades, true);
+
         // Adding options for gender selector
         let genderSelector = this.domOverlay.getChildByID("gender-selector");
-        let genders = ["Prefer not to say", "Female", "Male", "Non-binary/third gender", "Other"]
+        let genders = ["Prefer not to say", "Female", "Male", "Non-binary", "Third gender", "Other"]
         this.appendSelectOptionsRandomly(genderSelector, genders, true);
 
         this.add.tween({
@@ -102,13 +105,16 @@ class LoginScreen extends Phaser.Scene {
                 event.preventDefault();
                 
                 // builds the username and lowercases it
-                let username = this.domOverlay.getChildByID("adjective-selector").value + 
-                               this.domOverlay.getChildByID("color-selector").value +
-                               this.domOverlay.getChildByID("animal-selector").value;
+                let username = this.domOverlay.getChildByID("adjective-selector").value + "-" +
+                               this.domOverlay.getChildByID("color-selector").value + "-" +
+                               this.domOverlay.getChildByID("animal-selector").value + "-" +
+                               this.domOverlay.getChildByID("state-selector").value + "-" +
+                               this.domOverlay.getChildByID("grade-selector").value.replace("-", "_") +  "-" +
+                               this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_");
                 username = username.toLowerCase();
 
                 // retrieves session name
-                let session = this.domOverlay.getChildByID("login-sessionName").value;
+                let session = this.domOverlay.getChildByID("login-sessionName").value.replace(" ", "_");
 
                 // if any are invalid, tell the user
                 if (!username || !session) {
@@ -116,7 +122,10 @@ class LoginScreen extends Phaser.Scene {
                     return;
                 }
 
-                // otherwise attempt to log in
+                // otherwise store this data and attempt to log in
+                data.gameObj.sessionID = session;
+                data.gameObj.userName = username;
+
                 cdapi.signin(username, session)
                     .then(result => {
                         console.log("logged in: " + result);

@@ -44,13 +44,14 @@ class QuizScreen extends Phaser.Scene {
         // If the question is drag and drop, randomly pick between the two formats (drag and drop or multiple choice)
         // All drag and drop questions can be in a multiple choice format,
         // but multiple choice questions cannot be in a drag and drop format.
+        /*
         if (this.quizQuestion.type == "drag and drop") {
             let coin = Math.floor(Math.random() * 2);
             if (coin == 0) {
                 this.quizQuestion.type = "multiple choice"
             }
         }
-
+        */
 
         // Initialize Quiz Layout
         this.questionBox = this.add.rectangle(180, 365, 320, 175, BLUE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
@@ -96,7 +97,13 @@ class QuizScreen extends Phaser.Scene {
                 this.submitFeedback.setColor("#008000");
     
                 data.scorekeeping.addKnowledgePoints(this.points);
+
+                // update global quiz record
                 data.gameObj.GLOBAL.QUIZ_RESULTS.push(this.questionResult);
+
+                // save progress to database
+                this.updateDatabaseUserGlobal(data);
+
                 let that = this;
 
                 this.time.addEvent({
@@ -118,10 +125,11 @@ class QuizScreen extends Phaser.Scene {
                 for (let i = 0; i < this.choices.length; i++) { 
                     
                     if (i == this.selectedChoice) {
-                        this.choices[i].setColor("#FF0000");
                         if (this.quizQuestion.type == "drag and drop") {
-                            this.choices[i].x = (Math.random() * 280) + 40;
-                            this.choices[i].y = 310 + (i*40);
+                            this.choices[i].x = (Math.random() *255) + 40;
+                            this.choices[i].y = 310 + (i*55 + (Math.random() * 20) );
+                        } else {
+                            this.choices[i].setColor("#FF0000");
                         }
                     }
                 }
@@ -255,12 +263,12 @@ class QuizScreen extends Phaser.Scene {
 
                 let validY = false;
 
-                let randx = (Math.random() * 280) + 40;
+                let randx = (Math.random() * 255) + 40;
 
-                let randy = 310 + (i*40);
+                let randy = 310 + (i*55 + (Math.random() * 20) );
                 
                 let option;
-                option = this.add.text(randx, randy, question.options[i], {fontFamily: 'Teko, sans-serif', fontSize: '18pt', color: '#FFFFFF', wordWrap: { width: 200, useAdvancedWrap: true }}).setAlpha(0);
+                option = this.add.text(randx, randy, question.options[i], {fontFamily: 'Teko, sans-serif', fontSize: '18pt', color: '#FFFFFF', backgroundColor: '#FE5832', wordWrap: { width: 200, useAdvancedWrap: true }}).setAlpha(0);
                 option.setOrigin(0.5, 0.5);
                 option.setInteractive({ draggable: true });
                 option.on('drag', function(pointer, dragX, dragY){
@@ -321,6 +329,19 @@ class QuizScreen extends Phaser.Scene {
             let event = this;
             fn.bind(clas, event, ...args)();
         };
+    }
+
+    updateDatabaseUserGlobal(data) {
+        // add their current progress to the database,
+        // but only if they have a userName and sessionID
+        if (data.gameObj.userName != "" && data.gameObj.sessionID != "") {
+            cdapi.storeNewGlobalVariable(data.gameObj.userName, data.gameObj.sessionID, data.gameObj.GLOBAL).then(result => {
+                console.log("object stored: ");
+                console.log(data.gameObj.GLOBAL);
+            }).catch(err => {
+                console.log("problem storing new global variable: " + err);
+            });
+        }
     }
 }
 

@@ -83,18 +83,21 @@ class ListLevels extends Phaser.Scene {
         //this.updateSignInIcon();
 
         // Leaderboard UI
-        /*
-        this.add.text(80, 60, "LEADERS", 
+        // Leaderboard will only appear as an option if you're signed in
+        if (data.gameObj.userName != "" && data.gameObj.SessionID != "") {
+            this.add.text(80, 60, "LEADERS", 
             {fontFamily: 'Teko', fontSize: '16pt', color: '#000000'});
-        this.sessionbtn = this.add.image(104, 30, "leadererboard_btn").setScale(0.4).setInteractive();
-        */
+            this.sessionbtn = this.add.image(104, 30, "leadererboard_btn").setScale(0.4).setInteractive();
+            this.sessionbtn.addListener("pointerup", this.bindFn(() => {
+                this.showSessionLeaderboard(data.gameObj.sessionID, "score", 10)
+            }));
+        }
 
         // Functionality to skip DOGMA animation, also fades in content.
         let that = this;
         this.fadeIn(function () {
             that.displayLevel(that.curLevel);
             //that.userbtn.addListener("pointerup", that.bindFn(that.onUserButtonClick));
-            //that.sessionbtn.addListener("pointerup", that.bindFn(that.onSessionButtonClick));
         });
 
         this.domOverlay = null;
@@ -256,6 +259,60 @@ class ListLevels extends Phaser.Scene {
             this.domOverlay.getChildByID("sessionmgr-start-input").value = moment(start).format(moment.HTML5_FMT.DATETIME_LOCAL);
             this.domOverlay.getChildByID("sessionmgr-end-input").value = moment(end).format(moment.HTML5_FMT.DATETIME_LOCAL);
         }
+    }
+
+    showSessionLeaderboard(sessionID, category, rows) {
+        if (this.domOverlay) {
+            return;
+        }
+
+        let html = document.createElement("html");
+        html.innerHTML = this.cache.html.entries.get("html_sessions");
+
+        this.domOverlay = this.add.dom(180, 360).createFromHTML(String(html.innerHTML));
+        this.add.tween({
+            targets: [this.fadeCover],
+            ease: 'Sine.easeInOut',
+            duration: 500,
+            delay: 0,
+            alpha: {
+                getStart: function () {
+                    return 0;
+                },
+                getEnd: function () {
+                    return 0.6;
+                }
+            }
+        });
+        if (sessionID != "") {
+            cdapi.getTotalLeaderboard(sessionID, category, rows).then(results => {    
+                let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
+    
+                this.domOverlay.getChildByID("sessions-name-displ").textContent = sessionID;
+    
+                for (let i = 0; i < results.length; i++) {
+                    let entry = document.createElement("tr");
+                    let rank = document.createElement("td");
+                    let userName = document.createElement("td");
+                    let value = document.createElement("td");
+    
+                    rank.textContent = i + 1;
+                    userName.textContent = results[i].userName;
+                    value.textContent = results[i].value;
+    
+                    entry.appendChild(rank);
+                    entry.appendChild(userName);
+                    entry.appendChild(value);
+    
+                    table.appendChild(entry);
+                }
+
+
+            });
+        } else {
+            this.domOverlay.getChildByID("sessions-name-displ").textContent = "Currently not signed into any session.";
+        }
+
     }
 
     showSessionsOverlay(duration=500) {

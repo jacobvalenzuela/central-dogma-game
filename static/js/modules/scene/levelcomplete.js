@@ -140,7 +140,7 @@ class LevelComplete extends Phaser.Scene {
                                         let levelData = data.gameObj.levels[that.level];
                                         let performance = {
                                             timestamp: new Date().toString(), // timestamp when level was finished
-                                            level: that.level, // what number level is this in the campaign
+                                            level: that.level + 1, // what number level is this in the campaign
                                             process: levelData.process, // what process of DNA replication was being played?
                                             lvlType: that.lvlType, // what type of level was this ("dna_replication" vs "codon_transcription"
                                             speed: levelData.speed, // speed of the level,
@@ -153,6 +153,9 @@ class LevelComplete extends Phaser.Scene {
                                         }
                                         that.gameObj.GLOBAL.LEVEL_PERFORMANCE.push(performance)
                                         
+                                        // store progress in database.
+                                        that.updateDatabaseUserGlobal(data);
+
                                         that.presentEndscreenOptions();
                                         console.log(data);
 
@@ -748,6 +751,19 @@ class LevelComplete extends Phaser.Scene {
         }
 
     
+    }
+
+    updateDatabaseUserGlobal(data) {
+        // add their current progress to the database,
+        // but only if they have a userName and sessionID
+        if (data.gameObj.userName != "" && data.gameObj.sessionID != "") {
+            cdapi.storeNewGlobalVariable(data.gameObj.userName, data.gameObj.sessionID, data.gameObj.GLOBAL).then(result => {
+                console.log("object stored: ");
+                console.log(data.gameObj.GLOBAL);
+            }).catch(err => {
+                console.log("problem storing new global variable: " + err);
+            });
+        }
     }
 
     shuffleArray(a) {
