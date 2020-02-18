@@ -214,6 +214,7 @@ class Game {
         this.game.load.image("profile_btn", "static/img/signin.png");
         this.game.load.image("credits_btn", "static/img/CreditsBtn.png");
         this.game.load.image("submit_btn", "static/img/submitBtn.png");
+        this.game.load.image("signout_btn", "static/img/signoutBtn.png");
 
         // Icons
         this.game.load.image("rotateIcon", "static/img/rotateIcon.png");

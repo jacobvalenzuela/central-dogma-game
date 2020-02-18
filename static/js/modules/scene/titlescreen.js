@@ -233,6 +233,7 @@ class TitleScreen extends Phaser.Scene {
         this.fadeOut(this.effectDisableBtn);
         this.fadeOut(this.educationDisableBtn);
         this.fadeOut(this.creditsButton);
+        this.fadeOut(this.isblogo);
 
         // Removes interactivity from UI
         this.effectDisableBtn.setInteractive(false);

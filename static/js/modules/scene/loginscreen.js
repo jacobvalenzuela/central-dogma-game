@@ -110,8 +110,14 @@ class LoginScreen extends Phaser.Scene {
                                this.domOverlay.getChildByID("animal-selector").value + "-" +
                                this.domOverlay.getChildByID("state-selector").value + "-" +
                                this.domOverlay.getChildByID("grade-selector").value.replace("-", "_") +  "-" +
-                               this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_");
+                               this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_") + "-" +
+                               this.domOverlay.getChildByID("login-sessionName").value;
                 username = username.toLowerCase();
+
+                // just builds the animal name
+                let animalname = this.capitalizeFirstLetter(this.domOverlay.getChildByID("adjective-selector").value) + " " +
+                                 this.capitalizeFirstLetter(this.domOverlay.getChildByID("color-selector").value) + " " +
+                                 this.capitalizeFirstLetter(this.domOverlay.getChildByID("animal-selector").value) + " ";
 
                 // retrieves session name
                 let session = this.domOverlay.getChildByID("login-sessionName").value.replace(" ", "_");
@@ -125,16 +131,30 @@ class LoginScreen extends Phaser.Scene {
                 // otherwise store this data and attempt to log in
                 data.gameObj.sessionID = session;
                 data.gameObj.userName = username;
+                data.gameObj.animalName = animalname;
 
-                cdapi.signin(username, session)
-                    .then(result => {
-                        console.log("logged in: " + result);
-                        this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
-                    })
-                    .catch(result => {
-                        this.domOverlay.getChildByID("login-feedback").textContent = "Something went wrong while logging in.";
-                        console.log("failed to log in: " + result);
-                    })
+                // first check if user is already signed in
+                cdapi.isUserSignedIn(username, session)
+                .then(loggedIn => {
+                    // If they are not logged in already, they are free to log in.
+                    if (!loggedIn) {
+                        cdapi.signin(username, session)
+                        .then(result => {
+                            this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
+                        })
+                        .catch(result => {
+                            this.domOverlay.getChildByID("login-feedback").textContent = "Something went wrong while logging in.";
+                            console.log("failed to log in: " + result);
+                        })
+                    // if they are logged in, they just have to wait out the timer.
+                    } else {
+                        this.domOverlay.getChildByID("login-feedback").textContent = "User is already signed in, try again in 10 minutes.";
+                    }
+                })
+                .catch(result => {
+                    this.domOverlay.getChildByID("login-feedback").textContent = "Something went wrong while logging in.";
+                    console.log("failed to log in: " + result);
+                })
             } else if (event.target.id == "skip-button") {
                 this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
             }

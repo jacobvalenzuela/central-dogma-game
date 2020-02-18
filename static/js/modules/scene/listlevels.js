@@ -30,6 +30,12 @@ class ListLevels extends Phaser.Scene {
         this.add.text(26, 90, "- LEVEL SELECTION -", 
             {fontFamily: 'Teko', fontSize: '40pt', color: '#000000'});
 
+        this.greeting = this.add.text(26, 30, "Welcome Back,", 
+            {fontFamily: 'Teko', fontSize: '28pt', color: '#000000'});
+
+        this.usernameText = this.add.text(26, 65, data.gameObj.animalName, 
+            {fontFamily: 'Teko', fontSize: '15pt', color: '#000000'});
+
         this.graphics.fillStyle(0xFF8040, 0.4);
         this.graphics.fillRect(18, 157, 320, 45);
 
@@ -38,11 +44,22 @@ class ListLevels extends Phaser.Scene {
 
 
         // Level Selection UI/Functionality
-        this.leftLevelBtn = this.add.image(60, 620, "left_arrow_btn").setScale(0.25).setInteractive();
-        this.rightLevelBtn = this.add.image(300, 620, "right_arrow_btn").setScale(0.25).setInteractive();
-        this.goBtn = this.add.image(180, 620, "go_btn").setScale(0.40).setInteractive();
+        this.leftLevelBtn = this.add.image(60, 600, "left_arrow_btn").setScale(0.25).setInteractive();
+        this.rightLevelBtn = this.add.image(300, 600, "right_arrow_btn").setScale(0.25).setInteractive();
+        this.goBtn = this.add.image(180, 600, "go_btn").setScale(0.40).setInteractive();
         this.backBtn = this.add.image(50, 690, "back_btn").setScale(0.30).setInteractive();
+        this.signoutBtn = this.add.image(250, 690, "signout_btn").setScale(0.5).setInteractive();
 
+        // Leaderboard UI
+        // Leaderboard will only appear as an option if you're signed in
+        if (data.gameObj.userName != "" && data.gameObj.SessionID != "") {
+            this.sessionbtn = this.add.image(290, 35, "leadererboard_btn").setScale(0.33).setInteractive();
+            this.sessionbtn.addListener("pointerup", this.bindFn(() => {
+                this.showSessionLeaderboard(data.gameObj.userName, data.gameObj.sessionID, "score", 10)
+            }));
+        }
+
+        // Left and Right
         this.leftLevelBtn.on("pointerdown", () => {
             this.browseLeft();
         });
@@ -51,14 +68,39 @@ class ListLevels extends Phaser.Scene {
             this.browseRight();
         });
 
+        // Go Button
         this.goBtn.on("pointerdown", () => {
             if (this.levels[this.curLevel].unlocked == true) {
                this.startPrelevel(this.curLevel); 
             }
         })
 
+        // Back Button
         this.backBtn.on("pointerdown", () => {
             this.backButtondown();
+        })
+
+        // Signout Button
+        this.signoutBtn.on("pointerdown", () => {
+            cdapi.signout(data.gameObj.userName, data.gameObj.sessionID).then(result => {
+                console.log(result);
+
+                // Removes leaderboard button
+                this.sessionbtn.setAlpha(0);
+                this.sessionbtn.setInteractive(false);
+
+                // changes greeting
+                this.usernameText.text = "";
+                this.greeting.text = "Not Signed In";
+
+                // Deletes their username and seesion
+                data.gameObj.session = "";
+                data.gameObj.userNamwe = "";
+
+                // removes sign out button
+                this.signoutBtn.setAlpha(0);
+                this.signoutBtn.setInteractive(0);
+            })
         })
 
         // Level Selection Descriptors
@@ -81,17 +123,6 @@ class ListLevels extends Phaser.Scene {
         this.userIcn = this.add.image(40, 30, "signin_user_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
         */
         //this.updateSignInIcon();
-
-        // Leaderboard UI
-        // Leaderboard will only appear as an option if you're signed in
-        if (data.gameObj.userName != "" && data.gameObj.SessionID != "") {
-            this.add.text(80, 60, "LEADERS", 
-            {fontFamily: 'Teko', fontSize: '16pt', color: '#000000'});
-            this.sessionbtn = this.add.image(104, 30, "leadererboard_btn").setScale(0.4).setInteractive();
-            this.sessionbtn.addListener("pointerup", this.bindFn(() => {
-                this.showSessionLeaderboard(data.gameObj.sessionID, "score", 10)
-            }));
-        }
 
         // Functionality to skip DOGMA animation, also fades in content.
         let that = this;
@@ -261,7 +292,7 @@ class ListLevels extends Phaser.Scene {
         }
     }
 
-    showSessionLeaderboard(sessionID, category, rows) {
+    showSessionLeaderboard(userName, sessionID, category, rows) {
         if (this.domOverlay) {
             return;
         }
@@ -289,6 +320,7 @@ class ListLevels extends Phaser.Scene {
                 let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
     
                 this.domOverlay.getChildByID("sessions-name-displ").textContent = sessionID;
+                this.domOverlay.getChildByID("sessions-username").textContent = "Username: " + userName;
     
                 for (let i = 0; i < results.length; i++) {
                     let entry = document.createElement("tr");
