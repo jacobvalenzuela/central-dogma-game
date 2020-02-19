@@ -30,12 +30,6 @@ class ListLevels extends Phaser.Scene {
         this.add.text(26, 90, "- LEVEL SELECTION -", 
             {fontFamily: 'Teko', fontSize: '40pt', color: '#000000'});
 
-        this.greeting = this.add.text(26, 30, "Welcome Back,", 
-            {fontFamily: 'Teko', fontSize: '28pt', color: '#000000'});
-
-        this.usernameText = this.add.text(26, 65, data.gameObj.animalName, 
-            {fontFamily: 'Teko', fontSize: '15pt', color: '#000000'});
-
         this.graphics.fillStyle(0xFF8040, 0.4);
         this.graphics.fillRect(18, 157, 320, 45);
 
@@ -49,15 +43,27 @@ class ListLevels extends Phaser.Scene {
         this.goBtn = this.add.image(180, 600, "go_btn").setScale(0.40).setInteractive();
         this.backBtn = this.add.image(50, 690, "back_btn").setScale(0.30).setInteractive();
         this.signoutBtn = this.add.image(250, 690, "signout_btn").setScale(0.5).setInteractive();
+        this.sessionbtn = this.add.image(290, 35, "leadererboard_btn").setScale(0.33).setAlpha(0);
+        this.greeting = this.add.text(26, 30, "", 
+            {fontFamily: 'Teko', fontSize: '28pt', color: '#000000'});
+        this.usernameText = this.add.text(26, 65, "", 
+            {fontFamily: 'Teko', fontSize: '15pt', color: '#000000'});
 
-        // Leaderboard UI
-        // Leaderboard will only appear as an option if you're signed in
-        if (data.gameObj.userName != "" && data.gameObj.SessionID != "") {
-            this.sessionbtn = this.add.image(290, 35, "leadererboard_btn").setScale(0.33).setInteractive();
-            this.sessionbtn.addListener("pointerup", this.bindFn(() => {
-                this.showSessionLeaderboard(data.gameObj.userName, data.gameObj.sessionID, "score", 10)
-            }));
-        }
+        // Leaderboard UI/ Greeting
+        // Leaderboard and greeting will only appear as an option if you're signed in
+        cdapi.isUserSignedIn(data.gameObj.userName, data.gameObj.SessionID).then(result => {
+            if (result) {
+                this.sessionbtn.setInteractive();
+                this.sessionbtn.setAlpha(1.0)
+                this.sessionbtn.addListener("pointerup", this.bindFn(() => {
+                    this.showSessionLeaderboard(data.gameObj.userName, data.gameObj.sessionID, "score", 10)
+                }));
+                this.greeting.text = "Welcome Back, ";
+                this.usernameText.text = data.gameObj.animalName;
+            } else {
+                this.removeSignedInOnlyElements();
+            }
+        })
 
         // Left and Right
         this.leftLevelBtn.on("pointerdown", () => {
@@ -83,23 +89,7 @@ class ListLevels extends Phaser.Scene {
         // Signout Button
         this.signoutBtn.on("pointerdown", () => {
             cdapi.signout(data.gameObj.userName, data.gameObj.sessionID).then(result => {
-                console.log(result);
-
-                // Removes leaderboard button
-                this.sessionbtn.setAlpha(0);
-                this.sessionbtn.setInteractive(false);
-
-                // changes greeting
-                this.usernameText.text = "";
-                this.greeting.text = "Not Signed In";
-
-                // Deletes their username and seesion
-                data.gameObj.session = "";
-                data.gameObj.userNamwe = "";
-
-                // removes sign out button
-                this.signoutBtn.setAlpha(0);
-                this.signoutBtn.setInteractive(0);
+                this.removeSignedInOnlyElements();
             })
         })
 
@@ -138,6 +128,20 @@ class ListLevels extends Phaser.Scene {
 
     }
 
+    removeSignedInOnlyElements() {
+        // Removes leaderboard button
+        this.sessionbtn.setAlpha(0);
+        this.sessionbtn.setInteractive(false);
+
+        // changes greeting
+        this.usernameText.text = "";
+        this.greeting.text = "Not Signed In";
+
+        // removes sign out button
+        this.signoutBtn.setAlpha(0);
+        this.signoutBtn.setInteractive(0);
+    }
+
     updateSignInIcon() {
         if (cdapi.isLoggedIn()) {
             this.signInIcn.setVisible(false);
@@ -155,143 +159,9 @@ class ListLevels extends Phaser.Scene {
             this.showSessionsOverlay();
         }
     }
-
-    onSessionButtonClick() {
-        this.showSessionsOverlay();
-    }
     
-    showSessionMgrOverlay(duration=500) {
-        if (this.domOverlay) {
-            return;
-        }
-        this.domOverlay = this.add.dom(180, 300).createFromCache('html_sessionmgr');
-        this.add.tween({
-            targets: [this.fadeCover],
-            ease: 'Sine.easeInOut',
-            duration: duration,
-            delay: 0,
-            alpha: {
-                getStart: function () {
-                    return 0;
-                },
-                getEnd: function () {
-                    return 0.4;
-                }
-            }
-        });
 
-        this.domOverlay.getChildByID("sessionmgr-sessions-list").innerHTML = "";
-        let newSess = this.addSessionToSessionMgr("new");
-        newSess.querySelector("a").classList.add("selected");
-        let that = this;
-        cdapi.ownedSessions()
-            .then(function (data) {
-                if (data.status == "ok") {
-                    that.domOverlay.getChildByID("sessionmgr-error-message").classList.add("hidden");
-                    for (let i = 0; i < data.sessions.length; i++) {
-                        let sess = data.sessions[i];
-                        that.addSessionToSessionMgr(sess.session_code, sess.start_time, sess.end_time);
-                    }
-                } else {
-                    that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
-                    that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
-                }
-            })
-            .catch(function (data) {
-                that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
-                that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
-            });
-            
-        this.domOverlay.addListener("click");
-        this.domOverlay.on("click", function (event) {
-            if (event.target.id == "sessionmgr-submit-button") {
-                event.preventDefault();
-                let sessioncode = this.domOverlay.getChildByID("sessionmgr-name-input").value;
-                let start = this.domOverlay.getChildByID("sessionmgr-start-input").value;
-                let end = this.domOverlay.getChildByID("sessionmgr-end-input").value;
-                if (!sessioncode || !start || !end) {
-                    return;
-                }
-                start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL).format("YYYY-MM-DD HH:mm:ss");
-                end = moment(end, moment.HTML5_FMT.DATETIME_LOCAL).format("YYYY-MM-DD HH:mm:ss");
-                let selectedSessionCode = this.domOverlay.getChildByID("sessionmgr-sessions-list").querySelector("a.selected").dataset.sessionCode;
-                if (selectedSessionCode == "new") {
-                    cdapi.makeSession(sessioncode, start, end)
-                        .then(function (data) {
-                            if (data.status == "ok") {
-                                that._dismissOverlay(0);
-                                that.showSessionMgrOverlay(0);
-                            } else {
-                                that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
-                                that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
-                            }
-                        })
-                        .catch(function (data) {
-                            that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
-                            that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
-                        });
-                } else {
-                    cdapi.modifySession(sessioncode, start, end)
-                        .then(function (data) {
-                            if (data.status == "ok") {
-                                that._dismissOverlay(0);
-                                that.showSessionMgrOverlay(0);
-                            }else {
-                                that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
-                                that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
-                            }
-                        })
-                        .catch(function (data) {
-                            that.domOverlay.getChildByID("sessionmgr-error-message").classList.remove("hidden");
-                            that.domOverlay.getChildByID("sessionmgr-error-message").textContent = data.error;
-                        });
-                }
-            }
-        }, this);
-    }
-
-    addSessionToSessionMgr(code, start=null, end=null) {
-        let li = document.createElement("li");
-        let anchor = document.createElement("a");
-        anchor.href = "#";
-        if (code == "new") {
-            anchor.textContent = "[Create New Session]";
-        } else {
-            anchor.textContent = code;
-        }
-        if (start) {
-            anchor.dataset.startTime = start;
-        }
-        if (end) {
-            anchor.dataset.endTime = end;
-        }
-        anchor.dataset.sessionCode = code;
-        li.appendChild(anchor);
-        this.domOverlay.getChildByID("sessionmgr-sessions-list").appendChild(li);
-        let that = this;
-        anchor.addEventListener("click", function (event) {
-            event.preventDefault();
-            this.parentNode.parentNode.querySelector("a.selected").classList.remove("selected");
-            this.classList.add("selected");
-            that.populateSessionManagerForm(this.dataset.sessionCode, this.dataset.startTime, this.dataset.endTime);
-        });
-        return li;
-    }
-
-    populateSessionManagerForm(code, start=null, end=null) {
-        if (code == "new") {
-            this.domOverlay.getChildByID("sessionmgr-name-input").disabled = false;
-            this.domOverlay.getChildByID("sessionmgr-name-input").value = "";
-            this.domOverlay.getChildByID("sessionmgr-start-input").value = "";
-            this.domOverlay.getChildByID("sessionmgr-end-input").value = "";
-        } else {
-            this.domOverlay.getChildByID("sessionmgr-name-input").disabled = true;
-            this.domOverlay.getChildByID("sessionmgr-name-input").value = code;
-            this.domOverlay.getChildByID("sessionmgr-start-input").value = moment(start).format(moment.HTML5_FMT.DATETIME_LOCAL);
-            this.domOverlay.getChildByID("sessionmgr-end-input").value = moment(end).format(moment.HTML5_FMT.DATETIME_LOCAL);
-        }
-    }
-
+    // Actual leaderboard method I'm using
     showSessionLeaderboard(userName, sessionID, category, rows) {
         if (this.domOverlay) {
             return;
@@ -315,13 +185,15 @@ class ListLevels extends Phaser.Scene {
                 }
             }
         });
+        
         if (sessionID != "") {
-            cdapi.getTotalLeaderboard(sessionID, category, rows).then(results => {    
+            this.domOverlay.getChildByID("sessions-name-displ").textContent = sessionID;
+            this.domOverlay.getChildByID("sessions-username").textContent = "Username: " + userName;
+            let selectedCategory =  this.domOverlay.getChildByID("category-selector").value;
+            cdapi.getTotalLeaderboard(sessionID, selectedCategory, rows).then(results => {    
                 let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
-    
-                this.domOverlay.getChildByID("sessions-name-displ").textContent = sessionID;
-                this.domOverlay.getChildByID("sessions-username").textContent = "Username: " + userName;
-    
+                console.log(selectedCategory);
+
                 for (let i = 0; i < results.length; i++) {
                     let entry = document.createElement("tr");
                     let rank = document.createElement("td");
@@ -338,205 +210,40 @@ class ListLevels extends Phaser.Scene {
     
                     table.appendChild(entry);
                 }
-
-
             });
+            /*
+            this.domOverlay.on("click", function (event) {
+                console.log(event.target.id);
+                if (event.target.id == "category-selector") {
+                    console.log("click!");
+                    let selectedCategory =  this.domOverlay.getChildByID("category-selector").value;
+                    cdapi.getTotalLeaderboard(sessionID, selectedCategory, rows).then(results => {    
+                        let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
+                        console.log(selectedCategory);
+
+                        for (let i = 0; i < results.length; i++) {
+                            let entry = document.createElement("tr");
+                            let rank = document.createElement("td");
+                            let userName = document.createElement("td");
+                            let value = document.createElement("td");
+            
+                            rank.textContent = i + 1;
+                            userName.textContent = results[i].userName;
+                            value.textContent = results[i].value;
+            
+                            entry.appendChild(rank);
+                            entry.appendChild(userName);
+                            entry.appendChild(value);
+            
+                            table.appendChild(entry);
+                        }
+                    });
+                }
+            })*/
         } else {
             this.domOverlay.getChildByID("sessions-name-displ").textContent = "Currently not signed into any session.";
         }
 
-    }
-
-    showSessionsOverlay(duration=500) {
-        if (this.domOverlay) {
-            return;
-        }
-        this.domOverlay = this.add.dom(180, 300).createFromCache('html_sessions');
-        this.add.tween({
-            targets: [this.fadeCover],
-            ease: 'Sine.easeInOut',
-            duration: duration,
-            delay: 0,
-            alpha: {
-                getStart: function () {
-                    return 0;
-                },
-                getEnd: function () {
-                    return 0.4;
-                }
-            }
-        });
-        
-        this.updateSessionOverlay();
-
-        let that = this;
-        this.domOverlay.addListener("click");
-        this.domOverlay.on("click", function () {
-            if (event.target.id == "sessions-join-button") {
-                let val = that.domOverlay.getChildByID("sessions-name-input").value;
-                if (!val) {
-                    return;
-                }
-                cdapi.sessionInfo(val)
-                    .then(function (data) {
-                        if (data.status == "ok") {
-                            that.domOverlay.getChildByID("sessions-error-message").classList.add("hidden");
-                            cdapi.setCurrentSession(val);
-                            that.updateSessionOverlay();
-                        } else {
-                            that.domOverlay.getChildByID("sessions-error-message").classList.remove("hidden");
-                            that.domOverlay.getChildByID("sessions-error-message").textContent = "Session does not exist or it may have expied.";
-                        }
-                    })
-                    .catch(function (data) {
-                        let error = data.error;
-                        if (!error) {
-                            error = "The API service cannot be reached.";
-                        }
-                        that.domOverlay.getChildByID("sessions-error-message").classList.remove("hidden");
-                        that.domOverlay.getChildByID("sessions-error-message").textContent = error;
-                    });
-            } else if (event.target.id == "sessions-manager") {
-                event.preventDefault();
-                this._dismissOverlay(0);
-                this.showSessionMgrOverlay(0);
-            }
-        }, this);
-    }
-
-    updateSessionOverlay() {
-        let that = this;
-        if (cdapi.getCurrentSession() == null) {
-            cdapi.globalLeaderboard()
-                .then(function (data) {
-                    if (data.status == "ok") {
-                        that.updateSessionOverlayLeaderboard(data.entries);
-                    } else {
-                        that.updateSessionOverlayLeaderboard([]);
-                    }
-                })
-                .catch(function () {
-                    that.updateSessionOverlayLeaderboard([]);
-                });
-        } else {
-            let currentSession = cdapi.getCurrentSession();
-            cdapi.sessionInfo(currentSession)
-                .then(function (data) {
-                    if (data.status == "ok") {
-                        cdapi.sessionLeaderboard(currentSession)
-                            .then(function (data) {
-                                if (data.status == "ok") {
-                                    that.updateSessionOverlayLeaderboard(data.entries);
-                                } else {
-                                    that.updateSessionOverlayLeaderboard([]);
-                                }
-                            })
-                            .catch(function () {
-                                that.updateSessionOverlayLeaderboard([]);
-                            });
-                    } else {
-                        cdapi.setCurrentSession(null);
-                        that.updateSessionOverlayLeaderboard([]);
-                    }
-                })
-                .catch(function () {
-                    cdapi.setCurrentSession(null);
-                    that.updateSessionOverlayLeaderboard([]);
-                });
-        }
-    }
-
-    updateSessionOverlayLeaderboard(leaderboard) {
-        let currentSession = cdapi.getCurrentSession();
-        this.domOverlay.getChildByID("sessions-leaderboard-list").innerHTML = "";
-
-        if (currentSession == null) {
-            this.domOverlay.getChildByID("sessions-session-name-displ").textContent = "Global";
-        } else {
-            this.domOverlay.getChildByID("sessions-session-name-displ").textContent = currentSession;
-        }
-        
-        if (leaderboard.length) {
-            this.domOverlay.getChildByID("sessions-no-scores-notice").classList.add("hidden");
-            for (let i = 0; i < leaderboard.length; i++) {
-                let entry = leaderboard[i];
-                let li = document.createElement("li");
-                let tn = document.createTextNode(entry.username + " - ");
-                let strong = document.createElement("strong");
-                strong.textContent = entry.score;
-                console.log(entry);
-                li.appendChild(tn);
-                li.appendChild(strong);
-                this.domOverlay.getChildByID("sessions-leaderboard-list").appendChild(li);
-            }
-        } else {
-            this.domOverlay.getChildByID("sessions-no-scores-notice").classList.remove("hidden");
-        }
-    }
-
-    showRegisterOverlay(duration=500) {
-        if (this.domOverlay) {
-            return;
-        }
-        this.domOverlay = this.add.dom(180, 300).createFromCache('html_register');
-        this.add.tween({
-            targets: [this.fadeCover],
-            ease: 'Sine.easeInOut',
-            duration: duration,
-            delay: 0,
-            alpha: {
-                getStart: function () {
-                    return 0;
-                },
-                getEnd: function () {
-                    return 0.4;
-                }
-            }
-        });
-        this.domOverlay.addListener("click");
-        this.domOverlay.on("click", function (event) {
-            if (event.target.id === "register-login") {
-                event.preventDefault();
-                this._dismissOverlay(0);
-                this.showLoginOverlay(0);
-            } else if (event.target.id == "register-button") {
-                event.preventDefault();
-                let username = this.domOverlay.getChildByID("register-username").value;
-                let password = this.domOverlay.getChildByID("register-password").value;
-                let node = this.domOverlay.node;
-                let genders = node.querySelectorAll("[name='register-gender']");
-                let gender = null;
-                for (let i  = 0; i < genders.length; i++) {
-                    if (genders[i].checked) {
-                        gender = genders[i].value.substr(0, 1);
-                        break;
-                    }
-                }
-                let grade = this.domOverlay.getChildByID("register-grade").value;
-                if (!username || !password || !gender || !grade) {
-                    return;
-                }
-                let that = this;
-                cdapi.register(username, password, grade, gender)
-                    .then(function (data) {
-                        if (data.status == "ok") {
-                            that.updateSignInIcon();
-                            that._dismissOverlay();
-                        } else if (data.status == "error") {
-                            that.domOverlay.getChildByID("register-error-msg").textContent = data.error;
-                            that.domOverlay.getChildByID("register-error-msg").classList.remove("hidden");
-                        }
-                    }).catch(function (data) {
-                        that.domOverlay.getChildByID("register-error-msg").textContent = data.error;
-                        that.domOverlay.getChildByID("register-error-msg").classList.remove("hidden");
-                    });
-            }
-        }, this);
-        let gradeDisp = this.domOverlay.getChildByID("register-grade-displ");
-        let gradeSlider = this.domOverlay.getChildByID("register-grade");
-        gradeSlider.addEventListener("input", function () {
-            gradeDisp.textContent = this.value;
-        })
     }
 
     dismissOverlay(img, pointer) {

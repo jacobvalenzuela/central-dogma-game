@@ -41,7 +41,7 @@ class LoginScreen extends Phaser.Scene {
         let html = document.createElement("html");
         html.innerHTML = this.cache.html.entries.get("html_login");
 
-        this.domOverlay = this.add.dom(180, 360).createFromHTML(String(html.innerHTML));
+        this.domOverlay = this.add.dom(180, 335).createFromHTML(String(html.innerHTML));
 
         // Adding options for adjective selector
         let adjectiveSelector = this.domOverlay.getChildByID("adjective-selector");
@@ -123,21 +123,21 @@ class LoginScreen extends Phaser.Scene {
                 let session = this.domOverlay.getChildByID("login-sessionName").value.replace(" ", "_");
 
                 // if any are invalid, tell the user
-                if (!username || !session) {
+                if (!username || !session || this.domOverlay.getChildByID("adjective-selector").value == "" ||
+                    this.domOverlay.getChildByID("color-selector").value == "" || this.domOverlay.getChildByID("animal-selector").value == "") {
                     this.domOverlay.getChildByID("login-feedback").textContent = "Please specify a valid username and session.";
                     return;
                 }
-
-                // otherwise store this data and attempt to log in
-                data.gameObj.sessionID = session;
-                data.gameObj.userName = username;
-                data.gameObj.animalName = animalname;
 
                 // first check if user is already signed in
                 cdapi.isUserSignedIn(username, session)
                 .then(loggedIn => {
                     // If they are not logged in already, they are free to log in.
                     if (!loggedIn) {
+                        // Store this data
+                        data.gameObj.sessionID = session;
+                        data.gameObj.userName = username;
+                        data.gameObj.animalName = animalname;
                         cdapi.signin(username, session)
                         .then(result => {
                             this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});

@@ -123,18 +123,20 @@
     font-family: 'Teko', "Helvetica", sans-serif;
     color: white;
     font-size: 20px;
-    margin: 5px;
-    margin-top: 12px;
+    margin: 4px;
+    margin-top: 8px;
   }
 
   #user-name {
     font-size: 30px;
     text-align: center;
+    margin: 6px;
   }
 
   .select-css {
       display:block;
       margin: auto;
+      margin-bottom: 4px;
       font-size: 20px;
       font-family: 'Teko', "Helvetica", sans-serif;
       font-weight: 700;
@@ -177,12 +179,16 @@
 </style>
 
 <div class="login">
-    <p id="user-name">Build a user name:</p>
+    <p id="user-name"></p>
+    <p>My username:</p>
     <select name="user-adjective" id="adjective-selector" class="select-css">
+      <option disabled selected value> Choose an adjective </option>
     </select>
     <select name="user-color" id="color-selector" class="select-css">
+      <option disabled selected value> Choose a color </option>
     </select>
     <select name="user-animal" id="animal-selector" class="select-css">
+      <option disabled selected value> Choose an animal </option>
     </select>
 
     <p>State:</p>
