@@ -26,6 +26,7 @@ class LoginScreen extends Phaser.Scene {
         this.graphics = this.game.add.graphics();
         this.graphics.fillStyle(0x1e1e1e, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
+
     }
 
     update() {
@@ -87,9 +88,25 @@ class LoginScreen extends Phaser.Scene {
                 }
             }
         });
-        //let option = this.domOverlay.createElement("option");
-        //option.textContent = "test";
-        //this.domOverlay.getChildByID("adjective-selector").appendChild(option);
+
+        // if the user is signed in and their data is in local storage, use it to fill out the form.
+        console.log(localStorage.getItem("username"));
+        if (localStorage.getItem("username") != null) {
+            // Get and format the stored username
+            let formattedUserData = this.formatUserData(localStorage.getItem("username"));
+            console.log(formattedUserData);
+
+            // Use it to fill out the dom overlay
+            let domOverlayFieldIDs = ["adjective-selector", "color-selector", "animal-selector", "state-selector", "grade-selector", "gender-selector", "login-sessionName"];
+
+            for (let i = 0; i < domOverlayFieldIDs.length; i++) {
+                this.domOverlay.getChildByID(domOverlayFieldIDs[i]).value = formattedUserData[i];
+            }
+
+            this.domOverlay.getChildByID("user-found").textContent = "Looks like you've signed in before. Is this you?"
+            this.domOverlay.getChildByID("user-name").textContent = this.domOverlay.getChildByID("adjective-selector").value.replace(/\b\w/g, l => l.toUpperCase()) + " " + this.domOverlay.getChildByID("color-selector").value.replace(/\b\w/g, l => l.toUpperCase()) + " " + this.domOverlay.getChildByID("animal-selector").value.replace(/\b\w/g, l => l.toUpperCase())
+        }
+
         this.domOverlay.addListener("click");
         this.domOverlay.on("click", function (event) {
             if (event.target.id == "adjective-selector" ||
@@ -97,6 +114,7 @@ class LoginScreen extends Phaser.Scene {
                 event.target.id == "animal-selector") {
 
                 this.domOverlay.getChildByID("user-name").textContent = this.domOverlay.getChildByID("adjective-selector").value.replace(/\b\w/g, l => l.toUpperCase()) + " " + this.domOverlay.getChildByID("color-selector").value.replace(/\b\w/g, l => l.toUpperCase()) + " " + this.domOverlay.getChildByID("animal-selector").value.replace(/\b\w/g, l => l.toUpperCase())
+                this.domOverlay.getChildByID("user-found").textContent = "";
             } else if (event.target.id === "login-register") {
                 event.preventDefault();
                 this._dismissOverlay(0);
@@ -110,7 +128,7 @@ class LoginScreen extends Phaser.Scene {
                                this.domOverlay.getChildByID("animal-selector").value + "-" +
                                this.domOverlay.getChildByID("state-selector").value + "-" +
                                this.domOverlay.getChildByID("grade-selector").value.replace("-", "_") +  "-" +
-                               this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_") + "-" +
+                               this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_").replace("-", "_") + "-" +
                                this.domOverlay.getChildByID("login-sessionName").value;
                 username = username.toLowerCase();
 
@@ -134,10 +152,14 @@ class LoginScreen extends Phaser.Scene {
                 .then(loggedIn => {
                     // If they are not logged in already, they are free to log in.
                     if (!loggedIn) {
-                        // Store this data
+                        // Store this data as globals for the game to use later
                         data.gameObj.sessionID = session;
                         data.gameObj.userName = username;
                         data.gameObj.animalName = animalname;
+
+                        // Also store username in localStorage to check when relogging
+                        localStorage.setItem("username", username);
+
                         cdapi.signin(username, session)
                         .then(result => {
                             this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
@@ -146,9 +168,10 @@ class LoginScreen extends Phaser.Scene {
                             this.domOverlay.getChildByID("login-feedback").textContent = "Something went wrong while logging in.";
                             console.log("failed to log in: " + result);
                         })
-                    // if they are logged in, they just have to wait out the timer.
+
+                    // if they are logged in, they just have to wait out their session.
                     } else {
-                        this.domOverlay.getChildByID("login-feedback").textContent = "User is already signed in, try again in 10 minutes.";
+                        this.domOverlay.getChildByID("login-feedback").textContent = "User is already signed in, try again later.";
                     }
                 })
                 .catch(result => {
@@ -230,6 +253,36 @@ class LoginScreen extends Phaser.Scene {
             });
             allFloaties.push(myFloaty);
         }
+    }
+
+    // Takes in a rawuserdata, which is the raw string of a username
+    // formatted after they sign in. Typically this should be stored in
+    // localstorage, and retrieved to be put into this function.
+    formatUserData(rawuserdata) {
+        // splitting by "-" produces an array with the following indices:
+        // 0 - animal adjective
+        // 1 - animal color
+        // 2 - animal
+        // 3 - state
+        // 4 - grade
+        // 5 - gender
+        // 6 - sessionid
+        let userdata = rawuserdata.split("-");
+
+        // formatting userdata to perfectly match values
+        userdata[2] = this.capitalizeFirstLetter(userdata[2]);
+        userdata[3] = userdata[3].toUpperCase();
+        userdata[4] = this.capitalizeFirstLetter(userdata[4]).replace("_", "-");
+        if (userdata[5] == "prefer_not_to_say") {
+            userdata[5] = "Prefer not to say";
+        } else if (userdata[5] == "non_binary") {
+            userdata[5] = "Non-binary";
+        } else if (userdata[5] == "third_gender"){
+            userdata[5] = "Third gender";
+        } else {
+            userdata[5] = this.capitalizeFirstLetter(userdata[5]);
+        }
+        return userdata;
     }
 }
 

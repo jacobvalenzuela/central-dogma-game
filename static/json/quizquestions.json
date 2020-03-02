@@ -1,6 +1,13 @@
 {
     "questions": [
         {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "Every level you'll be given a challenge question. They can be either drag and drop, or multiple choice formats.",
+            "options": ["Click on the choice to select it", "Then click submit to submit it.", "A, B, and C are wrong.", "Select me! I'm the right answer."],
+            "correct": 3
+        },
+        {
             "type": "drag and drop",
             "worth": 200,
             "prompt": "All ___ have DNA.",
@@ -17,6 +24,34 @@
         {
             "type": "multiple choice",
             "worth": 200,
+            "prompt": "Do people eat DNA?",
+            "options": ["Yes, all people eat DNA", "Most, vegetarians do not eat DNA", "Most, vegans do not eat DNA", "No, DNA is not edible"],
+            "correct": 0
+        },
+        {
+            "type": "drag and drop",
+            "worth": 200,
+            "prompt": "Human DNA has ___ helices.",
+            "options": ["2", "4", "20,000", "6 billion"],
+            "correct": 0
+        },
+        {
+            "type": "drag and drop",
+            "worth": 200,
+            "prompt": "The human genome has ___ nucleotide types.",
+            "options": ["2", "4", "20,000", "6 billion"],
+            "correct": 1
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "In DNA, which of the following choices is true?",
+            "options": ["Nucleotide G pairs with nucleotide A", "Nucleotide A pairs with nucleotide U", "Nucleotide C pairs with nucleotide T", "Nucleotide A pairs with nucleotide T"],
+            "correct": 3
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
             "prompt": "How is DNA similar to a fingerprint?",
             "options": ["both are unique to each individual", "both have a double helix shape", "both are found in the nucleus of every cell in the body", "both determine physical traits such as height and eye color"],
             "correct": 0
@@ -24,23 +59,135 @@
         {
             "type": "drag and drop",
             "worth": 200,
-            "prompt": "DNA can best be compared to a building's ___. ",
-            "options": ["bricks", "blueprint", "residents", "rooms"],
-            "correct": 1
+            "prompt": "This selection has the structures in the correct order, from largest to smallest: ____",
+            "options": ["nucleus, gene, nucleotide", "gene, nucleus, nucleotide", "nucleotide, gene, nucleus", "nucleus, nucleotide, gene"],
+            "correct": 0
         },
         {
             "type": "drag and drop",
             "worth": 200,
-            "prompt": "Which part of the term 'deoxyribonucleic acid' indicates where DNA is located?",
-            "options": ["Oxy", "Ribo", "Nucleic", "Acid"],
+            "prompt": "Humans have approximately ___ genes.",
+            "options": ["2", "4", "20,000", "6 billion"],
             "correct": 2
-        },  
+        },
         {
-            "type": "drag and drop",
+            "type": "multiple choice",
             "worth": 200,
-            "prompt": "Cytosine, guanine, adenine, and thymine are chemicals that combine to form_____ in DNA.",
-            "options": ["GMO", "Genome", "Base pairs", "gene therapy", "traits"],
+            "prompt": "The protein molecules in a human influence ___.",
+            "options": ["Its physical characteristics and its behaviors", "Its physical characteristics but not its behaviors", "Its behaviors but not its physical characteristics", "Neither physical characteristics nor behaviors"],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "The protein molecules in a bird influence ___.",
+            "options": ["Its physical characteristics and its behaviors", "Its physical characteristics but not its behaviors", "Its behaviors but not its physical characteristics", "Neither physical characteristics nor behaviors"],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "The protein molecules in an insect influence ___.",
+            "options": ["Its physical characteristics and its behaviors", "Its physical characteristics but not its behaviors", "Its behaviors but not its physical characteristics", "Neither physical characteristics nor behaviors"],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "The protein molecules in a plant influence ___.",
+            "options": ["Its physical characteristics and its behaviors", "Its physical characteristics but not its behaviors", "Its behaviors but not its physical characteristics", "Neither physical characteristics nor behaviors"],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "The flow of information in a cell proceeds:",
+            "options": ["From RNA to DNA to protein", "From protein to RNA to DNA", "From DNA to protein to RNA", "From DNA to RNA to protein"],
+            "correct": 3
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "Which of the following statements about RNA are TRUE?",
+            "options": ["NA is made up of three different nucleotides.", "Transcription is the process of making RNA.", "In RNA, nucleotide A pairs with nucleotide T.", "RNA has no purpose in the cell."],
+            "correct": 1
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "RNA and DNA ___.",
+            "options": ["are different because RNA uses nucleotide U", "use all of the same nucleotides", "carry messages between cells in the body", "are made of nucleotides and amino acids"],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "What does the information in DNA molecules provide instructions for?",
+            "options": ["Assembling amino acids into protein molecules", "Assembling protein molecules into amino acids", "Rearranging genes into protein molecules", "Rearranging genes into traits"],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "What does the information in genes provide instructions for?",
+            "options": ["Assembling protein molecules", "Assembling genes into DNA", "Rearranging DNA into protein molecules", "Rearranging DNA into RNA"],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "What do DNA and proteins have to do with each other?",
+            "options": ["DNA is a type of protein", "Proteins are a type of DNA", "DNA provides information for making proteins", "DNA and proteins are unrelated"],
             "correct": 2
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "The protein molecules in peanut butter are made using ___.",
+            "options": ["transcription and translation in peanuts", "transcription and translation in a factory", "a chemical reaction in a factory", "protein molecules from other organisms"],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "How are proteins made in an organism?",
+            "options": ["By linking amino acids together", "By linking DNA molecules together", "By linking nucleotides together", "Proteins are not made in organisms"],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "Which of the following statements is TRUE?",
+            "options": ["DNA is made up of proteins", "Proteins are made up of DNA", "DNA is made up of amino acids", "Proteins are made up of amino acids"],
+            "correct": 3
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "How many different types of amino acids are used to make protein molecules?",
+            "options": ["One", "Three", "Four", "Twenty"],
+            "correct": 3
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "What does an organism need in order to make proteins?",
+            "options": ["Amino acids and instructions for assembling them", "Amino acids but not instructions for assembling them", "Individual atoms but not instructions for assembling them", "An organism eats proteins, so it does not need to make them."],
+            "correct": 0
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "How are proteins made in an organism?",
+            "options": ["Smaller subunits are randomly linked together", "A code indicates which smaller subunits get linked together", "A code indicates which larger molecules get broken apart", "An organism eats proteins, so it does not need to make them"],
+            "correct": 1
+        },
+        {
+            "type": "multiple choice",
+            "worth": 200,
+            "prompt": "How many nucleotides are needed to code for one amino acid?",
+            "options": ["One", "Three", "Four", "Twenty"],
+            "correct": 1
         }
     ]
 }

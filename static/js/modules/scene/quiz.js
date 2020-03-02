@@ -17,8 +17,7 @@ class QuizScreen extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
-        console.log(data);
-        console.log(data.gameObj.GLOBAL);
+
         // Color Constants
         let ORANGE = 0xFE5832;
         let DARK_BLUE = 0x002664;
@@ -38,20 +37,41 @@ class QuizScreen extends Phaser.Scene {
 
         // Quiz related variables
         this.selectedChoice = null;
-        this.quizQuestion = questions[Math.floor(questions.length * Math.random())];
+        this.quizQuestion = null;
+
+        // getting the appropriate question ranges
+        let level = data.level + 1;
+        if (level == 1) {
+            this.quizQuestion = questions[0];
+        } else if (level <= 2) {
+            this.quizQuestion = questions[Math.floor(2 * Math.random())];
+        } else if (level <= 4) {
+            this.quizQuestion = questions[Math.floor(5 *  Math.random())];
+        } else if (level <= 6) {
+            this.quizQuestion = questions[Math.floor(8 *  Math.random())];
+        } else if (level <= 11) {
+            this.quizQuestion = questions[Math.floor(12 *  Math.random())];
+        } else if (level <= 15) {
+            this.quizQuestion = questions[Math.floor(18 *  Math.random())];
+        } else if (level <= 17) {
+            this.quizQuestion = questions[Math.floor(21 *  Math.random())];
+        } else if (level <= 19) {
+            this.quizQuestion = questions[Math.floor(25 *  Math.random())];
+        } else {
+            this.quizQuestion = questions[Math.floor(questions.length * Math.random())];
+        }
+        
         this.points = this.quizQuestion.worth;
 
         // If the question is drag and drop, randomly pick between the two formats (drag and drop or multiple choice)
         // All drag and drop questions can be in a multiple choice format,
         // but multiple choice questions cannot be in a drag and drop format.
-        /*
         if (this.quizQuestion.type == "drag and drop") {
             let coin = Math.floor(Math.random() * 2);
             if (coin == 0) {
                 this.quizQuestion.type = "multiple choice"
             }
-        }
-        */
+        }   
 
         // Initialize Quiz Layout
         this.questionBox = this.add.rectangle(180, 365, 320, 175, BLUE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
@@ -79,7 +99,6 @@ class QuizScreen extends Phaser.Scene {
             attempts: 1,
             questionNum: data.gameObj.GLOBAL.QUIZ_RESULTS.length + 1
         };
-
 
         this.submitBtn = this.add.image(180, 620, "submit_btn").setScale(0.40).setAlpha(0);
         this.submitBtn.addListener("pointerup", this.bindFn(function(){
@@ -244,7 +263,7 @@ class QuizScreen extends Phaser.Scene {
             
             }
         } else if (question.type == "drag and drop") {
-            // assign each choice a random x and y coordinate within the orange box.
+            // assign each choice a random x and y coordinate within the answer box.
             // also assign choice an int so we can later check it for the right answer
             // fade it in one at a time.
             // make it so that the user can drag it to change its location

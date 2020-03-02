@@ -103,17 +103,6 @@ class ListLevels extends Phaser.Scene {
         this.levelBrowseDesc = this.add.text(20, 300, "", 
             {fontFamily: 'Teko', fontSize: '20pt', color: '#000000', align: 'left', wordWrap: { width: 320, useAdvancedWrap: true } });                                  
 
-
-        // Sign in UI
-        /*
-        this.add.text(20, 60, "PROFILE", 
-            {fontFamily: 'Teko', fontSize: '16pt', color: '#000000'});
-        this.userbtn = this.add.image(44, 30, "profile_btn").setScale(0.4).setInteractive();
-        this.signInIcn = this.add.image(40, 30, "signin_signin_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
-        this.userIcn = this.add.image(40, 30, "signin_user_icn").setScale(0.15).setTintFill(0xDCF3FD).setVisible(false);
-        */
-        //this.updateSignInIcon();
-
         // Functionality to skip DOGMA animation, also fades in content.
         let that = this;
         this.fadeIn(function () {
@@ -239,7 +228,7 @@ class ListLevels extends Phaser.Scene {
                         }
                     });
                 }
-            })*/
+            });*/
         } else {
             this.domOverlay.getChildByID("sessions-name-displ").textContent = "Currently not signed into any session.";
         }
