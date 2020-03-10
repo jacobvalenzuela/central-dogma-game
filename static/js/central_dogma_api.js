@@ -5,10 +5,12 @@
     // **********************************************************************
     var cdapi = { };
     cdapi.version = '1.0.0';
+    const NO_BACKEND = true;
     const BASE_URL = 'http://localhost:5000';
     //const BASE_URL = '/api';
     let loggedIn = false;
     let currentSession = null;
+    var globalObject = null;
 
     /* Get the session id */
     function get(name) {
@@ -196,6 +198,103 @@
     cdapi.setCurrentSession = function (sess) {
         currentSession = sess;
     }
+
+    // ***************************************************************************************
+    // Josh's new functions
+    // ***************************************************************************************
+    cdapi.signin = async (username, sessionID) => {
+        if (NO_BACKEND) {
+            console.log('no backend -> dummy signin');
+            return new Promise(function(resolve, reject) {
+                loggedIn = true;
+                resolve(true);
+            });
+        }
+        return await postJSON(BASE_URL + "/user/signin",
+                              {"username": username, "session_id": sessionID}).then(data => {
+                                  if (data.status == "ok") {
+                                      window.localStorage.setItem("loginToken", data.access_token);
+                                      loggedIn = true;
+                                  }
+                                  return data;
+                              });
+    };
+    cdapi.signout = function(username, sessionID) {
+        return new Promise(function(resolve, reject) {
+            loggedIn = false;
+            resolve(true);
+        });
+    };
+    cdapi.isUserSignedIn = function(username, sessionID) {
+        return new Promise(function(resolve, reject) {
+            resolve(loggedIn);
+        });
+    };
+    /* Stores a new global object (see above) for the user. */
+    cdapi.storeNewGlobalVariable = async (userName, sessionID, global) => {
+        if (NO_BACKEND) {
+            console.log('no backend -> dummy store');
+            return new Promise(function(resolve, reject) {
+                globalObject = global;
+                resolve(true);
+            });
+        }
+        return await postJSONAuth(BASE_URL + "/user/storevar",
+                                  {"session_id": sessionID,
+                                   "global": global}).then(data => {
+                                      if (data.status == "ok") {
+                                          console.log('stored variable');
+                                      }
+                                  });
+    };
+
+    // returns object which is their stored global object
+    cdapi.getGlobalVariable = async (username, sessionid) => {
+        if (NO_BACKEND) {
+            console.log('no backend -> dummy retrieve');
+            return new Promise(function(resolve, reject) {
+                resolve(globalObject);
+            });
+        }
+        // TODO: backend connection
+    };
+
+    /* Gets a leaderboard based on given parameter for a session. */
+    cdapi.getTotalLeaderboard = async (sessionID, orderBy, numRows) => {
+        if (NO_BACKEND) {
+            console.log('no backend -> dummy leader board');
+            return new Promise(function(resolve, reject) {
+                var result = [ { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 }, { userName: 'user1', value: 12345 } ];
+                resolve(result);
+            });
+        }
+        return await postJSON(BASE_URL + "/total_leaderboard",
+                              {"session_id": sessionID, "orderby": orderBy,
+                               "numrows": numRows}).then(data => {
+                                  if (data.status == "ok") {
+                                  }
+                                  return data;
+                              });
+    };
+
+    /* Gets a leaderboard of scores for a level in a session. */
+    cdapi.getLevelLeaderboard = async (sessionID, level, numRows) => {
+        if (NO_BACKEND) {
+            console.log('no backend -> dummy level leader board');
+            return new Promise(function(resolve, reject) {
+                var result = [ { userName: 'user1', value: 12345 } ];
+                resolve(result);
+            });
+        }
+        return await postJSON(BASE_URL + "/level_leaderboard",
+                              {"session_id": sessionID, "level": level,
+                               "numrows": numRows}).then(data => {
+                                  if (data.status == "ok") {
+                                  }
+                                  return data;
+                              });
+    };
+
     // These lines needed to support a NPM/ES6 environment, the define() call
     // is to support RequireJS
     glob.cdapi = cdapi;
