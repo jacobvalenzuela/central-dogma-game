@@ -8,6 +8,7 @@ import AboutScreen from "./scene/about.js";
 import CountdownResumeScreen from './scene/countdownResume.js';
 import QuizScreen from './scene/quiz.js';
 import LoginScreen from './scene/loginscreen.js';
+import LogoScreen from './scene/logoscreen.js';
 
 /**
  * Class representing the game object. Handles the creation of the basic
@@ -195,6 +196,7 @@ class Game {
             }
         );
         this.game.load.image("logo_isb", "static/img/ISB_Logo.png");
+        this.game.load.image("logo_isb_white", "static/img/ISB_Logo_white.png");
         this.game.load.image("play_btn", "static/img/playBtn.png");
         this.game.load.image("home_btn", "static/img/homeBtn.png");
         this.game.load.image("back_btn", "static/img/backBtn.png");
@@ -306,6 +308,7 @@ class Game {
         this.game.scene.add("countdownResumeScreen", CountdownResumeScreen, false, {gameObj: this, levels: this.levels});
         this.game.scene.add("quizScreen", QuizScreen, false, {gameObj: this, levels: this.levels});
         this.game.scene.add("titlescreen", TitleScreen, false, {gameObj: this, levels: this.levels});
+        this.game.scene.add("loginScreen", LoginScreen, false, {gameObj: this, levels: this.levels});
 
         // JSON
         this.game.load.json("quizQuestions", "static/json/quizquestions.json");
@@ -318,7 +321,7 @@ class Game {
         this.game.load.html("html_sequencedinfo", "static/html/sequencedinfo.html");
         this.game.load.html("html_knowledgepanel", "static/html/knowledgepanel.html");
         this.game.load.html("html_quiz", "static/html/quiz.html");
-
+        this.game.load.html("html_levelleaderboard", "static/html/levelleaderboard.html");
 
         // Audio
         this.game.load.audio("incorrect", "static/audio/sounds/Incorrect.wav");
@@ -346,7 +349,7 @@ class Game {
         });
         */
         
-        this.game.scene.add("loginScreen", LoginScreen, true, {gameObj: this, levels: this.levels});
+        this.game.scene.add("logoScreen", LogoScreen, true, {gameObj: this, levels: this.levels});
 
         // let singleLvl = new LevelStage(this, this.level);
         // let titleScreen = new TitleScreen(this);
