@@ -45,7 +45,7 @@ class Game {
         /*
             {
                 type: String, // the type of question (either "drag and drop" or "multiple choice")
-                worth: Int, // How much was this quiz question worth
+                score: Int, // How much was this quiz question worth
                 prompt: String, // The question prompt
                 options: Array of Strings, // all the possible choices
                 correct: Int, // The index in the options array that is the correct answer
@@ -60,6 +60,7 @@ class Game {
                 process: String, // what process of DNA replication was being played?
                 lvlType: String, // what type of level was this ("dna_replication" vs "codon_transcription"
                 speed: Int, // speed of the level,
+                score: Int, // the score they got for this level
                 rotateNT: Boolean, // was this level a rotational level?
                 missed: Int, // how many objects were missed
                 correct: Int, // how many objects were correct

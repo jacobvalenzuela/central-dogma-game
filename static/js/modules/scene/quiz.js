@@ -95,6 +95,7 @@ class QuizScreen extends Phaser.Scene {
         // Initializing the quiz question object to store later for this question attempt
         this.questionResult = {
             timestamp: new Date().toString(),
+            score: this.points,
             question: this.quizQuestion,
             attempts: 1,
             questionNum: data.gameObj.GLOBAL.QUIZ_RESULTS.length + 1
@@ -140,6 +141,7 @@ class QuizScreen extends Phaser.Scene {
                 this.submitFeedback.setColor("#FF0000");
                 this.halvePointsAndDisplay();
                 this.questionResult.attempts++;
+                this.questionResult.score = Math.floor(this.questionResult.score / 2);
     
                 for (let i = 0; i < this.choices.length; i++) { 
                     

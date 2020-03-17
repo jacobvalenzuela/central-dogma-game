@@ -146,6 +146,7 @@ class LevelComplete extends Phaser.Scene {
                                             process: levelData.process, // what process of DNA replication was being played?
                                             lvlType: that.lvlType, // what type of level was this ("dna_replication" vs "codon_transcription"
                                             speed: levelData.speed, // speed of the level,
+                                            score: that.score, // the score the player earned during the level
                                             rotateNT: levelData.rotateNT, // was this level a rotational level?
                                             missed: missingCount, // how many objects were missed
                                             correct: data.nucleotides.length - missingCount - mutationCount, // how many objects were correct
