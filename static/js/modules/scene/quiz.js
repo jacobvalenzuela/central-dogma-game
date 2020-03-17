@@ -94,7 +94,7 @@ class QuizScreen extends Phaser.Scene {
 
         // Initializing the quiz question object to store later for this question attempt
         this.questionResult = {
-            timestamp: new Date().toString(),
+            timestamp: new Date().toLocaleString("en-US"),
             question: this.quizQuestion,
             attempts: 1,
             questionNum: data.gameObj.GLOBAL.QUIZ_RESULTS.length + 1
