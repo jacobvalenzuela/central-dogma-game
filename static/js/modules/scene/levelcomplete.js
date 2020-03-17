@@ -49,6 +49,8 @@ class LevelComplete extends Phaser.Scene {
         this.quizAnswered = false;
 
         let that = this;
+        this.data = data;
+        this.domOverlay = null;
 
         // Invisible, non interactable (yet) UI
         this.levelsBtn = this.add.image(180, 520, "levels_btn").setScale(0.5).setAlpha(0).setDepth(100);
@@ -144,6 +146,7 @@ class LevelComplete extends Phaser.Scene {
                                             process: levelData.process, // what process of DNA replication was being played?
                                             lvlType: that.lvlType, // what type of level was this ("dna_replication" vs "codon_transcription"
                                             speed: levelData.speed, // speed of the level,
+                                            score: that.score, // the score the player earned during the level
                                             rotateNT: levelData.rotateNT, // was this level a rotational level?
                                             missed: missingCount, // how many objects were missed
                                             correct: data.nucleotides.length - missingCount - mutationCount, // how many objects were correct
@@ -733,6 +736,11 @@ class LevelComplete extends Phaser.Scene {
     }
 
     presentEndscreenOptions() {
+
+        console.log(this.data);
+        // I need the username, sessionID, and level
+        //this.showLevelLeaderboard(this.data.gameObj.userName, this.data.gameObj.sessionID, this.data.level, 25);
+
         this.levelsBtn.setInteractive();
         this.levelsBtn.addListener("pointerup", this.bindFn(this.onLevelsClick));
         this.levelsBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
@@ -752,6 +760,71 @@ class LevelComplete extends Phaser.Scene {
 
     
     }
+
+    showLevelLeaderboard(userName, sessionID, level, rows) {
+        // show level end leaderboard
+        if (this.domOverlay) {
+            return;
+        }
+
+        let html = document.createElement("html");
+        html.innerHTML = this.cache.html.entries.get("html_levelleaderboard");
+
+        this.domOverlay = this.add.dom(180, 360).createFromHTML(String(html.innerHTML));
+
+        if (sessionID != "") {
+            this.domOverlay.getChildByID("sessions-level-displ").textContent = level;
+            this.domOverlay.getChildByID("sessions-name-displ").textContent = sessionID;
+            this.domOverlay.getChildByID("sessions-username").textContent = "Username: " + userName;
+            let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
+            cdapi.getLevelLeaderboard(sessionID, level, rows).then(results => {
+                this.displayLeaderboardResults(results, table);
+            });
+        } else {
+            this.domOverlay.getChildByID("sessions-name-displ").textContent = "Currently not signed into any session.";
+        }
+
+    }
+
+    displayLeaderboardResults(results, table) {
+        // Clear table
+        table.innerHTML = "";
+
+        // Add back in headers
+        let header = document.createElement("tr");
+        let rankHeading = document.createElement("th");
+        let nameHeading = document.createElement("th");
+        let valueHeading = document.createElement("th");
+
+        rankHeading.textContent = "Rank";
+        nameHeading.textContent = "Name";
+        valueHeading.textContent = "Score";
+
+        nameHeading.classList.add("name");
+
+        header.appendChild(rankHeading);
+        header.appendChild(nameHeading);
+        header.appendChild(valueHeading);
+        table.appendChild(header);
+
+        // Fill out table
+        for (let i = 0; i < results.length; i++) {
+            let entry = document.createElement("tr");
+            let rank = document.createElement("td");
+            let userName = document.createElement("td");
+            let value = document.createElement("td");
+
+            rank.textContent = i + 1;
+            userName.textContent = results[i].userName;
+            value.textContent = results[i].value;
+
+            entry.appendChild(rank);
+            entry.appendChild(userName);
+            entry.appendChild(value);
+
+            table.appendChild(entry);
+        }
+    }    
 
     updateDatabaseUserGlobal(data) {
         // add their current progress to the database,

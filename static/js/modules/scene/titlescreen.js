@@ -42,13 +42,10 @@ class TitleScreen extends Phaser.Scene {
         
 
         // Intro title screen ISB logo
-        let isblogo = this.game.add.image(180, 320, "logo_isb").setScale(0.5);
+        this.dogmaLogo = this.game.add.image(180, 275, "logo_dogma").setScale(0.3).setDepth(10);
 
         // upper right ISB logo
-        this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.30).setAlpha(0).setDepth(1);
-
-        let dogmaLogo = this.game.add.sprite(185, 280, "logo_dogma_intro", 0).setScale(1.4);
-        this.dogmaLogo = dogmaLogo;
+        this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.30).setAlpha(1.0).setDepth(1);
 
         // Notifications
         this.alert = this.game.add.text(68, 390, "",
@@ -90,29 +87,7 @@ class TitleScreen extends Phaser.Scene {
         this.input.on("pointerdown", this.bindFn(this.displayUI));
 
         let that = this;
-        this.game.time.addEvent({
-            delay: 1000 * animDelay,
-            callback: function () {
-                that.fadeOut(isblogo, function () {
-                    that.game.anims.create({
-                        key: "logo_dogma_anim",
-                        frames: that.game.anims.generateFrameNumbers("logo_dogma_intro", null),
-                        frameRate: 60,
-                        repeat: 0,
-                        delay: 500  * animDelay
-                    });
-                    dogmaLogo.anims.play("logo_dogma_anim");
-                    that.introWaitTimer = that.game.time.addEvent({
-                        delay: 2000  * animDelay,
-                        callback: function () {
-                            that.displayUI();
-                        },
-                        loop: false
-                    });
-                }, that.skipToLevelsList);
-            },
-            loop: false
-        });
+        this.displayUI();
         this.floaty = this.physics.add.group();
         this.backgroundFloaties = this.spawnBackgroundFloaties(25);
     }
@@ -338,7 +313,7 @@ class TitleScreen extends Phaser.Scene {
             let screenHeight = 720; // height of box to randomly spawn floaties
 
             let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff_dark');
-            myFloaty.setScale(maxScale).setDepth(0.5).setAlpha(0.15);
+            myFloaty.setScale(maxScale).setDepth(0.2).setAlpha(0.15);
 
             // Randoly sets speed to some percentage of its max speed, in a random direction
             myFloaty.setVelocity(Phaser.Math.Between(-maxSpeed * Math.random(), maxSpeed * Math.random()), 

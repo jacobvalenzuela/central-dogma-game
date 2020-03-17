@@ -60,41 +60,42 @@ class QuizScreen extends Phaser.Scene {
         } else {
             this.quizQuestion = questions[Math.floor(questions.length * Math.random())];
         }
-        
-        this.points = this.quizQuestion.worth;
+		
+		this.points = this.quizQuestion.worth;
 
-        // If the question is drag and drop, randomly pick between the two formats (drag and drop or multiple choice)
-        // All drag and drop questions can be in a multiple choice format,
-        // but multiple choice questions cannot be in a drag and drop format.
-        if (this.quizQuestion.type == "drag and drop") {
-            let coin = Math.floor(Math.random() * 2);
-            if (coin == 0) {
-                this.quizQuestion.type = "multiple choice"
-            }
-        }   
+		// If the question is drag and drop, randomly pick between the two formats (drag and drop or multiple choice)
+		// All drag and drop questions can be in a multiple choice format,
+		// but multiple choice questions cannot be in a drag and drop format.
+		if (this.quizQuestion.type == "drag and drop") {
+		    let coin = Math.floor(Math.random() * 2);
+		    if (coin == 0) {
+			this.quizQuestion.type = "multiple choice"
+		    }
+		}   
 
-        // Initialize Quiz Layout
-        this.questionBox = this.add.rectangle(180, 365, 320, 175, BLUE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
-        this.choiceBox = this.add.rectangle(180, 430, 320, 280, BLACK).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
+		// Initialize Quiz Layout
+		this.questionBox = this.add.rectangle(180, 365, 320, 175, BLUE).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
+		this.choiceBox = this.add.rectangle(180, 430, 320, 280, BLACK).setAlpha(1.0).setStrokeStyle(2, WHITE, 1);
 
-        // Question prompt
-        this.prompt = this.add.text(30, 320, "", {fontFamily: 'Teko, sans-serif', fontSize: '26pt', color: '#FFFFFF', wordWrap: { width: 290, useAdvancedWrap: true }}).setAlpha(0);
-        this.tweens.add({ targets: this.prompt, alpha: 1.0, duration: 600, ease: 'power4' });
-        this.prompt.text = this.quizQuestion.prompt;
+		// Question prompt
+		this.prompt = this.add.text(30, 320, "", {fontFamily: 'Teko, sans-serif', fontSize: '26pt', color: '#FFFFFF', wordWrap: { width: 290, useAdvancedWrap: true }}).setAlpha(0);
+		this.tweens.add({ targets: this.prompt, alpha: 1.0, duration: 600, ease: 'power4' });
+		this.prompt.text = this.quizQuestion.prompt;
 
-        // Point worth above question prompt
-        this.pointWorth = this.add.text(30, 280, "(" + this.points + " Points)", {fontFamily: 'Teko, sans-serif', fontSize: '26pt', color: '#FFFFFF', wordWrap: { width: 290, useAdvancedWrap: true }}).setAlpha(0);
-        this.tweens.add({ targets: this.pointWorth, alpha: 1.0, duration: 600, ease: 'power4' });
+		// Point worth above question prompt
+		this.pointWorth = this.add.text(30, 280, "(" + this.points + " Points)", {fontFamily: 'Teko, sans-serif', fontSize: '26pt', color: '#FFFFFF', wordWrap: { width: 290, useAdvancedWrap: true }}).setAlpha(0);
+		this.tweens.add({ targets: this.pointWorth, alpha: 1.0, duration: 600, ease: 'power4' });
 
-        this.actionFeedback = this.add.text(20, 263, "", {fontFamily: 'Teko, sans-serif', fontSize: '18pt', fontStyle: 'italic', color: '#FFFFFF', wordWrap: { width: 320, useAdvancedWrap: true }});
+		this.actionFeedback = this.add.text(20, 263, "", {fontFamily: 'Teko, sans-serif', fontSize: '18pt', fontStyle: 'italic', color: '#FFFFFF', wordWrap: { width: 320, useAdvancedWrap: true }});
 
-        this.submitFeedback = this.add.text(180, 685, "", {fontFamily: 'Teko, sans-serif', fontSize: '32pt', color: '#FFFFFF', wordWrap: { width: 290, useAdvancedWrap: true }}).setAlpha(0);
-        this.submitFeedback.setOrigin(0.5, 0.5);
-        this.choices = [];
+		this.submitFeedback = this.add.text(180, 685, "", {fontFamily: 'Teko, sans-serif', fontSize: '32pt', color: '#FFFFFF', wordWrap: { width: 290, useAdvancedWrap: true }}).setAlpha(0);
+		this.submitFeedback.setOrigin(0.5, 0.5);
+		this.choices = [];
 
-        // Initializing the quiz question object to store later for this question attempt
-        this.questionResult = {
-            timestamp: new Date().toLocaleString("en-US"),
+		// Initializing the quiz question object to store later for this question attempt
+		this.questionResult = {
+		    timestamp: new Date().toLocaleString("en-US"),
+		    score: this.points,
             question: this.quizQuestion,
             attempts: 1,
             questionNum: data.gameObj.GLOBAL.QUIZ_RESULTS.length + 1
@@ -140,6 +141,7 @@ class QuizScreen extends Phaser.Scene {
                 this.submitFeedback.setColor("#FF0000");
                 this.halvePointsAndDisplay();
                 this.questionResult.attempts++;
+                this.questionResult.score = Math.floor(this.questionResult.score / 2);
     
                 for (let i = 0; i < this.choices.length; i++) { 
                     

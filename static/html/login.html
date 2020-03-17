@@ -4,6 +4,7 @@
     border: 7px solid white;
     border-radius: 10px;
     width: 300px;
+    padding-bottom: 10px;
   }
   .login h1 {
     background-image: linear-gradient(top, #f1f3f3, #d4dae0);
@@ -87,7 +88,7 @@
     text-align:center;
     text-shadow:1px 1px 0px black;
     padding-top:6px;
-    margin: 6px 0 0 29px;
+    margin: 10px 0 0 29px;
     position:relative;
     cursor:pointer;
     border: none;  
@@ -104,7 +105,7 @@
     box-shadow: inset 0px 1px 0px #2ab7ec, 0px 2px 0px 0px #31524d, 0px 5px 3px #999;
   }
 
-  .login .hidden {
+  .hidden {
     display: none;
   }
 
@@ -127,7 +128,7 @@
     margin-top: 8px;
   }
 
-  #user-name {
+  #user-name, #user-name-relog {
     font-size: 30px;
     text-align: center;
     margin: 6px;
@@ -178,7 +179,15 @@
 
 </style>
 
-<div class="login">
+<div class="login hidden" id="returnUserDisplay">
+  <p>Looks like you've signed in before. Is this you?</p>
+  <p id="user-name-relog"></p>
+
+  <input type="submit" value="Yes" name="yesRelogButton" id="login-button">
+  <input type="submit" value="No" name="noRelogButton" id="no-relog-button">
+</div>
+
+<div class="login" id="loginUserDisplay">
     <p id="user-found"></p>
     <p id="user-name"></p>
     <p>My username:</p>

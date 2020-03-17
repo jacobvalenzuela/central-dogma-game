@@ -62,6 +62,7 @@ class ListLevels extends Phaser.Scene {
                 this.usernameText.text = data.gameObj.animalName;
             } else {
                 this.removeSignedInOnlyElements();
+                localStorage.removeItem("username");
             }
         })
 
@@ -90,7 +91,8 @@ class ListLevels extends Phaser.Scene {
         this.signoutBtn.on("pointerdown", () => {
             cdapi.signout(data.gameObj.userName, data.gameObj.sessionID).then(result => {
                 this.removeSignedInOnlyElements();
-            })
+                localStorage.removeItem("username");
+            });
         })
 
         // Level Selection Descriptors
@@ -151,7 +153,7 @@ class ListLevels extends Phaser.Scene {
     
 
     // Actual leaderboard method I'm using
-    showSessionLeaderboard(userName, sessionID, category, rows) {
+    showSessionLeaderboard(userName, sessionID, rows) {
         if (this.domOverlay) {
             return;
         }
@@ -178,61 +180,65 @@ class ListLevels extends Phaser.Scene {
         if (sessionID != "") {
             this.domOverlay.getChildByID("sessions-name-displ").textContent = sessionID;
             this.domOverlay.getChildByID("sessions-username").textContent = "Username: " + userName;
-            let selectedCategory =  this.domOverlay.getChildByID("category-selector").value;
-            cdapi.getTotalLeaderboard(sessionID, selectedCategory, rows).then(results => {    
-                let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
-                console.log(selectedCategory);
-
-                for (let i = 0; i < results.length; i++) {
-                    let entry = document.createElement("tr");
-                    let rank = document.createElement("td");
-                    let userName = document.createElement("td");
-                    let value = document.createElement("td");
-    
-                    rank.textContent = i + 1;
-                    userName.textContent = results[i].userName;
-                    value.textContent = results[i].value;
-    
-                    entry.appendChild(rank);
-                    entry.appendChild(userName);
-                    entry.appendChild(value);
-    
-                    table.appendChild(entry);
-                }
+            let selectedCategory = this.domOverlay.getChildByID("category-selector").value;
+            let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
+            cdapi.getTotalLeaderboard(sessionID, selectedCategory, rows).then(results => {
+                this.displayLeaderboardResults(results, table);
             });
-            /*
-            this.domOverlay.on("click", function (event) {
-                console.log(event.target.id);
-                if (event.target.id == "category-selector") {
-                    console.log("click!");
-                    let selectedCategory =  this.domOverlay.getChildByID("category-selector").value;
-                    cdapi.getTotalLeaderboard(sessionID, selectedCategory, rows).then(results => {    
-                        let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
-                        console.log(selectedCategory);
+            this.domOverlay.addListener("click");
+            this.domOverlay.on("click", (event) => {
+                if (event.target.id == "category-selector" && event.target.value != selectedCategory) {
+                    selectedCategory = event.target.value;
+                    cdapi.getTotalLeaderboard(sessionID, selectedCategory, rows).then(results => {
+                        this.displayLeaderboardResults(results, table);
 
-                        for (let i = 0; i < results.length; i++) {
-                            let entry = document.createElement("tr");
-                            let rank = document.createElement("td");
-                            let userName = document.createElement("td");
-                            let value = document.createElement("td");
-            
-                            rank.textContent = i + 1;
-                            userName.textContent = results[i].userName;
-                            value.textContent = results[i].value;
-            
-                            entry.appendChild(rank);
-                            entry.appendChild(userName);
-                            entry.appendChild(value);
-            
-                            table.appendChild(entry);
-                        }
                     });
                 }
-            });*/
+            });
         } else {
             this.domOverlay.getChildByID("sessions-name-displ").textContent = "Currently not signed into any session.";
         }
 
+    }
+
+    displayLeaderboardResults(results, table) {
+        // Clear table
+        table.innerHTML = "";
+
+        // Add back in headers
+        let header = document.createElement("tr");
+        let rankHeading = document.createElement("th");
+        let nameHeading = document.createElement("th");
+        let valueHeading = document.createElement("th");
+
+        rankHeading.textContent = "Rank";
+        nameHeading.textContent = "Name";
+        valueHeading.textContent = "Score";
+
+        nameHeading.classList.add("name");
+
+        header.appendChild(rankHeading);
+        header.appendChild(nameHeading);
+        header.appendChild(valueHeading);
+        table.appendChild(header);
+
+        // Fill out table
+        for (let i = 0; i < results.length; i++) {
+            let entry = document.createElement("tr");
+            let rank = document.createElement("td");
+            let userName = document.createElement("td");
+            let value = document.createElement("td");
+
+            rank.textContent = i + 1;
+            userName.textContent = results[i].userName;
+            value.textContent = results[i].value;
+
+            entry.appendChild(rank);
+            entry.appendChild(userName);
+            entry.appendChild(value);
+
+            table.appendChild(entry);
+        }
     }
 
     dismissOverlay(img, pointer) {
