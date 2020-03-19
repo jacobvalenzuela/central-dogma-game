@@ -24,7 +24,7 @@ class LoginScreen extends Phaser.Scene {
 
         // Background Color
         this.graphics = this.game.add.graphics();
-        this.graphics.fillStyle(0x1e1e1e, 1.0);
+        this.graphics.fillStyle(0xFFFFFF, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
 
     }
@@ -136,16 +136,6 @@ class LoginScreen extends Phaser.Scene {
 
             } else if (event.target.id == "login-button") {
                 event.preventDefault();
-                
-                // builds the username and lowercases it
-                let username = this.domOverlay.getChildByID("adjective-selector").value + "-" +
-                               this.domOverlay.getChildByID("color-selector").value + "-" +
-                               this.domOverlay.getChildByID("animal-selector").value + "-" +
-                               this.domOverlay.getChildByID("state-selector").value + "-" +
-                               this.domOverlay.getChildByID("grade-selector").value.replace("-", "_") +  "-" +
-                               this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_").replace("-", "_") + "-" +
-                               this.domOverlay.getChildByID("login-sessionName").value;
-                username = username.toLowerCase();
 
                 // just builds the animal name
                 let animalname = this.capitalizeFirstLetter(this.domOverlay.getChildByID("adjective-selector").value) + " " +
@@ -155,10 +145,33 @@ class LoginScreen extends Phaser.Scene {
                 // retrieves session name
                 let session = this.domOverlay.getChildByID("login-sessionName").value.replace(" ", "_");
 
+                // check if session is unset, and if so, set it to a default value (date + "No_Session_ID")
+                if (session == "") {
+                    let defaultSession = "no_session_id";
+
+                    let today = new Date();
+                    let dd = String(today.getDate()).padStart(2, '0');
+                    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                    let yyyy = today.getFullYear();
+
+                    today = mm + '_' + dd + '_' + yyyy;
+                    session = today + "_" + defaultSession;
+                    console.log(session);
+                }
+
+                // builds the username and lowercases it
+                let username = this.domOverlay.getChildByID("adjective-selector").value + "-" +
+                this.domOverlay.getChildByID("color-selector").value + "-" +
+                this.domOverlay.getChildByID("animal-selector").value + "-" +
+                this.domOverlay.getChildByID("state-selector").value + "-" +
+                this.domOverlay.getChildByID("grade-selector").value.replace("-", "_") +  "-" +
+                this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_").replace("-", "_") + "-" + session;
+                username = username.toLowerCase();                
+
                 // if any are invalid, tell the user
                 if (!username || !session || this.domOverlay.getChildByID("adjective-selector").value == "" ||
                     this.domOverlay.getChildByID("color-selector").value == "" || this.domOverlay.getChildByID("animal-selector").value == "") {
-                    this.domOverlay.getChildByID("login-feedback").textContent = "Please specify a valid username and session.";
+                    this.domOverlay.getChildByID("login-feedback").textContent = "Please specify a valid username.";
                     return;
                 }
 
@@ -265,7 +278,7 @@ class LoginScreen extends Phaser.Scene {
             let screenWidth = 360; // width of box to randomly spawn floaties
             let screenHeight = 720; // height of box to randomly spawn floaties
 
-            let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff');
+            let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff_dark');
             myFloaty.setScale(maxScale).setDepth(0.5).setAlpha(0.15);
 
             // Randoly sets speed to some percentage of its max speed, in a random direction
