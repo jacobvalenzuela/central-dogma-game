@@ -141,7 +141,7 @@ class LevelComplete extends Phaser.Scene {
                                         console.log(that);
                                         let levelData = data.gameObj.levels[that.level];
                                         let performance = {
-                                            timestamp: new Date().toString(), // timestamp when level was finished
+                                            timestamp: new Date().toLocaleString("en-US"), // timestamp when level was finished
                                             level: that.level + 1, // what number level is this in the campaign
                                             process: levelData.process, // what process of DNA replication was being played?
                                             lvlType: that.lvlType, // what type of level was this ("dna_replication" vs "codon_transcription"
