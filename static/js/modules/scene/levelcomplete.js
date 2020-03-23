@@ -1,3 +1,5 @@
+import AudioPlayer from "../audioplayer.js";
+
 /**
  * Represents the level complete screen
  * @extends Phaser.Scene
@@ -23,6 +25,9 @@ class LevelComplete extends Phaser.Scene {
         let BLUE = 0x006FFF;
         let WHITE = 0xFFFFFF;
         let DARKER_BLUE = 0x0e1e2d;
+
+        // Sound Effects
+        this.audioplayer = new AudioPlayer();
 
         this.level = data.level;
         this.confnucleotides = data.nucleotides;
@@ -85,6 +90,7 @@ class LevelComplete extends Phaser.Scene {
                         delay: 600,
                         loop: false,
                         callback: function () {
+                            that.audioplayer.playWinSound();
                             that.scoreUp(scoreTxt, data.score, function () {
                                 that.time.addEvent({
                                     delay: 600,
@@ -595,6 +601,7 @@ class LevelComplete extends Phaser.Scene {
         if (img != this.levelsBtn) {
             return;
         }
+        this.audioplayer.playClickSound();
         this.levelsBtn.removeInteractive();
         this.scene.stop("level" + this.level);
         this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
@@ -608,6 +615,7 @@ class LevelComplete extends Phaser.Scene {
         if (img != this.nextBtn) {
             return;
         }
+        this.audioplayer.playClickSound();
         this.nextBtn.removeInteractive();
         this.scene.stop("level" + this.level);
         let newNum = Number(this.level) + Number(1);

@@ -5,7 +5,6 @@ import PositionManager from "../positionmanager.js";
 import LevelComplete from "./levelcomplete.js";
 import Codon from "../codon.js";
 import AudioPlayer from "../audioplayer.js";
-import BackgroundFloater from "../backgroundfloater.js";
 
 /**
  * Represents the level stage scene
@@ -88,7 +87,8 @@ class LevelStage extends Phaser.Scene {
 
         // Stops any previously playing music and starts music
         this.game.sound.stopAll();
-        this.audioplayer.playBgMusic1();
+        this.audioplayer.playRandomBgMusic();
+        console.log("player music");
 
         // Background floaties
         this.floaty = this.physics.add.group();
@@ -143,6 +143,7 @@ class LevelStage extends Phaser.Scene {
         // Pause Button
         this.pauseBtn = this.game.add.image(330, 87, "pause_btn").setDepth(101).setScale(0.23).setInteractive();
         this.pauseBtn.addListener("pointerdown", this.bindFn(function(){
+            this.audioplayer.playClickSound();
             this.scene.pause();
             this.scene.launch('pauseScreen', this);
         }, this));

@@ -324,10 +324,18 @@ class Game {
         this.game.load.html("html_quiz", "static/html/quiz.html");
         this.game.load.html("html_levelleaderboard", "static/html/levelleaderboard.html");
 
-        // Audio
+        // Sound Effects
         this.game.load.audio("incorrect", "static/audio/sounds/Incorrect.wav");
         this.game.load.audio("correct", "static/audio/sounds/Correct.wav");
+        this.game.load.audio("dialog_open", "static/audio/sounds/DialogOpen.wav");
+        this.game.load.audio("dialog_close", "static/audio/sounds/DialogClose.wav");
+        this.game.load.audio("click", "static/audio/sounds/Click.wav");
+        this.game.load.audio("win", "static/audio/sounds/Win.wav");
+
+        // Music
         this.game.load.audio("bgmusic1", "static/audio/music/shinyTech2.mp3");
+        this.game.load.audio("bgmusic2", "static/audio/music/Familiar.mp3");
+        this.game.load.audio("bgmusic3", "static/audio/music/Tribulation.mp3");
         
         // Level Carousel Selector Images
         this.game.load.image("level1", "static/img/levelCarouselImages/1.png");

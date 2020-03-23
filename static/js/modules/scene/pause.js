@@ -1,3 +1,5 @@
+import AudioPlayer from "../audioplayer.js";
+
 /**
  * Represents the level stage scene
  * @extends Phaser.Scene
@@ -12,12 +14,18 @@ class PauseScreen extends Phaser.Scene {
         super(config);
     }
 
+    
+
     /**
      * Initalizes the level.
      * @param {JSON} data 
      */
     init(data) {
-        console.log(data);
+        // Sound Effects
+        this.audioplayer = new AudioPlayer();
+
+        this.audioplayer.playDialogOpenSound();
+
         var gra = this.add.graphics();
         gra.fillStyle(0x000000, 0.50);
         gra.fillRect(0, 0, 360, 740);
@@ -71,6 +79,7 @@ class PauseScreen extends Phaser.Scene {
      * @param {Phaser.GameObjects.Image} img - the play button
      */
     onButtonClickHold(img) {
+        this.audioplayer.playClickSound();
         img.setScale(0.45);
     }
 

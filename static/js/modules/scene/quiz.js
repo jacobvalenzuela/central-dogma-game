@@ -1,3 +1,5 @@
+import AudioPlayer from "../audioplayer.js";
+
 /**
  * Represents the level stage scene
  * @extends Phaser.Scene
@@ -26,6 +28,9 @@ class QuizScreen extends Phaser.Scene {
         let WHITE = 0xFFFFFF;
         let DARKER_BLUE = 0x0e1e2d;
         let BLACK = 0x000000;
+
+        // Sound Effects
+        this.audioplayer = new AudioPlayer();
 
         // retrieve question bank
         let questions = data.cache.json.entries.entries.quizQuestions.questions;
@@ -103,6 +108,8 @@ class QuizScreen extends Phaser.Scene {
 
         this.submitBtn = this.add.image(180, 620, "submit_btn").setScale(0.40).setAlpha(0);
         this.submitBtn.addListener("pointerup", this.bindFn(function(){
+            this.audioplayer.playClickSound();
+
             this.submitFeedback.setAlpha(1.0);
 
             if (this.quizQuestion.type == "drag and drop") {
@@ -115,6 +122,8 @@ class QuizScreen extends Phaser.Scene {
                 // On correct
                 this.submitFeedback.text = "+" + this.points + " POINTS!";
                 this.submitFeedback.setColor("#008000");
+
+                this.audioplayer.playCorrectSound();
     
                 data.scorekeeping.addKnowledgePoints(this.points);
 
@@ -140,6 +149,7 @@ class QuizScreen extends Phaser.Scene {
                 this.submitFeedback.text = "Try Again";
                 this.submitFeedback.setColor("#FF0000");
                 this.halvePointsAndDisplay();
+                this.audioplayer.playIncorrectSound();
                 this.questionResult.attempts++;
                 this.questionResult.score = Math.floor(this.questionResult.score / 2);
     
@@ -275,14 +285,8 @@ class QuizScreen extends Phaser.Scene {
             // display the submit button instantly
             this.tweens.add({ targets: this.submitBtn, alpha: 1.0, duration: 1000, ease: 'power4' });
             this.submitBtn.setInteractive();
-            let occupiedY = [];
             
             for (let i = 0; i < question.options.length; i++) {
-                // buffer to keep items in the box
-                // Represents how many pixels in from each edge to spawn choice.
-                let buffer = 120;
-
-                let validY = false;
 
                 let randx = (Math.random() * 255) + 40;
 
@@ -311,6 +315,7 @@ class QuizScreen extends Phaser.Scene {
 
     // Selects choice and updates colors
     onMultipleChoiceClick(numChoice) {
+        this.audioplayer.playClickSound();
         // If this is the first time selecting an answer, show the submit button
         if (this.selectedChoice == null) {
             this.tweens.add({ targets: this.submitBtn, alpha: 1.0, duration: 1000, ease: 'power4' });

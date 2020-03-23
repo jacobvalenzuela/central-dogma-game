@@ -1,3 +1,5 @@
+import AudioPlayer from "../audioplayer.js";
+
 /**
  * Represents the list level scene
  * @extends Phaser.Scene
@@ -36,6 +38,8 @@ class ListLevels extends Phaser.Scene {
         this.graphics.fillStyle(0x006FFF, 0.4);
         this.graphics.fillRect(18, 212, 320, 45);
 
+        // Sound Effects
+        this.audioplayer = new AudioPlayer();
 
         // Level Selection UI/Functionality
         this.leftLevelBtn = this.add.image(60, 600, "left_arrow_btn").setScale(0.25).setInteractive();
@@ -68,15 +72,18 @@ class ListLevels extends Phaser.Scene {
 
         // Left and Right
         this.leftLevelBtn.on("pointerdown", () => {
+            this.audioplayer.playClickSound();
             this.browseLeft();
         });
 
         this.rightLevelBtn.on("pointerdown", () => {
+            this.audioplayer.playClickSound();
             this.browseRight();
         });
 
         // Go Button
         this.goBtn.on("pointerdown", () => {
+            this.audioplayer.playClickSound();
             if (this.levels[this.curLevel].unlocked == true) {
                this.startPrelevel(this.curLevel); 
             }
@@ -84,11 +91,13 @@ class ListLevels extends Phaser.Scene {
 
         // Back Button
         this.backBtn.on("pointerdown", () => {
+            this.audioplayer.playClickSound();
             this.backButtondown();
         })
 
         // Signout Button
         this.signoutBtn.on("pointerdown", () => {
+            this.audioplayer.playClickSound();
             cdapi.signout(data.gameObj.userName, data.gameObj.sessionID).then(result => {
                 this.removeSignedInOnlyElements();
                 localStorage.removeItem("username");

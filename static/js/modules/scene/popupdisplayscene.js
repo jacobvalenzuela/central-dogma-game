@@ -1,3 +1,5 @@
+import AudioPlayer from "../audioplayer.js";
+
 /**
  * Represents the Popup Display
  * @extends Phaser.Scene
@@ -26,6 +28,11 @@ class PopupDisplayScene extends Phaser.Scene {
         this.graphics.fillStyle(0x000000, 0.15);
         this.graphics.fillRect(0, 0, 360, 740);
 
+        // Sound Effects
+        this.audioplayer = new AudioPlayer();
+
+        this.audioplayer.playDialogOpenSound();
+        
         let that = this;
         this.fadeIn(function () {
             that.input.on("pointerdown", that.bindFn(that.exitPopup));
@@ -96,7 +103,6 @@ class PopupDisplayScene extends Phaser.Scene {
      * @param {Phaser.GameObjects} objClicked - the object clicked
      */
     exitPopup(inputPlugin, pointer, objClicked) {
-        console.log(this.manager);
         this.scene.launch("countdownResumeScreen", this.manager.level);
         this.scene.stop();
     }

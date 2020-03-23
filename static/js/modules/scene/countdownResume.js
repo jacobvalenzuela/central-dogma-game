@@ -1,3 +1,5 @@
+import AudioPlayer from "../audioplayer.js";
+
 /**
  * Represents the level stage scene
  * @extends Phaser.Scene
@@ -19,6 +21,9 @@ class CountdownResumeScreen extends Phaser.Scene {
     init(data) {
 
         let DELAY = 800;
+
+        // Sound Effects
+        this.audioplayer = new AudioPlayer();
 
         // Color Constants
         let ORANGE = 0xFE5832;
@@ -48,9 +53,11 @@ class CountdownResumeScreen extends Phaser.Scene {
             callback: function() {
                 curTime = curTime - 1;
                 if (curTime == 0) {
+                    that.audioplayer.playDialogCloseSound();
                     that.scene.resume("level" + data.level);
                     that.scene.stop();
                 } else {
+                    that.audioplayer.playClickSound();
                     text.setText(curTime);
                 }
             }
