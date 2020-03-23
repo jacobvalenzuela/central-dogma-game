@@ -33,7 +33,7 @@ class ListLevels extends Phaser.Scene {
             {fontFamily: 'Teko', fontSize: '40pt', color: '#000000'});
 
         this.graphics.fillStyle(0xFF8040, 0.4);
-        this.graphics.fillRect(18, 157, 320, 45);
+        this.graphics.fillRect(18, 152, 320, 50);
 
         this.graphics.fillStyle(0x006FFF, 0.4);
         this.graphics.fillRect(18, 212, 320, 45);
@@ -105,7 +105,7 @@ class ListLevels extends Phaser.Scene {
         })
 
         // Level Selection Descriptors
-        this.levelBrowseTitle = this.add.text(20, 160, "", 
+        this.levelBrowseTitle = this.add.text(20, 155, "", 
             {fontFamily: 'Teko', fontSize: '36pt', color: '#000000', align: 'center'});
 
         this.levelBrowseSubtitle = this.add.text(20, 220, "", 
@@ -190,17 +190,21 @@ class ListLevels extends Phaser.Scene {
             this.domOverlay.getChildByID("sessions-name-displ").textContent = sessionID;
             this.domOverlay.getChildByID("sessions-username").textContent = "Username: " + userName;
             let selectedCategory = this.domOverlay.getChildByID("category-selector").value;
+            
+            // Gets values initially
             let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
-            cdapi.getTotalLeaderboard(sessionID, selectedCategory, rows).then(results => {
+            cdapi.sessionLeaderboard(sessionID, selectedCategory).then(results => {
                 this.displayLeaderboardResults(results, table);
             });
-            this.domOverlay.addListener("click");
-            this.domOverlay.on("click", (event) => {
-                if (event.target.id == "category-selector" && event.target.value != selectedCategory) {
-                    selectedCategory = event.target.value;
-                    cdapi.getTotalLeaderboard(sessionID, selectedCategory, rows).then(results => {
-                        this.displayLeaderboardResults(results, table);
 
+            // And also when sort by selector is changed
+            this.domOverlay.addListener("change");
+            this.domOverlay.on("change", (event) => {
+                if (event.target.id == "category-selector") {
+                    selectedCategory = event.target.value;
+                    console.log(selectedCategory);
+                    cdapi.sessionLeaderboard(sessionID, selectedCategory).then(results => {
+                        this.displayLeaderboardResults(results, table);
                     });
                 }
             });

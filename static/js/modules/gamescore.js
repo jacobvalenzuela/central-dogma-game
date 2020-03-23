@@ -182,6 +182,14 @@ class GameScore {
         return this.currentScore;
     }
 
+    /**
+     * Returns the score only from matches from the current game
+     * @returns {number} the score accumulated so far
+     */
+    getMatchScore() {
+        return (this.sequencesMade * (100 - this.game.levelConfig.speed) );
+    }
+
     leftPad(number, targetLength) {
         var output = number + "";
         while (output.length < targetLength) {

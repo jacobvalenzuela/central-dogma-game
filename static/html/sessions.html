@@ -238,14 +238,15 @@
       <br>      
     -->
 
-    <h1>Leaderboard (Current Session: <span id="sessions-name-displ">None</span>)</h1>
+    <h1>L E A D E R B O A R D</h1>
+    <p>Current Session: <span id="sessions-name-displ">None</span></p>
+    <br />
     <p id="sessions-username">User: </p>
     <div class="leaderboard-container">
         <p>Sort By: </p>
         <select name="leaderboard-category" id="category-selector" class="select-css">
-          <option value="score">Score</option>
-          <option value="levelsCompleted">Levels Completed</option>
-          <option value="quizzesCompleted">Quizzes Completed</option>
+          <option value="levelScore">Total Level Score</option>
+          <option value="quizScore">Total Quiz Score</option>
         </select>
         <p class="hidden" id="sessions-no-scores-notice">There are no scores.</p>
         <table id="sessions-leaderboard-table">

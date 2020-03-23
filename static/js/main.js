@@ -249,7 +249,7 @@ import Game from "./modules/game.js";
             "process": "dna replication",
             "speed": SPEED_SLOW,
             "popups": {
-                "intro": "Let's put it all together, DNA is made of all 4 nucleotides (A, T, G, C)."
+                "intro": "Putting it all together, DNA only has 4 nucleotides (A, T, G, C)."
             },
             "rotateNT": false,
             "ntType": "basic",
@@ -453,7 +453,7 @@ import Game from "./modules/game.js";
             "process": "transcription",
             "speed": SPEED_SLOW,
             "popups": {
-                "intro": "Tapping nucleotides rotates them so that the correct side of the nucleotide is ready to pair."
+                "intro": "Tap nucleotides to rotate and make a proper double or triple bond."
             },
             "rotateNT": true,
             "ntType": "basic",

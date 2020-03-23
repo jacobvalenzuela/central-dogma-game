@@ -793,6 +793,7 @@ class LevelStage extends Phaser.Scene {
             gameObj: this.gameObj,
             nucleotides: nucleotides,
             score: this.scorekeeping.getScore(),
+            matchScore: this.scorekeeping.getMatchScore(), // score gained only from matching, not quiz
             correctCount: this.scorekeeping.sequencesMade,
             accuracy: this.scorekeeping.getAccuracy(),
             quiz: this.levelConfig.quiz,
