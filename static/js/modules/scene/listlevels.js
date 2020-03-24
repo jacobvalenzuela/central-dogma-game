@@ -194,6 +194,7 @@ class ListLevels extends Phaser.Scene {
             // Gets values initially
             let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
             cdapi.getTotalLeaderboard(sessionID, selectedCategory, 100).then(results => {
+                console.log(results);
                 this.displayLeaderboardResults(results, table);
             });
 
@@ -204,6 +205,7 @@ class ListLevels extends Phaser.Scene {
                     selectedCategory = event.target.value;
                     console.log(selectedCategory);
                     cdapi.getTotalLeaderboard(sessionID, selectedCategory, 100).then(results => {
+                        console.log(results);
                         this.displayLeaderboardResults(results, table);
                     });
                 }
