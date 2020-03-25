@@ -181,6 +181,9 @@ class Game {
 
         // load plugins
         this.game.load.plugin("rextagtextplugin", "static/vendor/js/rextagtextplugin.min.js", true);
+        
+        let bbcodepluginurl = "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexbbcodetextplugin.min.js";
+        this.game.load.plugin("rexbbcodetextplugin", bbcodepluginurl, true);
 
         this.game.load.image("touch_feedback_circle", "static/img/touch_feedback/circle.png");
         this.game.load.image("touch_feedback_green_spark", "static/img/touch_feedback/green_sparkle.png");

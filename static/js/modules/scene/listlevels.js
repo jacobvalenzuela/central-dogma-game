@@ -36,7 +36,7 @@ class ListLevels extends Phaser.Scene {
         this.graphics.fillRect(18, 152, 320, 50);
 
         this.graphics.fillStyle(0x006FFF, 0.4);
-        this.graphics.fillRect(18, 212, 320, 45);
+        this.graphics.fillRect(18, 212, 320, 50);
 
         // Sound Effects
         this.audioplayer = new AudioPlayer();
@@ -105,14 +105,24 @@ class ListLevels extends Phaser.Scene {
         })
 
         // Level Selection Descriptors
-        this.levelBrowseTitle = this.add.text(20, 155, "", 
-            {fontFamily: 'Teko', fontSize: '36pt', color: '#000000', align: 'center'});
+        this.levelBrowseTitle = this.add.text(20, 160, "", 
+            {fontFamily: 'Teko', fontSize: '32pt', color: '#000000', align: 'center'});
 
         this.levelBrowseSubtitle = this.add.text(20, 220, "", 
-            {fontFamily: 'Teko', fontSize: '28pt', color: '#000000', align: 'center'}); 
+            {fontFamily: 'Teko', fontSize: '32pt', color: '#000000', align: 'center'}); 
 
-        this.levelBrowseDesc = this.add.text(20, 300, "", 
-            {fontFamily: 'Teko', fontSize: '20pt', color: '#000000', align: 'left', wordWrap: { width: 320, useAdvancedWrap: true } });                                  
+        // In line style rendering with rexBBCodeText
+        this.levelBrowseDesc = this.add.rexBBCodeText(20, 300, "", {
+            fontFamily: 'Teko',
+            fontSize: "32px",
+            color: "#000000",
+            halign: "left",
+            wrap: {
+                mode: "word",
+                width: 300
+            },
+            lineSpacing: 10
+        });
 
         // Functionality to skip DOGMA animation, also fades in content.
         let that = this;
@@ -442,7 +452,7 @@ class ListLevels extends Phaser.Scene {
             if (speed > 33) {
                 difficulty = "(Easy)";
             } else if (speed >= 25) {
-                difficulty = "(Medium)";
+                difficulty = "(Moderate)";
             } else {
                 difficulty = "(Hard)";
             }
@@ -455,9 +465,9 @@ class ListLevels extends Phaser.Scene {
                 } else {
                     this.levelBrowseDesc.text = desc;
                 }
-                this.levelBrowseSubtitle.text = "Level " + (level + 1) + " - " + difficulty;
+                this.levelBrowseSubtitle.text = "Level " + (level + 1) + " : " + difficulty;
             } else {
-                this.levelBrowseSubtitle.text = "Level " + (level + 1) + " - LOCKED";
+                this.levelBrowseSubtitle.text = "Level " + (level + 1) + " : LOCKED";
                 this.levelBrowseDesc.text = "You could probably write something about how to unlock this level here.";
             }
         }

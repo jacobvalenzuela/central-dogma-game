@@ -25,6 +25,11 @@ import Game from "./modules/game.js";
 
     // color codes
     let COLOR_TERM = "#ce00ce";
+    let COLOR_A = "#F56C26";
+    let COLOR_T = "#22F2DD";
+    let COLOR_C = "#103B75";
+    let COLOR_G = "#F5B222";
+    let COLOR_U = "#aa24ff";
 
 
     // Notes about game attributes:
@@ -33,12 +38,13 @@ import Game from "./modules/game.js";
     // color code lines in positionmanager.js
 
     let game = new Game([
+        // LEVEL 1
         {
             "ntSequence": "ATATTTTAAATATAT",
             "controls": ["T", "A"],
             "unlocked": true,
-            "name": "AT the Beginning",
-            "description": "Introduction to the basics of DNA replication with two purine nucleobases, Adenine and Guanine.",
+            "name": "A/T the Beginning",
+            "description": "The basics of DNA, [color=" + COLOR_A + "]A[/color] matches with [color=" + COLOR_T + "]T[/color].",
             "process": "dna replication",
             "speed": SPEED_SLOW,
             "popups": {
@@ -69,12 +75,14 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        //LEVEL 2
         {
             "ntSequence": "ATATTTTAAATATAT",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "Picking Up The Pace!",
-            "description": "We're going to challenge you, try to keep up by matching Adenine and Guanine!",
+            "description": "Can you keep up! [color=" + COLOR_A + "]A[/color] matches with [color=" + COLOR_T + "]T[/color]!",
             "process": "dna replication",
             "speed": SPEED_MEDIUM,
             "popups": {
@@ -102,13 +110,15 @@ import Game from "./modules/game.js";
                 "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
-        },        
+        },
+        
+        // Level 3
         {
             "ntSequence": "CGGCGCCGCGGCCGC",
             "controls": ["G", "C"],
             "unlocked": true,
-            "name": "Clash of the Cs and Gs",
-            "description": "Introduction to the basics of DNA replication with two pyrimidine nucleobases, Cytosine and Guanine.",
+            "name": "Clash of the Cs & Gs",
+            "description": "The basics of DNA, [color=" + COLOR_C + "]C[/color] matches with [color=" + COLOR_G + "]G[/color].",
             "process": "dna replication",
             "speed": SPEED_SLOW,
             "popups": {
@@ -139,12 +149,14 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 4
         {
             "ntSequence": "CGGCGCCGCGGCCGC",
             "controls": ["G", "C"],
             "unlocked": true,
-            "name": "We need more!",
-            "description": "We're going to challenge you, try to keep up by matching Cytosine and Thymine!",
+            "name": "Cells need more Cs & Gs!",
+            "description": "Are you an expert now? Match [color=" + COLOR_C + "]C[/color] to [color=" + COLOR_G + "]G[/color].",
             "process": "dna replication",
             "speed": SPEED_MEDIUM,
             "popups": {
@@ -173,12 +185,14 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 5
         {
             "ntSequence": "ATATTTTAAATATAT",
             "controls": ["T", "A"],
             "unlocked": true,
-            "name": "(AT)tack of Purine",
-            "description": "We're going to challenge you, try to keep up by matching Adenine and Guanine!",
+            "name": "Double Bond (AT)tack",
+            "description": "Ok, expert! Try to keep up! FYI, A's & T's make double bonds!",
             "process": "dna replication",
             "speed": SPEED_FAST,
             "popups": {
@@ -207,16 +221,18 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 6
         {
             "ntSequence": "CGGCGCCGCGGCCGC",
             "controls": ["G", "C"],
             "unlocked": true,
-            "name": "Rated CG",
-            "description": "We're going to challenge you, try to keep up by matching Cytosine and Thymine!",
+            "name": "Level Rated CG",
+            "description": "Are you fast enough? FYI, C's & G's make triple bonds!",
             "process": "dna replication",
             "speed": SPEED_FAST,
             "popups": {
-                "intro": "How's that accuracy? Try to prevent mutations from happening."
+                "intro": "How's that accuracy? Try to prevent <style='color:" + COLOR_TERM + "'>mutations</style> from happening."
             },
             "rotateNT": false,
             "ntType": "basic",
@@ -241,44 +257,48 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
-        {
-            "ntSequence": "TAGTCACTAGGAGCA",
-            "unlocked": true,
-            "name": "Mixing Things Up",
-            "description": "DNA Replication",
-            "process": "dna replication",
-            "speed": SPEED_SLOW,
-            "popups": {
-                "intro": "Putting it all together, DNA only has 4 nucleotides (A, T, G, C)."
-            },
-            "rotateNT": false,
-            "ntType": "basic",
-            "lvlType": "dna_replication",
-            "quiz": {
-                "question": "Three base pairs are called a __________.",
-                "options": [
-                    "Codon", // first option is correct
-                    "Amino Acid",
-                    "Peptide",
-                    "DNA",
-                ],
-            },
-            "sequencedinfo": {
-                "name": "insulin",
-                "description": "<strong>Insulin</strong> is a <span style='color: blue;'>gene</span> that codes for a peptide (sequence of <span style='color: red;'>amino acids</span>) that acts as a hormone to regulate metabolism",
-                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
-                "imgurl": "./static/img/flashcard/insulin.png",
-            },
-            "knowledgepanel": {
-                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
-                "imgurl": "./static/img/flashcard/promoter_dna.png",
-            },
-        },
+
+        // Level 7
         {
             "ntSequence": "TAGTCACTAGGAGCA",
             "unlocked": true,
             "name": "All Together Now!",
-            "description": "We're going to challenge you, try to keep up by matching all 4 nucleotides!",
+            "description": "([color=" + COLOR_A + "]A[/color])ll ([color=" + COLOR_T + "]T[/color])he ([color=" + COLOR_C + "]C[/color])ool ([color=" + COLOR_G + "]G[/color])enes have ATCG's!",
+            "process": "dna replication",
+            "speed": SPEED_SLOW,
+            "popups": {
+                "intro": "Let's put it all together, DNA is made of all 4 nucleotides (A, T, G, C)."
+            },
+            "rotateNT": false,
+            "ntType": "basic",
+            "lvlType": "dna_replication",
+            "quiz": {
+                "question": "Three base pairs are called a __________.",
+                "options": [
+                    "Codon", // first option is correct
+                    "Amino Acid",
+                    "Peptide",
+                    "DNA",
+                ],
+            },
+            "sequencedinfo": {
+                "name": "insulin",
+                "description": "<strong>Insulin</strong> is a <span style='color: blue;'>gene</span> that codes for a peptide (sequence of <span style='color: red;'>amino acids</span>) that acts as a hormone to regulate metabolism",
+                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+                "imgurl": "./static/img/flashcard/insulin.png",
+            },
+            "knowledgepanel": {
+                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
+                "imgurl": "./static/img/flashcard/promoter_dna.png",
+            },
+        },
+
+        // Level 8
+        {
+            "ntSequence": "TAGTCACTAGGAGCA",
+            "unlocked": true,
+            "name": "Bases Loaded!!!",
+            "description": "It's faster, make sure to match bases correctly or you'll introduce mutations!",
             "process": "dna replication",
             "speed": SPEED_MEDIUM,
             "popups": {
@@ -307,11 +327,13 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 9
         {
             "ntSequence": "TAGTCACTAGGAGCA",
             "unlocked": true,
-            "name": "The Replicator",
-            "description": "We're going to challenge you, try to keep up by matching all 4 nucleotides!",
+            "name": "#CanYouKeepUp!",
+            "description": "You can't spell MATCHING without ATCG!",
             "process": "dna replication",
             "speed": SPEED_FAST,
             "popups": {
@@ -340,12 +362,14 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 10
         {
             "ntSequence": "UGCAGUCUGAUGC",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
-            "name": "Introducing Uracil",
-            "description": "Transcription",
+            "name": "New nucleotide, U",
+            "description": "During Transcription, RNA is made from DNA.",
             "process": "transcription",
             "speed": SPEED_SLOW,
             "popups": {
@@ -376,12 +400,14 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 11
         {
             "ntSequence": "UGCAGUCUGAUGC",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
-            "name": "Ribonucleic Acid",
-            "description": "Transcription",
+            "name": "Ribonucleic Acid (RNA)",
+            "description": "[color=" + COLOR_T + "]T[/color] is not in RNA, instead [color=" + COLOR_A + "]A[/color] binds to [color=" + COLOR_U + "]U[/color].",
             "process": "transcription",
             "speed": SPEED_MEDIUM,
             "popups": {
@@ -410,12 +436,14 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 12
         {
             "ntSequence": "UGCAGUCUGAUGC",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
-            "name": "Transcriptor",
-            "description": "Transcription",
+            "name": "Polymerase Expert",
+            "description": "The Central Dogma:\nDNA → RNA → protein",
             "process": "transcription",
             "speed": SPEED_FAST,
             "popups": {
@@ -444,12 +472,14 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 13
         {
             "ntSequence": "GCUGGCAGCUGUCAA",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
-            "name": "Adding A Mixup",
-            "description": "Transcription",
+            "name": "Spin Cycle!",
+            "description": "Rotate (by tapping) the nucleotides so they form bonds!",
             "process": "transcription",
             "speed": SPEED_SLOW,
             "popups": {
@@ -478,12 +508,14 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 14
         {
             "ntSequence": "GCUGGCAGCUGUCAA",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
-            "name": "Running In Circles",
-            "description": "Transcription",
+            "name": "TFW You Can't Keep Up!",
+            "description": "Remember your binding partners!",
             "process": "transcription",
             "speed": SPEED_MEDIUM,
             "popups": {
@@ -512,12 +544,14 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 15
         {
             "ntSequence": "GCUGGCAGCUGUCAA",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
-            "name": "High Speed Spinner",
-            "description": "Transcription",
+            "name": "Danger: Experts Only",
+            "description": "Can you get a perfect sequence?",
             "process": "transcription",
             "speed": SPEED_FAST,
             "popups": {
@@ -546,11 +580,13 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 16
         {
             "ntSequence": "AUGCCGGGUCAUGGGCCCACUGACCAUGGGUUUUAG",
             "unlocked": true,
-            "name": "Codon Training",
-            "description": "Translation",
+            "name": "Lost in Trnaslation!",
+            "description": "Match the condon (RNA) with the anticodon. Anticodons code for specific amion acids to make protein!",
             "process": "translation",
             "speed": SPEED_SLOW,
             "popups": {
@@ -582,11 +618,13 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 17
         {
             "ntSequence": "AUGCCGGGUCAUGGGCCCACUGACCAUGGGUUUUAG",
             "unlocked": true,
-            "name": "Codon Training",
-            "description": "Translation",
+            "name": "Time for a protein bar!",
+            "description": "A Gene (DNA) codes for a sequence of amino acids that make up the Protein.",
             "process": "translation",
             "speed": SPEED_MEDIUM,
             "popups": {
@@ -616,12 +654,14 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 18
         {
             "ntSequence": "",
             "ntSequence": "AUGUUUGACCAUGGGUUUGACCCAGACACUCCGGGUGACCAUUAG",
             "unlocked": true,
-            "name": "Lost In Translation",
-            "description": "Translation",
+            "name": "You put the Pro in Protein",
+            "description": "The Central Dogma:\nDNA → RNA → protein",
             "process": "translation",
             "speed": SPEED_FAST,
             "popups": {
@@ -651,12 +691,14 @@ import Game from "./modules/game.js";
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
         },
+
+        // Level 19
         {
             "ntSequence": "",
             "ntSequence": "AUGUUUGACCAUGGGUUUGACCCAGACACUCCGGGUGACCAUUAG",
             "unlocked": true,
-            "name": "Lost In Translation II",
-            "description": "Translation",
+            "name": "Central Dogma Expert!",
+            "description": "Thank you for playing!",
             "process": "translation",
             "speed": SPEED_FAST,
             "popups": {
