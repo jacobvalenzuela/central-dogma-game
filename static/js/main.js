@@ -480,6 +480,12 @@ import Game from "./modules/game.js";
             "unlocked": true,
             "name": "Spin Cycle!",
             "description": "Rotate (by tapping) the nucleotides so they form bonds!",
+            "description_image": {
+                "name": "level13_description",
+                "x": 180,
+                "y": 470,
+                "scale": 0.1
+            },
             "process": "transcription",
             "speed": SPEED_SLOW,
             "popups": {
@@ -516,6 +522,12 @@ import Game from "./modules/game.js";
             "unlocked": true,
             "name": "TFW You Can't Keep Up!",
             "description": "Remember your binding partners!",
+            "description_image": {
+                "name": "level14_description",
+                "x": 180,
+                "y": 480,
+                "scale": 0.08
+            },
             "process": "transcription",
             "speed": SPEED_MEDIUM,
             "popups": {
@@ -585,8 +597,14 @@ import Game from "./modules/game.js";
         {
             "ntSequence": "AUGCCGGGUCAUGGGCCCACUGACCAUGGGUUUUAG",
             "unlocked": true,
-            "name": "Lost in Trnaslation!",
+            "name": "Lost in Translation!",
             "description": "Match the condon (RNA) with the anticodon. Anticodons code for specific amion acids to make protein!",
+            "description_image": {
+                "name": "level16_description",
+                "x": 200,
+                "y": 520,
+                "scale": 0.16
+            },
             "process": "translation",
             "speed": SPEED_SLOW,
             "popups": {
@@ -699,6 +717,12 @@ import Game from "./modules/game.js";
             "unlocked": true,
             "name": "Central Dogma Expert!",
             "description": "Thank you for playing!",
+            "description_image": {
+                "name": "logo_dogma",
+                "x": 180,
+                "y": 470,
+                "scale": 0.25
+            },
             "process": "translation",
             "speed": SPEED_FAST,
             "popups": {

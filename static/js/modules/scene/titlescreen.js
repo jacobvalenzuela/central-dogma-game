@@ -44,6 +44,7 @@ class TitleScreen extends Phaser.Scene {
         
         // Sound Effects
         this.audioplayer = new AudioPlayer();
+        this.audioplayer.playTitleMusic();
 
         // Intro title screen ISB logo
         this.dogmaLogo = this.game.add.image(180, 275, "logo_dogma").setScale(0.3).setDepth(10);

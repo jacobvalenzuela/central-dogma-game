@@ -12,9 +12,11 @@ class AudioPlayer {
         this.winSound = game.sound.add("win", {volume: 0.6});
         
         // Music
-        this.bgmusic1 = game.sound.add("bgmusic1", {loop: true, volume: 0.6});
-        this.bgmusic2 = game.sound.add("bgmusic2", {loop: true, volume: 0.6});
-        this.bgmusic3 = game.sound.add("bgmusic3", {loop: true, volume: 0.6});
+        this.bgmusic1 = game.sound.add("bgmusic1", {loop: true, volume: 0.4});
+        this.bgmusic2 = game.sound.add("bgmusic2", {loop: true, volume: 0.4});
+        this.bgmusic3 = game.sound.add("bgmusic3", {loop: true, volume: 0.4});
+
+        this.titlemusic = game.sound.add("titlemusic", {loop: true, volume: 0.4});
 
         this.bgmusic = [this.bgmusic2, this.bgmusic3];
 
@@ -58,6 +60,10 @@ class AudioPlayer {
 
     playBgMusic3() {
         this.bgmusic3.play();
+    }
+
+    playTitleMusic() {
+        this.titlemusic.play();
     }
 
 }

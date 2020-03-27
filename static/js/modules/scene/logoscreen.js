@@ -1,3 +1,4 @@
+
 /**
  * Represents the title screen
  * @extends Phaser.Scene
@@ -27,7 +28,6 @@ class LogoScreen extends Phaser.Scene {
         this.graphics = this.game.add.graphics();
         this.graphics.fillStyle(0xFFFFFF, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
-        
 
         // Intro title screen ISB logo
         let isblogo = this.game.add.image(180, 320, "logo_isb").setScale(0.5).setDepth(10);
