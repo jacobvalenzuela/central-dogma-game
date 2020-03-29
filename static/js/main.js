@@ -602,8 +602,8 @@ import Game from "./modules/game.js";
             "description_image": {
                 "name": "level16_description",
                 "x": 200,
-                "y": 520,
-                "scale": 0.16
+                "y": 489,
+                "scale": 0.15
             },
             "process": "translation",
             "speed": SPEED_SLOW,

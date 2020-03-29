@@ -42,11 +42,11 @@ class ListLevels extends Phaser.Scene {
         this.audioplayer = new AudioPlayer();
 
         // Level Selection UI/Functionality
-        this.leftLevelBtn = this.add.image(60, 670, "left_arrow_btn").setScale(0.25).setInteractive();
-        this.rightLevelBtn = this.add.image(300, 670, "right_arrow_btn").setScale(0.25).setInteractive();
-        this.goBtn = this.add.image(180, 645, "go_btn").setScale(0.40).setInteractive();
-        this.backBtn = this.add.image(180, 710, "back_btn").setScale(0.30).setInteractive(); //50
-        this.signoutBtn = this.add.image(250, 690, "signout_btn").setScale(0.5).setInteractive();
+        this.leftLevelBtn = this.add.image(60, 640, "left_arrow_btn").setScale(0.25).setInteractive();
+        this.rightLevelBtn = this.add.image(300, 640, "right_arrow_btn").setScale(0.25).setInteractive();
+        this.goBtn = this.add.image(180, 640, "go_btn").setScale(0.40).setInteractive();
+        this.backBtn = this.add.image(50, 707, "back_btn").setScale(0.30).setInteractive(); //50
+        this.signoutBtn = this.add.image(250, 707, "signout_btn").setScale(0.5).setInteractive();
         this.sessionbtn = this.add.image(290, 35, "leadererboard_btn").setScale(0.33).setAlpha(0);
         this.greeting = this.add.text(26, 30, "", 
             {fontFamily: 'Teko', fontSize: '28pt', color: '#000000'});
@@ -112,7 +112,7 @@ class ListLevels extends Phaser.Scene {
             {fontFamily: 'Teko', fontSize: '32pt', color: '#000000', align: 'center'}).setOrigin(0.5, 0.5); 
 
         // In line style rendering with rexBBCodeText
-        this.levelBrowseDesc = this.add.rexBBCodeText(20, 300, "", {
+        this.levelBrowseDesc = this.add.rexBBCodeText(20, 280, "", {
             fontFamily: 'Teko',
             fontSize: "26px",
             color: "#000000",
