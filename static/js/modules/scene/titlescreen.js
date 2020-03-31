@@ -19,8 +19,7 @@ class TitleScreen extends Phaser.Scene {
      */
     init(data) {
 
-        // Stops all music that might be previously playing.
-        this.game.sound.stopAll();
+        this.data = data;
 
         this.skipToLevelsList = false;
         if (data.skipToLevelsList) {
@@ -42,15 +41,27 @@ class TitleScreen extends Phaser.Scene {
         this.graphics.fillStyle(0xFFFFFF, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
         
-        // Sound Effects
-        this.audioplayer = new AudioPlayer();
-        this.audioplayer.playTitleMusic();
+        // Audio
+        // will grab existing audio object if there is one 
+        // (sometimes it's passed when we move between scenes to preserve audio/muting)
+        if (data.audio) { 
+            this.audioplayer = data.audio;
+            if (this.audioplayer.music_muted) {
+                this.audioplayer.stopAllMusic();
+            } else {
+                this.audioplayer.playTitleMusic();
+            }
+        } else {
+            this.audioplayer = new AudioPlayer();
+            this.audioplayer.playTitleMusic();
+        }
+        
 
         // Intro title screen ISB logo
         this.dogmaLogo = this.game.add.image(180, 275, "logo_dogma").setScale(0.3).setDepth(10);
 
         // upper right ISB logo
-        this.isblogo = this.game.add.image(280, 30, "logo_isb").setScale(0.30).setAlpha(1.0).setDepth(1);
+        this.isblogo = this.game.add.image(80, 45, "logo_isb").setScale(0.30).setAlpha(1.0).setDepth(1);
 
         // Notifications
         this.alert = this.game.add.text(68, 390, "",
@@ -65,23 +76,35 @@ class TitleScreen extends Phaser.Scene {
         this.playBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         this.playBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
+        // Signin Button
+        this.signInBtn = this.game.add.image(180, 580, "signin_btn").setScale(0.5).setAlpha(0).setDepth(1);
+        this.signInBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        this.signInBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        this.signInBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+
         // Effect Disable Button
-        this.effectDisableBtn = this.game.add.image(180, 580, "effect_disable_btn").setScale(0.5).setAlpha(0).setDepth(1);
+        this.effectDisableBtn = this.game.add.image(180, 640, "effect_disable_btn").setScale(0.5).setAlpha(0).setDepth(1);
         this.effectDisableBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         this.effectDisableBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
         // Education Button
-        this.educationDisableBtn = this.game.add.image(180, 640, "education_disable_btn").setScale(0.5).setAlpha(0).setDepth(1);
+        this.educationDisableBtn = this.game.add.image(180, 700, "education_disable_btn").setScale(0.5).setAlpha(0).setDepth(1);
         this.educationDisableBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         this.educationDisableBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         this.educationDisableBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
-        // Credits Button
-        this.creditsButton = this.game.add.image(180, 700, "credits_btn").setScale(0.5).setAlpha(0).setDepth(1);
-        this.creditsButton.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
-        this.creditsButton.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
-        this.creditsButton.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+        // Music Button
+        this.musicbtn = this.add.image(310, 45, "mutemusic_btn").setScale(0.30).setInteractive().setAlpha(0).setDepth(1);
+        this.musicbtn.on("pointerdown", () => {
+            this.audioplayer.playClickSound();
+            this.audioplayer.toggleMuteMusic();
+            if (this.audioplayer.music_muted) {
+                this.musicbtn.setAlpha(0.5);
+            } else {
+                this.musicbtn.setAlpha(1.0);
+            }
+        });
 
         let animDelay = 1;
         if (this.skipToLevelsList) {
@@ -117,8 +140,15 @@ class TitleScreen extends Phaser.Scene {
         this.fadeIn(this.isblogo);
         this.fadeIn(this.effectDisableBtn);
         this.fadeIn(this.educationDisableBtn);
-        this.fadeIn(this.creditsButton);
+        
 
+ 
+        this.fadeIn(this.musicbtn, () => {
+            if (this.audioplayer.music_muted) {
+                this.musicbtn.setAlpha(0.5);
+            }
+        });
+        
         // Makes UI Interactive
         this.playBtn.setInteractive();
         this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClick));
@@ -129,8 +159,25 @@ class TitleScreen extends Phaser.Scene {
         this.educationDisableBtn.setInteractive();
         this.educationDisableBtn.addListener("pointerup", this.bindFn(this.onEducationDisableClick));
 
-        this.creditsButton.setInteractive();
-        this.creditsButton.addListener("pointerup", this.bindFn(this.onCreditsClick));
+
+        // Only sign in fades in / made interactive if user is signed out
+        cdapi.isUserSignedIn(this.data.gameObj.userName, this.data.gameObj.SessionID).then(result => {
+            if (result) {
+                this.signInBtn.setInteractive(false);
+                this.signInBtn.setAlpha(0);
+            } else {
+                this.signInBtn.setInteractive();
+                this.fadeIn(this.signInBtn);
+                this.signInBtn.addListener("pointerup", () => {
+                    this.audioplayer.stopAllMusic();
+                    this.scene.stop("loginScreen");
+                    this.scene.launch("loginScreen");
+                    this.scene.stop("titlescreen");
+                });
+            }
+        })
+
+
     }
 
     /**
@@ -212,17 +259,19 @@ class TitleScreen extends Phaser.Scene {
         this.fadeOut(this.playBtn);
         this.fadeOut(this.effectDisableBtn);
         this.fadeOut(this.educationDisableBtn);
-        this.fadeOut(this.creditsButton);
+        this.fadeOut(this.signInBtn);
         this.fadeOut(this.isblogo);
+        this.fadeOut(this.musicbtn);
 
         // Removes interactivity from UI
         this.effectDisableBtn.setInteractive(false);
         this.educationDisableBtn.setInteractive(false);
         this.playBtn.setInteractive(false);
-        this.creditsButton.setInteractive(false);
+        this.signInBtn.setInteractive(false);
 
-        this.scene.launch("listlevels");
+        this.scene.launch("listlevels", {gameObj: this.data.gameObj, levels: this.data.gameObj.levels, audio: this.audioplayer});
         this.scene.moveAbove("titlescreen", "listlevels");
+        
     }
 
     /**

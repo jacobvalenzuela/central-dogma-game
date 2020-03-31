@@ -35,9 +35,7 @@ class LoginScreen extends Phaser.Scene {
     }
 
     showLoginOverlay(data, duration=500) {
-        if (this.domOverlay) {
-            return;
-        }
+        console.log("showing login overlay");
 
         let html = document.createElement("html");
         html.innerHTML = this.cache.html.entries.get("html_login");
@@ -74,20 +72,8 @@ class LoginScreen extends Phaser.Scene {
         let genders = ["Prefer not to say", "Female", "Male", "Non-binary", "Third gender", "Other"]
         this.appendSelectOptionsRandomly(genderSelector, genders, true);
 
-        this.add.tween({
-            targets: [this.fadeCover],
-            ease: 'Sine.easeInOut',
-            duration: duration,
-            delay: 0,
-            alpha: {
-                getStart: function () {
-                    return 0;
-                },
-                getEnd: function () {
-                    return 0.4;
-                }
-            }
-        });
+        // After adding all the options, clears the form of values to make sure form is blank.
+        this.resetFields(this.domOverlay);
 
         // if the user is signed in and their data is in local storage, use it to fill out the form.
         console.log(localStorage.getItem("username"));
@@ -119,10 +105,6 @@ class LoginScreen extends Phaser.Scene {
 
                 this.domOverlay.getChildByID("user-name").textContent = this.domOverlay.getChildByID("adjective-selector").value.replace(/\b\w/g, l => l.toUpperCase()) + " " + this.domOverlay.getChildByID("color-selector").value.replace(/\b\w/g, l => l.toUpperCase()) + " " + this.domOverlay.getChildByID("animal-selector").value.replace(/\b\w/g, l => l.toUpperCase())
                 this.domOverlay.getChildByID("user-found").textContent = "";
-            } else if (event.target.id === "login-register") {
-                event.preventDefault();
-                this._dismissOverlay(0);
-                this.showRegisterOverlay(0);
             } else if (event.target.id == "no-relog-button") {
                 // If they reject the relog, it changes the display to show the login screen again.
                 // Also erase any previously stored login info
@@ -188,9 +170,18 @@ class LoginScreen extends Phaser.Scene {
                         // Also store username in localStorage to check when relogging
                         localStorage.setItem("username", username);
 
+                        let userInfo = {
+                            "state": this.domOverlay.getChildByID("state-selector").value,
+                            "grade": this.domOverlay.getChildByID("grade-selector").value.replace("-", "_"),
+                            "gender": this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_").replace("-", "_")
+                        }
+                        
+                        console.log(userInfo);
+
                         cdapi.signin(username, session)
                         .then(result => {
                             this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
+                            this.scene.stop("loginScreen");
                         })
                         .catch(result => {
                             this.domOverlay.getChildByID("login-feedback").textContent = "Something went wrong while logging in.";

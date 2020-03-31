@@ -19,6 +19,7 @@ class ListLevels extends Phaser.Scene {
      */
     init(data) {
         console.log(data);
+        this.data = data;
         // Initialization
         this.camera = this.cameras.main;
         this.camera.setAlpha(0);
@@ -39,18 +40,24 @@ class ListLevels extends Phaser.Scene {
         this.graphics.fillRect(18, 212, 320, 50);
 
         // Sound Effects
-        this.audioplayer = new AudioPlayer();
+        this.audioplayer = data.audio; // gets the audio player from title screen
 
         // Level Selection UI/Functionality
         this.leftLevelBtn = this.add.image(60, 640, "left_arrow_btn").setScale(0.25).setInteractive();
         this.rightLevelBtn = this.add.image(300, 640, "right_arrow_btn").setScale(0.25).setInteractive();
         this.goBtn = this.add.image(180, 640, "go_btn").setScale(0.40).setInteractive();
-        this.backBtn = this.add.image(50, 707, "back_btn").setScale(0.30).setInteractive(); //50
+        this.backBtn = this.add.image(50, 707, "back_btn").setScale(0.30).setInteractive();
         this.signoutBtn = this.add.image(250, 707, "signout_btn").setScale(0.5).setInteractive();
-        this.sessionbtn = this.add.image(290, 35, "leadererboard_btn").setScale(0.33).setAlpha(0);
-        this.greeting = this.add.text(26, 30, "", 
+        this.sessionbtn = this.add.image(235, 45, "leadererboard_btn").setScale(0.30).setAlpha(0);
+        this.musicbtn = this.add.image(310, 45, "mutemusic_btn").setScale(0.30).setInteractive();
+
+        if (this.audioplayer.music_muted) {
+            this.musicbtn.setAlpha(0.5);
+        }
+
+        this.greeting = this.add.text(22, 20, "", 
             {fontFamily: 'Teko', fontSize: '28pt', color: '#000000'});
-        this.usernameText = this.add.text(26, 65, "", 
+        this.usernameText = this.add.text(22, 55, "", 
             {fontFamily: 'Teko', fontSize: '15pt', color: '#000000'});
 
         // Leaderboard UI/ Greeting
@@ -69,6 +76,17 @@ class ListLevels extends Phaser.Scene {
                 localStorage.removeItem("username");
             }
         })
+
+        // Music Button handler
+        this.musicbtn.on("pointerdown", () => {
+            this.audioplayer.playClickSound();
+            this.audioplayer.toggleMuteMusic();
+            if (this.audioplayer.music_muted) {
+                this.musicbtn.setAlpha(0.5);
+            } else {
+                this.musicbtn.setAlpha(1.0);
+            }
+        });
 
         // Left and Right
         this.leftLevelBtn.on("pointerdown", () => {
@@ -114,14 +132,14 @@ class ListLevels extends Phaser.Scene {
         // In line style rendering with rexBBCodeText
         this.levelBrowseDesc = this.add.rexBBCodeText(20, 280, "", {
             fontFamily: 'Teko',
-            fontSize: "26px",
+            fontSize: "28px",
             color: "#000000",
             halign: "left",
             wrap: {
                 mode: "word",
                 width: 300
             },
-            lineSpacing: 10
+            lineSpacing: 0
         });
 
         // Images to accompany level descriptions
@@ -357,7 +375,7 @@ class ListLevels extends Phaser.Scene {
             callback: function () {
                 that.scene.stop("listlevels");
                 that.scene.stop("levelpre" + that.curLevel);
-                that.scene.start("titlescreen");
+                that.scene.start("titlescreen", {gameObj: that.data.gameObj, levels: that.data.gameObj.levels, audio: that.audioplayer});
             }
         });
     }    

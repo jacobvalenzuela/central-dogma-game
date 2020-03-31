@@ -602,6 +602,7 @@ class LevelComplete extends Phaser.Scene {
             return;
         }
         this.audioplayer.playClickSound();
+        this.game.sound.stopAll();
         this.levelsBtn.removeInteractive();
         this.scene.stop("level" + this.level);
         this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});

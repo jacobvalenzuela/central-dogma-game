@@ -156,7 +156,7 @@ import Game from "./modules/game.js";
             "controls": ["G", "C"],
             "unlocked": true,
             "name": "Cells need more Cs & Gs!",
-            "description": "Are you an expert now? Match [color=" + COLOR_C + "]C[/color] to [color=" + COLOR_G + "]G[/color].",
+            "description": "Are you an expert now?\nMatch [color=" + COLOR_C + "]C[/color] to [color=" + COLOR_G + "]G[/color].",
             "process": "dna replication",
             "speed": SPEED_MEDIUM,
             "popups": {
@@ -192,7 +192,7 @@ import Game from "./modules/game.js";
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "Double Bond (AT)tack",
-            "description": "Ok, expert! Try to keep up! FYI, A's & T's make double bonds!",
+            "description": "Ok, expert! Try to keep up!\nFYI, A's & T's make double bonds!",
             "process": "dna replication",
             "speed": SPEED_FAST,
             "popups": {
@@ -228,7 +228,7 @@ import Game from "./modules/game.js";
             "controls": ["G", "C"],
             "unlocked": true,
             "name": "Level Rated CG",
-            "description": "Are you fast enough? FYI, C's & G's make triple bonds!",
+            "description": "Are you fast enough?\nFYI, C's & G's make triple bonds!",
             "process": "dna replication",
             "speed": SPEED_FAST,
             "popups": {
@@ -602,8 +602,8 @@ import Game from "./modules/game.js";
             "description_image": {
                 "name": "level16_description",
                 "x": 200,
-                "y": 489,
-                "scale": 0.15
+                "y": 492,
+                "scale": 0.14
             },
             "process": "translation",
             "speed": SPEED_SLOW,
@@ -721,7 +721,7 @@ import Game from "./modules/game.js";
                 "name": "logo_dogma",
                 "x": 180,
                 "y": 470,
-                "scale": 0.25
+                "scale": 0.3
             },
             "process": "translation",
             "speed": SPEED_FAST,

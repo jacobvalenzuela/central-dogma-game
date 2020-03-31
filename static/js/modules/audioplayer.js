@@ -3,6 +3,10 @@
  */
 class AudioPlayer {
     constructor() {
+
+        this.music_muted = false;
+        this.defaultMusicVolume = 0.4;
+
         // Sound Effects
         this.incorrectSound = game.sound.add("incorrect", {volume: 0.6});
         this.correctSound = game.sound.add("correct", {volume: 0.6});
@@ -12,13 +16,15 @@ class AudioPlayer {
         this.winSound = game.sound.add("win", {volume: 0.6});
         
         // Music
-        this.bgmusic1 = game.sound.add("bgmusic1", {loop: true, volume: 0.4});
-        this.bgmusic2 = game.sound.add("bgmusic2", {loop: true, volume: 0.4});
-        this.bgmusic3 = game.sound.add("bgmusic3", {loop: true, volume: 0.4});
+        this.bgmusic1 = game.sound.add("bgmusic1", {loop: true, volume: this.defaultMusicVolume});
+        this.bgmusic2 = game.sound.add("bgmusic2", {loop: true, volume: this.defaultMusicVolume});
+        this.bgmusic3 = game.sound.add("bgmusic3", {loop: true, volume: this.defaultMusicVolume});
 
-        this.titlemusic = game.sound.add("titlemusic", {loop: true, volume: 0.4});
+        this.titlemusic = game.sound.add("titlemusic", {loop: true, volume: this.defaultMusicVolume});
 
         this.bgmusic = [this.bgmusic2, this.bgmusic3];
+
+        this.allMusic = [this.titlemusic, this.bgmusic, this.bgmusic2, this.bgmusic3];
 
     }
 
@@ -51,19 +57,56 @@ class AudioPlayer {
     }
 
     playBgMusic1() {
-        this.bgmusic1.play();
+        if (!this.music_muted) {
+            this.bgmusic1.play();
+        }
     }
 
     playBgMusic2() {
-        this.bgmusic2.play();
+        if (!this.music_muted) {
+            this.bgmusic2.play();
+        }
     }
 
     playBgMusic3() {
-        this.bgmusic3.play();
+        if (!this.music_muted) {
+            this.bgmusic3.play();
+        }
     }
 
     playTitleMusic() {
-        this.titlemusic.play();
+        if (!this.music_muted) {
+            this.titlemusic.play();
+        }
+    }
+
+    toggleMuteMusic() {
+        this.music_muted = !this.music_muted;        
+        if (this.music_muted) {
+            this.titlemusic.stop();
+        } else {
+            this.titlemusic.play();
+        }
+
+        /*
+        for (let i = 0; i < this.allMusic.length; i++) {
+            this.allMusic[i].mute = this.music_muted;
+            
+            if (this.music_muted) {
+                this.allMusic[i].setVolume(0);
+            } else {
+                this.allMusic[i].setVolume(this.defaultMusicVolume);
+            }
+            
+        }
+        */
+    }
+
+    stopAllMusic() {
+        this.titlemusic.stop();
+        this.bgmusic1.stop();
+        this.bgmusic2.stop();
+        this.bgmusic3.stop();
     }
 
 }
