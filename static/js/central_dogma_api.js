@@ -202,7 +202,7 @@
     // ***************************************************************************************
     // Josh's new functions
     // ***************************************************************************************
-    cdapi.signin = async (username, sessionID) => {
+    cdapi.signin = async (username, sessionID, userInfo) => {
         if (NO_BACKEND) {
             console.log('no backend -> dummy signin');
             return new Promise(function(resolve, reject) {
@@ -211,7 +211,7 @@
             });
         }
         return await postJSON(BASE_URL + "/user/signin",
-                              {"username": username, "session_id": sessionID}).then(data => {
+                              {"username": username, "session_id": sessionID, "userinfo": userInfo}).then(data => {
                                   if (data.status == "ok") {
                                       window.localStorage.setItem("loginToken", data.access_token);
                                       loggedIn = true;
