@@ -178,7 +178,7 @@ class LoginScreen extends Phaser.Scene {
                         
                         console.log(userInfo);
 
-                        cdapi.signin(username, session)
+                        cdapi.signin(username, session, userInfo)
                         .then(result => {
                             this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
                             this.scene.stop("loginScreen");
