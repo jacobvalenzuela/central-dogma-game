@@ -21,6 +21,8 @@ class PauseScreen extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
+        console.log(data);
+
         // Sound Effects
         this.audioplayer = new AudioPlayer();
 
@@ -58,6 +60,7 @@ class PauseScreen extends Phaser.Scene {
             newobj.levels = data.gameObj.levels;
             this.scene.launch("listlevels", newobj);
             */
+            data.audioplayer.stopAllMusic();
             this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: data.gameObj, fadeIn: true});
         }));
 
@@ -70,6 +73,7 @@ class PauseScreen extends Phaser.Scene {
             data.popupmanager.destroy();
             this.scene.stop("level" + data.level);
             this.scene.stop();
+            data.audioplayer.stopAllMusic();
             this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
         }));
         

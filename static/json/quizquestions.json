@@ -109,7 +109,7 @@
             "type": "multiple choice",
             "worth": 200,
             "prompt": "Which of the following statements about RNA are TRUE?",
-            "options": ["NA is made up of three different nucleotides.", "Transcription is the process of making RNA.", "In RNA, nucleotide A pairs with nucleotide T.", "RNA has no purpose in the cell."],
+            "options": ["RNA is made up of three different nucleotides.", "Transcription is the process of making RNA.", "In RNA, nucleotide A pairs with nucleotide T.", "RNA has no purpose in the cell."],
             "correct": 1
         },
         {

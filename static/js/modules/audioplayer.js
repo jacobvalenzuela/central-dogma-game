@@ -80,8 +80,8 @@ class AudioPlayer {
         }
     }
 
-    toggleMuteMusic() {
-        this.music_muted = !this.music_muted;        
+    MuteMusic(bool) {
+        this.music_muted = bool;  
         if (this.music_muted) {
             this.titlemusic.stop();
         } else {

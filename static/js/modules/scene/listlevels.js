@@ -51,7 +51,7 @@ class ListLevels extends Phaser.Scene {
         this.sessionbtn = this.add.image(235, 45, "leadererboard_btn").setScale(0.30).setAlpha(0);
         this.musicbtn = this.add.image(310, 45, "mutemusic_btn").setScale(0.30).setInteractive();
 
-        if (this.audioplayer.music_muted) {
+        if (!this.data.gameObj.GLOBAL.ACTIVE_MUSIC) {
             this.musicbtn.setAlpha(0.5);
         }
 
@@ -80,11 +80,13 @@ class ListLevels extends Phaser.Scene {
         // Music Button handler
         this.musicbtn.on("pointerdown", () => {
             this.audioplayer.playClickSound();
-            this.audioplayer.toggleMuteMusic();
-            if (this.audioplayer.music_muted) {
-                this.musicbtn.setAlpha(0.5);
-            } else {
+            this.data.gameObj.GLOBAL.ACTIVE_MUSIC = !this.data.gameObj.GLOBAL.ACTIVE_MUSIC
+            if (this.data.gameObj.GLOBAL.ACTIVE_MUSIC) {
                 this.musicbtn.setAlpha(1.0);
+                this.audioplayer.MuteMusic(false);
+            } else {
+                this.musicbtn.setAlpha(0.5);
+                this.audioplayer.MuteMusic(true);
             }
         });
 

@@ -85,11 +85,13 @@ class LevelStage extends Phaser.Scene {
         // Sound Effects
         this.audioplayer = new AudioPlayer();
 
-        // Stops any previously playing music and starts music
+        // Stops any previously playing music and starts music if enabled
         this.game.sound.stopAll();
-        this.audioplayer.playRandomBgMusic();
-        console.log("player music");
 
+        if (this.data.gameObj.GLOBAL.ACTIVE_MUSIC) {
+            this.audioplayer.playRandomBgMusic();
+        }
+        
         // Background floaties
         this.floaty = this.physics.add.group();
         this.backgroundFloaties = this.spawnBackgroundFloaties(15);
@@ -115,10 +117,10 @@ class LevelStage extends Phaser.Scene {
         this.game.add.image(300, 22, "logo_isb").setScale(0.15).setDepth(101);
 
         // UI Colored Boxes
-        this.graphicsOverlay.fillStyle(DARK_BLUE, 1.0);
+        this.graphicsOverlay.fillStyle(BLUE, 1.0);
         this.graphicsOverlay.fillRect(15, 65, 75, 45);
 
-        this.graphicsOverlay.fillStyle(DARK_BLUE, 1.0);
+        this.graphicsOverlay.fillStyle(BLUE, 1.0);
         this.graphicsOverlay.fillRect(100, 65, 75, 45);
 
         this.graphicsOverlay.fillStyle(ORANGE, 1.0);
@@ -646,6 +648,9 @@ class LevelStage extends Phaser.Scene {
             if (this.levelConfig.lvlType == "dna_replication" && !this.rotateNT) {
                 // Default angle nucleotide respawns with in a non-rotational level.
                 image.getData("nucleotide").setAngle(180);
+            } else if (this.levelConfig.lvlType == "dna_replication" && this.rotateNT) {
+                let angles = [0, 90, 270];
+                image.getData("nucleotide").setAngle(angles[Math.floor(Math.random()*angles.length)]);
             }
         }
         image.setData("startedDragging", false);
@@ -689,7 +694,7 @@ class LevelStage extends Phaser.Scene {
         cloned.setVisible(true);
         cloned.setScale(0.18);
         cloned.setAngle(submission.getAngle());
-        this.shuffleNTBtnAngle();
+        //this.shuffleNTBtnAngle();
         this.ntBtnsEnabled = false;
 
         if (!submission.validMatchWith(headNT) || (this.rotateNT && cloned.getAngle() != -180)) {

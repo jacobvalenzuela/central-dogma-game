@@ -19,6 +19,7 @@ class TitleScreen extends Phaser.Scene {
      */
     init(data) {
 
+        console.log(data);
         this.data = data;
 
         this.skipToLevelsList = false;
@@ -46,14 +47,16 @@ class TitleScreen extends Phaser.Scene {
         // (sometimes it's passed when we move between scenes to preserve audio/muting)
         if (data.audio) { 
             this.audioplayer = data.audio;
-            if (this.audioplayer.music_muted) {
-                this.audioplayer.stopAllMusic();
-            } else {
+            if (this.data.gameObj.GLOBAL.ACTIVE_MUSIC) {
                 this.audioplayer.playTitleMusic();
+            } else {
+                this.audioplayer.stopAllMusic();
             }
         } else {
             this.audioplayer = new AudioPlayer();
-            this.audioplayer.playTitleMusic();
+            if (this.data.gameObj.GLOBAL.ACTIVE_MUSIC) {
+                this.audioplayer.playTitleMusic();
+            }
         }
         
 
@@ -98,11 +101,13 @@ class TitleScreen extends Phaser.Scene {
         this.musicbtn = this.add.image(310, 45, "mutemusic_btn").setScale(0.30).setInteractive().setAlpha(0).setDepth(1);
         this.musicbtn.on("pointerdown", () => {
             this.audioplayer.playClickSound();
-            this.audioplayer.toggleMuteMusic();
-            if (this.audioplayer.music_muted) {
-                this.musicbtn.setAlpha(0.5);
-            } else {
+            this.data.gameObj.GLOBAL.ACTIVE_MUSIC = !this.data.gameObj.GLOBAL.ACTIVE_MUSIC;
+            if (this.data.gameObj.GLOBAL.ACTIVE_MUSIC) {
                 this.musicbtn.setAlpha(1.0);
+                this.audioplayer.MuteMusic(false);
+            } else {
+                this.musicbtn.setAlpha(0.5);
+                this.audioplayer.MuteMusic(true);
             }
         });
 
@@ -144,7 +149,7 @@ class TitleScreen extends Phaser.Scene {
 
  
         this.fadeIn(this.musicbtn, () => {
-            if (this.audioplayer.music_muted) {
+            if (!this.data.gameObj.GLOBAL.ACTIVE_MUSIC) {
                 this.musicbtn.setAlpha(0.5);
             }
         });

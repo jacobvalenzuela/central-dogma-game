@@ -365,7 +365,7 @@ import Game from "./modules/game.js";
 
         // Level 10
         {
-            "ntSequence": "UGCAGUCUGAUGC",
+            "ntSequence": "TGCAGTCTGATGC",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
             "name": "New nucleotide, U",
@@ -403,7 +403,7 @@ import Game from "./modules/game.js";
 
         // Level 11
         {
-            "ntSequence": "UGCAGUCUGAUGC",
+            "ntSequence": "TGCAGTCTGATGC",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
             "name": "Ribonucleic Acid (RNA)",
@@ -439,7 +439,7 @@ import Game from "./modules/game.js";
 
         // Level 12
         {
-            "ntSequence": "UGCAGUCUGAUGC",
+            "ntSequence": "TGCAGTCTGATGC",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
             "name": "Polymerase Expert",
@@ -475,7 +475,7 @@ import Game from "./modules/game.js";
 
         // Level 13
         {
-            "ntSequence": "GCUGGCAGCUGUCAA",
+            "ntSequence": "GCTGGCAGCTGTCAA",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
             "name": "Spin Cycle!",
@@ -517,7 +517,7 @@ import Game from "./modules/game.js";
 
         // Level 14
         {
-            "ntSequence": "GCUGGCAGCUGUCAA",
+            "ntSequence": "GCTGGCAGCTGTCAA",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
             "name": "TFW You Can't Keep Up!",
@@ -559,7 +559,7 @@ import Game from "./modules/game.js";
 
         // Level 15
         {
-            "ntSequence": "GCUGGCAGCUGUCAA",
+            "ntSequence": "GCTGGCAGCTGTCAA",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
             "name": "Danger: Experts Only",

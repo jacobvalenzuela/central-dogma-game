@@ -29,9 +29,24 @@ class PreLevelStage extends Phaser.Scene {
             {fontFamily: 'Teko', fontSize: '30pt', color: '#fff'});
         lvlNumTxt.setPosition((360 - lvlNumTxt.width) / 2, 250);
 
-        let lvlName = this.add.text(0, 310, this.level.name, 
+        /*
+        let lvlName = this.add.text(0, 310, this.level.description, 
             {fontFamily: 'Teko', fontSize: '20pt', color: '#fff'});
         lvlName.setPosition((360 - lvlName.width) / 2, 310);
+        */
+        // In line style rendering with rexBBCodeText
+        let lvlName = this.add.rexBBCodeText(180, 310, "", {
+            fontFamily: 'Teko',
+            fontSize: "20px",
+            color: "#fff",
+            halign: "center",
+            wrap: {
+                mode: "word",
+                width: 300
+            },
+            lineSpacing: 0
+        }).setOrigin(0.5, 0.5);
+        lvlName.text = this.level.description;
 
         this.scene.launch("level" + data.lvlNum);
         this.scene.moveAbove("level" + data.lvlNum, "levelpre" + data.lvlNum);
@@ -40,7 +55,7 @@ class PreLevelStage extends Phaser.Scene {
 
         let that = this;
         this.time.addEvent({
-            delay: 3000,
+            delay: 5000,
             loop: false,
             callback: this.bindFn(this.startGame),
         });

@@ -21,7 +21,8 @@ class Game {
      */
     constructor (levels) {
         this.GLOBAL = {
-            SCORE: 0, // Overall score as an Int
+            SCORE: 0, // Overall score as an Int,
+            ACTIVE_MUSIC: true, // Boolean to indicate whether music should be played or not.
             ACTIVE_EFFECTS: true, // Boolean to indicate whether the player is playing with effects (screen shake/flash)
             ACTIVE_EDUCATION: true, // Boolean to indicate whether the player is playing with quizzes enabled
             QUIZ_RESULTS: [], // Array of "quiz" objects

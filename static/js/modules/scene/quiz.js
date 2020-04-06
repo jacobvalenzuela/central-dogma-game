@@ -45,26 +45,28 @@ class QuizScreen extends Phaser.Scene {
         this.quizQuestion = null;
 
         // getting the appropriate question ranges
-        let level = data.level + 1;
+        let level = data.level + 1; // level is not zero indexed
         if (level == 1) {
             this.quizQuestion = questions[0];
         } else if (level <= 2) {
-            this.quizQuestion = questions[Math.round(1 * Math.random()) + 1];
+            this.quizQuestion = questions[Math.round(2 * Math.random()) + 1]; // 1-3
         } else if (level <= 4) {
-            this.quizQuestion = questions[Math.round(4 *  Math.random()) + 1];
+            this.quizQuestion = questions[Math.round(2 *  Math.random()) + 4]; //4-6
         } else if (level <= 6) {
-            this.quizQuestion = questions[Math.round(7 *  Math.random()) + 1];
+            this.quizQuestion = questions[Math.round(5 *  Math.random()) + 4]; //4-9
         } else if (level <= 11) {
-            this.quizQuestion = questions[Math.round(11 *  Math.random()) + 1];
+            this.quizQuestion = questions[Math.round(3 *  Math.random()) + 10]; //10-13
         } else if (level <= 15) {
-            this.quizQuestion = questions[Math.round(17 *  Math.random()) + 1];
+            this.quizQuestion = questions[Math.round(2 *  Math.random()) + 14]; //14-16
         } else if (level <= 17) {
-            this.quizQuestion = questions[Math.round(20 *  Math.random()) + 1];
+            this.quizQuestion = questions[Math.round(2 *  Math.random()) + 17]; //17-19
         } else if (level <= 19) {
-            this.quizQuestion = questions[Math.round(24 *  Math.random()) + 1];
+            this.quizQuestion = questions[Math.round(2 *  Math.random()) + 20]; //20-22
         } else {
-            this.quizQuestion = questions[Math.floor(questions.length * Math.random())];
+            this.quizQuestion = questions[Math.round(3 *  Math.random()) + 23]; //23-26
         }
+        console.log(this.quizQuestion);
+        console.log(questions);
 		
 		this.points = this.quizQuestion.worth;
 
