@@ -152,7 +152,7 @@ class LevelStage extends Phaser.Scene {
 
         let ntParticleConfig = {
             x: 150,
-            y: 510,
+            y: 410,
             speed: { min: -800, max: 800 },
             angle: { min: 0, max: 360 },
             scale: { start: 0.5, end: 0 },
@@ -733,6 +733,7 @@ class LevelStage extends Phaser.Scene {
             if (this.levelConfig.lvlType == "dna_replication") {    
                 particle1 = that.ntparticle[headNTName];
                 particle2 = that.ntparticle[pairNTName];
+
             } else if (this.levelConfig.lvlType == "codon_transcription") {
                 // we define particle1 and particle2 to be different on codon levels
                 // because codons consist of three nucleotides.. would make sense to

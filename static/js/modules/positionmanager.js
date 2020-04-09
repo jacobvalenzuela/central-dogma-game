@@ -476,7 +476,7 @@ class PositionManager {
         } else {
             let that = this;
             this.game.time.addEvent({
-                delay: 20,
+                delay: 10,
                 callback: function () {
                     let midX = (fromX + toX) / 2;
                     let midY = (fromY + toY) / 2;
@@ -722,9 +722,27 @@ class PositionManager {
         var retval = false;
         //this.hasFrozenHead = false;
         nucleotide.setScale(0.3);
-        let firstPoint = this.outputVertPathPts[0];
-        let secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
-        let point = this.outputVertPathPts[2 * this.pathPointsFactor];
+        let firstPoint;
+        let secPoint;
+        let point;
+
+        if (this.level.levelConfig.lvlType != LT_CODON_TRANSCRIPTION) {
+            let yOffset = -140;
+            let xOffset = 30;
+            
+            firstPoint = {x: 245 + xOffset, y: 450 + yOffset}
+            secPoint = {x: 205.32 + xOffset, y: 533.68 + yOffset}
+            point = {x: 168.76 + xOffset, y: 603.44 + yOffset}
+
+        } else {
+            firstPoint = this.outputVertPathPts[0];
+            secPoint = this.outputVertPathPts[1 * this.pathPointsFactor];
+            point = this.outputVertPathPts[2 * this.pathPointsFactor];  
+        }
+
+
+
+
         nucleotide.setPosition(firstPoint.x, firstPoint.y);
         if (nucleotide.errorNT || nucleotide.missingNT) {
             // Shakes screen and flashes red upon a wrong match

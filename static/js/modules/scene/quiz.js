@@ -49,19 +49,19 @@ class QuizScreen extends Phaser.Scene {
         if (level == 1) {
             this.quizQuestion = questions[0];
         } else if (level <= 2) {
-            this.quizQuestion = questions[Math.round(2 * Math.random()) + 1]; // 1-3
+            this.quizQuestion = questions[Math.round(3 * Math.random()) + 1]; // 1-4
         } else if (level <= 4) {
-            this.quizQuestion = questions[Math.round(2 *  Math.random()) + 4]; //4-6
+            this.quizQuestion = questions[Math.round(4 *  Math.random()) + 3]; //3-7
         } else if (level <= 6) {
-            this.quizQuestion = questions[Math.round(5 *  Math.random()) + 4]; //4-9
+            this.quizQuestion = questions[Math.round(7 *  Math.random()) + 4]; //4-11
         } else if (level <= 11) {
-            this.quizQuestion = questions[Math.round(3 *  Math.random()) + 10]; //10-13
+            this.quizQuestion = questions[Math.round(7 *  Math.random()) + 8]; //8-15
         } else if (level <= 15) {
-            this.quizQuestion = questions[Math.round(2 *  Math.random()) + 14]; //14-16
+            this.quizQuestion = questions[Math.round(6 *  Math.random()) + 12]; //12-18
         } else if (level <= 17) {
-            this.quizQuestion = questions[Math.round(2 *  Math.random()) + 17]; //17-19
+            this.quizQuestion = questions[Math.round(7 *  Math.random()) + 15]; //15-22
         } else if (level <= 19) {
-            this.quizQuestion = questions[Math.round(2 *  Math.random()) + 20]; //20-22
+            this.quizQuestion = questions[Math.round(4 *  Math.random()) + 20]; //20-24
         } else {
             this.quizQuestion = questions[Math.round(3 *  Math.random()) + 23]; //23-26
         }
