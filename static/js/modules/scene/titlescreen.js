@@ -27,6 +27,11 @@ class TitleScreen extends Phaser.Scene {
             this.skipToLevelsList = true;
         }
 
+        this.showBonusLevels = false;
+        if (data.showBonusLevels) {
+            this.showBonusLevels = true;
+        }
+
         this.gameObj = data.gameObj;
         this.game = this;
         this.camera = this.game.cameras.cameras[0];
@@ -73,11 +78,18 @@ class TitleScreen extends Phaser.Scene {
         // Menu Buttons
 
         // Play Button
-        this.playBtn = this.game.add.image(180, 500, "play_btn").setScale(0.5).setAlpha(0).setDepth(1);
+        this.playBtn = this.game.add.image(180, 420, "play_btn").setScale(0.5).setAlpha(0).setDepth(1);
         this.playBtn.setVisible(false);
         this.playBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         this.playBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
         this.playBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+
+        // Play Bonus Levels Button
+        this.playBonusBtn = this.game.add.image(180, 507, "play_bonus_btn").setScale(0.5).setAlpha(0).setDepth(1);
+        this.playBonusBtn.setVisible(false);
+        this.playBonusBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        this.playBonusBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        this.playBonusBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
 
         // Signin Button
         this.signInBtn = this.game.add.image(180, 580, "signin_btn").setScale(0.5).setAlpha(0).setDepth(1);
@@ -111,10 +123,15 @@ class TitleScreen extends Phaser.Scene {
             }
         });
 
+        // Handles skipping to levels (most likely from pause screen)
         let animDelay = 1;
         if (this.skipToLevelsList) {
             animDelay = 0;
-            this.onPlayClick();
+            if (this.showBonusLevels) {
+                this.onPlayClick(true);
+            } else {
+                this.onPlayClick(false);
+            }
         }
 
         this.input.on("pointerdown", this.bindFn(this.displayUI));
@@ -145,6 +162,7 @@ class TitleScreen extends Phaser.Scene {
         this.fadeIn(this.isblogo);
         this.fadeIn(this.effectDisableBtn);
         this.fadeIn(this.educationDisableBtn);
+        this.fadeIn(this.playBonusBtn);
         
 
  
@@ -156,7 +174,14 @@ class TitleScreen extends Phaser.Scene {
         
         // Makes UI Interactive
         this.playBtn.setInteractive();
-        this.playBtn.addListener("pointerup", this.bindFn(this.onPlayClick));
+        this.playBtn.addListener("pointerup", () => {
+            this.onPlayClick(false);
+        });
+
+        this.playBonusBtn.setInteractive();
+        this.playBonusBtn.addListener("pointerup", () => {
+            this.onPlayClick(true);
+        });
 
         this.effectDisableBtn.setInteractive();
         this.effectDisableBtn.addListener("pointerup", this.bindFn(this.onEffectDisableClick));
@@ -247,7 +272,7 @@ class TitleScreen extends Phaser.Scene {
      * Show list of levels
      * @param {Phaser.GameObjects.Image} img - the play button
      */
-    onPlayClick(img) {
+    onPlayClick(bonusLevels) {
         let that = this;
         this.fadeOut(this.playBtn, function () {
             that.playBtn.setVisible(false);
@@ -262,6 +287,7 @@ class TitleScreen extends Phaser.Scene {
         // Fades out UI
         this.fadeOut(this.dogmaLogo);
         this.fadeOut(this.playBtn);
+        this.fadeOut(this.playBonusBtn);
         this.fadeOut(this.effectDisableBtn);
         this.fadeOut(this.educationDisableBtn);
         this.fadeOut(this.signInBtn);
@@ -274,7 +300,17 @@ class TitleScreen extends Phaser.Scene {
         this.playBtn.setInteractive(false);
         this.signInBtn.setInteractive(false);
 
-        this.scene.launch("listlevels", {gameObj: this.data.gameObj, levels: this.data.gameObj.levels, audio: this.audioplayer});
+        console.log(this.data.gameObj.levels);
+        console.log("bonusLevels:");
+        console.log(bonusLevels);
+
+        // Checks if we want to see bonus levels
+        if (bonusLevels) {
+            this.scene.launch("listlevels", {gameObj: this.data.gameObj, levels: this.data.gameObj.levels.slice(12), audio: this.audioplayer});
+        } else  {
+            this.scene.launch("listlevels", {gameObj: this.data.gameObj, levels: this.data.gameObj.levels.slice(0, 12), audio: this.audioplayer});
+        }
+       
         this.scene.moveAbove("titlescreen", "listlevels");
         
     }

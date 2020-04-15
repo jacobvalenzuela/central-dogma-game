@@ -264,17 +264,38 @@ class LevelStage extends Phaser.Scene {
             this.graphicsOverlay.fillStyle(WHITE, 1.0);
             this.graphicsOverlay.fillRoundedRect(268, 287 + (102.5 * optbtns.length), 83, 27, 10);
 
+
+            // setting the correct label based on the current process
+            let incomingLabel;
+            let outgoingLabel;
+            if (this.levelConfig.process == "dna replication") {
+                incomingLabel = "DNA";
+                outgoingLabel = "DNA";
+            } else { // would be transcription if not
+                incomingLabel = "DNA";
+                outgoingLabel = "RNA";
+            }
+
+
+            // Label incoming strand
+            this.game.add.text(25, 155, incomingLabel,
+                {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#000000'}).setDepth(105);
+            this.graphicsOverlay.fillStyle(WHITE, 1.0);
+            this.graphicsOverlay.fillRoundedRect(19, 152, 39, 27, 10);
+
+            // Label outgoing strand
+            this.game.add.text(191, 673, outgoingLabel, 
+                {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#000000'}).setDepth(105);
+            this.graphicsOverlay.fillStyle(WHITE, 1.0);
+            this.graphicsOverlay.fillRoundedRect(183, 669, 43, 27, 10);
+
+
             // Label for binding pocket.
-            /*
-            this.game.add.text(90, 534, "Binding Pocket",
-            {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1).setAngle(19);
-            */
             this.game.add.text(100, 460, "Binding Pocket",
             {fontFamily: 'Teko', fontSize: '12pt', color: '#FFFFFF'}).setDepth(1);
 
             // Binding pocket
             this.bindingPocket = this.game.add.image(170, 400, "bindingpocket");
-            //this.bindingPocket.setAngle(16);
             this.bindingPocket.setDepth(1000);
             this.bindingPocket.setScale(0.75)
 
@@ -321,6 +342,20 @@ class LevelStage extends Phaser.Scene {
             this.bindingSiteObjects.push(this.game.add.image(150, 625, "bindingsite").setDepth(3000).setScale(1.3).setAlpha(0.6));
             this.bindingSiteObjects.push(this.game.add.text(85, 654, "Exit Site",
             {fontFamily: 'Teko', fontSize: '16pt', color: '#ffffff'}).setDepth(3000).setAlpha(1).setAngle(270));
+
+
+            // Label incoming strand
+            this.game.add.text(100, 120, "RNA",
+                {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#000000'}).setDepth(105);
+            this.graphicsOverlay.fillStyle(WHITE, 1.0);
+            this.graphicsOverlay.fillRoundedRect(94, 117, 39, 27, 10);
+
+            // Label outgoing strand
+            this.game.add.text(268, 673, "Peptide", 
+                {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#000000'}).setDepth(105);
+            this.graphicsOverlay.fillStyle(WHITE, 1.0);
+            this.graphicsOverlay.fillRoundedRect(260, 669, 63, 27, 10);      
+
 
             for (let i = 0; i < this.bindingSiteObjects.length; i++) {
                 // indices:

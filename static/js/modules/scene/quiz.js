@@ -45,25 +45,22 @@ class QuizScreen extends Phaser.Scene {
         this.quizQuestion = null;
 
         // getting the appropriate question ranges
+        // Levels 1-12 = core game
+            // 1-6 = DNA Replication
+            // 7-8 = Transcription
+            // 9-12 = Translation
+        // levels 13-15 = bonus levels
         let level = data.level + 1; // level is not zero indexed
         if (level == 1) {
             this.quizQuestion = questions[0];
         } else if (level <= 2) {
-            this.quizQuestion = questions[Math.round(3 * Math.random()) + 1]; // 1-4
-        } else if (level <= 4) {
-            this.quizQuestion = questions[Math.round(4 *  Math.random()) + 3]; //3-7
-        } else if (level <= 6) {
-            this.quizQuestion = questions[Math.round(7 *  Math.random()) + 4]; //4-11
-        } else if (level <= 11) {
-            this.quizQuestion = questions[Math.round(7 *  Math.random()) + 8]; //8-15
-        } else if (level <= 15) {
-            this.quizQuestion = questions[Math.round(6 *  Math.random()) + 12]; //12-18
-        } else if (level <= 17) {
-            this.quizQuestion = questions[Math.round(7 *  Math.random()) + 15]; //15-22
-        } else if (level <= 19) {
-            this.quizQuestion = questions[Math.round(4 *  Math.random()) + 20]; //20-24
-        } else {
-            this.quizQuestion = questions[Math.round(3 *  Math.random()) + 23]; //23-26
+            this.quizQuestion = questions[Math.round(7 * Math.random()) + 1]; // 1-8
+        } else if (level <= 7) {
+            this.quizQuestion = questions[Math.round(4 *  Math.random()) + 6]; //6-10
+        } else if (level <= 9) {
+            this.quizQuestion = questions[Math.round(10 *  Math.random()) + 11]; //11-21
+        } else if (level > 12) {
+            this.quizQuestion = questions[Math.round(20 *  Math.random()) + 1]; //1-21
         }
         console.log(this.quizQuestion);
         console.log(questions);
