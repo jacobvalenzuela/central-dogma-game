@@ -127,6 +127,11 @@ class TitleScreen extends Phaser.Scene {
         let animDelay = 1;
         if (this.skipToLevelsList) {
             animDelay = 0;
+
+            console.log("showing bonus level messages:")
+            console.log(this);
+            console.log(this.showBonusLevels);
+
             if (this.showBonusLevels) {
                 this.onPlayClick(true);
             } else {

@@ -53,15 +53,18 @@ class QuizScreen extends Phaser.Scene {
         let level = data.level + 1; // level is not zero indexed
         if (level == 1) {
             this.quizQuestion = questions[0];
-        } else if (level <= 2) {
+        } else if (level <= 3) {
             this.quizQuestion = questions[Math.round(7 * Math.random()) + 1]; // 1-8
         } else if (level <= 7) {
             this.quizQuestion = questions[Math.round(4 *  Math.random()) + 6]; //6-10
-        } else if (level <= 9) {
-            this.quizQuestion = questions[Math.round(10 *  Math.random()) + 11]; //11-21
+        } else if (level <= 12) {
+            let num = Math.round(10 *  Math.random()) + 11;
+            console.log("num: " + num);
+            this.quizQuestion = questions[num]; //11-21
         } else if (level > 12) {
             this.quizQuestion = questions[Math.round(20 *  Math.random()) + 1]; //1-21
         }
+        console.log(level);
         console.log(this.quizQuestion);
         console.log(questions);
 		

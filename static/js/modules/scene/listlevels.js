@@ -27,6 +27,8 @@ class ListLevels extends Phaser.Scene {
 
         // Level Data
         this.levels = data.levels;
+
+        
         this.curLevel = 0;
 
         // Background and Title
@@ -104,8 +106,16 @@ class ListLevels extends Phaser.Scene {
         // Go Button
         this.goBtn.on("pointerdown", () => {
             this.audioplayer.playClickSound();
+
+
+
             if (this.levels[this.curLevel].unlocked == true) {
-               this.startPrelevel(this.curLevel); 
+                if (this.areTheseBonusLevels()) {
+                    this.startPrelevel(this.curLevel + 12); // skips regular levels 
+                } else {
+                    this.startPrelevel(this.curLevel); // loads the normal level
+                }
+               
             }
         })
 
@@ -159,6 +169,10 @@ class ListLevels extends Phaser.Scene {
         this.fadeCover.addListener("pointerup", that.bindFn(that.dismissOverlay))
 
 
+    }
+
+    areTheseBonusLevels() {
+        return (this.levels.length < 12)
     }
 
     removeSignedInOnlyElements() {
@@ -488,7 +502,14 @@ class ListLevels extends Phaser.Scene {
                 } else {
                     this.levelBrowseDesc.text = desc;
                 }
-                this.levelBrowseSubtitle.text = "Level " + (level + 1) + " : " + difficulty;
+
+                // if we're in bonus levels, it should have a different subtitle.
+                if (this.areTheseBonusLevels()) {
+                    this.levelBrowseSubtitle.text = "Bonus Level " + (level + 13);
+                } else {
+                    this.levelBrowseSubtitle.text = "Level " + (level + 1) + " : " + difficulty;
+                }
+                
             } else {
                 this.levelBrowseSubtitle.text = "Level " + (level + 1) + " : LOCKED";
                 this.levelBrowseDesc.text = "You could probably write something about how to unlock this level here.";

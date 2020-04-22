@@ -61,7 +61,14 @@ class PauseScreen extends Phaser.Scene {
             this.scene.launch("listlevels", newobj);
             */
             data.audioplayer.stopAllMusic();
-            this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: data.gameObj, fadeIn: true});
+
+            if (data.level >= 12) {
+                this.scene.start("titlescreen", {skipToLevelsList: true, showBonusLevels: true, gameObj: data.gameObj, fadeIn: true}); 
+            } else {
+                this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: data.gameObj, fadeIn: true});
+            }
+
+            
         }));
 
         let homeBtn = this.add.image(180, 550, "home_btn").setScale(0.5).setInteractive().setAlpha(1.0);
