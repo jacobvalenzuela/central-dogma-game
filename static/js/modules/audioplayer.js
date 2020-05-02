@@ -16,7 +16,6 @@ class AudioPlayer {
         this.winSound = game.sound.add("win", {volume: 0.6});
         
         // Music
-        this.bgmusic1 = game.sound.add("bgmusic1", {loop: true, volume: this.defaultMusicVolume});
         this.bgmusic2 = game.sound.add("bgmusic2", {loop: true, volume: this.defaultMusicVolume});
         this.bgmusic3 = game.sound.add("bgmusic3", {loop: true, volume: this.defaultMusicVolume});
 
@@ -24,7 +23,7 @@ class AudioPlayer {
 
         this.bgmusic = [this.bgmusic2, this.bgmusic3];
 
-        this.allMusic = [this.titlemusic, this.bgmusic, this.bgmusic2, this.bgmusic3];
+        this.allMusic = [this.titlemusic, this.bgmusic2, this.bgmusic3];
 
     }
 
@@ -56,11 +55,6 @@ class AudioPlayer {
         this.bgmusic[Math.floor(Math.random() * this.bgmusic.length)].play();
     }
 
-    playBgMusic1() {
-        if (!this.music_muted) {
-            this.bgmusic1.play();
-        }
-    }
 
     playBgMusic2() {
         if (!this.music_muted) {
@@ -104,7 +98,6 @@ class AudioPlayer {
 
     stopAllMusic() {
         this.titlemusic.stop();
-        this.bgmusic1.stop();
         this.bgmusic2.stop();
         this.bgmusic3.stop();
     }

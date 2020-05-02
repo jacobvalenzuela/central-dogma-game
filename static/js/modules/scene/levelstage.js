@@ -397,6 +397,10 @@ class LevelStage extends Phaser.Scene {
             {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#000000'}).setDepth(105);
             this.graphics.fillStyle(WHITE, 1.0);
             this.graphics.fillRoundedRect(250, 610, 85, 27, 10);
+
+            // Keystroke indicators
+            this.game.add.image(340, 460, "keystroke_1").setScale(0.25);
+            this.game.add.image(340, 590, "keystroke_2").setScale(0.25);
         }
 
         // Creates nucleotide buttons
@@ -406,10 +410,6 @@ class LevelStage extends Phaser.Scene {
 
         // Keyboard Controls (must be instantiated after creating level specific buttons)
         if (this.levelConfig.lvlType == "dna_replication") {
-            this.input.keyboard.on('keydown-T', function(event) {
-                this.onKeyboardInput(0);
-            }, this);
-    
             this.input.keyboard.on('keydown-A', function(event) {
                 this.onKeyboardInput(1);
     
@@ -423,7 +423,23 @@ class LevelStage extends Phaser.Scene {
             this.input.keyboard.on('keydown-C', function(event) {
                 this.onKeyboardInput(3);
             }, this);
-    
+
+            // On transcription levels, the T input should be swapped to U for RNA.
+            console.log("KEYDOWN CHECK: " + this.levelConfig.process);
+            if (this.levelConfig.process == "transcription") {
+                console.log("KEYDOWN U");
+                this.input.keyboard.on('keydown-U', function(event) {
+                    this.onKeyboardInput(0);
+                }, this);
+            } else {
+                console.log("KEYDOWN T");
+                this.input.keyboard.on('keydown-T', function(event) {
+                    this.onKeyboardInput(0);
+                }, this);
+            }
+
+ 
+            
             this.input.keyboard.on('keydown-SPACE', function(event) {
                 if (this.positionManager.ntTouchingBindingPocket() && this.rotateNT && this.buttonCurrent) {
                     this.processNucleotideSubmission(this.buttonCurrent); 

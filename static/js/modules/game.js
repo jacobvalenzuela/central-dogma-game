@@ -224,6 +224,8 @@ class Game {
         this.game.load.image("signout_btn", "static/img/signoutBtn.png");
         this.game.load.image("mutemusic_btn", "static/img/muteMusicBtn.png");
         this.game.load.image("play_bonus_btn", "static/img/playBonusBtn.png");
+        this.game.load.image("keystroke_1", "static/img/keystroke1Btn.png");
+        this.game.load.image("keystroke_2", "static/img/keystroke2Btn.png");
 
         // Icons
         this.game.load.image("rotateIcon", "static/img/rotateIcon.png");
@@ -344,10 +346,9 @@ class Game {
         this.game.load.audio("win", "static/audio/sounds/Win.wav");
 
         // Music
-        this.game.load.audio("bgmusic1", "static/audio/music/shinyTech2.mp3");
         this.game.load.audio("bgmusic2", "static/audio/music/Familiar.mp3");
         this.game.load.audio("bgmusic3", "static/audio/music/Tribulation.mp3");
-        this.game.load.audio("titlemusic", "static/audio/music/Sunrise.wav");
+        this.game.load.audio("titlemusic", "static/audio/music/Sunrise.mp3");
         
         // Etc.
         this.game.load.image("fluff", "static/img/fluff.png");
