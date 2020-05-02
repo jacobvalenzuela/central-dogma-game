@@ -19,7 +19,7 @@ class Game {
      * Creates a Game.
      * @param {LevelJSONDefinition} levels 
      */
-    constructor (levels) {
+    constructor(levels) {
         this.GLOBAL = {
             SCORE: 0, // Overall score as an Int,
             ACTIVE_MUSIC: true, // Boolean to indicate whether music should be played or not.
@@ -31,7 +31,7 @@ class Game {
         this.sessionID = "";
         this.userName = "";
 
-        
+
         // QUIZ_RESULTS is an array of "quiz" objects:
         /*
             {
@@ -178,11 +178,86 @@ class Game {
      * @param {Phaser.Game} gameObj - The game instance from Phaser
      */
     preload(gameObj) {
+
+        // Building a loading screen
         this.game = gameObj;
+
+        // Progress Boxes
+        var progressBar = this.game.add.graphics();
+        var progressBox = this.game.add.graphics();
+        progressBox.fillStyle(0x222222, 0.8);
+        progressBox.fillRect(40, 270, 280, 50);
+
+        // Loading Text
+        var width = this.game.cameras.main.width;
+        var height = this.game.cameras.main.height;
+        var loadingText = this.game.make.text({
+            x: width / 2,
+            y: height / 2 - 150,
+            text: 'Loading...',
+            style: {
+                font: '30px monospace',
+                fill: '#000000'
+            }
+        });
+        loadingText.setOrigin(0.5, 0.5);
+
+
+        // Loading percent text
+        var percentText = this.game.make.text({
+            x: width / 2,
+            y: height / 2 - 75,
+            text: '0%',
+            style: {
+                font: '18px monospace',
+                fill: '#ffffff'
+            }
+        });
+        percentText.setOrigin(0.5, 0.5);
+
+
+        // Loading asset text
+        var assetText = this.game.make.text({
+            x: width / 2,
+            y: height / 2,
+            text: '',
+            style: {
+                font: '15px monospace',
+                fill: '#000000'
+            }
+        });
+        assetText.setOrigin(0.5, 0.5);
+
+        this.game.load.on('progress', function (value) {
+            console.log(value);
+            progressBar.clear();
+            progressBar.fillStyle(0x000000, 1);
+            progressBar.fillRect(50, 280, 260 * value, 30);
+            percentText.setText(parseInt(value * 100) + '%');
+        });
+
+        this.game.load.on('fileprogress', function (file) {
+            console.log(file.src);
+            assetText.setText('Loading asset: ' + file.key);
+        });
+
+        this.game.load.on('complete', function () {
+            console.log('complete');
+            progressBar.destroy();
+            progressBox.destroy();
+            loadingText.destroy();
+            assetText.destroy();
+            percentText.destroy();
+        });
+
+
+
+
+
 
         // load plugins
         this.game.load.plugin("rextagtextplugin", "static/vendor/js/rextagtextplugin.min.js", true);
-        
+
         let bbcodepluginurl = "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexbbcodetextplugin.min.js";
         this.game.load.plugin("rexbbcodetextplugin", bbcodepluginurl, true);
 
@@ -252,7 +327,7 @@ class Game {
         this.game.load.image("nt_thymine_backbone", "static/img/nucleotide/thymine/Thymine_Backbone@3x.png");
         this.game.load.image("nt_thymine_basic", "static/img/nucleotide/thymine/Thymine_basic@3x.png");
 
-        this.game.load.spritesheet("nt_thymine_basic_animated", 
+        this.game.load.spritesheet("nt_thymine_basic_animated",
             "static/img/nucleotide/thymine/Thymine_basic_animated.png",
             { frameWidth: 600, frameHeight: 300 }
         );
@@ -264,13 +339,13 @@ class Game {
         this.game.load.image("nt_cytosine_basic", "static/img/nucleotide/cytosine/Cytosine_basic@3x.png");
         this.game.load.image("nt_cytosine_hbonds", "static/img/nucleotide/cytosine/Cytosine_Hbonds@3x.png");
 
-        this.game.load.spritesheet("nt_cytosine_basic_animated", 
+        this.game.load.spritesheet("nt_cytosine_basic_animated",
             "static/img/nucleotide/cytosine/Cytosine_basic_animated.png",
             { frameWidth: 600, frameHeight: 300 }
         );
 
         // URACIL
-        this.game.load.spritesheet("nt_uracil_basic_animated", 
+        this.game.load.spritesheet("nt_uracil_basic_animated",
             "static/img/nucleotide/uracil/Uracil_basic_animated.png",
             { frameWidth: 600, frameHeight: 300 }
         );
@@ -280,7 +355,7 @@ class Game {
         this.game.load.image("nt_guanine_basic", "static/img/nucleotide/guanine/Guanine_basic@3x.png");
         this.game.load.image("nt_guanine_hbonds", "static/img/nucleotide/guanine/Guanine_Hbonds@3x.png");
 
-        this.game.load.spritesheet("nt_guanine_basic_animated", 
+        this.game.load.spritesheet("nt_guanine_basic_animated",
             "static/img/nucleotide/guanine/Guanine_basic_animated.png",
             { frameWidth: 600, frameHeight: 300 }
         );
@@ -311,18 +386,18 @@ class Game {
         this.game.load.image("bindingpocket", "static/img/bindingpocket.png");
 
         // Adding Game Scenes
-        this.game.scene.add("listlevels", ListLevels, false, {gameObj: this, levels: this.levels});
+        this.game.scene.add("listlevels", ListLevels, false, { gameObj: this, levels: this.levels });
         for (let i = 0; i < this.levels.length; i++) {
             let level = this.levels[i];
-            this.game.scene.add("levelpre" + i, PreLevelStage, false, {gameObj: this, lvlNum: i, level: level});
-            this.game.scene.add("level" + i, LevelStage, false, {gameObj: this, lvlNum: i, level: level});
+            this.game.scene.add("levelpre" + i, PreLevelStage, false, { gameObj: this, lvlNum: i, level: level });
+            this.game.scene.add("level" + i, LevelStage, false, { gameObj: this, lvlNum: i, level: level });
         }
-        this.game.scene.add("pauseScreen", PauseScreen, false, {gameObj: this, levels: this.levels});
-        this.game.scene.add("aboutScreen", AboutScreen, false, {gameObj: this, levels: this.levels});
-        this.game.scene.add("countdownResumeScreen", CountdownResumeScreen, false, {gameObj: this, levels: this.levels});
-        this.game.scene.add("quizScreen", QuizScreen, false, {gameObj: this, levels: this.levels});
-        this.game.scene.add("titlescreen", TitleScreen, false, {gameObj: this, levels: this.levels});
-        this.game.scene.add("loginScreen", LoginScreen, false, {gameObj: this, levels: this.levels});
+        this.game.scene.add("pauseScreen", PauseScreen, false, { gameObj: this, levels: this.levels });
+        this.game.scene.add("aboutScreen", AboutScreen, false, { gameObj: this, levels: this.levels });
+        this.game.scene.add("countdownResumeScreen", CountdownResumeScreen, false, { gameObj: this, levels: this.levels });
+        this.game.scene.add("quizScreen", QuizScreen, false, { gameObj: this, levels: this.levels });
+        this.game.scene.add("titlescreen", TitleScreen, false, { gameObj: this, levels: this.levels });
+        this.game.scene.add("loginScreen", LoginScreen, false, { gameObj: this, levels: this.levels });
 
         // JSON
         this.game.load.json("quizQuestions", "static/json/quizquestions.json");
@@ -349,11 +424,11 @@ class Game {
         this.game.load.audio("bgmusic2", "static/audio/music/Familiar.mp3");
         this.game.load.audio("bgmusic3", "static/audio/music/Tribulation.mp3");
         this.game.load.audio("titlemusic", "static/audio/music/Sunrise.mp3");
-        
+
         // Etc.
         this.game.load.image("fluff", "static/img/fluff.png");
         this.game.load.image("fluff_dark", "static/img/fluff_dark.png");
-    
+
     }
 
     /**
@@ -365,8 +440,8 @@ class Game {
             gameObj: this
         });
         */
-        
-        this.game.scene.add("logoScreen", LogoScreen, true, {gameObj: this, levels: this.levels});
+
+        this.game.scene.add("logoScreen", LogoScreen, true, { gameObj: this, levels: this.levels });
 
         // let singleLvl = new LevelStage(this, this.level);
         // let titleScreen = new TitleScreen(this);
@@ -377,7 +452,7 @@ class Game {
      */
     startGame() {
         // let singleLvl = new LevelStage(this, this.level);
-        
+
     }
 }
 
