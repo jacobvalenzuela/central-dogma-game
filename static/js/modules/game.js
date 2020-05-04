@@ -182,6 +182,11 @@ class Game {
         // Building a loading screen
         this.game = gameObj;
 
+        // background
+        var bg = this.game.add.graphics();
+        bg.fillStyle(0xffffff, 0.8);
+        bg.fillRect(0, 0, 360, 740);
+
         // Progress Boxes
         var progressBar = this.game.add.graphics();
         var progressBox = this.game.add.graphics();
@@ -196,8 +201,8 @@ class Game {
             y: height / 2 - 150,
             text: 'Loading...',
             style: {
-                font: '30px monospace',
-                fill: '#000000'
+                font: '40px Teko',
+                fill: '#F56C26'
             }
         });
         loadingText.setOrigin(0.5, 0.5);
@@ -209,8 +214,8 @@ class Game {
             y: height / 2 - 75,
             text: '0%',
             style: {
-                font: '18px monospace',
-                fill: '#ffffff'
+                font: '18px Teko',
+                fill: '#22F2DD'
             }
         });
         percentText.setOrigin(0.5, 0.5);
@@ -222,8 +227,8 @@ class Game {
             y: height / 2,
             text: '',
             style: {
-                font: '15px monospace',
-                fill: '#000000'
+                font: '20px Teko',
+                fill: '#F56C26'
             }
         });
         assetText.setOrigin(0.5, 0.5);
