@@ -128,6 +128,8 @@ class LoginScreen extends Phaser.Scene {
                 let session = this.domOverlay.getChildByID("login-sessionName").value.replace(" ", "_");
 
                 // check if session is unset, and if so, set it to a default value (date + "No_Session_ID")
+                // check if session is unset, and if so, use "" as the default session
+                /*
                 if (session == "") {
                     let defaultSession = "no_session_id";
 
@@ -140,6 +142,10 @@ class LoginScreen extends Phaser.Scene {
                     session = today + "_" + defaultSession;
                     console.log(session);
                 }
+                */
+
+                // makes session case insensitive by lowercasing it all
+                session = session.toLowerCase();
 
                 // builds the username and lowercases it
                 let username = this.domOverlay.getChildByID("adjective-selector").value + "-" +
@@ -147,11 +153,21 @@ class LoginScreen extends Phaser.Scene {
                 this.domOverlay.getChildByID("animal-selector").value + "-" +
                 this.domOverlay.getChildByID("state-selector").value + "-" +
                 this.domOverlay.getChildByID("grade-selector").value.replace("-", "_") +  "-" +
-                this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_").replace("-", "_") + "-" + session;
+                this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_").replace("-", "_");
                 username = username.toLowerCase();                
 
+
+                // if they didn't add a session, attach a random number to the username to discern them in the default session
+                // if they did add a session, attach that to the username instead
+                if (session == "") {
+                    username = username + "-" + Math.floor(100000 + Math.random() * 900000);
+                } else {
+                    username = username + "-" + session;
+                }
+                
+
                 // if any are invalid, tell the user
-                if (!username || !session || this.domOverlay.getChildByID("adjective-selector").value == "" ||
+                if (!username || this.domOverlay.getChildByID("adjective-selector").value == "" ||
                     this.domOverlay.getChildByID("color-selector").value == "" || this.domOverlay.getChildByID("animal-selector").value == "") {
                     this.domOverlay.getChildByID("login-feedback").textContent = "Please specify a valid username.";
                     return;
@@ -176,8 +192,6 @@ class LoginScreen extends Phaser.Scene {
                             "gender": this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_").replace("-", "_")
                         }
                         
-                        console.log(userInfo);
-
                         cdapi.signin(username, session, userInfo)
                         .then(result => {
                             this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
@@ -199,6 +213,29 @@ class LoginScreen extends Phaser.Scene {
                 })
             } else if (event.target.id == "skip-button") {
                 this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
+                this.scene.stop("loginScreen");
+
+                /*
+                let username = "USER" + "_" + new Date().getTime();
+                let session = "";
+                let userInfo = {
+                    "state": "",
+                    "grade": "",
+                    "gender": ""
+                }
+
+                cdapi.signin(username, session, userInfo)
+                .then(result => {
+                    this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
+                    this.scene.stop("loginScreen");
+                })
+                .catch(result => {
+                    this.domOverlay.getChildByID("login-feedback").textContent = "Something went wrong while logging in.";
+                    console.log("failed to log in: " + result);
+                })
+                */
+
+
             }
         }, this);
     }

@@ -131,6 +131,7 @@ class QuizScreen extends Phaser.Scene {
 
                 // update global quiz record
                 data.gameObj.GLOBAL.QUIZ_RESULTS.push(this.questionResult);
+                console.log("pushed quiz result: " + this.questionResult);
 
                 // save progress to database
                 this.updateDatabaseUserGlobal(data);

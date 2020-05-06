@@ -234,7 +234,6 @@ class Game {
         assetText.setOrigin(0.5, 0.5);
 
         this.game.load.on('progress', function (value) {
-            console.log(value);
             progressBar.clear();
             progressBar.fillStyle(0x000000, 1);
             progressBar.fillRect(50, 280, 260 * value, 30);
@@ -242,23 +241,16 @@ class Game {
         });
 
         this.game.load.on('fileprogress', function (file) {
-            console.log(file.src);
             assetText.setText('Loading asset: ' + file.key);
         });
 
         this.game.load.on('complete', function () {
-            console.log('complete');
             progressBar.destroy();
             progressBox.destroy();
             loadingText.destroy();
             assetText.destroy();
             percentText.destroy();
         });
-
-
-
-
-
 
         // load plugins
         this.game.load.plugin("rextagtextplugin", "static/vendor/js/rextagtextplugin.min.js", true);

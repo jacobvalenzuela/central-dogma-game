@@ -9,7 +9,7 @@ class ListLevels extends Phaser.Scene {
      * Creates a list levels scene
      * @param {Phaser.Types.Scenes.SettingsConfig} config 
      */
-    constructor (config) {
+    constructor(config) {
         super(config);
     }
 
@@ -28,18 +28,18 @@ class ListLevels extends Phaser.Scene {
         // Level Data
         this.levels = data.levels;
 
-        
+
         this.curLevel = 0;
 
         // Background and Title
-        this.add.text(26, 90, "- LEVEL SELECTION -", 
-            {fontFamily: 'Teko', fontSize: '40pt', color: '#000000'});
+        this.add.text(26, 115, "- LEVEL SELECTION -",
+            { fontFamily: 'Teko', fontSize: '40pt', color: '#000000' });
 
         this.graphics.fillStyle(0xFF8040, 0.4);
-        this.graphics.fillRect(18, 152, 320, 50);
+        this.graphics.fillRect(18, 177, 320, 50);
 
         this.graphics.fillStyle(0x006FFF, 0.4);
-        this.graphics.fillRect(18, 212, 320, 50);
+        this.graphics.fillRect(18, 237, 320, 50);
 
         // Sound Effects
         this.audioplayer = data.audio; // gets the audio player from title screen
@@ -57,10 +57,12 @@ class ListLevels extends Phaser.Scene {
             this.musicbtn.setAlpha(0.5);
         }
 
-        this.greeting = this.add.text(22, 20, "", 
-            {fontFamily: 'Teko', fontSize: '28pt', color: '#000000'});
-        this.usernameText = this.add.text(22, 55, "", 
-            {fontFamily: 'Teko', fontSize: '15pt', color: '#000000'});
+        this.greeting = this.add.text(22, 20, "",
+            { fontFamily: 'Teko', fontSize: '28pt', color: '#000000' });
+        this.usernameText = this.add.text(22, 55, "",
+            { fontFamily: 'Teko', fontSize: '15pt', color: '#000000' });
+        this.sessionText = this.add.text(22, 75, "",
+            { fontFamily: 'Teko', fontSize: '15pt', color: '#000000' });
 
         // Leaderboard UI/ Greeting
         // Leaderboard and greeting will only appear as an option if you're signed in
@@ -73,6 +75,14 @@ class ListLevels extends Phaser.Scene {
                 }));
                 this.greeting.text = "Welcome Back, ";
                 this.usernameText.text = data.gameObj.animalName;
+
+                if (data.gameObj.sessionID == "") {
+                    this.sessionText.text = "Session: " + "default session";
+                } else {
+                    this.sessionText.text = "Session: " + data.gameObj.sessionID;
+                }
+
+                
             } else {
                 this.removeSignedInOnlyElements();
                 localStorage.removeItem("username");
@@ -115,7 +125,7 @@ class ListLevels extends Phaser.Scene {
                 } else {
                     this.startPrelevel(this.curLevel); // loads the normal level
                 }
-               
+
             }
         })
 
@@ -135,14 +145,14 @@ class ListLevels extends Phaser.Scene {
         })
 
         // Level Selection Descriptors
-        this.levelBrowseTitle = this.add.text(180, 178, "", 
-            {fontFamily: 'Teko', fontSize: '32pt', color: '#000000', align: 'center'}).setOrigin(0.5, 0.5);
+        this.levelBrowseTitle = this.add.text(180, 203, "",
+            { fontFamily: 'Teko', fontSize: '32pt', color: '#000000', align: 'center' }).setOrigin(0.5, 0.5);
 
-        this.levelBrowseSubtitle = this.add.text(180, 238, "", 
-            {fontFamily: 'Teko', fontSize: '32pt', color: '#000000', align: 'center'}).setOrigin(0.5, 0.5); 
+        this.levelBrowseSubtitle = this.add.text(180, 263, "",
+            { fontFamily: 'Teko', fontSize: '32pt', color: '#000000', align: 'center' }).setOrigin(0.5, 0.5);
 
         // In line style rendering with rexBBCodeText
-        this.levelBrowseDesc = this.add.rexBBCodeText(20, 280, "", {
+        this.levelBrowseDesc = this.add.rexBBCodeText(20, 305, "", {
             fontFamily: 'Teko',
             fontSize: "28px",
             color: "#000000",
@@ -206,7 +216,7 @@ class ListLevels extends Phaser.Scene {
             this.showSessionsOverlay();
         }
     }
-    
+
 
     // Actual leaderboard method I'm using
     showSessionLeaderboard(userName, sessionID, rows) {
@@ -232,12 +242,12 @@ class ListLevels extends Phaser.Scene {
                 }
             }
         });
-        
+
         if (sessionID != "") {
             this.domOverlay.getChildByID("sessions-name-displ").textContent = sessionID;
             this.domOverlay.getChildByID("sessions-username").textContent = "Username: " + userName;
             let selectedCategory = this.domOverlay.getChildByID("category-selector").value;
-            
+
             // Gets values initially
             let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
             cdapi.getTotalLeaderboard(sessionID, selectedCategory, 100).then(results => {
@@ -310,7 +320,7 @@ class ListLevels extends Phaser.Scene {
         this._dismissOverlay();
     }
 
-    _dismissOverlay(duration=200) {
+    _dismissOverlay(duration = 200) {
         if (!this.domOverlay) {
             return;
         }
@@ -358,7 +368,7 @@ class ListLevels extends Phaser.Scene {
         titleScreenScene.camera.setBounds(0, 0, 360, 740);
         titleScreenScene.camera.pan(this.goBtn.x, this.goBtn.y, 400).zoomTo(4, 400, Phaser.Math.Easing.Expo.In);
         */
-    }    
+    }
 
     /**
      * Shrink the image
@@ -384,17 +394,17 @@ class ListLevels extends Phaser.Scene {
 
     backButtondown() {
         this.camera.fadeOut(400);
-        let that = this;        
+        let that = this;
         this.time.addEvent({
             delay: 400,
             loop: false,
             callback: function () {
                 that.scene.stop("listlevels");
                 that.scene.stop("levelpre" + that.curLevel);
-                that.scene.start("titlescreen", {gameObj: that.data.gameObj, levels: that.data.gameObj.levels, audio: that.audioplayer});
+                that.scene.start("titlescreen", { gameObj: that.data.gameObj, levels: that.data.gameObj.levels, audio: that.audioplayer });
             }
         });
-    }    
+    }
 
     /**
      * Changes the context of the function `this` keyword to the class. Moves the `this` reference to the first parameter instead.
@@ -412,7 +422,7 @@ class ListLevels extends Phaser.Scene {
      * Fade in camera scene
      * @param {function} [callback=null] - should be called when done fading in
      */
-    fadeIn(callback=null) {
+    fadeIn(callback = null) {
         let currentAlpha = this.camera.alpha;
         if (currentAlpha == 0) {
             currentAlpha = 0.0001;
@@ -482,7 +492,7 @@ class ListLevels extends Phaser.Scene {
             let desc = this.levels[level].description;
             let speed = this.levels[level].speed;
             let difficulty = "Unknown";
-            
+
             // Arbitrary numbers were chosen for dictating difficulty... may change later.
             if (speed > 33) {
                 difficulty = "(Easy)";
@@ -509,7 +519,7 @@ class ListLevels extends Phaser.Scene {
                 } else {
                     this.levelBrowseSubtitle.text = "Level " + (level + 1) + " : " + difficulty;
                 }
-                
+
             } else {
                 this.levelBrowseSubtitle.text = "Level " + (level + 1) + " : LOCKED";
                 this.levelBrowseDesc.text = "You could probably write something about how to unlock this level here.";
@@ -531,7 +541,7 @@ class ListLevels extends Phaser.Scene {
         }
     }
 
-    
+
 }
 
 export default ListLevels;

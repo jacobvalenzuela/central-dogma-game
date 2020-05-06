@@ -232,6 +232,7 @@
     };
     /* Stores a new global object (see above) for the user. */
     cdapi.storeNewGlobalVariable = async (userName, sessionID, global) => {
+        console.log("stored to global");
         if (NO_BACKEND) {
             console.log('no backend -> dummy store');
             return new Promise(function(resolve, reject) {

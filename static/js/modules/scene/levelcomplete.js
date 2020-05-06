@@ -161,6 +161,7 @@ class LevelComplete extends Phaser.Scene {
                                             levelNum: that.gameObj.GLOBAL.LEVEL_PERFORMANCE.length + 1 // how many levels were already completed (including this one)
                                         }
                                         that.gameObj.GLOBAL.LEVEL_PERFORMANCE.push(performance)
+                                        console.log("pushed to performance for level");
                                         
                                         // store progress in database.
                                         that.updateDatabaseUserGlobal(data);
@@ -622,127 +623,6 @@ class LevelComplete extends Phaser.Scene {
         let newNum = Number(this.level) + Number(1);
         this.scene.start("levelpre" + newNum);
     }    
-
-    doQuiz() {
-        this.quizOverlay = this.add.dom(180, 900).createFromCache("html_quiz");
-        this.quizOverlay.setScale(1.1);
-        this.quizOverlay.getChildByID("quiz-question").textContent = this.quiz.question;
-        this.quizOverlay.getChildByID("quiz-options").innerHTML = "";
-        this.quizOverlay.getChildByID("quiz-submit-btn").classList.add("hidden");
-        let choices = [];
-        for (let i = 0; i < this.quiz.options.length; i++) {
-            let option = this.quiz.options[i];
-            let li = document.createElement("li");
-            li.textContent = option;
-            choices.push(li);
-        }
-        choices = this.shuffleArray(choices);
-        for (let i = 0; i < choices.length; i++) {
-            let li = choices[i];
-            this.quizOverlay.getChildByID("quiz-options").appendChild(li);
-            let that = this;
-            li.addEventListener("click", function () {
-                if (that.quizAnswered) {
-                    return;
-                }
-                that.quizOverlay.getChildByID("quiz-submit-btn").classList.remove("hidden");
-                let lastselected = that.quizOverlay.getChildByID("quiz-options").querySelector(".selected");
-                if (lastselected) {
-                    lastselected.classList.remove("selected");
-                }
-                this.classList.add("selected");
-            });
-        }
-        let that = this;
-        this.quizOverlay.node.querySelector("#quiz-submit-btn").addEventListener("click", function () {
-            this.classList.add("hidden");
-            that.quizAnswered = true;
-            let quizOpts = that.quizOverlay.getChildByID("quiz-options").querySelectorAll("li");
-            let answeredOption = "";
-            let correctness = true;
-            for (let i = 0; i < quizOpts.length; i++) {
-                let li = quizOpts[i];
-                if (li.textContent == that.quiz.options[0]) {
-                    li.classList.add("correct");
-                } else if (li.classList.contains("selected")) {
-                    li.classList.add("wrong");
-                    correctness = false;
-                }
-                if (li.classList.contains("selected")) {
-                    answeredOption = li.textContent;
-                }
-            }
-            if (cdapi.isLoggedIn()) {
-                cdapi.logQuestionResponse(that.level, answeredOption, + correctness, cdapi.getCurrentSession());
-            }
-            if (correctness) { // Upon selecting correct quiz answer
-                // that.gameObj.GLOBAL.SCORE += that.quizPointWorth;
-                // that.gameObj.GLOBAL.QUIZ_QUESTIONS_CORRECT++;
-                let bonustxt = that.add.text(180, 269, "+" + that.quizPointWorth + " BONUS!", 
-                    {fontFamily: '\'Bevan\', cursive', fontSize: '29pt', color: '#78D863', align: 'center'});
-                bonustxt.setOrigin(0.5);
-                that.tweens.add({ targets: bonustxt, y: 60, duration: 1900, ease: 'Power3' });
-                that.time.addEvent({
-                    delay: 1100,
-                    callback: function () {
-                        that.tweens.add({ targets: bonustxt, alpha: 0, duration: 1500, ease: 'Power3' });
-                    }
-                });
-            } else {
-                // that.gameObj.GLOBAL.QUIZ_QUESTIONS_WRONG++;
-            }
-            that.time.addEvent({
-                delay: 2500,
-                callback: function () {
-                    that.tweens.add({ targets: that.quizOverlay.rotate3d, x: 1, w: 90, duration: 600, ease: 'Power3' });
-
-                    that.tweens.add({ targets: that.quizOverlay, scaleX: 0.75, scaleY: 0.75, y: 900, alpha: 0.6, duration: 600, ease: 'Power3',
-                        onComplete: function ()
-                        {
-                            that.quizOverlay.setVisible(false);
-                        }
-                    });
-                    let newScore = that.score;
-                    let delayscore = 0;
-                    if (correctness) {
-                        newScore = newScore + 500;
-                        delayscore = 600;
-                    }
-                    if (cdapi.isLoggedIn()) {
-                        cdapi.logLevelCompletion(that.level, {
-                            "score": newScore,
-                            "session_code": cdapi.getCurrentSession(),
-                        });
-                    }
-                    that.scoreUp(that.scoreTxt, newScore, function () {
-                        that.time.addEvent({
-                            delay: delayscore,
-                            callback: function () {
-                                that.tweens.add({ targets: that.knowledgePanelOverlay, alpha: 0, duration: 500});
-                                
-                                that.presentEndscreenOptions();
-
-                                /*
-                                that.camera.fadeOut(600, 0, 0, 0, function (camera, progress) {
-                                    if (progress < 0.9) {
-                                        return;
-                                    }
-                                });
-                                */
-                            }
-                        });
-                    });
-                }
-            });
-        });
-
-        this.tweens.add({
-            targets: this.quizOverlay,
-            y: 360,
-            duration: 500,
-            ease: 'Power3'
-        });
-    }
 
     presentEndscreenOptions() {
 
