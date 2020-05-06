@@ -6,8 +6,8 @@
     var cdapi = { };
     cdapi.version = '1.0.0';
     const NO_BACKEND = false;
-    const BASE_URL = 'http://localhost:5000';
-    //const BASE_URL = '/api';
+    //const BASE_URL = 'http://localhost:5000';
+    const BASE_URL = '/api';
     let loggedIn = false;
     let currentSession = null;
     var globalObject = null;
