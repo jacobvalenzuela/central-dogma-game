@@ -42,7 +42,14 @@ class QuizScreen extends Phaser.Scene {
 
         // Quiz related variables
         this.selectedChoice = null;
-        this.quizQuestion = null;
+        let level = data.level + 1;
+        console.log(data);
+        this.quizQuestion = this.getValidQuizQuestion(level, data, questions);
+
+
+        // get the quiz question
+
+        // then remove it from the global questionPool 
 
         // getting the appropriate question ranges
         // Levels 1-12 = core game
@@ -50,6 +57,8 @@ class QuizScreen extends Phaser.Scene {
             // 7-8 = Transcription
             // 9-12 = Translation
         // levels 13-15 = bonus levels
+
+        /*
         let level = data.level + 1; // level is not zero indexed
         if (level == 1) {
             this.quizQuestion = questions[0];
@@ -67,6 +76,7 @@ class QuizScreen extends Phaser.Scene {
         console.log(level);
         console.log(this.quizQuestion);
         console.log(questions);
+        */
 		
 		this.points = this.quizQuestion.worth;
 
@@ -207,6 +217,51 @@ class QuizScreen extends Phaser.Scene {
         }, delay + 2000)
         
         
+    }
+
+    // Given the current level number (indexed starting at 1) and the remaining pool of questions
+    // Will return an appropriate question
+    // By prioritizing the level range, and if exhausted,
+    // Return a random question from earlier ranges.
+    getValidQuizQuestion(level, data, questions) {
+        let questionPool = data.gameObj.questionPool;
+
+        // If the questionBank hasn't been used, return the tutorial question
+        if (questionPool.beginning.includes(0)) { // asking if question 0 is still unasked
+
+            data.gameObj.questionPool.beginning.splice(0, 1);
+            return questions[0];
+        }
+
+        let questionNum;
+        if (level <= 4) { // levels 1-4
+            if (questionPool.beginning.length == 0) {
+
+                data.gameObj.questionPool.beginning = [1, 2, 3, 4, 5, 6, 7];
+            }
+            let index = Math.floor(questionPool.beginning.length * Math.random());
+            questionNum = questionPool.beginning[index];
+            data.gameObj.questionPool.beginning.splice(index, 1);      
+
+        } else if (level <= 8) { // levels 5-8
+            if (questionPool.middle.length == 0) {
+                data.gameObj.questionPool.middle = [8, 9, 10, 11, 12, 13, 14];
+            }
+            let index = Math.floor(questionPool.middle.length * Math.random());
+            questionNum = questionPool.middle[index];
+            data.gameObj.questionPool.middle.splice(index, 1);
+
+        } else { // levels 9-12 and bonus levels
+            if (questionPool.end.length == 0) {
+                data.gameObj.questionPool.end = [8, 9, 10, 11, 12, 13, 14];
+            }
+            let index = Math.floor(questionPool.end.length * Math.random());
+            questionNum = questionPool.end[index];
+            data.gameObj.questionPool.end.splice(index, 1);
+        }
+        
+        return questions[questionNum];
+
     }
 
     // Will get the selected choice during a drag and drop question
