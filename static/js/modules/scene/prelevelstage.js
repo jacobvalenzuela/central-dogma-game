@@ -26,7 +26,7 @@ class PreLevelStage extends Phaser.Scene {
         this.graphics.fillRect(0, 0, 360, 740);
 
         let lvlNumTxt = this.add.text(120, 250, "Level " + (data.lvlNum + 1), 
-            {fontFamily: 'Teko', fontSize: '30pt', color: '#fff'});
+            {fontFamily: 'Teko', fontSize: '40pt', color: '#fff'});
         lvlNumTxt.setPosition((360 - lvlNumTxt.width) / 2, 250);
 
         /*
@@ -35,9 +35,9 @@ class PreLevelStage extends Phaser.Scene {
         lvlName.setPosition((360 - lvlName.width) / 2, 310);
         */
         // In line style rendering with rexBBCodeText
-        let lvlName = this.add.rexBBCodeText(180, 310, "", {
+        let lvlName = this.add.rexBBCodeText(180, 330, "", {
             fontFamily: 'Teko',
-            fontSize: "20px",
+            fontSize: "30px",
             color: "#fff",
             halign: "center",
             wrap: {

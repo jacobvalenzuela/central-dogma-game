@@ -243,6 +243,10 @@ class Game {
             progressBar.fillStyle(0x000000, 1);
             progressBar.fillRect(50, 280, 260 * value, 30);
             percentText.setText(parseInt(value * 100) + '%');
+            let chance = Math.random();
+            if (chance < 0.05) {
+                loadingText.setText(loadingText.text + ".");
+            }
         });
 
         this.game.load.on('fileprogress', function (file) {

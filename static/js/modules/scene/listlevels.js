@@ -73,7 +73,7 @@ class ListLevels extends Phaser.Scene {
                 this.sessionbtn.addListener("pointerup", this.bindFn(() => {
                     this.showSessionLeaderboard(data.gameObj.userName, data.gameObj.sessionID, "score", 10)
                 }));
-                this.greeting.text = "Welcome Back, ";
+                this.greeting.text = "Welcome, ";
                 this.usernameText.text = data.gameObj.animalName;
 
                 if (data.gameObj.sessionID == "") {
