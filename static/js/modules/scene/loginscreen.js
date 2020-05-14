@@ -27,6 +27,13 @@ class LoginScreen extends Phaser.Scene {
         this.graphics.fillStyle(0xFFFFFF, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
 
+        // Reset the question bank for quiz questions (if the user is on this screen, it means they either 
+        // signed out or are relogging in, both are conditions for a new "instance" of play)
+        console.log("reset question pool");
+        data.gameObj.questionPool.beginning = [0, 1, 2, 3, 4, 5, 6, 7];
+        data.gameObj.questionPool.middle = [8, 9, 10, 11, 12, 13, 14];
+        data.gameObj.questionPool.end = [15, 16, 17, 18, 19, 20, 21];
+
     }
 
     update() {
@@ -54,8 +61,7 @@ class LoginScreen extends Phaser.Scene {
 
         // Adding options for animal selector
         let animalSelector = this.domOverlay.getChildByID("animal-selector");
-        let animals = ["rabbit", "lion", "horse", "monkey", "fish", "bear", "bird", "shark", "snake", "pig"]
-        // let animals = [ "Aardvark", "Albatross", "Alligator", "Alpaca", "Ant", "Anteater", "Antelope", "Ape", "Armadillo", "Donkey", "Baboon", "Badger", "Barracuda", "Bat", "Bear", "Beaver", "Bee", "Bison", "Boar", "Buffalo", "Butterfly", "Camel", "Capybara", "Caribou", "Cassowary", "Cat", "Caterpillar", "Cattle", "Chamois", "Cheetah", "Chicken", "Chimpanzee", "Chinchilla", "Chough", "Clam", "Cobra", "Cockroach", "Cod", "Cormorant", "Coyote", "Crab", "Crane", "Crocodile", "Crow", "Curlew", "Deer", "Dinosaur", "Dog", "Dogfish", "Dolphin", "Dotterel", "Dove", "Dragonfly", "Duck", "Dugong", "Dunlin", "Eagle", "Echidna", "Eel", "Eland", "Elephant", "Elk", "Emu", "Falcon", "Ferret", "Finch", "Fish", "Flamingo", "Fly", "Fox", "Frog", "Gaur", "Gazelle", "Gerbil", "Giraffe", "Gnat", "Gnu", "Goat", "Goldfinch", "Goldfish", "Goose", "Gorilla", "Goshawk", "Grasshopper", "Grouse", "Guanaco", "Gull", "Hamster", "Hare", "Hawk", "Hedgehog", "Heron", "Herring", "Hippopotamus", "Hornet", "Horse", "Human", "Hummingbird", "Hyena", "Ibex", "Ibis", "Jackal", "Jaguar", "Jay", "Jellyfish", "Kangaroo", "Kingfisher", "Koala", "Kookabura", "Kouprey", "Kudu", "Lapwing", "Lark", "Lemur", "Leopard", "Lion", "Llama", "Lobster", "Locust", "Loris", "Louse", "Lyrebird", "Magpie", "Mallard", "Manatee", "Mandrill", "Mantis", "Marten", "Meerkat", "Mink", "Mole", "Mongoose", "Monkey", "Moose", "Mosquito", "Mouse", "Mule", "Narwhal", "Newt", "Nightingale", "Octopus", "Okapi", "Opossum", "Oryx", "Ostrich", "Otter", "Owl", "Oyster", "Panther", "Parrot", "Partridge", "Peafowl", "Pelican", "Penguin", "Pheasant", "Pig", "Pigeon", "Pony", "Porcupine", "Porpoise", "Quail", "Quelea", "Quetzal", "Rabbit", "Raccoon", "Rail", "Ram", "Rat", "Raven", "Red deer", "Red panda", "Reindeer", "Rhinoceros", "Rook", "Salamander", "Salmon", "Sand Dollar", "Sandpiper", "Sardine", "Scorpion", "Seahorse", "Seal", "Shark", "Sheep", "Shrew", "Skunk", "Snail", "Snake", "Sparrow", "Spider", "Spoonbill", "Squid", "Squirrel", "Starling", "Stingray", "Stinkbug", "Stork", "Swallow", "Swan", "Tapir", "Tarsier", "Termite", "Tiger", "Toad", "Trout", "Turkey", "Turtle", "Viper", "Vulture", "Wallaby", "Walrus", "Wasp", "Weasel", "Whale", "Wildcat", "Wolf", "Wolverine", "Wombat", "Woodcock", "Woodpecker", "Worm", "Wren", "Yak", "Zebra" ]
+        let animals = [ "Rabbit", "Lion", "Horse", "Monkey", "Fish", "Bear", "Bird", "Shark", "Snake", "Pig" ]
         this.appendSelectOptionsRandomly(animalSelector, animals);
 
         // Adding options for state selector
@@ -213,6 +219,7 @@ class LoginScreen extends Phaser.Scene {
                     console.log("failed to log in: " + result);
                 })
             } else if (event.target.id == "skip-button") {
+                localStorage.removeItem("username");
                 this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
                 this.scene.stop("loginScreen");
 

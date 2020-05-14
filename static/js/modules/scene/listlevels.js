@@ -193,6 +193,7 @@ class ListLevels extends Phaser.Scene {
         // changes greeting
         this.usernameText.text = "";
         this.greeting.text = "Not Signed In";
+        this.sessionText.text = "";
 
         // removes sign out button
         this.signoutBtn.setAlpha(0);

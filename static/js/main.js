@@ -261,7 +261,7 @@ import Game from "./modules/game.js";
 
         // Level 7
         {
-            "ntSequence": "TGCAGTCTGATGC",
+            "ntSequence": "ATGCAGTCTGATGC",
             "controls": ["U", "A", "G", "C"],
             "unlocked": true,
             "name": "New nucleotide, U",
@@ -270,8 +270,8 @@ import Game from "./modules/game.js";
             "speed": SPEED_MEDIUM,
             "popups": {
                 "intro": "Great job making all that DNA! Now its time to make <style='color:" + COLOR_TERM + "'>RNA</style>, see if you notice the difference.",
-                "firstCorrectMatch": "Correct! In RNA, nucleotide 'A' only pairs with nucleotide 'U'.",
-                "error5Match": "Whoops! In RNA, nucleotide 'A' only pairs with nucleotide 'U'."
+                "firstCorrectMatch": "Correct! When making RNA from DNA, nucleotide <style='color:" + COLOR_A + "'>A</style> only pairs with a <style='color:" + COLOR_U + "'>U</style> nucleotide in RNA.",
+                "error5Match": "Whoops! When making RNA from DNA, nucleotide <style='color:" + COLOR_A + "'>A</style> only pairs with a <style='color:" + COLOR_U + "'>U</style> nucleotide in RNA."
             },
             "rotateNT": false,
             "ntType": "basic",

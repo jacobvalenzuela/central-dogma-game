@@ -25,7 +25,13 @@ class PreLevelStage extends Phaser.Scene {
         this.graphics.fillStyle(0x000, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
 
-        let lvlNumTxt = this.add.text(120, 250, "Level " + (data.lvlNum + 1), 
+        let lvlNumTxtLabel = "";
+        if (data.lvlNum >= 12) {
+            lvlNumTxtLabel = "Bonus Level " + (data.lvlNum + 1);
+        } else {
+            lvlNumTxtLabel = "Level " + (data.lvlNum + 1);
+        }
+        let lvlNumTxt = this.add.text(120, 250, lvlNumTxtLabel, 
             {fontFamily: 'Teko', fontSize: '40pt', color: '#fff'});
         lvlNumTxt.setPosition((360 - lvlNumTxt.width) / 2, 250);
 
@@ -35,7 +41,7 @@ class PreLevelStage extends Phaser.Scene {
         lvlName.setPosition((360 - lvlName.width) / 2, 310);
         */
         // In line style rendering with rexBBCodeText
-        let lvlName = this.add.rexBBCodeText(180, 330, "", {
+        let lvlName = this.add.rexBBCodeText(180, 360, "", {
             fontFamily: 'Teko',
             fontSize: "30px",
             color: "#fff",

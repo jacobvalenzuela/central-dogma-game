@@ -20,7 +20,7 @@ class CountdownResumeScreen extends Phaser.Scene {
      */
     init(data) {
 
-        let DELAY = 800;
+        let DELAY = 650;
 
         // Sound Effects
         this.audioplayer = new AudioPlayer();

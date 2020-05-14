@@ -253,7 +253,7 @@ class QuizScreen extends Phaser.Scene {
 
         } else { // levels 9-12 and bonus levels
             if (questionPool.end.length == 0) {
-                data.gameObj.questionPool.end = [8, 9, 10, 11, 12, 13, 14];
+                data.gameObj.questionPool.end = [15, 16, 17, 18, 19, 20, 21];
             }
             let index = Math.floor(questionPool.end.length * Math.random());
             questionNum = questionPool.end[index];
