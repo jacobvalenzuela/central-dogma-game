@@ -139,6 +139,9 @@ class QuizScreen extends Phaser.Scene {
     
                 data.scorekeeping.addKnowledgePoints(this.points);
 
+                // Destroy the submit button to prevent more submissions
+                this.submitBtn.destroy();
+
                 // update global quiz record
                 data.gameObj.GLOBAL.QUIZ_RESULTS.push(this.questionResult);
                 console.log("pushed quiz result: " + this.questionResult);
@@ -226,6 +229,8 @@ class QuizScreen extends Phaser.Scene {
     getValidQuizQuestion(level, data, questions) {
         let questionPool = data.gameObj.questionPool;
 
+        console.log(questionPool);
+
         // If the questionBank hasn't been used, return the tutorial question
         if (questionPool.beginning.includes(0)) { // asking if question 0 is still unasked
 
@@ -234,32 +239,36 @@ class QuizScreen extends Phaser.Scene {
         }
 
         let questionNum;
-        if (level <= 4) { // levels 1-4
+
+        if (level <= 6) { // levels 1-6
             if (questionPool.beginning.length == 0) {
 
-                data.gameObj.questionPool.beginning = [1, 2, 3, 4, 5, 6, 7];
+                data.gameObj.questionPool.beginning = [1, 2, 3, 4, 5, 6, 7, 8];
             }
             let index = Math.floor(questionPool.beginning.length * Math.random());
             questionNum = questionPool.beginning[index];
             data.gameObj.questionPool.beginning.splice(index, 1);      
 
-        } else if (level <= 8) { // levels 5-8
+        } else if (level <= 8) { // levels 7-8
             if (questionPool.middle.length == 0) {
-                data.gameObj.questionPool.middle = [8, 9, 10, 11, 12, 13, 14];
+                data.gameObj.questionPool.middle = [9, 10];
             }
             let index = Math.floor(questionPool.middle.length * Math.random());
             questionNum = questionPool.middle[index];
             data.gameObj.questionPool.middle.splice(index, 1);
 
-        } else { // levels 9-12 and bonus levels
+        } else if (level <=12) { // levels 9-12
             if (questionPool.end.length == 0) {
-                data.gameObj.questionPool.end = [15, 16, 17, 18, 19, 20, 21];
+                data.gameObj.questionPool.end = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
             }
             let index = Math.floor(questionPool.end.length * Math.random());
             questionNum = questionPool.end[index];
             data.gameObj.questionPool.end.splice(index, 1);
+        } else { // bonus levels
+            // return a random question
+            questionNum = Math.floor(Math.random() * (questions.length - 1)) + 1; // will skip tutorial question
         }
-        
+        console.log(questionNum);
         return questions[questionNum];
 
     }

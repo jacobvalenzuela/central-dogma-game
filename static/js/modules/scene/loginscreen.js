@@ -30,9 +30,9 @@ class LoginScreen extends Phaser.Scene {
         // Reset the question bank for quiz questions (if the user is on this screen, it means they either 
         // signed out or are relogging in, both are conditions for a new "instance" of play)
         console.log("reset question pool");
-        data.gameObj.questionPool.beginning = [0, 1, 2, 3, 4, 5, 6, 7];
-        data.gameObj.questionPool.middle = [8, 9, 10, 11, 12, 13, 14];
-        data.gameObj.questionPool.end = [15, 16, 17, 18, 19, 20, 21];
+        data.gameObj.questionPool.beginning = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+        data.gameObj.questionPool.middle = [9, 10];
+        data.gameObj.questionPool.end = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
 
     }
 
@@ -155,11 +155,11 @@ class LoginScreen extends Phaser.Scene {
                 session = session.toLowerCase();
 
                 // builds the username and lowercases it
-                let username = this.domOverlay.getChildByID("adjective-selector").value + "-" +
-                this.domOverlay.getChildByID("color-selector").value + "-" +
-                this.domOverlay.getChildByID("animal-selector").value + "-" +
-                this.domOverlay.getChildByID("state-selector").value + "-" +
-                this.domOverlay.getChildByID("grade-selector").value.replace("-", "_") +  "-" +
+                let username = this.domOverlay.getChildByID("adjective-selector").value + "~" +
+                this.domOverlay.getChildByID("color-selector").value + "~" +
+                this.domOverlay.getChildByID("animal-selector").value + "~" +
+                this.domOverlay.getChildByID("state-selector").value + "~" +
+                this.domOverlay.getChildByID("grade-selector").value.replace("-", "_") +  "~" +
                 this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_").replace("-", "_");
                 username = username.toLowerCase();                
 
@@ -167,16 +167,22 @@ class LoginScreen extends Phaser.Scene {
                 // if they didn't add a session, attach a random number to the username to discern them in the default session
                 // if they did add a session, attach that to the username instead
                 if (session == "") {
-                    username = username + "-" + Math.floor(100000 + Math.random() * 900000);
+                    username = username + "~" + Math.floor(100000 + Math.random() * 900000);
                 } else {
-                    username = username + "-" + session;
+                    username = username + "~" + session;
                 }
                 
 
                 // if any are invalid, tell the user
                 if (!username || this.domOverlay.getChildByID("adjective-selector").value == "" ||
-                    this.domOverlay.getChildByID("color-selector").value == "" || this.domOverlay.getChildByID("animal-selector").value == "") {
+                    this.domOverlay.getChildByID("color-selector").value == "" ||
+                    this.domOverlay.getChildByID("animal-selector").value == "") {
                     this.domOverlay.getChildByID("login-feedback").textContent = "Please specify a valid username.";
+                    return;
+                }
+
+                if (this.domOverlay.getChildByID("login-sessionName").value.includes("-")) {
+                    this.domOverlay.getChildByID("login-feedback").textContent = "The session name cannot contain hypens like '-'";
                     return;
                 }
 
@@ -345,7 +351,7 @@ class LoginScreen extends Phaser.Scene {
         // 4 - grade
         // 5 - gender
         // 6 - sessionid
-        let userdata = rawuserdata.split("-");
+        let userdata = rawuserdata.split("~");
 
         // formatting userdata to perfectly match values
         userdata[2] = this.capitalizeFirstLetter(userdata[2]);

@@ -25,8 +25,8 @@
             "type": "multiple choice",
             "worth": 200,
             "prompt": "Do people eat DNA?",
-            "options": ["Yes, all people eat DNA", "Most, vegetarians do not eat DNA", "Most, vegans do not eat DNA", "No, DNA is not edible"],
-            "correct": 0
+            "options": ["Most, vegetarians do not eat DNA", "Most, vegans do not eat DNA", "Yes, all people eat DNA", "No, DNA is not edible"],
+            "correct": 2
         },
         {
             "type": "drag and drop",
@@ -46,15 +46,15 @@
             "type": "multiple choice",
             "worth": 200,
             "prompt": "How is DNA similar to a fingerprint?",
-            "options": ["both are unique to each individual", "both have a double helix shape", "both are found in the nucleus of every cell in the body", "both determine physical traits such as height and eye color"],
-            "correct": 0
+            "options": ["both have a double helix shape", "both are unique to each individual", "both are found in the nucleus of every cell in the body", "both determine physical traits such as height and eye color"],
+            "correct": 1
         },
         {
             "type": "drag and drop",
             "worth": 200,
             "prompt": "This selection has the structures in the correct order, from largest to smallest: ____",
-            "options": ["nucleus, gene, nucleotide", "gene, nucleus, nucleotide", "nucleotide, gene, nucleus", "nucleus, nucleotide, gene"],
-            "correct": 0
+            "options": ["nucleotide, gene, nucleus", "gene, nucleus, nucleotide", "nucleus, gene, nucleotide", "nucleus, nucleotide, gene"],
+            "correct": 2
         },
         {
             "type": "drag and drop",
@@ -74,22 +74,22 @@
             "type": "multiple choice",
             "worth": 200,
             "prompt": "RNA and DNA ___.",
-            "options": ["are different because RNA uses nucleotide U", "use all of the same nucleotides", "carry messages between cells in the body", "are made of nucleotides and amino acids"],
-            "correct": 0
+            "options": ["use all of the same nucleotides", "carry messages between cells in the body", "are made of nucleotides and amino acids", "are different because RNA uses nucleotide U"],
+            "correct": 3
         },
         {
             "type": "multiple choice",
             "worth": 200,
             "prompt": "The protein molecules in a human influence ___.",
-            "options": ["Its physical characteristics and its behaviors", "Its physical characteristics but not its behaviors", "Its behaviors but not its physical characteristics", "Neither physical characteristics nor behaviors"],
-            "correct": 0
+            "options": ["Its physical characteristics but not its behaviors", "Its physical characteristics and its behaviors", "Its behaviors but not its physical characteristics", "Neither physical characteristics nor behaviors"],
+            "correct": 1
         },
         {
             "type": "multiple choice",
             "worth": 200,
             "prompt": "The protein molecules in a plant influence ___.",
-            "options": ["Its physical characteristics and its behaviors", "Its physical characteristics but not its behaviors", "Its behaviors but not its physical characteristics", "Neither physical characteristics nor behaviors"],
-            "correct": 0
+            "options": ["Its physical characteristics but not its behaviors", "Its behaviors but not its physical characteristics", "Neither physical characteristics nor behaviors", "Its physical characteristics and its behaviors"],
+            "correct": 3
         },
         {
             "type": "multiple choice",
@@ -109,8 +109,8 @@
             "type": "multiple choice",
             "worth": 200,
             "prompt": "What does the information in genes provide instructions for?",
-            "options": ["Assembling protein molecules", "Assembling genes into DNA", "Rearranging DNA into protein molecules", "Rearranging DNA into RNA"],
-            "correct": 0
+            "options": ["Assembling genes into DNA", "Assembling protein molecules", "Rearranging DNA into protein molecules", "Rearranging DNA into RNA"],
+            "correct": 1
         },
         {
             "type": "multiple choice",
@@ -123,8 +123,8 @@
             "type": "multiple choice",
             "worth": 200,
             "prompt": "How are proteins made in an organism?",
-            "options": ["By linking amino acids together", "By linking DNA molecules together", "By linking nucleotides together", "Proteins are not made in organisms"],
-            "correct": 0
+            "options": ["By linking DNA molecules together", "By linking nucleotides together", "Proteins are not made in organisms", "By linking amino acids together"],
+            "correct": 3
         },
         {
             "type": "multiple choice",
@@ -144,8 +144,8 @@
             "type": "multiple choice",
             "worth": 200,
             "prompt": "What does an organism need in order to make proteins?",
-            "options": ["Amino acids and instructions for assembling them", "Amino acids but not instructions for assembling them", "Individual atoms but not instructions for assembling them", "An organism eats proteins, so it does not need to make them."],
-            "correct": 0
+            "options": ["Individual atoms but not instructions for assembling them", "Amino acids but not instructions for assembling them", "Amino acids and instructions for assembling them", "An organism eats proteins, so it does not need to make them."],
+            "correct": 2
         },
         {
             "type": "multiple choice",

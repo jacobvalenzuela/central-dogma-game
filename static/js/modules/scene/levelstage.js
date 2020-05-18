@@ -411,39 +411,57 @@ class LevelStage extends Phaser.Scene {
         // Keyboard Controls (must be instantiated after creating level specific buttons)
         if (this.levelConfig.lvlType == "dna_replication") {
             this.input.keyboard.on('keydown-A', function(event) {
-                this.onKeyboardInput(1);
-    
+                if (this.levelConfig.controls[0] != "G" && this.levelConfig.controls[1] != "C") {
+                    console.log("NOT A CG LEVEL");
+                    this.onKeyboardInput(1);
+                }
             }, this);
     
             this.input.keyboard.on('keydown-G', function(event) {
-                this.onKeyboardInput(2);
+                if (this.levelConfig.controls[0] == "G" && this.levelConfig.controls[1] == "C") {
+                    this.onKeyboardInput(0);
+                    console.log("IS A CG LEVEL");
+                } else {
+                    console.log("NOT A CG LEVEL");
+                    this.onKeyboardInput(2);
+                }
+                
     
             }, this);
     
             this.input.keyboard.on('keydown-C', function(event) {
-                this.onKeyboardInput(3);
+                if (this.levelConfig.controls[0] == "G" && this.levelConfig.controls[1] == "C") {
+                    this.onKeyboardInput(1);
+                    console.log("IS A CG LEVEL");
+                } else {
+                    console.log("NOT A CG LEVEL");
+                    this.onKeyboardInput(3);
+                }
             }, this);
 
             // On transcription levels, the T input should be swapped to U for RNA.
-            console.log("KEYDOWN CHECK: " + this.levelConfig.process);
             if (this.levelConfig.process == "transcription") {
-                console.log("KEYDOWN U");
                 this.input.keyboard.on('keydown-U', function(event) {
                     this.onKeyboardInput(0);
                 }, this);
             } else {
-                console.log("KEYDOWN T");
                 this.input.keyboard.on('keydown-T', function(event) {
-                    this.onKeyboardInput(0);
+                    if (this.levelConfig.controls[0] != "G" && this.levelConfig.controls[1] != "C") {
+                        console.log("NOT A CG LEVEL");
+                        this.onKeyboardInput(0);
+                    }
                 }, this);
             }
 
  
             
             this.input.keyboard.on('keydown-SPACE', function(event) {
-                if (this.positionManager.ntTouchingBindingPocket() && this.rotateNT && this.buttonCurrent) {
-                    this.processNucleotideSubmission(this.buttonCurrent); 
-                } 
+                // if we're in a rotation level, rotate all the nucleotides.
+                if (this.rotateNT) {
+                    for (let i = 0; i < this.buttons.length; i++) {
+                        this.rotateNucleotideButton(this.buttons[i]);
+                    }
+                }
             }, this);
         } else if (this.levelConfig.lvlType == "codon_transcription") {
             this.input.keyboard.on('keydown-ONE', function(event) {
@@ -713,10 +731,8 @@ class LevelStage extends Phaser.Scene {
      */
     onKeyboardInput(num) {
         this.buttonCurrent = this.buttons[num];
-        if (this.positionManager.ntTouchingBindingPocket() && !this.rotateNT) {
+        if (this.positionManager.ntTouchingBindingPocket()) {
             this.processNucleotideSubmission(this.buttonCurrent);
-        } else if (this.rotateNT) {
-            this.rotateNucleotideButton(this.buttonCurrent);
         }
     }
 

@@ -57,7 +57,7 @@ class ListLevels extends Phaser.Scene {
             this.musicbtn.setAlpha(0.5);
         }
 
-        this.greeting = this.add.text(22, 20, "",
+        this.greeting = this.add.text(20, 20, "",
             { fontFamily: 'Teko', fontSize: '28pt', color: '#000000' });
         this.usernameText = this.add.text(22, 55, "",
             { fontFamily: 'Teko', fontSize: '15pt', color: '#000000' });
