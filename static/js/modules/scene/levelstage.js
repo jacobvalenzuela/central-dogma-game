@@ -242,10 +242,12 @@ class LevelStage extends Phaser.Scene {
             let topLabel = "";
             this.levelConfig.rotateNT ? topLabel = "TAP TO ROTATE\nSWIPE TO SUBMIT" : topLabel = "\nTAP/SWIPE"
             if (this.levelConfig.rotateNT) {
-                this.game.add.image(275, 220, "tapIcon").setScale(0.2);
-                this.game.add.text(290, 220, "TO", 
+                this.game.add.image(275, 180, "tapIcon").setScale(0.2);
+                this.game.add.text(290, 180, "OR [SPACE]", 
+                {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
+                this.game.add.text(290, 210, "TO", 
                     {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
-                this.game.add.image(322, 225, "rotateIcon").setScale(0.15);
+                this.game.add.image(322, 215, "rotateIcon").setScale(0.15);
                 this.game.add.image(275, 260, "swipeIcon").setScale(0.2);
                 this.game.add.text(290, 260, "TO SUBMIT", 
                     {fontFamily: 'Teko, sans-serif', fontSize: '16pt', color: '#FFFFFF'}).setDepth(105);
@@ -608,14 +610,21 @@ class LevelStage extends Phaser.Scene {
         if (!this.rotateNT) {
             return;
         }
+
+        for (let i = 0; i < this.buttons.length; i++) {
+            this.buttons[i].setAngle(90 * i);
+        }
+
         // We don't include 180 because we never want the nucleotide to
         // ever spawn with the already correct angle.
+        /*
         let angles = [0, 90, 270];
         for (let i = 0; i < this.buttons.length; i++) {
             let angle = angles[Math.floor(Math.random()*angles.length)];
             this.buttons[i].setAngle(angle);
-        }
+        }*/
     }
+
 
     /**
      * Shuffles nucleotide options. One correct from codon.

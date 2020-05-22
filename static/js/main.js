@@ -51,7 +51,7 @@ import Game from "./modules/game.js";
             "process": "dna replication",
             "speed": SPEED_MEDIUM,
             "popups": {
-                "intro": "Tap a <style='color:" + COLOR_TERM + "'>nucleotide</style> to match the correct <style='color:" + COLOR_TERM + "'>base pair</style>.",
+                "intro": "Tap a <style='color:" + COLOR_TERM + "'>nucleotide</style> to match the correct <style='color:" + COLOR_TERM + "'>base pair</style>. You can also submit nucleotides by pushing its letter on a keyboard.",
                 "firstCorrectMatch": "Correct! In <style='color:" + COLOR_TERM + "'>DNA</style>, nucleotide 'A' or <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> only pairs with nucleotide 'T' or <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>.",
                 "error5Match": "Whoops! In <style='color:" + COLOR_TERM + "'>DNA</style>, nucleotide 'A' or <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> only pairs with nucleotide 'T' or <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>."
             },
@@ -198,7 +198,7 @@ import Game from "./modules/game.js";
             "process": "dna replication",
             "speed": SPEED_MEDIUM,
             "popups": {
-                "intro": "Let's put it all together, DNA is made of all 4 nucleotides (A, T, G, C)."
+                "intro": "Let's put it all together, DNA is made of all 4 nucleotides (A, T, G, C). Submit nucleotides by tapping on them, or by pushing its letter on a keyboard."
             },
             "rotateNT": false,
             "ntType": "basic",
@@ -348,7 +348,7 @@ import Game from "./modules/game.js";
             "process": "translation",
             "speed": SPEED_SLOW,
             "popups": {
-                "intro": "Now that you know how to make DNA and RNA, lets make <style='color:" + COLOR_TERM + "'>protein</style>.",
+                "intro": "Now that you know how to make DNA and RNA, lets make <style='color:" + COLOR_TERM + "'>protein</style>. Tap the codon to submit, or push 1 or 2 on a keyboard.",
                 "firstCorrectMatch": "Correct! Nucleotide pairing rules still apply.",
                 "error5Match": "Whoops! Nucleotide pairing rules still apply."
             },
@@ -509,7 +509,7 @@ import Game from "./modules/game.js";
             "process": "transcription",
             "speed": SPEED_SLOW,
             "popups": {
-                "intro": "Tap nucleotides to rotate and make a proper double or triple bond."
+                "intro": "Tap nucleotides to rotate and slide them to submit a proper double or triple bond. You can also use the spacebar to rotate, and letters A, C, T, and G to submit."
             },
             "rotateNT": true,
             "ntType": "basic",
