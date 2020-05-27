@@ -283,33 +283,63 @@ class ListLevels extends Phaser.Scene {
         let rankHeading = document.createElement("th");
         let nameHeading = document.createElement("th");
         let valueHeading = document.createElement("th");
+        let levelsPlayedHeading = document.createElement("th");
 
         rankHeading.textContent = "Rank";
         nameHeading.textContent = "Name";
         valueHeading.textContent = "Score";
+        levelsPlayedHeading.textContent = "Levels Played";
 
         nameHeading.classList.add("name");
 
         header.appendChild(rankHeading);
         header.appendChild(nameHeading);
         header.appendChild(valueHeading);
+        header.appendChild(levelsPlayedHeading);
         table.appendChild(header);
 
-        // Fill out table
+        // Will find the unique users, get their total score, then sort in descending order.
+        let uniqueUserMap = {};
+        let uniqueUserArray = [];
         for (let i = 0; i < results.length; i++) {
+            if (results[i].userName in uniqueUserMap) {
+                uniqueUserMap[results[i].userName].score += results[i].score;
+            } else if (!results[i].userName.includes("~")) {
+                uniqueUserMap[results[i].userName] = results[i];
+            }
+        }
+        for (let x in uniqueUserMap) {
+            let user = {
+                userName: "",
+                score: 0,
+                levels: 0
+            }
+            user.userName = uniqueUserMap[x].userName;
+            user.score = uniqueUserMap[x].score;
+            user.levels = uniqueUserMap[x].levels;
+            uniqueUserArray.push(user);
+        }
+        uniqueUserArray.sort((a, b) => {return b.score - a.score});
+
+
+        // Fill out table user results processed above
+        for (let i = 0; i < uniqueUserArray.length; i++) {
             let entry = document.createElement("tr");
             let rank = document.createElement("td");
             let userName = document.createElement("td");
-            let value = document.createElement("td");
+            let score = document.createElement("td");
+            let levelsPlayed = document.createElement("td");
+
 
             rank.textContent = i + 1;
-            userName.textContent = results[i].userName;
-            value.textContent = results[i].value;
+            userName.textContent = uniqueUserArray[i].userName;
+            score.textContent = uniqueUserArray[i].score;
+            levelsPlayed.textContent = uniqueUserArray[i].levels;
 
             entry.appendChild(rank);
             entry.appendChild(userName);
-            entry.appendChild(value);
-
+            entry.appendChild(score);
+            entry.appendChild(levelsPlayed);
             table.appendChild(entry);
         }
     }

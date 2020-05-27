@@ -225,6 +225,9 @@
   .select-css option {
       font-weight:normal;
   }
+  .hidden {
+    display: none;
+  }
 
   </style>
   
@@ -243,8 +246,8 @@
     <br />
     <p id="sessions-username">User: </p>
     <div class="leaderboard-container">
-        <p>Sort By: </p>
-        <select name="leaderboard-category" id="category-selector" class="select-css">
+        <p class="hidden">Sort By: </p>
+        <select name="leaderboard-category" id="category-selector" class="select-css, hidden">
           <option value="levelScore">Total Level Score</option>
           <option value="quizScore">Total Quiz Score</option>
         </select>
@@ -254,6 +257,7 @@
             <th>Rank</th>
             <th class="name">Name</th>
             <th>Score</th>
+            <th>Levels Played</th>
           </tr>
         </table>
     </div>

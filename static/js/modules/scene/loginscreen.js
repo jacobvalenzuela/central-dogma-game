@@ -17,6 +17,16 @@ class LoginScreen extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
+        // There was a time where we briefly switched to "~" as a seperator.
+        // To prevent the game from crashing, if the username contains "~" it is thrown out.
+        // REMOVE THIS LATER.
+        
+        if (localStorage.getItem("username") != null && localStorage.getItem("username").includes("~")) {
+            localStorage.removeItem("username");
+            localStorage.removeItem("loginToken");
+        }
+
+
         this.game = this;
         this.showLoginOverlay(data);
         this.floaty = this.physics.add.group();
@@ -33,7 +43,6 @@ class LoginScreen extends Phaser.Scene {
         data.gameObj.questionPool.beginning = [0, 1, 2, 3, 4, 5, 6, 7, 8];
         data.gameObj.questionPool.middle = [9, 10];
         data.gameObj.questionPool.end = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
-
     }
 
     update() {
