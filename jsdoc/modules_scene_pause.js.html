@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: modules/scene/pause.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: modules/scene/pause.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import AudioPlayer from "../audioplayer.js";
+
+/**
+ * Represents the level stage scene
+ * @extends Phaser.Scene
+ */
+class PauseScreen extends Phaser.Scene {
+
+    /**
+     * Creates a pause screen scene.
+     * @param {Phaser.Types.Scenes.SettingsConfig} config 
+     */
+    constructor (config) {
+        super(config);
+    }
+
+    
+
+    /**
+     * Initalizes the level.
+     * @param {JSON} data 
+     */
+    init(data) {
+        console.log(data);
+
+        // Sound Effects
+        this.audioplayer = new AudioPlayer();
+
+        this.audioplayer.playDialogOpenSound();
+
+        var gra = this.add.graphics();
+        gra.fillStyle(0x000000, 0.50);
+        gra.fillRect(0, 0, 360, 740);
+        this.add.text(120, 150, "PAUSED", 
+        {fontFamily: 'Teko, sans-serif', fontSize: '40pt', color: '#FFFFFF'}).setDepth(1);
+        
+        let resumeBtn = this.add.image(180, 350, "resume_btn").setScale(0.5).setInteractive().setAlpha(1.0);
+        resumeBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        resumeBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        resumeBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+        resumeBtn.addListener("pointerup", this.bindFn(function(){
+            this.scene.launch("countdownResumeScreen", data);
+            this.scene.stop();
+        }));
+
+        let levelsBtn = this.add.image(180, 450, "levels_btn").setScale(0.5).setInteractive().setAlpha(1.0);
+        levelsBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        levelsBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        levelsBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+        
+        levelsBtn.addListener("pointerup", this.bindFn(function(){
+            // You can't scene.stop the popupmanager because it has multiple scenes.
+            // the destroy() function will do it for us.
+            data.popupmanager.destroy();
+            this.scene.stop("level" + data.level);
+            this.scene.stop();
+
+            /*
+            let newobj = data;
+            newobj.levels = data.gameObj.levels;
+            this.scene.launch("listlevels", newobj);
+            */
+            data.audioplayer.stopAllMusic();
+
+            if (data.level >= 12) {
+                this.scene.start("titlescreen", {skipToLevelsList: true, showBonusLevels: true, gameObj: data.gameObj, fadeIn: true}); 
+            } else {
+                this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: data.gameObj, fadeIn: true});
+            }
+
+            
+        }));
+
+        let homeBtn = this.add.image(180, 550, "home_btn").setScale(0.5).setInteractive().setAlpha(1.0);
+        homeBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        homeBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        homeBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
+        
+        homeBtn.addListener("pointerup", this.bindFn(function(){
+            data.popupmanager.destroy();
+            this.scene.stop("level" + data.level);
+            this.scene.stop();
+            data.audioplayer.stopAllMusic();
+            this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
+        }));
+        
+    }
+    /**
+     * Make button smaller
+     * @param {Phaser.GameObjects.Image} img - the play button
+     */
+    onButtonClickHold(img) {
+        this.audioplayer.playClickSound();
+        img.setScale(0.45);
+    }
+
+    /**
+     * Make button regular sized
+     * @param {Phaser.GameObjects.Image} img - the play button
+     */
+    onButtonClickRelease(img) {
+        img.setScale(0.50);
+    }
+
+    /**
+     * Changes the context of the function `this` keyword to the class. Moves the `this` reference to the first parameter instead.
+     * @param {function} fn - The function used to bind to the class
+     */
+    bindFn(fn) {
+        let clas = this;
+        return function (...args) {
+            let event = this;
+            fn.bind(clas, event, ...args)();
+        };
+    }
+}
+
+export default PauseScreen;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="AboutScreen.html">AboutScreen</a></li><li><a href="AudioPlayer.html">AudioPlayer</a></li><li><a href="BackgroundFloater.html">BackgroundFloater</a></li><li><a href="Codon.html">Codon</a></li><li><a href="CountdownResumeScreen.html">CountdownResumeScreen</a></li><li><a href="Game.html">Game</a></li><li><a href="GameScore.html">GameScore</a></li><li><a href="LevelComplete.html">LevelComplete</a></li><li><a href="LevelStage.html">LevelStage</a></li><li><a href="ListLevels.html">ListLevels</a></li><li><a href="LoginScreen.html">LoginScreen</a></li><li><a href="LogoScreen.html">LogoScreen</a></li><li><a href="Nucleotide.html">Nucleotide</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="PopupDisplayScene.html">PopupDisplayScene</a></li><li><a href="PopupManager.html">PopupManager</a></li><li><a href="PositionManager.html">PositionManager</a></li><li><a href="PreLevelStage.html">PreLevelStage</a></li><li><a href="QuizScreen.html">QuizScreen</a></li><li><a href="TitleScreen.html">TitleScreen</a></li><li><a href="TouchFeedback.html">TouchFeedback</a></li></ul><h3>Global</h3><ul><li><a href="global.html#PATH_POINTS_FACTOR">PATH_POINTS_FACTOR</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed May 27 2020 15:51:57 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: mainTEALS.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: mainTEALS.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Game from "./modules/game.js";
+
+/** @namespace window */
+
+/**
+ * Creates the game instance for the end user.
+ * Refer to it as {@link window.game}.
+ */
+(function () {
+    "use strict";
+    
+    WebFont.load({
+        google: {
+            families: ['Open Sans', 'Knewave', 'Bevan', 'Teko']
+        }
+    });
+
+    // speeds:
+    // 50 - takes about 5.28 seconds for 3 nucleotides
+    // 33 - takes about 3.66 seconds for 3 nucleotides
+    // 1 - takes about 1.95 seconds for 3 nucleotides
+
+    let game = new Game([
+        {
+            // "ntSequence": "ATATTTTAAATATATATATATAATTATATATATATATA"
+            "ntSequence": "ATATTTTAAATATAT",
+            "controls": ["T", "A"],
+            "unlocked": true,
+            "name": "AT the Beginning",
+            "description": "DNA Replication",
+            "process": "dna replication",
+            "speed": 33,
+            "popups": {
+                "intro": "Tap a &lt;style='color: #ce00ce;'>nucleotide&lt;/style> to match the correct &lt;style='color: #ce00ce;'>base pair&lt;/style>.",
+                "firstCorrectMatch": "In DNA, &lt;style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}&lt;/style> can only bind to &lt;style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}&lt;/style>!",
+                "error5Match": "Whoops! In DNA, &lt;style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}&lt;/style> cannot bind to &lt;style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}&lt;/style>."
+            },
+            "rotateNT": false,
+            "ntType": "basic",
+            "lvlType": "dna_replication",
+            "quiz": {
+                "question": "Three base pairs are called a __________.",
+                "options": [
+                    "Codon", // first option is correct
+                    "Amino Acid",
+                    "Peptide",
+                    "DNA",
+                ],
+            },
+            "sequencedinfo": {
+                "name": "insulin",
+                "description": "&lt;strong>Insulin&lt;/strong> is a &lt;span style='color: blue;'>gene&lt;/span> that codes for a peptide (sequence of &lt;span style='color: red;'>amino acids&lt;/span>) that acts as a hormone to regulate metabolism",
+                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+                "imgurl": "./static/img/flashcard/insulin.png",
+            },
+            "knowledgepanel": {
+                "description": "&lt;strong>Promoter sequences&lt;/strong> are &lt;span style='color: forestgreen;'>DNA&lt;/span> sequences that define where transcription of a &lt;span style='color: blue;'>gene starts&lt;/span>.",
+                "imgurl": "./static/img/flashcard/promoter_dna.png",
+            },
+        },
+        {
+            "ntSequence": "CGGCGCCGCGGCCGC",
+            "controls": ["G", "C"],
+            "unlocked": true,
+            "name": "Clash of the Cs and Gs",
+            "description": "DNA Replication",
+            "process": "dna replication",
+            "speed": 33,
+            "popups": {
+                "intro": "In DNA, &lt;style='color: #F5B222;'>Guanine&lt;/style> only binds with &lt;style='color: #103B75;'>Cytosine&lt;/style>!",
+                "error5Match": "Whoops! In DNA, &lt;style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}&lt;/style> cannot bind to &lt;style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}&lt;/style>."
+            },
+            "rotateNT": false,
+            "ntType": "basic",
+            "lvlType": "dna_replication",
+            "quiz": {
+                "question": "Three base pairs are called a __________.",
+                "options": [
+                    "Codon", // first option is correct
+                    "Amino Acid",
+                    "Peptide",
+                    "DNA",
+                ],
+            },
+            "sequencedinfo": {
+                "name": "insulin",
+                "description": "&lt;strong>Insulin&lt;/strong> is a &lt;span style='color: blue;'>gene&lt;/span> that codes for a peptide (sequence of &lt;span style='color: red;'>amino acids&lt;/span>) that acts as a hormone to regulate metabolism",
+                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+                "imgurl": "./static/img/flashcard/insulin.png",
+            },
+            "knowledgepanel": {
+                "description": "&lt;strong>Promoter sequences&lt;/strong> are &lt;span style='color: forestgreen;'>DNA&lt;/span> sequences that define where transcription of a &lt;span style='color: blue;'>gene starts&lt;/span>.",
+                "imgurl": "./static/img/flashcard/promoter_dna.png",
+            },
+        },
+        {
+            "ntSequence": "TAGTCACTAGGAGCA",
+            "unlocked": true,
+            "name": "Mixing Things Up",
+            "description": "DNA Replication",
+            "process": "dna replication",
+            "speed": 33,
+            "popups": {
+                "intro": "DNA is made of A's, T's, G's, and C's.",
+                "error5Match": "Adenine [A] only binds with Thymine [T] and Guanine [G] only binds with Cytosine [C]!"
+            },
+            "rotateNT": false,
+            "ntType": "basic",
+            "lvlType": "dna_replication",
+            "quiz": {
+                "question": "Three base pairs are called a __________.",
+                "options": [
+                    "Codon", // first option is correct
+                    "Amino Acid",
+                    "Peptide",
+                    "DNA",
+                ],
+            },
+            "sequencedinfo": {
+                "name": "insulin",
+                "description": "&lt;strong>Insulin&lt;/strong> is a &lt;span style='color: blue;'>gene&lt;/span> that codes for a peptide (sequence of &lt;span style='color: red;'>amino acids&lt;/span>) that acts as a hormone to regulate metabolism",
+                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+                "imgurl": "./static/img/flashcard/insulin.png",
+            },
+            "knowledgepanel": {
+                "description": "&lt;strong>Promoter sequences&lt;/strong> are &lt;span style='color: forestgreen;'>DNA&lt;/span> sequences that define where transcription of a &lt;span style='color: blue;'>gene starts&lt;/span>.",
+                "imgurl": "./static/img/flashcard/promoter_dna.png",
+            },
+        },
+        {
+            "ntSequence": "ATAGATCTCGTACGATCGAT",
+            "unlocked": true,
+            "name": "All Together Now",
+            "description": "DNA Replication",
+            "process": "dna replication",
+            "speed": 1,
+            "popups": {
+                "intro": "Picking up the pace! Make base pairs the A's and T's or with G's and C's."
+            },
+            "rotateNT": false,
+            "ntType": "basic",
+            "lvlType": "dna_replication",
+            "quiz": {
+                "question": "Three base pairs are called a __________.",
+                "options": [
+                    "Codon", // first option is correct
+                    "Amino Acid",
+                    "Peptide",
+                    "DNA",
+                ],
+            },
+            "sequencedinfo": {
+                "name": "insulin",
+                "description": "&lt;strong>Insulin&lt;/strong> is a &lt;span style='color: blue;'>gene&lt;/span> that codes for a peptide (sequence of &lt;span style='color: red;'>amino acids&lt;/span>) that acts as a hormone to regulate metabolism",
+                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+                "imgurl": "./static/img/flashcard/insulin.png",
+            },
+            "knowledgepanel": {
+                "description": "&lt;strong>Promoter sequences&lt;/strong> are &lt;span style='color: forestgreen;'>DNA&lt;/span> sequences that define where transcription of a &lt;span style='color: blue;'>gene starts&lt;/span>.",
+                "imgurl": "./static/img/flashcard/promoter_dna.png",
+            },
+        },
+        {
+            "ntSequence": "GCAGUCUGAUGC",
+            "controls": ["U", "A", "G", "C"],
+            "unlocked": true,
+            "name": "Introducing Uracil",
+            "description": "Transcription",
+            "process": "transcription",
+            "speed": 50,
+            "popups": {
+                "intro": "Rotate nucleotides by tapping to make the proper bonds and slide them to base pair!",
+                "firstCorrectMatch": "DNA codes for genes that get transcribed into messenger RNA.",
+                "error5Match": "In RNA, there is no longer Thymine [T], instead Adenine [A] binds with Uracil [U]."
+            },
+            "rotateNT": true,
+            "ntType": "basic",
+            "lvlType": "dna_replication",
+            "quiz": {
+                "question": "Three base pairs are called a __________.",
+                "options": [
+                    "Codon", // first option is correct
+                    "Amino Acid",
+                    "Peptide",
+                    "DNA",
+                ],
+            },
+            "sequencedinfo": {
+                "name": "insulin",
+                "description": "&lt;strong>Insulin&lt;/strong> is a &lt;span style='color: blue;'>gene&lt;/span> that codes for a peptide (sequence of &lt;span style='color: red;'>amino acids&lt;/span>) that acts as a hormone to regulate metabolism",
+                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+                "imgurl": "./static/img/flashcard/insulin.png",
+            },
+            "knowledgepanel": {
+                "description": "&lt;strong>Promoter sequences&lt;/strong> are &lt;span style='color: forestgreen;'>DNA&lt;/span> sequences that define where transcription of a &lt;span style='color: blue;'>gene starts&lt;/span>.",
+                "imgurl": "./static/img/flashcard/promoter_dna.png",
+            },
+        },
+        {
+            "ntSequence": "GCUGGCAGCUGUCAA",
+            "controls": ["U", "A", "G", "C"],
+            "unlocked": true,
+            "name": "Transcriptor",
+            "description": "Transcription",
+            "process": "transcription",
+            "speed": 33,
+            "popups": {
+                "intro": "RNA contains the blueprint for the gene to be translated into proteins, which carry out most of the functions in cells",
+                "error5Match": "Accuracy is important, do your best to limit mutations!"
+            },
+            "rotateNT": true,
+            "ntType": "basic",
+            "lvlType": "dna_replication",
+            "quiz": {
+                "question": "Three base pairs are called a __________.",
+                "options": [
+                    "Codon", // first option is correct
+                    "Amino Acid",
+                    "Peptide",
+                    "DNA",
+                ],
+            },
+            "sequencedinfo": {
+                "name": "insulin",
+                "description": "&lt;strong>Insulin&lt;/strong> is a &lt;span style='color: blue;'>gene&lt;/span> that codes for a peptide (sequence of &lt;span style='color: red;'>amino acids&lt;/span>) that acts as a hormone to regulate metabolism",
+                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+                "imgurl": "./static/img/flashcard/insulin.png",
+            },
+            "knowledgepanel": {
+                "description": "&lt;strong>Promoter sequences&lt;/strong> are &lt;span style='color: forestgreen;'>DNA&lt;/span> sequences that define where transcription of a &lt;span style='color: blue;'>gene starts&lt;/span>.",
+                "imgurl": "./static/img/flashcard/promoter_dna.png",
+            },
+        },
+        {
+            "ntSequence": "AUGCCGGGUCAUGGGCCCACUGACCAUGGGUUUUAG",
+            "unlocked": true,
+            "name": "Codon Training",
+            "description": "Translation",
+            "process": "translation",
+            "speed": 50,
+            "popups": {
+                "intro": "Each protein molecule is made up of a long chain of different types amino acids.",
+                "firstCorrectMatch": "Proteins can be hormones, enzymes, or structures!"
+            },
+            "rotateNT": false,
+            "ntType": "basic",
+            "lvlType": "codon_transcription",
+            "maxButtons": 1,
+            "quiz": {
+                "question": "Three base pairs are called a __________.",
+                "options": [
+                    "Codon", // first option is correct
+                    "Amino Acid",
+                    "Peptide",
+                    "DNA",
+                ],
+            },
+            "sequencedinfo": {
+                "name": "insulin",
+                "description": "&lt;strong>Insulin&lt;/strong> is a &lt;span style='color: blue;'>gene&lt;/span> that codes for a peptide (sequence of &lt;span style='color: red;'>amino acids&lt;/span>) that acts as a hormone to regulate metabolism",
+                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+                "imgurl": "./static/img/flashcard/insulin.png",
+            },
+            "knowledgepanel": {
+                "description": "&lt;strong>Promoter sequences&lt;/strong> are &lt;span style='color: forestgreen;'>DNA&lt;/span> sequences that define where transcription of a &lt;span style='color: blue;'>gene starts&lt;/span>.",
+                "imgurl": "./static/img/flashcard/promoter_dna.png",
+            },
+        },
+        {
+            "ntSequence": "",
+            "ntSequence": "AUGUUUGACCAUGGGUUUGACCCAGACACUCCGGGUGACCAUUAG",
+            "unlocked": true,
+            "name": "Lost In Translation",
+            "description": "Translation",
+            "process": "translation",
+            "speed": 33,
+            "popups": {
+                "intro": "Accuracy is important, do your best to limit mutations!",
+                "error5Match": "Careful! Mutations in protein can result in genetic variations."
+            },
+            "rotateNT": false,
+            "ntType": "basic",
+            "lvlType": "codon_transcription",
+            "maxButtons": 1,
+            "quiz": {
+                "question": "Three base pairs are called a __________.",
+                "options": [
+                    "Codon", // first option is correct
+                    "Amino Acid",
+                    "Peptide",
+                    "DNA",
+                ],
+            },
+            "sequencedinfo": {
+                "name": "insulin",
+                "description": "&lt;strong>Insulin&lt;/strong> is a &lt;span style='color: blue;'>gene&lt;/span> that codes for a peptide (sequence of &lt;span style='color: red;'>amino acids&lt;/span>) that acts as a hormone to regulate metabolism",
+                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+                "imgurl": "./static/img/flashcard/insulin.png",
+            },
+            "knowledgepanel": {
+                "description": "&lt;strong>Promoter sequences&lt;/strong> are &lt;span style='color: forestgreen;'>DNA&lt;/span> sequences that define where transcription of a &lt;span style='color: blue;'>gene starts&lt;/span>.",
+                "imgurl": "./static/img/flashcard/promoter_dna.png",
+            },
+        }
+    ]);
+    window.game = new Phaser.Game(game.config);
+})();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="AboutScreen.html">AboutScreen</a></li><li><a href="AudioPlayer.html">AudioPlayer</a></li><li><a href="BackgroundFloater.html">BackgroundFloater</a></li><li><a href="Codon.html">Codon</a></li><li><a href="CountdownResumeScreen.html">CountdownResumeScreen</a></li><li><a href="Game.html">Game</a></li><li><a href="GameScore.html">GameScore</a></li><li><a href="LevelComplete.html">LevelComplete</a></li><li><a href="LevelStage.html">LevelStage</a></li><li><a href="ListLevels.html">ListLevels</a></li><li><a href="LoginScreen.html">LoginScreen</a></li><li><a href="LogoScreen.html">LogoScreen</a></li><li><a href="Nucleotide.html">Nucleotide</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="PopupDisplayScene.html">PopupDisplayScene</a></li><li><a href="PopupManager.html">PopupManager</a></li><li><a href="PositionManager.html">PositionManager</a></li><li><a href="PreLevelStage.html">PreLevelStage</a></li><li><a href="QuizScreen.html">QuizScreen</a></li><li><a href="TitleScreen.html">TitleScreen</a></li><li><a href="TouchFeedback.html">TouchFeedback</a></li></ul><h3>Global</h3><ul><li><a href="global.html#PATH_POINTS_FACTOR">PATH_POINTS_FACTOR</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed May 27 2020 15:51:57 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

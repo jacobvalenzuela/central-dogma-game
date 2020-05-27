@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: modules/scene/loginscreen.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: modules/scene/loginscreen.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Represents the level stage scene
+ * @extends Phaser.Scene
+ */
+class LoginScreen extends Phaser.Scene {
+
+    /**
+     * Creates a pause screen scene.
+     * @param {Phaser.Types.Scenes.SettingsConfig} config 
+     */
+    constructor (config) {
+        super(config);
+    }
+
+    /**
+     * Initalizes the level.
+     * @param {JSON} data 
+     */
+    init(data) {
+        // There was a time where we briefly switched to "~" as a seperator.
+        // To prevent the game from crashing, if the username contains "~" it is thrown out.
+        // REMOVE THIS LATER.
+        
+        if (localStorage.getItem("username") != null &amp;&amp; localStorage.getItem("username").includes("~")) {
+            localStorage.removeItem("username");
+            localStorage.removeItem("loginToken");
+        }
+
+
+        this.game = this;
+        this.showLoginOverlay(data);
+        this.floaty = this.physics.add.group();
+        this.backgroundFloaties = this.spawnBackgroundFloaties(25);
+
+        // Background Color
+        this.graphics = this.game.add.graphics();
+        this.graphics.fillStyle(0xFFFFFF, 1.0);
+        this.graphics.fillRect(0, 0, 360, 740);
+
+        // Reset the question bank for quiz questions (if the user is on this screen, it means they either 
+        // signed out or are relogging in, both are conditions for a new "instance" of play)
+        console.log("reset question pool");
+        data.gameObj.questionPool.beginning = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+        data.gameObj.questionPool.middle = [9, 10];
+        data.gameObj.questionPool.end = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
+    }
+
+    update() {
+        // Allows background floaties to wrap
+        this.physics.world.wrap(this.floaty, 50);
+    }
+
+    showLoginOverlay(data, duration=500) {
+        console.log("showing login overlay");
+
+        let html = document.createElement("html");
+        html.innerHTML = this.cache.html.entries.get("html_login");
+
+        this.domOverlay = this.add.dom(180, 335).createFromHTML(String(html.innerHTML));
+
+        // Adding options for adjective selector
+        let adjectiveSelector = this.domOverlay.getChildByID("adjective-selector");
+        let adjectives = ["wise", "agile", "strong", "inspiring", "heroic", "encouraging", "funny", "dexterous", "skillful", "clever"] // 10
+        this.appendSelectOptionsRandomly(adjectiveSelector, adjectives);
+
+        // Adding options for color selector
+        let colorSelector = this.domOverlay.getChildByID("color-selector");
+        let colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "magenta", "pink", "maroon"] // 10
+        this.appendSelectOptionsRandomly(colorSelector, colors);
+
+        // Adding options for animal selector
+        let animalSelector = this.domOverlay.getChildByID("animal-selector");
+        let animals = [ "Rabbit", "Lion", "Horse", "Monkey", "Fish", "Bear", "Bird", "Shark", "Snake", "Pig" ]
+        this.appendSelectOptionsRandomly(animalSelector, animals);
+
+        // Adding options for state selector
+        let stateSelector = this.domOverlay.getChildByID("state-selector");
+        let states = ["AK","AL","AR","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID", "IL","IN","KS","KY","LA","MA","MD","ME","MH","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY", "OH","OK","OR","PA","PR","PW","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY"];
+        this.appendSelectOptionsRandomly(stateSelector, states, true);
+
+        // Adding options for grade selector
+        let gradeSelector = this.domOverlay.getChildByID("grade-selector");
+        let grades = ["K-8", "9", "10", "11", "12", "Undergraduate", "Other", "NA"]
+        this.appendSelectOptionsRandomly(gradeSelector, grades, true);
+
+        // Adding options for gender selector
+        let genderSelector = this.domOverlay.getChildByID("gender-selector");
+        let genders = ["Prefer not to say", "Female", "Male", "Non-binary", "Third gender", "Other"]
+        this.appendSelectOptionsRandomly(genderSelector, genders, true);
+
+        // After adding all the options, clears the form of values to make sure form is blank.
+        this.resetFields(this.domOverlay);
+
+        // if the user is signed in and their data is in local storage, use it to fill out the form.
+        console.log(localStorage.getItem("username"));
+        if (localStorage.getItem("username") != null) {
+            // Get and format the stored username
+            let formattedUserData = this.formatUserData(localStorage.getItem("username"));
+            console.log(formattedUserData);
+
+            // Use it to fill out the dom overlay
+            let domOverlayFieldIDs = ["adjective-selector", "color-selector", "animal-selector", "state-selector", "grade-selector", "gender-selector", "login-sessionName"];
+
+            for (let i = 0; i &lt; domOverlayFieldIDs.length; i++) {
+                this.domOverlay.getChildByID(domOverlayFieldIDs[i]).value = formattedUserData[i];
+            }
+
+            // Filled out the form, but hides it, only showing the confirm relog form.
+            // If they accept the relog, it acts as a regular sign in button, using the hidden form values.
+            // If they reject the relog, it changes the display to show the login screen again.
+            this.domOverlay.getChildByID("returnUserDisplay").classList.remove("hidden");
+            this.domOverlay.getChildByID("loginUserDisplay").classList.add("hidden");
+            this.domOverlay.getChildByID("user-name-relog").textContent = this.domOverlay.getChildByID("adjective-selector").value.replace(/\b\w/g, l => l.toUpperCase()) + " " + this.domOverlay.getChildByID("color-selector").value.replace(/\b\w/g, l => l.toUpperCase()) + " " + this.domOverlay.getChildByID("animal-selector").value.replace(/\b\w/g, l => l.toUpperCase())
+        }
+
+        this.domOverlay.addListener("click");
+        this.domOverlay.on("click", function (event) {
+            if (event.target.id == "adjective-selector" ||
+                event.target.id == "color-selector" ||
+                event.target.id == "animal-selector") {
+
+                this.domOverlay.getChildByID("user-name").textContent = this.domOverlay.getChildByID("adjective-selector").value.replace(/\b\w/g, l => l.toUpperCase()) + " " + this.domOverlay.getChildByID("color-selector").value.replace(/\b\w/g, l => l.toUpperCase()) + " " + this.domOverlay.getChildByID("animal-selector").value.replace(/\b\w/g, l => l.toUpperCase())
+                this.domOverlay.getChildByID("user-found").textContent = "";
+            } else if (event.target.id == "no-relog-button") {
+                // If they reject the relog, it changes the display to show the login screen again.
+                // Also erase any previously stored login info
+                // Also reset all the form fields
+
+                localStorage.removeItem("username");
+                this.resetFields(this.domOverlay);
+                this.domOverlay.getChildByID("returnUserDisplay").classList.add("hidden");
+                this.domOverlay.getChildByID("loginUserDisplay").classList.remove("hidden");
+                
+
+            } else if (event.target.id == "login-button") {
+                event.preventDefault();
+
+                // just builds the animal name
+                let animalname = this.capitalizeFirstLetter(this.domOverlay.getChildByID("adjective-selector").value) + " " +
+                                 this.capitalizeFirstLetter(this.domOverlay.getChildByID("color-selector").value) + " " +
+                                 this.capitalizeFirstLetter(this.domOverlay.getChildByID("animal-selector").value) + " ";
+
+                // retrieves session name
+                let session = this.domOverlay.getChildByID("login-sessionName").value.replace(" ", "_");
+
+                // check if session is unset, and if so, set it to a default value (date + "No_Session_ID")
+                // check if session is unset, and if so, use "" as the default session
+                /*
+                if (session == "") {
+                    let defaultSession = "no_session_id";
+
+                    let today = new Date();
+                    let dd = String(today.getDate()).padStart(2, '0');
+                    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                    let yyyy = today.getFullYear();
+
+                    today = mm + '_' + dd + '_' + yyyy;
+                    session = today + "_" + defaultSession;
+                    console.log(session);
+                }
+                */
+
+                // makes session case insensitive by lowercasing it all
+                session = session.toLowerCase();
+
+                // builds the username and lowercases it
+                let username = this.domOverlay.getChildByID("adjective-selector").value + "-" +
+                this.domOverlay.getChildByID("color-selector").value + "-" +
+                this.domOverlay.getChildByID("animal-selector").value + "-" +
+                this.domOverlay.getChildByID("state-selector").value + "-" +
+                this.domOverlay.getChildByID("grade-selector").value.replace("-", "_") +  "-" +
+                this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_").replace("-", "_");
+                username = username.toLowerCase();                
+
+
+                // if they didn't add a session, attach a random number to the username to discern them in the default session
+                // if they did add a session, attach that to the username instead
+                if (session == "") {
+                    username = username + "-" + Math.floor(100000 + Math.random() * 900000);
+                } else {
+                    username = username + "-" + session;
+                }
+                
+
+                // if any are invalid, tell the user
+                if (!username || this.domOverlay.getChildByID("adjective-selector").value == "" ||
+                    this.domOverlay.getChildByID("color-selector").value == "" ||
+                    this.domOverlay.getChildByID("animal-selector").value == "") {
+                    this.domOverlay.getChildByID("login-feedback").textContent = "Please specify a valid username.";
+                    return;
+                }
+
+                if (this.domOverlay.getChildByID("login-sessionName").value.includes("-")) {
+                    this.domOverlay.getChildByID("login-feedback").textContent = "The session name cannot contain hypens like '-'";
+                    return;
+                }
+
+                // first check if user is already signed in
+                cdapi.isUserSignedIn(username, session)
+                .then(loggedIn => {
+                    // If they are not logged in already, they are free to log in.
+                    if (!loggedIn) {
+                        // Store this data as globals for the game to use later
+                        data.gameObj.sessionID = session;
+                        data.gameObj.userName = username;
+                        data.gameObj.animalName = animalname;
+
+                        // Also store username in localStorage to check when relogging
+                        localStorage.setItem("username", username);
+
+                        let userInfo = {
+                            "state": this.domOverlay.getChildByID("state-selector").value,
+                            "grade": this.domOverlay.getChildByID("grade-selector").value.replace("-", "_"),
+                            "gender": this.domOverlay.getChildByID("gender-selector").value.replace(new RegExp(" ", 'g'), "_").replace("-", "_")
+                        }
+                        
+                        cdapi.signin(username, session, userInfo)
+                        .then(result => {
+                            this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
+                            this.scene.stop("loginScreen");
+                        })
+                        .catch(result => {
+                            this.domOverlay.getChildByID("login-feedback").textContent = "Something went wrong while logging in.";
+                            console.log("failed to log in: " + result);
+                        })
+
+                    // if they are logged in, they just have to wait out their session.
+                    } else {
+                        this.domOverlay.getChildByID("login-feedback").textContent = "User is already signed in, try again later.";
+                    }
+                })
+                .catch(result => {
+                    this.domOverlay.getChildByID("login-feedback").textContent = "Something went wrong while logging in.";
+                    console.log("failed to log in: " + result);
+                })
+            } else if (event.target.id == "skip-button") {
+                localStorage.removeItem("username");
+                this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
+                this.scene.stop("loginScreen");
+
+                /*
+                let username = "USER" + "_" + new Date().getTime();
+                let session = "";
+                let userInfo = {
+                    "state": "",
+                    "grade": "",
+                    "gender": ""
+                }
+
+                cdapi.signin(username, session, userInfo)
+                .then(result => {
+                    this.scene.start("titlescreen", {skipToLevelsList: false, gameObj: data.gameObj, fadeIn: true});
+                    this.scene.stop("loginScreen");
+                })
+                .catch(result => {
+                    this.domOverlay.getChildByID("login-feedback").textContent = "Something went wrong while logging in.";
+                    console.log("failed to log in: " + result);
+                })
+                */
+
+
+            }
+        }, this);
+    }
+    /**
+     * Given the dom overlay, will reset the login form field to default values
+     * @param {DOMOverlay} - The DOMOverlay phaser object
+     */
+    resetFields(domOverlay) {
+        console.log("called reset fields");
+        domOverlay.getChildByID("adjective-selector").value = "";
+        domOverlay.getChildByID("color-selector").value = "";
+        domOverlay.getChildByID("animal-selector").value = "";
+        domOverlay.getChildByID("state-selector").value = "";
+        domOverlay.getChildByID("grade-selector").value = "";
+        domOverlay.getChildByID("gender-selector").value = "";
+        domOverlay.getChildByID("login-sessionName").value = "";
+    }
+
+    /**
+     * Helper function to randomize form selection order.
+     * @param {Array} - The array to scramble.
+     */
+    shuffleArray(array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }  
+    }
+    
+    /**
+     * Helper function to capitalize the first letter (for selection options)
+     * @param {String} - The string to capitalize.
+     */      
+    capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    /**
+     * Helper function to populate a select HTML element with options in a random order.
+     * @param {HTMLElement} - The element to append options to.
+     * @param {array} - The options, array of strings, to scramble and append.
+     */   
+    appendSelectOptionsRandomly(selector, options, keepOrder=false) {
+        if (!keepOrder) {
+            this.shuffleArray(options);
+        }
+        for (let i = 0; i &lt; options.length; i++) {
+            let option = document.createElement("option");
+            option.value = options[i];
+            option.textContent = this.capitalizeFirstLetter(options[i]);
+            selector.appendChild(option);
+        }
+    }
+
+    /**
+     * Generates floaties that randomly move and grow/shrink in the background.
+     * @param {INT} n - How many floaties to spawn.
+     * @returns {Array} - An array with all the floaties.
+     */    
+    spawnBackgroundFloaties(n) {
+        let allFloaties = [];
+        for (let i = 0; i &lt; n; i++) {
+            // Settings for background floaties
+            let maxScale = 0.20 * Math.random(); // their potential max size
+            let maxSpeed = 35; // their potential max speed
+            let screenWidth = 360; // width of box to randomly spawn floaties
+            let screenHeight = 720; // height of box to randomly spawn floaties
+
+            let myFloaty = this.floaty.create(screenWidth * Math.random(), screenHeight * Math.random(), 'fluff_dark');
+            myFloaty.setScale(maxScale).setDepth(0.5).setAlpha(0.15);
+
+            // Randoly sets speed to some percentage of its max speed, in a random direction
+            myFloaty.setVelocity(Phaser.Math.Between(-maxSpeed * Math.random(), maxSpeed * Math.random()), 
+                                 Phaser.Math.Between(-maxSpeed * Math.random(), maxSpeed * Math.random()));
+            
+            this.tweens.add({
+                targets: myFloaty,
+                maxScale: maxScale + 0.07,
+                duration: 1000 + (Math.random() * 5000),
+                ease: 'Power1',
+                yoyo: true,
+                repeat: -1
+            });
+            allFloaties.push(myFloaty);
+        }
+    }
+
+    // Takes in a rawuserdata, which is the raw string of a username
+    // formatted after they sign in. Typically this should be stored in
+    // localstorage, and retrieved to be put into this function.
+    formatUserData(rawuserdata) {
+        // splitting by "-" produces an array with the following indices:
+        // 0 - animal adjective
+        // 1 - animal color
+        // 2 - animal
+        // 3 - state
+        // 4 - grade
+        // 5 - gender
+        // 6 - sessionid
+        let userdata = rawuserdata.split("-");
+
+        // formatting userdata to perfectly match values
+        userdata[2] = this.capitalizeFirstLetter(userdata[2]);
+        userdata[3] = userdata[3].toUpperCase();
+        userdata[4] = this.capitalizeFirstLetter(userdata[4]).replace("_", "-");
+        if (userdata[5] == "prefer_not_to_say") {
+            userdata[5] = "Prefer not to say";
+        } else if (userdata[5] == "non_binary") {
+            userdata[5] = "Non-binary";
+        } else if (userdata[5] == "third_gender"){
+            userdata[5] = "Third gender";
+        } else {
+            userdata[5] = this.capitalizeFirstLetter(userdata[5]);
+        }
+        return userdata;
+    }
+}
+
+export default LoginScreen;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="AboutScreen.html">AboutScreen</a></li><li><a href="AudioPlayer.html">AudioPlayer</a></li><li><a href="BackgroundFloater.html">BackgroundFloater</a></li><li><a href="Codon.html">Codon</a></li><li><a href="CountdownResumeScreen.html">CountdownResumeScreen</a></li><li><a href="Game.html">Game</a></li><li><a href="GameScore.html">GameScore</a></li><li><a href="LevelComplete.html">LevelComplete</a></li><li><a href="LevelStage.html">LevelStage</a></li><li><a href="ListLevels.html">ListLevels</a></li><li><a href="LoginScreen.html">LoginScreen</a></li><li><a href="LogoScreen.html">LogoScreen</a></li><li><a href="Nucleotide.html">Nucleotide</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="PopupDisplayScene.html">PopupDisplayScene</a></li><li><a href="PopupManager.html">PopupManager</a></li><li><a href="PositionManager.html">PositionManager</a></li><li><a href="PreLevelStage.html">PreLevelStage</a></li><li><a href="QuizScreen.html">QuizScreen</a></li><li><a href="TitleScreen.html">TitleScreen</a></li><li><a href="TouchFeedback.html">TouchFeedback</a></li></ul><h3>Global</h3><ul><li><a href="global.html#PATH_POINTS_FACTOR">PATH_POINTS_FACTOR</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed May 27 2020 15:51:57 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

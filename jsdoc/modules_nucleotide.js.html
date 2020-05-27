@@ -41,8 +41,8 @@ class Nucleotide {
         this.allNucleotides = {
             "A": {
                 shortname: "adenine",
-                color: 0xf49232,
-                matches: ["T"],
+                color: 0xF56C26,
+                matches: ["T", "U"],
                 classification: "purine",
                 display: {
                     "basic": {
@@ -50,14 +50,19 @@ class Nucleotide {
                         "angle": 0,
                     },
                     "hbonds": {
-                        "origin": [0.42, 0.5],
+                        "origin": [0.5, 0.5],
                         "angle": 0,
                     },
-                }
+                },
+                codonSize: {
+                    width: 50,
+                    height: 50,
+                    offsetY: 0,
+                },
             },
             "T": {
                 shortname: "thymine",
-                color: 0x31ace0,
+                color: 0x22F2DD,
                 matches: ["A"],
                 classification: "pyrimidine",
                 display: {
@@ -66,14 +71,19 @@ class Nucleotide {
                         "angle": 0,
                     },
                     "hbonds": {
-                        "origin": [0.65, 0.65],
-                        "angle": 180,
+                        "origin": [0.5, 0.5],
+                        "angle": 0,
                     },
-                }
+                },
+                codonSize: {
+                    width: 50,
+                    height: 50,
+                    offsetY: 0,
+                },
             },
             "C": {
                 shortname: "cytosine",
-                color: 0xc71489,
+                color: 0x103B75,
                 matches: ["G"],
                 classification: "pyrimidine",
                 display: {
@@ -82,14 +92,19 @@ class Nucleotide {
                         "angle": 0,
                     },
                     "hbonds": {
-                        "origin": [0.65, 0.5],
-                        "angle": 180,
+                        "origin": [0.5, 0.5],
+                        "angle": 0,
                     },
-                }
+                },
+                codonSize: {
+                    width: 50,
+                    height: 50,
+                    offsetY: 0,
+                },
             },
             "G": {
                 shortname: "guanine",
-                color: 0x26b11e,
+                color: 0xF5B222,
                 matches: ["C"],
                 classification: "purine",
                 display: {
@@ -98,10 +113,36 @@ class Nucleotide {
                         "angle": 0,
                     },
                     "hbonds": {
-                        "origin": [0.5, 0.40],
+                        "origin": [0.5, 0.5],
                         "angle": 0,
                     },
-                }
+                },
+                codonSize: {
+                    width: 50,
+                    height: 50,
+                    offsetY: 0,
+                },
+            },
+            "U": {
+                shortname: "uracil",
+                color: 0xaa24ff,
+                matches: ["A"],
+                classification: "pyrimidine",
+                display: {
+                    "basic": {
+                        "origin": [0.5, 0.5],
+                        "angle": 0,
+                    },
+                    "hbonds": {
+                        "origin": [0.5, 0.5],
+                        "angle": 180,
+                    },
+                },
+                codonSize: {
+                    width: 50,
+                    height: 50,
+                    offsetY: 0,
+                },
             },
         }
 
@@ -139,7 +180,17 @@ class Nucleotide {
      * Also includes text representation. All are invisible of course.
      */
     _genNTObjs() {
-        this.imgObj = this.level.add.image(0, 0, "nt_" + this.getShortName() + "_" + this.type);
+        // Finding and setting up the correct animation
+        this.imgObj = this.level.add.sprite(0, 0, "nt_" + this.getShortName() + "_basic_animated");
+        this.imgObj.setDepth(-2);
+        this.level.anims.create({
+            key: "idle_" + this.getShortName(),
+            frames: this.level.anims.generateFrameNumbers("nt_" + this.getShortName() + "_basic_animated", { start: 0, end: 3}),
+            frameRate: 30,
+            repeat: -1
+        });
+        this.imgObj.anims.play("idle_" + this.getShortName());
+
         this.squareObj = this.level.add.rectangle(0, 0, 10, 10, this.getColor());
         this.imgObj.setVisible(false);
         this.squareObj.setVisible(false);
@@ -155,18 +206,18 @@ class Nucleotide {
         this.squareObjErr = this.level.add.rectangle(0, 0, 15, 15, 0xfc0e33);
         this.imgObjErr.setVisible(false);
         this.squareObjErr.setVisible(false);
-        this.imgObjErr.setDepth(0);
-        this.squareObjErr.setDepth(0);
+        this.imgObjErr.setDepth(10);
+        this.squareObjErr.setDepth(10);
 
         this.imgObjMiss = this.level.add.image(0, 0, "missingtide_" + this.getClassification());
         this.squareObjMiss = this.level.add.rectangle(0, 0, 15, 15, 0xffffff);
         this.imgObjMiss.setVisible(false);
         this.squareObjMiss.setVisible(false);
-        this.imgObjMiss.setDepth(2);
-        this.squareObjMiss.setDepth(2);
+        this.imgObjMiss.setDepth(10);
+        this.squareObjMiss.setDepth(10);
 
         this.letterText = this.level.add.text(0, 0, this.rep, 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#fff'}).setOrigin(0.5);
+            {fontFamily: 'Teko, sans-serif', fontSize: '24pt', color: '#FFFFFF'}).setOrigin(0.5);
         this.letterText.setDepth(3);
         this.letterText.setVisible(false);
     }
@@ -238,14 +289,14 @@ class Nucleotide {
             this.squareObjErr.setVisible(this.squareObj.visible);
             this.squareObjErr.setPosition(this.squareObj.x, this.squareObj.y);
             this.imgObjErr.setVisible(false);
-            this.squareObjErr.setScale(this.squareObj.scale);
+            this.squareObjErr.setScale(this.squareObj.scale - 0.55);
         } else {
             this.imgObjErr.setVisible(this.imgObj.visible);
             this.imgObjErr.setPosition(this.imgObj.x, this.imgObj.y);
             this.squareObjErr.setVisible(false);
             let scale = this.imgObj.scale;
             if (scale > 0) {
-                scale = scale + scale * 0.30;
+                scale = scale - scale * 0.25;
             }
             this.imgObjErr.setScale(scale);
             this.imgObjErr.setAlpha(this.imgObj.alpha);
@@ -288,15 +339,19 @@ class Nucleotide {
      * Updates the letter display on the nucleotide. Only shows when in nucleotide display mode.
      */
     updateLetterDisplay() {
-        if (this.dispLetter &amp;&amp; this.display != "rectangle") {
+        if (this.dispLetter &amp;&amp; this.display != "rectangle" &amp;&amp; this.getObject().visible &amp;&amp; this.getObject().alpha > 0.1) {
             this.letterText.setVisible(true);
             let x = this.getObject().x;
             let y = this.getObject().y;
+            this.letterText.setScale(this.imgObj.scale * 5);
+
+            // Purine Special Case
+            /*
             if (this.getClassification() == "purine") {
                 let p = x;
                 let q = y;
-                x = x + 13;
-                y = y + 9;
+                x = x + (1 + 61 * this.imgObj.scale);
+                y = y + (1 + 41 * this.imgObj.scale);
                 let th = this.getObject().angle;
                 th = th * Math.PI / 180;
                 let xp = (x - p) * Math.cos(th) - (y - q) * Math.sin(th) + p;
@@ -304,6 +359,7 @@ class Nucleotide {
                 x = xp;
                 y = yp;
             }
+            */
             this.letterText.setPosition(x, y);
             this.letterText.setDepth(this.imgObj.depth + 2);
         } else {
@@ -351,6 +407,7 @@ class Nucleotide {
         this.getObject().setScale(scale);
         this.updateErrorDisplay();
         this.updateMissingDisplay();
+        this.updateLetterDisplay();
     }
 
     /**
@@ -414,6 +471,14 @@ class Nucleotide {
     }
 
     /**
+     * Return the codon size object
+     * @return {JSON} codon size
+     */
+    getCodonSize() {
+        return this.allNucleotides[this.rep].codonSize;
+    }
+
+    /**
      * Check if the other nucleotide matches with the current according to biology.
      * @param {Nucleotide} other - the other nucleotide to test against
      */
@@ -437,6 +502,7 @@ class Nucleotide {
      * Destroys the nucleotide object
      */
     destroy() {
+        this.showLetter(false);
         this.imgObj.destroy();
         this.squareObj.destroy();
     }
@@ -464,13 +530,13 @@ export default Nucleotide;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="Game.html">Game</a></li><li><a href="GameScore.html">GameScore</a></li><li><a href="LevelComplete.html">LevelComplete</a></li><li><a href="LevelStage.html">LevelStage</a></li><li><a href="ListLevels.html">ListLevels</a></li><li><a href="Nucleotide.html">Nucleotide</a></li><li><a href="PopupDisplayScene.html">PopupDisplayScene</a></li><li><a href="PopupManager.html">PopupManager</a></li><li><a href="PositionManager.html">PositionManager</a></li><li><a href="PreLevelStage.html">PreLevelStage</a></li><li><a href="TitleScreen.html">TitleScreen</a></li><li><a href="TouchFeedback.html">TouchFeedback</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="AboutScreen.html">AboutScreen</a></li><li><a href="AudioPlayer.html">AudioPlayer</a></li><li><a href="BackgroundFloater.html">BackgroundFloater</a></li><li><a href="Codon.html">Codon</a></li><li><a href="CountdownResumeScreen.html">CountdownResumeScreen</a></li><li><a href="Game.html">Game</a></li><li><a href="GameScore.html">GameScore</a></li><li><a href="LevelComplete.html">LevelComplete</a></li><li><a href="LevelStage.html">LevelStage</a></li><li><a href="ListLevels.html">ListLevels</a></li><li><a href="LoginScreen.html">LoginScreen</a></li><li><a href="LogoScreen.html">LogoScreen</a></li><li><a href="Nucleotide.html">Nucleotide</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="PopupDisplayScene.html">PopupDisplayScene</a></li><li><a href="PopupManager.html">PopupManager</a></li><li><a href="PositionManager.html">PositionManager</a></li><li><a href="PreLevelStage.html">PreLevelStage</a></li><li><a href="QuizScreen.html">QuizScreen</a></li><li><a href="TitleScreen.html">TitleScreen</a></li><li><a href="TouchFeedback.html">TouchFeedback</a></li></ul><h3>Global</h3><ul><li><a href="global.html#PATH_POINTS_FACTOR">PATH_POINTS_FACTOR</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Jul 29 2019 16:01:44 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed May 27 2020 15:51:57 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

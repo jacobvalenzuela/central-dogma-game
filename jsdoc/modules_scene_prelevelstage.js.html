@@ -44,6 +44,7 @@ class PreLevelStage extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
+        this.lvlNum = data.lvlNum;
         this.level = data.gameObj.levels[data.lvlNum];
 
         this.camera = this.cameras.main;
@@ -52,24 +53,58 @@ class PreLevelStage extends Phaser.Scene {
         this.graphics.fillStyle(0x000, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
 
-        let lvlNumTxt = this.add.text(120, 250, "Level " + (data.lvlNum + 1), 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '30pt', color: '#fff'});
+        let lvlNumTxtLabel = "";
+        if (data.lvlNum >= 12) {
+            lvlNumTxtLabel = "Bonus Level " + (data.lvlNum + 1);
+        } else {
+            lvlNumTxtLabel = "Level " + (data.lvlNum + 1);
+        }
+        let lvlNumTxt = this.add.text(120, 250, lvlNumTxtLabel, 
+            {fontFamily: 'Teko', fontSize: '40pt', color: '#fff'});
         lvlNumTxt.setPosition((360 - lvlNumTxt.width) / 2, 250);
 
-        let lvlName = this.add.text(0, 310, this.level.name, 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '20pt', color: '#fff'});
+        /*
+        let lvlName = this.add.text(0, 310, this.level.description, 
+            {fontFamily: 'Teko', fontSize: '20pt', color: '#fff'});
         lvlName.setPosition((360 - lvlName.width) / 2, 310);
+        */
+        // In line style rendering with rexBBCodeText
+        let lvlName = this.add.rexBBCodeText(180, 360, "", {
+            fontFamily: 'Teko',
+            fontSize: "30px",
+            color: "#fff",
+            halign: "center",
+            wrap: {
+                mode: "word",
+                width: 300
+            },
+            lineSpacing: 0
+        }).setOrigin(0.5, 0.5);
+        lvlName.text = this.level.description;
 
         this.scene.launch("level" + data.lvlNum);
         this.scene.moveAbove("level" + data.lvlNum, "levelpre" + data.lvlNum);
 
+        this.gameStarted = false;
+
         let that = this;
         this.time.addEvent({
-            delay: 3000,
+            delay: 5000,
             loop: false,
-            callback: function () {
-                that.fadeOut();
-            }
+            callback: this.bindFn(this.startGame),
+        });
+
+        this.input.on("pointerdown", this.bindFn(this.startGame));
+    }
+
+    startGame() {
+        if (this.gameStarted) {
+            return;
+        }
+        this.gameStarted = true;
+        let that = this;
+        this.fadeOut(function () {
+            that.scene.manager.getScene("level" + that.lvlNum).start();
         });
     }
 
@@ -97,6 +132,18 @@ class PreLevelStage extends Phaser.Scene {
             });
         }
     }
+
+    /**
+     * Changes the context of the function `this` keyword to the class. Moves the `this` reference to the first parameter instead.
+     * @param {function} fn - The function used to bind to the class
+     */
+    bindFn(fn) {
+        let clas = this;
+        return function (...args) {
+            let event = this;
+            fn.bind(clas, event, ...args)();
+        };
+    }
 }
 
 export default PreLevelStage;
@@ -110,13 +157,13 @@ export default PreLevelStage;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="Game.html">Game</a></li><li><a href="GameScore.html">GameScore</a></li><li><a href="LevelComplete.html">LevelComplete</a></li><li><a href="LevelStage.html">LevelStage</a></li><li><a href="ListLevels.html">ListLevels</a></li><li><a href="Nucleotide.html">Nucleotide</a></li><li><a href="PopupDisplayScene.html">PopupDisplayScene</a></li><li><a href="PopupManager.html">PopupManager</a></li><li><a href="PositionManager.html">PositionManager</a></li><li><a href="PreLevelStage.html">PreLevelStage</a></li><li><a href="TitleScreen.html">TitleScreen</a></li><li><a href="TouchFeedback.html">TouchFeedback</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="AboutScreen.html">AboutScreen</a></li><li><a href="AudioPlayer.html">AudioPlayer</a></li><li><a href="BackgroundFloater.html">BackgroundFloater</a></li><li><a href="Codon.html">Codon</a></li><li><a href="CountdownResumeScreen.html">CountdownResumeScreen</a></li><li><a href="Game.html">Game</a></li><li><a href="GameScore.html">GameScore</a></li><li><a href="LevelComplete.html">LevelComplete</a></li><li><a href="LevelStage.html">LevelStage</a></li><li><a href="ListLevels.html">ListLevels</a></li><li><a href="LoginScreen.html">LoginScreen</a></li><li><a href="LogoScreen.html">LogoScreen</a></li><li><a href="Nucleotide.html">Nucleotide</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="PopupDisplayScene.html">PopupDisplayScene</a></li><li><a href="PopupManager.html">PopupManager</a></li><li><a href="PositionManager.html">PositionManager</a></li><li><a href="PreLevelStage.html">PreLevelStage</a></li><li><a href="QuizScreen.html">QuizScreen</a></li><li><a href="TitleScreen.html">TitleScreen</a></li><li><a href="TouchFeedback.html">TouchFeedback</a></li></ul><h3>Global</h3><ul><li><a href="global.html#PATH_POINTS_FACTOR">PATH_POINTS_FACTOR</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Jul 29 2019 16:01:44 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed May 27 2020 15:51:57 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

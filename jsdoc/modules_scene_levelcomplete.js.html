@@ -26,7 +26,9 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
+            <pre class="prettyprint source linenums"><code>import AudioPlayer from "../audioplayer.js";
+
+/**
  * Represents the level complete screen
  * @extends Phaser.Scene
  */
@@ -44,11 +46,29 @@ class LevelComplete extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
+        // Color Constants
+        let ORANGE = 0xFE5832;
+        let DARK_BLUE = 0x002664;
+        let CYAN = 0x21EEE9;
+        let BLUE = 0x006FFF;
+        let WHITE = 0xFFFFFF;
+        let DARKER_BLUE = 0x0e1e2d;
+
+        // Sound Effects
+        this.audioplayer = new AudioPlayer();
+
         this.level = data.level;
         this.confnucleotides = data.nucleotides;
+        this.lvlType = data.lvlType;
         this.nucleotides = [];
         this.draggableNTWidth = 0;
         this.draggableNTX = 0;
+        this.quiz = data.quiz;
+        this.score = data.score;
+        this.knowledgepanel = data.knowledgepanel;
+        this.sequencedinfo = data.sequencedinfo;
+
+        this.quizPointWorth = 500;
 
         this.gameObj = data.gameObj;
         this.camera = this.cameras.main;
@@ -58,53 +78,126 @@ class LevelComplete extends Phaser.Scene {
 
         this.graphics.fillStyle(0x000000, 0.50);
         this.graphics.fillRect(0, 0, 360, 740);
+        this.cntTimer = 10;
+        this.quizAnswered = false;
 
         let that = this;
+        this.data = data;
+        this.domOverlay = null;
+
+        // Invisible, non interactable (yet) UI
+        this.levelsBtn = this.add.image(180, 520, "levels_btn").setScale(0.5).setAlpha(0).setDepth(100);
+        this.nextBtn = this.add.image(180, 620, "next_btn").setScale(0.5).setAlpha(0).setDepth(100);
+
         this.fadeIn(function () {
-            let rectbg = that.add.rectangle(180, -100, 300, 400, 0x9BDBF5);
-            rectbg.setStrokeStyle(5, 0x5C96C9, 1);
-            that.moveToY(rectbg, 300, function () {
+            // Level Complete
+            let rectbg = that.add.rectangle(180, -100, 300, 250, BLUE);
+            rectbg.setStrokeStyle(2, WHITE, 1);
+            that.rectbg = rectbg;
+            that.moveToY(rectbg, 240, function () {
                 let lvlcompTxt = that.add.text(180, 155, "Level Complete!", 
-                    {fontFamily: '\'Knewave\', cursive', fontSize: '27pt', color: '#BC1D75', align: "center"});
+                    {fontFamily: 'Teko', fontSize: '27pt', color: '#FFFFFF', align: "center"});
                 lvlcompTxt.setOrigin(0.5).setScale(0);
                 that.animateScale(lvlcompTxt, 1.12, function () {
                     that.animateScale(lvlcompTxt, 1);
-                    let scoreRect = that.add.rectangle(180, 260, 200, 100, 0x1B98D1);
-                    scoreRect.setAlpha(0).setStrokeStyle(5, 0x6BABDA, 1);
+                    let scoreRect = that.add.rectangle(180, 260, 200, 100, ORANGE);
+                    scoreRect.setAlpha(0).setStrokeStyle(2, WHITE, 1);
+                    that.scoreRect = scoreRect;
                     that.fadeInObj(scoreRect);
                     let scoreLabTxt = that.add.text(180, 230, "SCORE", 
-                        {fontFamily: '\'Open Sans\', sans-serif', fontSize: '20pt', color: '#8CC7E7', align: 'center'});
+                        {fontFamily: 'Teko', fontSize: '20pt', color: '#FFFFFF', align: 'center'});
                     scoreLabTxt.setOrigin(0.5);
+                    that.scoreLabTxt = scoreLabTxt;
                     let scoreTxt = that.add.text(180, 269, "0", 
-                        {fontFamily: '\'Bevan\', cursive', fontSize: '35pt', color: '#FAF5AB', align: 'center'});
+                        {fontFamily: 'Teko', fontSize: '35pt', color: '#FFFFFF', align: 'center'});
                     scoreTxt.setOrigin(0.5);
+                    that.scoreTxt = scoreTxt;
+
+                    // Score up animation
                     that.time.addEvent({
                         delay: 600,
                         loop: false,
                         callback: function () {
+                            that.audioplayer.playWinSound();
                             that.scoreUp(scoreTxt, data.score, function () {
                                 that.time.addEvent({
                                     delay: 600,
                                     loop: false,
                                     callback: function () {
-                                        let homeBtn = that.add.image(180, 420, "home_btn").setScale(0.22).setAlpha(0).setInteractive();
-                                        that.homeBtn = homeBtn;
-                                        that.fadeInObj(homeBtn);
-                                        homeBtn.addListener("pointerup", that.bindFn(that.onHomeClick));
-                                        homeBtn.addListener("pointerdown", that.bindFn(that.onHomeClickHold));
-                                        homeBtn.addListener("pointerup", that.bindFn(that.onHomeClickRelease));
-                                        homeBtn.addListener("dragend", that.bindFn(that.onHomeClickRelease));
-                                        let accStampBg = that.add.image(270, 300, "nt_cytosine_basic").setScale(0.36).setAngle(15);
+                                        // Popup elements that go on top of the score box
+                                        // Conveys accuracy and mutation information
+                                        let accStampBg = that.add.rectangle(125, 150, 180, 50, BLUE).setDepth(1).setStrokeStyle(2, WHITE, 1);
                                         that.fadeInObj(accStampBg);
-                                        that.animateScale(accStampBg, 0.26);
-                                        let accStampLbl = that.add.text(265, 320, "%", 
-                                            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '12pt', color: '#FCB6DF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
-                                        that.fadeInObj(accStampLbl);
-                                        that.animateScale(accStampLbl, 1);
-                                        let accStampTxt = that.add.text(271, 295, data.accuracy, 
-                                            {fontFamily: '\'Bevan\', sans-serif', fontSize: '20pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAngle(15).setAlpha(0).setScale(1.3);
+ 
+                                        let accStampTxt = that.add.text(280, 180, data.accuracy + "%" + " Accurate!", 
+                                            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
                                         that.fadeInObj(accStampTxt);
                                         that.animateScale(accStampTxt, 1);
+
+                                        
+                                        
+                                        let mutationCount = 0;
+                                        let missingCount = 0;
+                                        for (let i = 0; i &lt; data.nucleotides.length; i++) {
+                                            if (Boolean(data.nucleotides[i].errorNT)) {
+                                                mutationCount++;
+                                            } else if (Boolean(data.nucleotides[i].missingNT)) {
+                                                missingCount++;
+                                            }
+                                        }
+
+                                        // Quick global updates
+                                        /*
+                                        that.gameObj.GLOBAL.TOTAL_LEVELS_PLAYED++;
+                                        that.gameObj.GLOBAL.TOTAL_MUTATIONS += mutationCount;
+                                        that.gameObj.GLOBAL.TOTAL_MISSED += Math.round( (data.nucleotides.length - (data.nucleotides.length * (data.accuracy/100))));
+                                        */
+
+                                        let mutationTxt = that.add.text(280, 180, mutationCount + " Mutations Introduced!", 
+                                            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
+                                        that.fadeInObj(mutationTxt);
+                                        that.animateScale(mutationTxt, 1);
+            
+                                        
+                                        // These animations determine the final position of the ui elements...
+                                        that.tweens.add({ targets: scoreRect, x: 180, y: 100, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: scoreLabTxt, x: 180, y: 75, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: scoreTxt, x: 180, y: 110, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: accStampBg, x: 220, y: 165, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: accStampTxt, x: 190, y: 155, duration: 300, ease: 'power4' });
+
+                                        that.tweens.add({ targets: mutationTxt, x: 220, y: 175, duration: 300, ease: 'power4' });
+
+                                        that.tweens.add({ targets: lvlcompTxt, alpha: 0, duration: 400, ease: 'power4' });
+                                        that.tweens.add({ targets: rectbg, alpha: 0, duration: 400, ease: 'power4' });
+
+
+                                        console.log(that);
+                                        let levelData = data.gameObj.levels[that.level];
+                                        let performance = {
+                                            timestamp: new Date().toLocaleString("en-US"), // timestamp when level was finished
+                                            level: that.level + 1, // what number level is this in the campaign
+                                            process: levelData.process, // what process of DNA replication was being played?
+                                            lvlType: that.lvlType, // what type of level was this ("dna_replication" vs "codon_transcription"
+                                            speed: levelData.speed, // speed of the level,
+                                            score: data.matchScore, // the score the player earned during the level from matching nucleotides/codons
+                                            rotateNT: levelData.rotateNT, // was this level a rotational level?
+                                            missed: missingCount, // how many objects were missed
+                                            correct: data.nucleotides.length - missingCount - mutationCount, // how many objects were correct
+                                            error: mutationCount, // how many objects were errored
+                                            total: data.nucleotides.length, // how many objects were in the total sequence
+                                            levelNum: that.gameObj.GLOBAL.LEVEL_PERFORMANCE.length + 1 // how many levels were already completed (including this one)
+                                        }
+                                        that.gameObj.GLOBAL.LEVEL_PERFORMANCE.push(performance)
+                                        console.log("pushed to performance for level");
+                                        
+                                        // store progress in database.
+                                        that.updateDatabaseUserGlobal(data);
+
+                                        that.presentEndscreenOptions();
+                                        console.log(data);
+
+                                        // Introduces draggable NTs
                                         that.makeDraggableNTs();
                                     }
                                 });
@@ -114,6 +207,25 @@ class LevelComplete extends Phaser.Scene {
                 });
             });
         });
+    }
+
+    countDownTimer(callback=null) {
+        if (this.cntTimer == 0) {
+            this.countdownText.setVisible(false);
+            if (callback != null) {
+                callback();
+            }
+        } else {
+            this.cntTimer--;
+            this.countdownText.setText(this.cntTimer);
+            let that = this;
+            this.time.addEvent({
+                delay: 1000,
+                callback: function () {
+                    that.countDownTimer(callback);
+                }
+            });
+        }
     }
 
     /**
@@ -128,10 +240,17 @@ class LevelComplete extends Phaser.Scene {
             this.nucleotides.push(nt);
             highestX = lowestX + 85 * i;
             nt.setPosition(highestX, 650);
-            nt.setDisplay("nucleotide");
-            nt.setScale(0.25);
+            if (this.lvlType == "dna_replication") {
+                nt.setDisplay("nucleotide");
+                nt.setScale(0.25);
+                nt.showLetter(true);
+            } else if (this.lvlType == "codon_transcription") {
+                nt.setDisplay("codon");
+                nt.removeCodonDisplay("codon");
+                nt.setScale(0.55);
+                nt.showLetter(false);
+            }
             nt.setVisible(true);
-            nt.showLetter(true);
             nt.setAngle(270);
             nt.setError(cfnt.errorNT);
             nt.setMissing(cfnt.missingNT);
@@ -187,7 +306,7 @@ class LevelComplete extends Phaser.Scene {
      * Make touch hit box
      */
     makeHitbox() {
-        this.hitbox = this.add.rectangle(180, 650, 360, 160, 0x000);
+        this.hitbox = this.add.rectangle(180, 670, 360, 140, 0x000);
         this.hitbox.setFillStyle(0x000, 0).setInteractive();
         this.input.setDraggable(this.hitbox);
         this.input.on("dragstart", this.bindFn(this.onDragHitboxStart));
@@ -346,7 +465,7 @@ class LevelComplete extends Phaser.Scene {
             let perc = Math.floor((Math.random() * 3) + 1) / 100;
             perc = score * perc;
             sctxt = Math.min(sctxt + perc, score);
-            text.setText(sctxt);
+            text.setText(Math.floor(sctxt));
             let that = this;
             this.time.addEvent({
                 delay: 1,
@@ -507,36 +626,158 @@ class LevelComplete extends Phaser.Scene {
      * Triggered on home click
      * @param {Phaser.GameObjects.Image} img - home button img obj
      */
-    onHomeClick(img) {
-        if (img != this.homeBtn) {
+    onLevelsClick(img) {
+        if (img != this.levelsBtn) {
             return;
         }
-        this.camera.fadeOut(600, 0, 0, 0, function (camera, progress) {
-            if (progress &lt; 0.9) {
-                return;
-            }
-            this.scene.stop("level" + this.level);
-            this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
-        });
+        this.audioplayer.playClickSound();
+        this.game.sound.stopAll();
+        this.levelsBtn.removeInteractive();
+        this.scene.stop("level" + this.level);
+        this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
+    }
+
+    /**
+     * Triggered on next click
+     * @param {Phaser.GameObjects.Image} img - next button img obj
+     */
+    onNextClick(img) {
+        if (img != this.nextBtn) {
+            return;
+        }
+        this.audioplayer.playClickSound();
+        this.nextBtn.removeInteractive();
+        this.scene.stop("level" + this.level);
+        let newNum = Number(this.level) + Number(1);
+        this.scene.start("levelpre" + newNum);
+    }    
+
+    presentEndscreenOptions() {
+
+        console.log(this.data);
+        // I need the username, sessionID, and level
+        //this.showLevelLeaderboard(this.data.gameObj.userName, this.data.gameObj.sessionID, this.data.level, 25);
+
+        this.levelsBtn.setInteractive();
+        this.levelsBtn.addListener("pointerup", this.bindFn(this.onLevelsClick));
+        this.levelsBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+        this.levelsBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+        this.levelsBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));    
+        this.fadeInObj(this.levelsBtn);
+
+        // The next button won't show up if there isn't a next level to play.
+        if (this.level &lt; this.gameObj.levels.length - 1) {
+            this.nextBtn.setInteractive();
+            this.nextBtn.addListener("pointerup", this.bindFn(this.onNextClick));
+            this.nextBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
+            this.nextBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
+            this.nextBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));   
+            this.fadeInObj(this.nextBtn);
+        }
+
+    
+    }
+
+    showLevelLeaderboard(userName, sessionID, level, rows) {
+        // show level end leaderboard
+        if (this.domOverlay) {
+            return;
+        }
+
+        let html = document.createElement("html");
+        html.innerHTML = this.cache.html.entries.get("html_levelleaderboard");
+
+        this.domOverlay = this.add.dom(180, 360).createFromHTML(String(html.innerHTML));
+
+        if (sessionID != "") {
+            this.domOverlay.getChildByID("sessions-level-displ").textContent = level;
+            this.domOverlay.getChildByID("sessions-name-displ").textContent = sessionID;
+            this.domOverlay.getChildByID("sessions-username").textContent = "Username: " + userName;
+            let table = this.domOverlay.getChildByID("sessions-leaderboard-table");
+            cdapi.getLevelLeaderboard(sessionID, level, rows).then(results => {
+                this.displayLeaderboardResults(results, table);
+            });
+        } else {
+            this.domOverlay.getChildByID("sessions-name-displ").textContent = "Currently not signed into any session.";
+        }
+
+    }
+
+    displayLeaderboardResults(results, table) {
+        // Clear table
+        table.innerHTML = "";
+
+        // Add back in headers
+        let header = document.createElement("tr");
+        let rankHeading = document.createElement("th");
+        let nameHeading = document.createElement("th");
+        let valueHeading = document.createElement("th");
+
+        rankHeading.textContent = "Rank";
+        nameHeading.textContent = "Name";
+        valueHeading.textContent = "Score";
+
+        nameHeading.classList.add("name");
+
+        header.appendChild(rankHeading);
+        header.appendChild(nameHeading);
+        header.appendChild(valueHeading);
+        table.appendChild(header);
+
+        // Fill out table
+        for (let i = 0; i &lt; results.length; i++) {
+            let entry = document.createElement("tr");
+            let rank = document.createElement("td");
+            let userName = document.createElement("td");
+            let value = document.createElement("td");
+
+            rank.textContent = i + 1;
+            userName.textContent = results[i].userName;
+            value.textContent = results[i].value;
+
+            entry.appendChild(rank);
+            entry.appendChild(userName);
+            entry.appendChild(value);
+
+            table.appendChild(entry);
+        }
+    }    
+
+    updateDatabaseUserGlobal(data) {
+        // add their current progress to the database,
+        // but only if they have a userName and sessionID
+        if (data.gameObj.userName != "" &amp;&amp; data.gameObj.sessionID != "") {
+            cdapi.storeNewGlobalVariable(data.gameObj.userName, data.gameObj.sessionID, data.gameObj.GLOBAL).then(result => {
+                console.log("object stored: ");
+                console.log(data.gameObj.GLOBAL);
+            }).catch(err => {
+                console.log("problem storing new global variable: " + err);
+            });
+        }
+    }
+
+    shuffleArray(a) {
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
     }
 
     /**
      * If button is held
-     * @param {Phaser.GameObjects.Image} img - home button img obj
+     * @param {Phaser.GameObjects.Image} img - button img obj
      */
-    onHomeClickHold(img) {
-        if (img != this.homeBtn) {
-            return;
-        }
-        this.homeBtn.setScale(0.18);
+    onButtonClickHold(img) {
+        img.setScale(0.45);
     }
 
     /**
-     * If home button is released
-     * @param {Phaser.GameObjects.Image} img - home button img obj
+     * If button is released
+     * @param {Phaser.GameObjects.Image} img - button img obj
      */
-    onHomeClickRelease(img) {
-        this.homeBtn.setScale(0.22);
+    onButtonClickRelease(img) {
+        img.setScale(0.50);
     }
 }
 
@@ -551,13 +792,13 @@ export default LevelComplete;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="Game.html">Game</a></li><li><a href="GameScore.html">GameScore</a></li><li><a href="LevelComplete.html">LevelComplete</a></li><li><a href="LevelStage.html">LevelStage</a></li><li><a href="ListLevels.html">ListLevels</a></li><li><a href="Nucleotide.html">Nucleotide</a></li><li><a href="PopupDisplayScene.html">PopupDisplayScene</a></li><li><a href="PopupManager.html">PopupManager</a></li><li><a href="PositionManager.html">PositionManager</a></li><li><a href="PreLevelStage.html">PreLevelStage</a></li><li><a href="TitleScreen.html">TitleScreen</a></li><li><a href="TouchFeedback.html">TouchFeedback</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="AboutScreen.html">AboutScreen</a></li><li><a href="AudioPlayer.html">AudioPlayer</a></li><li><a href="BackgroundFloater.html">BackgroundFloater</a></li><li><a href="Codon.html">Codon</a></li><li><a href="CountdownResumeScreen.html">CountdownResumeScreen</a></li><li><a href="Game.html">Game</a></li><li><a href="GameScore.html">GameScore</a></li><li><a href="LevelComplete.html">LevelComplete</a></li><li><a href="LevelStage.html">LevelStage</a></li><li><a href="ListLevels.html">ListLevels</a></li><li><a href="LoginScreen.html">LoginScreen</a></li><li><a href="LogoScreen.html">LogoScreen</a></li><li><a href="Nucleotide.html">Nucleotide</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="PopupDisplayScene.html">PopupDisplayScene</a></li><li><a href="PopupManager.html">PopupManager</a></li><li><a href="PositionManager.html">PositionManager</a></li><li><a href="PreLevelStage.html">PreLevelStage</a></li><li><a href="QuizScreen.html">QuizScreen</a></li><li><a href="TitleScreen.html">TitleScreen</a></li><li><a href="TouchFeedback.html">TouchFeedback</a></li></ul><h3>Global</h3><ul><li><a href="global.html#PATH_POINTS_FACTOR">PATH_POINTS_FACTOR</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Jul 29 2019 16:01:44 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed May 27 2020 15:51:57 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

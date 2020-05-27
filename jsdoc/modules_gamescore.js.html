@@ -35,31 +35,38 @@ class GameScore {
      * @param {LevelStage} game - The level scene that the score is bound to
      */
     constructor (game) {
+
+        console.log(game.levelConfig.speed);
+
         this.initialized = false;
         this.game = game;
         this.sequencesMade = 0;
         this.secondsElapsed = 0;
         this.wrongSequences = 0;
+        this.knowledgePoints = 0; // points earned from quiz questions
         this.timerSec = null;
         this.timerMs = null;
+        this.maxScoreDigits = 7;
         this.initialNTCount = this.game.levelConfig.ntSequence.length;
+        if (this.game.levelConfig.lvlType == "codon_transcription") {
+            this.initialNTCount = this.initialNTCount / 3;
+        }
+        this.globalscore = this.game.globalscore
+        this.currentScore;
     }
 
     /**
-     * Initializes the game score by adding inital text to specific area in the scene.
+     * Initializes the game score by adding inital text to scoring area in the scene.
      */
     init() {
         this.initialized = true;
-        this.sequenceNTsTxt = this.game.add.text(50, 80, "0", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
+        this.sequenceNTsTxt = this.game.add.text(50, 95, "0", 
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(105);
         this.updateSequenceNTs();
-        let rate = this.getRate();
-        this.rateTxt = this.game.add.text(140, 80, rate, 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
-        this.accuracyTxt = this.game.add.text(222, 80, "100%", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
-        this.scoreTxt = this.game.add.text(307, 80, "0", 
-            {fontFamily: '\'Open Sans\', sans-serif', fontSize: '18pt', color: '#000'}).setOrigin(0.5);
+        this.accuracyTxt = this.game.add.text(140, 95, "100%", 
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(105);
+        this.scoreTxt = this.game.add.text(240, 95, "0000000", 
+            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF'}).setOrigin(0.5).setDepth(105);
     }
 
     /**
@@ -109,8 +116,8 @@ class GameScore {
      * Uodate the score text.
      */
     updateScore() {
-        let score = this.getScore();
-        this.scoreTxt.setText(score);
+        let score = this.getScore() + this.globalscore;
+        this.scoreTxt.setText(this.leftPad(score, this.maxScoreDigits));
     }
 
     /**
@@ -169,6 +176,10 @@ class GameScore {
         this.sequencesMade++;
     }
 
+    addKnowledgePoints(points) {
+        this.knowledgePoints += points;
+    }
+
     /**
      * Returns the rate per minute of nucleotides can be made in this level.
      * @returns {number} Nucleotides rate
@@ -177,7 +188,8 @@ class GameScore {
         // let minElapsed = Math.ceil(this.secondsElapsed / 60);
         // return Math.round(this.sequencesMade / minElapsed);
         let ntRate = Math.floor(1000 / this.getGameSpeed());
-        return Math.min(ntRate, this.game.levelConfig.ntSequence.length);
+        return Math.round(ntRate);
+        //return Math.min(ntRate, this.initialNTCount);
     }
 
     /**
@@ -194,7 +206,24 @@ class GameScore {
      * @returns {number} the score accumulated so far
      */
     getScore() {
-        return this.sequencesMade * 100;
+        this.currentScore = (this.sequencesMade * (100 - this.game.levelConfig.speed) ) + this.knowledgePoints;
+        return this.currentScore;
+    }
+
+    /**
+     * Returns the score only from matches from the current game
+     * @returns {number} the score accumulated so far
+     */
+    getMatchScore() {
+        return (this.sequencesMade * (100 - this.game.levelConfig.speed) );
+    }
+
+    leftPad(number, targetLength) {
+        var output = number + "";
+        while (output.length &lt; targetLength) {
+            output = "0" + output;
+        }
+        return output;
     }
 }
 
@@ -209,13 +238,13 @@ export default GameScore;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="Game.html">Game</a></li><li><a href="GameScore.html">GameScore</a></li><li><a href="LevelComplete.html">LevelComplete</a></li><li><a href="LevelStage.html">LevelStage</a></li><li><a href="ListLevels.html">ListLevels</a></li><li><a href="Nucleotide.html">Nucleotide</a></li><li><a href="PopupDisplayScene.html">PopupDisplayScene</a></li><li><a href="PopupManager.html">PopupManager</a></li><li><a href="PositionManager.html">PositionManager</a></li><li><a href="PreLevelStage.html">PreLevelStage</a></li><li><a href="TitleScreen.html">TitleScreen</a></li><li><a href="TouchFeedback.html">TouchFeedback</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="window.html">window</a></li></ul><h3>Classes</h3><ul><li><a href="AboutScreen.html">AboutScreen</a></li><li><a href="AudioPlayer.html">AudioPlayer</a></li><li><a href="BackgroundFloater.html">BackgroundFloater</a></li><li><a href="Codon.html">Codon</a></li><li><a href="CountdownResumeScreen.html">CountdownResumeScreen</a></li><li><a href="Game.html">Game</a></li><li><a href="GameScore.html">GameScore</a></li><li><a href="LevelComplete.html">LevelComplete</a></li><li><a href="LevelStage.html">LevelStage</a></li><li><a href="ListLevels.html">ListLevels</a></li><li><a href="LoginScreen.html">LoginScreen</a></li><li><a href="LogoScreen.html">LogoScreen</a></li><li><a href="Nucleotide.html">Nucleotide</a></li><li><a href="PauseScreen.html">PauseScreen</a></li><li><a href="PopupDisplayScene.html">PopupDisplayScene</a></li><li><a href="PopupManager.html">PopupManager</a></li><li><a href="PositionManager.html">PositionManager</a></li><li><a href="PreLevelStage.html">PreLevelStage</a></li><li><a href="QuizScreen.html">QuizScreen</a></li><li><a href="TitleScreen.html">TitleScreen</a></li><li><a href="TouchFeedback.html">TouchFeedback</a></li></ul><h3>Global</h3><ul><li><a href="global.html#PATH_POINTS_FACTOR">PATH_POINTS_FACTOR</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Jul 29 2019 16:01:44 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed May 27 2020 15:51:57 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
