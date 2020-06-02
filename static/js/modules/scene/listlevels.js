@@ -304,6 +304,7 @@ class ListLevels extends Phaser.Scene {
         for (let i = 0; i < results.length; i++) {
             if (results[i].userName in uniqueUserMap) {
                 uniqueUserMap[results[i].userName].score += results[i].score;
+                uniqueUserMap[results[i].userName].levels += results[i].levels;
             } else if (!results[i].userName.includes("~")) {
                 uniqueUserMap[results[i].userName] = results[i];
             }
@@ -330,9 +331,9 @@ class ListLevels extends Phaser.Scene {
             let score = document.createElement("td");
             let levelsPlayed = document.createElement("td");
 
-
             rank.textContent = i + 1;
             userName.textContent = uniqueUserArray[i].userName;
+            userName.classList.add("name");
             score.textContent = uniqueUserArray[i].score;
             levelsPlayed.textContent = uniqueUserArray[i].levels;
 
