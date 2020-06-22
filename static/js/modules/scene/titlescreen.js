@@ -444,6 +444,10 @@ class TitleScreen extends Phaser.Scene {
         }
     }
     
+    /**
+     * Displays a temporary alert message in the certain of the screen.
+     * @param {string} text - Alert message
+     */ 
     displayAlert(text) {
         this.alert.setText(text);
         this.tweens.add({

@@ -190,6 +190,12 @@ class GameScore {
         return (this.sequencesMade * (100 - this.game.levelConfig.speed) );
     }
 
+    /**
+     * Pads a number by appending 0's to the start.
+     * @param {int} number - The original number
+     * @param {int} targetLength - Hw many digits the final number should be.
+     * @returns {int} The final padded number.
+     */
     leftPad(number, targetLength) {
         var output = number + "";
         while (output.length < targetLength) {

@@ -69,6 +69,9 @@ class PreLevelStage extends Phaser.Scene {
         this.input.on("pointerdown", this.bindFn(this.startGame));
     }
 
+    /**
+     * Starts the game by loading the appropriate level scene.
+     */
     startGame() {
         if (this.gameStarted) {
             return;

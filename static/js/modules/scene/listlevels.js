@@ -181,10 +181,18 @@ class ListLevels extends Phaser.Scene {
 
     }
 
+    /**
+     * Assumes that any level pool less than the full normal game length (12 levels) is a pool of bonus levels.
+     * This function checks if our current pool of levels is a bonys level pool or not.
+     * @returns {bool} If we're in the bonus levels or not.
+     */
     areTheseBonusLevels() {
         return (this.levels.length < 12)
     }
 
+    /**
+     * Will remove UI elements that are only available to logged in users.
+     */
     removeSignedInOnlyElements() {
         // Removes leaderboard button
         this.sessionbtn.setAlpha(0);
@@ -200,6 +208,9 @@ class ListLevels extends Phaser.Scene {
         this.signoutBtn.setInteractive(0);
     }
 
+    /**
+     * Will check if the user is signed in, and if so, remove the sign in button. If not, shows the sign in button.
+     */
     updateSignInIcon() {
         if (cdapi.isLoggedIn()) {
             this.signInIcn.setVisible(false);
@@ -210,6 +221,9 @@ class ListLevels extends Phaser.Scene {
         }
     }
 
+    /**
+     * Will handle what happens when the user clicks on the "user" button.
+     */
     onUserButtonClick() {
         if (!cdapi.isLoggedIn()) {
             this.showLoginOverlay();
@@ -219,7 +233,12 @@ class ListLevels extends Phaser.Scene {
     }
 
 
-    // Actual leaderboard method I'm using
+    /**
+     * Will show the session leaderboard for the current session.
+     * @param {string} userName - The username for the current player.
+     * @param {string} sessionIDI - The sessionID to fetch the scores for.
+     * @param {int} rows - How many rows of results to retrieve.
+     */
     showSessionLeaderboard(userName, sessionID, rows) {
         if (this.domOverlay) {
             return;
@@ -274,6 +293,11 @@ class ListLevels extends Phaser.Scene {
 
     }
 
+    /**
+     * Will visually create a table of scores given a table to fill out and the results.
+     * @param {array} results - Array of results.
+     * @param {domElement} table - DOM element of the table to fill out.
+     */
     displayLeaderboardResults(results, table) {
         // Clear table
         table.innerHTML = "";
@@ -424,6 +448,9 @@ class ListLevels extends Phaser.Scene {
         img.setScale(0.20);
     }
 
+    /**
+     * Leaves the level select screen and returns to the title screen.
+     */
     backButtondown() {
         this.camera.fadeOut(400);
         let that = this;

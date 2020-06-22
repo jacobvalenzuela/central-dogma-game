@@ -213,6 +213,204 @@
     
 
     
+    <h4 class="name" id="areTheseBonusLevels"><span class="type-signature"></span>areTheseBonusLevels<span class="signature">()</span><span class="type-signature"> &rarr; {bool}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Assumes that any level pool less than the full normal game length (12 levels) is a pool of bonus levels.This function checks if our current pool of levels is a bonys level pool or not.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line189">line 189</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    If we're in the bonus levels or not.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">bool</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="backButtondown"><span class="type-signature"></span>backButtondown<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Leaves the level select screen and returns to the title screen.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line454">line 454</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="bindFn"><span class="type-signature"></span>bindFn<span class="signature">(fn)</span><span class="type-signature"></span></h4>
     
 
@@ -314,7 +512,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line444">line 444</a>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line472">line 472</a>
     </li></ul></dd>
     
 
@@ -402,7 +600,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line494">line 494</a>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line522">line 522</a>
     </li></ul></dd>
     
 
@@ -490,7 +688,167 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line483">line 483</a>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line511">line 511</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="displayLeaderboardResults"><span class="type-signature"></span>displayLeaderboardResults<span class="signature">(results, table)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Will visually create a table of scores given a table to fill out and the results.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>results</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Array of results.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>table</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">domElement</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">DOM element of the table to fill out.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line301">line 301</a>
     </li></ul></dd>
     
 
@@ -627,7 +985,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line518">line 518</a>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line546">line 546</a>
     </li></ul></dd>
     
 
@@ -784,7 +1142,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line456">line 456</a>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line484">line 484</a>
     </li></ul></dd>
     
 
@@ -1058,7 +1416,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line408">line 408</a>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line433">line 433</a>
     </li></ul></dd>
     
 
@@ -1195,7 +1553,366 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line419">line 419</a>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line444">line 444</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="onUserButtonClick"><span class="type-signature"></span>onUserButtonClick<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Will handle what happens when the user clicks on the "user" button.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line227">line 227</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="removeSignedInOnlyElements"><span class="type-signature"></span>removeSignedInOnlyElements<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Will remove UI elements that are only available to logged in users.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line196">line 196</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="showSessionLeaderboard"><span class="type-signature"></span>showSessionLeaderboard<span class="signature">(userName, sessionIDI, rows)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Will show the session leaderboard for the current session.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>userName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The username for the current player.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sessionIDI</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The sessionID to fetch the scores for.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rows</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">How many rows of results to retrieve.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line242">line 242</a>
     </li></ul></dd>
     
 
@@ -1332,7 +2049,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line380">line 380</a>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line405">line 405</a>
     </li></ul></dd>
     
 
@@ -1465,7 +2182,95 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line506">line 506</a>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line534">line 534</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="updateSignInIcon"><span class="type-signature"></span>updateSignInIcon<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Will check if the user is signed in, and if so, remove the sign in button. If not, shows the sign in button.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="modules_scene_listlevels.js.html">modules/scene/listlevels.js</a>, <a href="modules_scene_listlevels.js.html#line214">line 214</a>
     </li></ul></dd>
     
 
@@ -1517,7 +2322,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed May 27 2020 15:51:57 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun Jun 21 2020 22:02:41 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

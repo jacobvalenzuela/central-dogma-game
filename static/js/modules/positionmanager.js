@@ -134,6 +134,9 @@ class PositionManager {
         this.outputRowPathPts = this.outputRowPath.getPoints(30 * this.pathPointsFactor);
     }
 
+    /**
+     * Initializes a level's nucleotides/codons depending on the level config type.
+     */
     initLevelNucleotides() {
         // One of the many if special cases to distinguish codon and dna levels
         // All this code below is for path line drawing
@@ -144,7 +147,10 @@ class PositionManager {
         }
 
     }
-    // initialize levelNucleotides in its own method
+
+    /**
+     * Initializes a nucleotide level's nucleotides.
+     */
     initDNAReplication() {
 
         // Initial spacing before first codon.
@@ -169,6 +175,9 @@ class PositionManager {
         }
     }
 
+    /**
+     * Initializes a ncodon level's codons.
+     */
     initCodonTranscription() {
         // Initial spacing before first codon.
         for (let i = 0; i < 120; i++) {
@@ -188,6 +197,9 @@ class PositionManager {
         }
     }
 
+     /**
+     * Initializes the nucleotides that appear after completing a level.
+     */
     initCompLevelNucleotides() {
         let paddingComp = PADDING_COMP_FACTOR * this.pathPointsFactor;
         for (let i = 0; i < paddingComp; i++) {

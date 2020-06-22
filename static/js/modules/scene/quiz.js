@@ -222,10 +222,14 @@ class QuizScreen extends Phaser.Scene {
         
     }
 
-    // Given the current level number (indexed starting at 1) and the remaining pool of questions
-    // Will return an appropriate question
-    // By prioritizing the level range, and if exhausted,
-    // Return a random question from earlier ranges.
+    /**
+     * Given the current level number (indexed starting at 1) and the remaining pool of questions,
+     * will return an appropriate question. By prioritizing the level range, and if exhausted,
+     * Return a random question from earlier ranges.
+     * @param {int} level - Current level number.
+     * @param {object} data - Main global game data passed in to class.
+     * @param {array} questions - Array of all the possible questions to pick from.
+     */
     getValidQuizQuestion(level, data, questions) {
         let questionPool = data.gameObj.questionPool;
 
@@ -273,13 +277,19 @@ class QuizScreen extends Phaser.Scene {
 
     }
 
-    // Will get the selected choice during a drag and drop question
-    // Given the array of choice objects (phaser text objects) and the question, and questionBox (phaser rect)
-    // and the feedback area
-    // Will return the id (int) (the position of the choice in this.question array) if valid.
-    // Wil return null if multiple/none choices are in question box
-    // or if the current question is not a drag and drop question.
-    // Will also update the feedback text to reflect results of user input.
+    /**
+     * Will get the selected choice during a drag and drop question
+     * Given the array of choice objects (phaser text objects) and the question, and questionBox (phaser rect) 
+     * and the feedback area
+     * Will return the id (int) (the position of the choice in this.question array) if valid.
+     * Will return null if multiple/none choices are in question box
+     * or if the current question is not a drag and drop question.
+     * Will also update the feedback text to reflect results of user input.
+     * @param {object} question - Question object.
+     * @param {phaserRect} questionBox - A phaser rect object used graphically to contain the question.
+     * @param {array} choices - Array of phaser text objects representing possible quiz options.
+     * @param {phaserText} - A phaser text object used for delivering feedback.
+     */
     getDragAndDropSelectedChoice(question, questionBox, choices, actionFeedback) {
         if (question.type == "drag and drop") {
             let potentialChoices = [];
@@ -318,7 +328,11 @@ class QuizScreen extends Phaser.Scene {
         }
     }
 
-    // Given a quiz question, will display it accordingly based on its type
+
+    /**
+     * Given a quiz question, will display it accordingly based on its type
+     * @param {object} question - Question object.
+     */
     displayQuizQuestion(question) {
         if (question.type == "multiple choice") {
             this.actionFeedback.text = "Click on an answer!";
@@ -380,7 +394,11 @@ class QuizScreen extends Phaser.Scene {
         }
     }
 
-    // Selects choice and updates colors
+
+    /**
+     * Selects choice and updates colors
+     * @param {int} numChoice - The zero indexed choice selected.
+     */
     onMultipleChoiceClick(numChoice) {
         this.audioplayer.playClickSound();
         // If this is the first time selecting an answer, show the submit button
@@ -402,6 +420,9 @@ class QuizScreen extends Phaser.Scene {
         }
     }
 
+    /**
+     * Will halve the amount of points that can still be earned from this quiz question, and display that visually.
+     */
     halvePointsAndDisplay() {
         this.points = Math.floor(this.points / 2);
         this.pointWorth.setColor("#FF0000");
@@ -424,6 +445,10 @@ class QuizScreen extends Phaser.Scene {
         };
     }
 
+    /**
+     * Will update the user's progress in the database.
+     * @param {object} data - Main global game object that tracks player progress.
+     */
     updateDatabaseUserGlobal(data) {
         // add their current progress to the database,
         // but only if they have a userName and sessionID

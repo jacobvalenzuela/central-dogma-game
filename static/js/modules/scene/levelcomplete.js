@@ -181,6 +181,10 @@ class LevelComplete extends Phaser.Scene {
         });
     }
 
+    /**
+     * Starts a countdown timer. Will visually display a countdown.
+     * @param {function} callback - What function to execute after the timer ends.
+     */
     countDownTimer(callback=null) {
         if (this.cntTimer == 0) {
             this.countdownText.setVisible(false);
@@ -624,6 +628,9 @@ class LevelComplete extends Phaser.Scene {
         this.scene.start("levelpre" + newNum);
     }    
 
+    /**
+     * Displays buttons for navigating away after the end of a level on the end screen.
+     */
     presentEndscreenOptions() {
 
         console.log(this.data);
@@ -650,6 +657,13 @@ class LevelComplete extends Phaser.Scene {
     
     }
 
+    /**
+     * Shows a leaderboard for a particular level.
+     * @param {string} userName - Current player's username.
+     * @param {string} sessionID - Desired session ID to grab level data from.
+     * @param {int} level - What level to get the scores for.
+     * @param {int} rows - How many rows to return for the results.
+     */
     showLevelLeaderboard(userName, sessionID, level, rows) {
         // show level end leaderboard
         if (this.domOverlay) {
@@ -675,6 +689,11 @@ class LevelComplete extends Phaser.Scene {
 
     }
 
+    /**
+     * Will visually create a table of scores given a table to fill out and the results.
+     * @param {array} results - Array of results.
+     * @param {domElement} table - DOM element of the table to fill out.
+     */
     displayLeaderboardResults(results, table) {
         // Clear table
         table.innerHTML = "";
@@ -715,6 +734,10 @@ class LevelComplete extends Phaser.Scene {
         }
     }    
 
+    /**
+     * Updates the user's progress in the database by storing their global object data.
+     * @param {object} data - Player's global data object.
+     */
     updateDatabaseUserGlobal(data) {
         // add their current progress to the database,
         // but only if they have a userName and sessionID
@@ -728,6 +751,10 @@ class LevelComplete extends Phaser.Scene {
         }
     }
 
+     /**
+     * Given an array, will shuffle it.
+     * @param {array} a - Array to shuffle.
+     */
     shuffleArray(a) {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));

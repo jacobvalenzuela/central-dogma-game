@@ -51,6 +51,9 @@ class AboutScreen extends Phaser.Scene {
         this.physics.world.wrap(this.floaty, 50);
     }
 
+     /**
+     * Fades the camera out, stops this scene, and launches the title screen.
+     */
     backButtondown() {
         this.camera.fadeOut(400);
         let that = this;        

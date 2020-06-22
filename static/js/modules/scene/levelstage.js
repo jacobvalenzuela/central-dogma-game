@@ -562,6 +562,10 @@ class LevelStage extends Phaser.Scene {
         this.buttons.push(nt);
     }
 
+    /**
+     * Gets possible valid codon options. One will be the correct option while the rest will be scrambled incorrect codon choices.
+     * @returns {array} Array of codon options
+     */
     genCodonBtnOpts() {
         let head = this.positionManager.getHeadNucleotide(true);
         let codonOptions = ["U", "C", "A", "G"];
@@ -587,6 +591,10 @@ class LevelStage extends Phaser.Scene {
         return this.shuffleArray(actualOptions);
     }
 
+    /**
+     * Given an array, will return a random element from the array.
+     * @param {array} array - Given array.
+     */
     getRandomInArray(array) {
         return array[Math.floor(Math.random()*array.length)];
     }

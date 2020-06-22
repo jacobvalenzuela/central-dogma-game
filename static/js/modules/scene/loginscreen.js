@@ -50,6 +50,10 @@ class LoginScreen extends Phaser.Scene {
         this.physics.world.wrap(this.floaty, 50);
     }
 
+    /**
+     * Shows the login user interface.
+     * @param {object} data - Data for the game, used to set and store user info after logging in.
+     */
     showLoginOverlay(data, duration=500) {
         console.log("showing login overlay");
 
@@ -348,9 +352,12 @@ class LoginScreen extends Phaser.Scene {
         }
     }
 
-    // Takes in a rawuserdata, which is the raw string of a username
-    // formatted after they sign in. Typically this should be stored in
-    // localstorage, and retrieved to be put into this function.
+    /**
+     * Takes in a rawuserdata, which is the raw string of a username
+     * formatted after they sign in. Typically this should be stored in
+     * localstorage, and retrieved to be put into this function.
+     * @param {string} rawuserdata - Raw string of a username formatted after they sign in 
+     */
     formatUserData(rawuserdata) {
         // splitting by "-" produces an array with the following indices:
         // 0 - animal adjective

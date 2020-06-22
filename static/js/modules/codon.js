@@ -237,6 +237,9 @@ class Codon {
         }
     }
 
+    /**
+     * Generates all the shapes necessary for a single codon.
+     */
     _genObjects() {
         this.containerObj = this.level.add.container();
         this.connectLineObj = this.level.add.line(0, 0, 0, -50, 0, 50);
@@ -404,6 +407,10 @@ class Codon {
         return this.amminoAcid.color;
     }
 
+    /**
+     * Changes the depth of the entire codon by changing the depth of its parts.
+     * @param {int} depth - What depth to set the codon to.
+     */
     setDepth(depth) {
         if (!this.containerObj) {
             this.getObject();
@@ -427,6 +434,10 @@ class Codon {
         this.circleErrorObj.setDepth(depth - 2);
     }
 
+    /**
+     * Changes the display of the codon. It is used for shrinking the codon from its regular size down into the outgoing path.
+     * @param {string} type - What type to display as. (codon, rectangle, circle)
+     */
     setDisplay(type) {
         if (["codon", "rectangle", "circle"].indexOf(type) < 0) {
             throw new Error("Invalid display type! " + type);
