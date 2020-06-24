@@ -67,8 +67,8 @@ class LevelComplete extends Phaser.Scene {
             rectbg.setStrokeStyle(2, WHITE, 1);
             that.rectbg = rectbg;
             that.moveToY(rectbg, 240, function () {
-                let lvlcompTxt = that.add.text(180, 155, "Level Complete!", 
-                    {fontFamily: 'Teko', fontSize: '27pt', color: '#FFFFFF', align: "center"});
+                let lvlcompTxt = that.add.text(180, 155, "Level Complete!",
+                    { fontFamily: 'Teko', fontSize: '27pt', color: '#FFFFFF', align: "center" });
                 lvlcompTxt.setOrigin(0.5).setScale(0);
                 that.animateScale(lvlcompTxt, 1.12, function () {
                     that.animateScale(lvlcompTxt, 1);
@@ -76,12 +76,12 @@ class LevelComplete extends Phaser.Scene {
                     scoreRect.setAlpha(0).setStrokeStyle(2, WHITE, 1);
                     that.scoreRect = scoreRect;
                     that.fadeInObj(scoreRect);
-                    let scoreLabTxt = that.add.text(180, 230, "SCORE", 
-                        {fontFamily: 'Teko', fontSize: '20pt', color: '#FFFFFF', align: 'center'});
+                    let scoreLabTxt = that.add.text(180, 230, "SCORE",
+                        { fontFamily: 'Teko', fontSize: '20pt', color: '#FFFFFF', align: 'center' });
                     scoreLabTxt.setOrigin(0.5);
                     that.scoreLabTxt = scoreLabTxt;
-                    let scoreTxt = that.add.text(180, 269, "0", 
-                        {fontFamily: 'Teko', fontSize: '35pt', color: '#FFFFFF', align: 'center'});
+                    let scoreTxt = that.add.text(180, 269, "0",
+                        { fontFamily: 'Teko', fontSize: '35pt', color: '#FFFFFF', align: 'center' });
                     scoreTxt.setOrigin(0.5);
                     that.scoreTxt = scoreTxt;
 
@@ -96,18 +96,33 @@ class LevelComplete extends Phaser.Scene {
                                     delay: 600,
                                     loop: false,
                                     callback: function () {
+                                        // Popup element that tells the player what they just sequenced
+                                        let sequenceBox = that.add.rectangle(125, 150, 275, 30, BLUE).setDepth(1).setStrokeStyle(2, WHITE, 1).setOrigin(0.5).setAlpha(0);
+
+                                        let sequenceBoxTxt = that.add.text(125, 150, data.endMessage,
+                                            { fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center' }).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
+
+                                        // Don't fade in the end screen message if the level config didn't provide one.
+                                        if (data.endMessage) {
+                                            that.fadeInObj(sequenceBox);
+                                            that.fadeInObj(sequenceBoxTxt);
+                                            that.animateScale(sequenceBoxTxt, 1);
+                                        }
+
+
+
                                         // Popup elements that go on top of the score box
                                         // Conveys accuracy and mutation information
                                         let accStampBg = that.add.rectangle(125, 150, 180, 50, BLUE).setDepth(1).setStrokeStyle(2, WHITE, 1);
                                         that.fadeInObj(accStampBg);
- 
-                                        let accStampTxt = that.add.text(280, 180, data.accuracy + "%" + " Accurate!", 
-                                            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
+
+                                        let accStampTxt = that.add.text(280, 180, data.accuracy + "%" + " Accurate!",
+                                            { fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center' }).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
                                         that.fadeInObj(accStampTxt);
                                         that.animateScale(accStampTxt, 1);
 
-                                        
-                                        
+
+
                                         let mutationCount = 0;
                                         let missingCount = 0;
                                         for (let i = 0; i < data.nucleotides.length; i++) {
@@ -125,12 +140,12 @@ class LevelComplete extends Phaser.Scene {
                                         that.gameObj.GLOBAL.TOTAL_MISSED += Math.round( (data.nucleotides.length - (data.nucleotides.length * (data.accuracy/100))));
                                         */
 
-                                        let mutationTxt = that.add.text(280, 180, mutationCount + " Mutations Introduced!", 
-                                            {fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center'}).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
+                                        let mutationTxt = that.add.text(280, 180, mutationCount + " Mutations Introduced!",
+                                            { fontFamily: 'Teko', fontSize: '18pt', color: '#FFFFFF', align: 'center' }).setOrigin(0.5).setAlpha(0).setScale(1.3).setDepth(2);
                                         that.fadeInObj(mutationTxt);
                                         that.animateScale(mutationTxt, 1);
-            
-                                        
+
+
                                         // These animations determine the final position of the ui elements...
                                         that.tweens.add({ targets: scoreRect, x: 180, y: 100, duration: 300, ease: 'power4' });
                                         that.tweens.add({ targets: scoreLabTxt, x: 180, y: 75, duration: 300, ease: 'power4' });
@@ -142,6 +157,9 @@ class LevelComplete extends Phaser.Scene {
 
                                         that.tweens.add({ targets: lvlcompTxt, alpha: 0, duration: 400, ease: 'power4' });
                                         that.tweens.add({ targets: rectbg, alpha: 0, duration: 400, ease: 'power4' });
+
+                                        that.tweens.add({ targets: sequenceBox, x: 180, y: 225, duration: 300, ease: 'power4' });
+                                        that.tweens.add({ targets: sequenceBoxTxt, x: 180, y: 225, duration: 300, ease: 'power4' });
 
 
                                         console.log(that);
@@ -162,7 +180,7 @@ class LevelComplete extends Phaser.Scene {
                                         }
                                         that.gameObj.GLOBAL.LEVEL_PERFORMANCE.push(performance)
                                         console.log("pushed to performance for level");
-                                        
+
                                         // store progress in database.
                                         that.updateDatabaseUserGlobal(data);
 
@@ -185,7 +203,7 @@ class LevelComplete extends Phaser.Scene {
      * Starts a countdown timer. Will visually display a countdown.
      * @param {function} callback - What function to execute after the timer ends.
      */
-    countDownTimer(callback=null) {
+    countDownTimer(callback = null) {
         if (this.cntTimer == 0) {
             this.countdownText.setVisible(false);
             if (callback != null) {
@@ -296,7 +314,7 @@ class LevelComplete extends Phaser.Scene {
      * @param {Phaser.Input.Pointer} pointer - The pointer
      * @param {Phaser.GameObjects.Rectangle} rect - the rectangle
      */
-    onDragHitboxStart (input, pointer, rect) {
+    onDragHitboxStart(input, pointer, rect) {
         let leftButtonDown = pointer.leftButtonDown();
         if (!leftButtonDown) {
             return;
@@ -328,7 +346,7 @@ class LevelComplete extends Phaser.Scene {
      * @param {number} x - Current x
      * @param {number} y - current y
      */
-    onDragHitbox (input, pointer, rect, x, y) {
+    onDragHitbox(input, pointer, rect, x, y) {
         let startedDragging = rect.getData("startedDragging");
         if (!startedDragging) {
             return;
@@ -361,7 +379,7 @@ class LevelComplete extends Phaser.Scene {
      * @param {Phaser.Input.Pointer} pointer - The pointer
      * @param {Phaser.GameObjects.Rectangle} rect - the rectangle
      */
-    onDragHitboxEnd (input, pointer, rect) {
+    onDragHitboxEnd(input, pointer, rect) {
         let startedDragging = rect.getData("startedDragging");
         if (!startedDragging) {
             return;
@@ -413,7 +431,7 @@ class LevelComplete extends Phaser.Scene {
      * Can it be dragged left?
      * @param {number} [displacement=0] - Number to be dragged 
      */
-    canDragLeft(displacement=0) {
+    canDragLeft(displacement = 0) {
         return this.draggableNTWidth + this.draggableNTX + displacement > 0;
     }
 
@@ -421,7 +439,7 @@ class LevelComplete extends Phaser.Scene {
      * Can it be dragged right?
      * @param {number} [displacement=0] - number to be dragged
      */
-    canDragRight(displacement=0) {
+    canDragRight(displacement = 0) {
         return this.draggableNTX + displacement < 360;
     }
 
@@ -431,7 +449,7 @@ class LevelComplete extends Phaser.Scene {
      * @param {number} score 
      * @param {function} callback 
      */
-    scoreUp(text, score, callback=null) {
+    scoreUp(text, score, callback = null) {
         let sctxt = parseInt(text.text);
         if (sctxt == score) {
             if (callback) {
@@ -485,7 +503,7 @@ class LevelComplete extends Phaser.Scene {
      * Fade in camera scene
      * @param {function} [callback=null] - should be called when done fading in
      */
-    fadeIn(callback=null) {
+    fadeIn(callback = null) {
         let currentAlpha = this.camera.alpha;
         if (currentAlpha == 0) {
             currentAlpha = 0.1;
@@ -515,7 +533,7 @@ class LevelComplete extends Phaser.Scene {
      * @param {number} y - Y coord
      * @param {function} [callback=null] - callback function
      */
-    moveToY(obj, y, callback=null) {
+    moveToY(obj, y, callback = null) {
         let currentY = obj.y;
         if (Math.abs(currentY - y) < 2) {
             obj.setPosition(obj.x, y);
@@ -543,7 +561,7 @@ class LevelComplete extends Phaser.Scene {
      * @param {number} scale - resulting scale
      * @param {function} [callback=null] - function to be called after done
      */
-    animateScale(obj, scale, callback=null) {
+    animateScale(obj, scale, callback = null) {
         let currentScale = obj.scale;
         if (currentScale == 0) {
             currentScale = 0.01;
@@ -573,7 +591,7 @@ class LevelComplete extends Phaser.Scene {
      * @param {Phaser.GameObjects} obj - Object to fade in
      * @param {function} [callback=null] - callback to be called when done fading
      */
-    fadeInObj(obj, callback=null) {
+    fadeInObj(obj, callback = null) {
         let currentAlpha = obj.alpha;
         if (currentAlpha == 0) {
             currentAlpha = 0.01;
@@ -610,7 +628,7 @@ class LevelComplete extends Phaser.Scene {
         this.game.sound.stopAll();
         this.levelsBtn.removeInteractive();
         this.scene.stop("level" + this.level);
-        this.scene.start("titlescreen", {skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true});
+        this.scene.start("titlescreen", { skipToLevelsList: true, gameObj: this.gameObj, fadeIn: true });
     }
 
     /**
@@ -626,7 +644,7 @@ class LevelComplete extends Phaser.Scene {
         this.scene.stop("level" + this.level);
         let newNum = Number(this.level) + Number(1);
         this.scene.start("levelpre" + newNum);
-    }    
+    }
 
     /**
      * Displays buttons for navigating away after the end of a level on the end screen.
@@ -641,7 +659,7 @@ class LevelComplete extends Phaser.Scene {
         this.levelsBtn.addListener("pointerup", this.bindFn(this.onLevelsClick));
         this.levelsBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
         this.levelsBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
-        this.levelsBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));    
+        this.levelsBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
         this.fadeInObj(this.levelsBtn);
 
         // The next button won't show up if there isn't a next level to play.
@@ -650,11 +668,11 @@ class LevelComplete extends Phaser.Scene {
             this.nextBtn.addListener("pointerup", this.bindFn(this.onNextClick));
             this.nextBtn.addListener("pointerdown", this.bindFn(this.onButtonClickHold));
             this.nextBtn.addListener("pointerup", this.bindFn(this.onButtonClickRelease));
-            this.nextBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));   
+            this.nextBtn.addListener("dragend", this.bindFn(this.onButtonClickRelease));
             this.fadeInObj(this.nextBtn);
         }
 
-    
+
     }
 
     /**
@@ -732,7 +750,7 @@ class LevelComplete extends Phaser.Scene {
 
             table.appendChild(entry);
         }
-    }    
+    }
 
     /**
      * Updates the user's progress in the database by storing their global object data.
@@ -751,10 +769,10 @@ class LevelComplete extends Phaser.Scene {
         }
     }
 
-     /**
-     * Given an array, will shuffle it.
-     * @param {array} a - Array to shuffle.
-     */
+    /**
+    * Given an array, will shuffle it.
+    * @param {array} a - Array to shuffle.
+    */
     shuffleArray(a) {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));

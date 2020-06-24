@@ -34,7 +34,7 @@ import Game from "./modules/game.js";
     let COLOR_DNA = "#22F2DD";
     let COLOR_RNA = "#FF74F8";
     let COLOR_PEPTIDE = "#A6FF4D";
-
+//ATATTTTAAATATAT
     // Notes about game attributes:
     // process - different from the "lvlType". Level type dictates how the level is 
     // played, but process describes what is being shown. Necessary in order to correctly 
@@ -43,7 +43,7 @@ import Game from "./modules/game.js";
     let game = new Game([
         // LEVEL 1
         {
-            "ntSequence": "ATATTTTAAATATAT",
+            "ntSequence": "A",
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "A/T the Beginning",
@@ -77,6 +77,7 @@ import Game from "./modules/game.js";
                 "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
+            "endMessage": "You just sequenced xxxxxxxxxxxxxx!"
         },
 
         // LEVEL 2

@@ -877,6 +877,7 @@ class LevelStage extends Phaser.Scene {
         let nucleotides = this.positionManager.selectedNucleotides.filter(function (el) {
             return el != null;
         });
+        console.log(this.levelConfig.endMessage);
         this.scene.add(sceneName, LevelComplete, false, {
             level: this.level,
             lvlType: this.levelConfig.lvlType,
@@ -889,6 +890,7 @@ class LevelStage extends Phaser.Scene {
             quiz: this.levelConfig.quiz,
             sequencedinfo: this.levelConfig.sequencedinfo,
             knowledgepanel: this.levelConfig.knowledgepanel,
+            endMessage: this.levelConfig.endMessage
         });
 
         // Adds current score to global score
