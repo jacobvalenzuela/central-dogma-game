@@ -1,61 +1,69 @@
-# Central Dogma Game - Building happy pairs for happy students
+# Central Dogma Game - Gamifying the essentials of the central dogma of molecular biology
 
 ![Gameplay image](gameplay.png)
 
 ## Description
 
-Learn the essentials of Central Dogma by playing a quick game. See who can make the pairs the fastest,
-while maintaining accuracy.
+Learn the essentials of Central Dogma by playing a quick game. See who can make the pairs the fastest, while maintaining accuracy.
 
 ## Play Now!
 
-The game is currently hosted on Github for the time being. http://baliga-lab.github.io/central-dogma-game/central-dogma.html
+The game is hosted through A2Hosting which can be managed through its CPanel. It currently hosts the main website as well as this game, which can be found and played online.
+Website: http://centraldogmagame.com/
+Game: http://centraldogmagame.com/game
 
-The game can also accessed with login capabilities from the ISB servers internally. https://centraldogma.systemsbiology.net/central-dogma.html
 
 ## Main Source
 
 The entryway for the main codebase begins at [main.js](static/js/main.js). This file also houses the basic configuration
 for the individual levels.
 
+## JavaScript Documentation
+
+When developing on the game, do check the [JSDoc](https://baliga-lab.github.io/central-dogma-game/jsdoc/) which has all the functions and classes properly documented. Additionally, the code is full of in-line comments explaining potentially convoluted, lengthy, or nondescript sections.
+
 ### Programming Levels
 
 Levels are defined in the main JavaScript file. They are contained in a JSON list with the levels in order. A sample level
 for the nucleotides level may look something like this.
 ```json
-{
-    "ntSequence": "ATATTTTAAATATATATATA",
-    "controls": ["T", "A"],
-    "unlocked": true,
-    "name": "AT the Beginning",
-    "speed": 20,
-    "popups": {
-        "firstCorrectMatch": "Good work! <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> binds with <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>!",
-        "error5Match": "In DNA <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> can only bind to <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>, both nucleotides help make up DNA!"
-    },
-    "rotateNT": false,
-    "ntType": "basic",
-    "lvlType": "dna_replication",
-    "quiz": {
-        "question": "Three base pairs are called a __________.",
-        "options": [
-            "Codon",
-            "Ammino Acid",
-            "Peptide",
-            "DNA",
-        ],
-    },
-    "sequencedinfo": {
-        "name": "insulin",
-        "description": "<strong>Insulin</strong> is a <span style='color: blue;'>gene</span> that codes for a peptide (sequence of <span style='color: red;'>amino acids</span>) that acts as a hormone to regulate metabolism",
-        "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
-        "imgurl": "./static/img/flashcard/insulin.png",
-    },
-    "knowledgepanel": {
-        "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
-        "imgurl": "./static/img/flashcard/promoter_dna.png",
-    },
-}
+        {
+            "ntSequence": "A",
+            "controls": ["T", "A"],
+            "unlocked": true,
+            "name": "A/T the Beginning",
+            "description": "The basics of DNA, [color=" + COLOR_A + "]A[/color] matches with [color=" + COLOR_T + "]T[/color].",
+            "process": "dna replication",
+            "speed": SPEED_MEDIUM,
+            "popups": {
+                "intro": "Tap a <style='color:" + COLOR_TERM + "'>nucleotide</style> to match the correct <style='color:" + COLOR_TERM + "'>base pair</style>. You can also submit nucleotides by pushing its letter on a keyboard.",
+                "firstCorrectMatch": "Correct! In <style='color:" + COLOR_TERM + "'>DNA</style>, nucleotide 'A' or <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> only pairs with nucleotide 'T' or <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>.",
+                "error5Match": "Whoops! In <style='color:" + COLOR_TERM + "'>DNA</style>, nucleotide 'A' or <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> only pairs with nucleotide 'T' or <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>."
+            },
+            "rotateNT": false,
+            "ntType": "basic",
+            "lvlType": "dna_replication",
+            "quiz": {
+                "question": "Three base pairs are called a __________.",
+                "options": [
+                    "Codon", // first option is correct
+                    "Amino Acid",
+                    "Peptide",
+                    "DNA",
+                ],
+            },
+            "sequencedinfo": {
+                "name": "insulin",
+                "description": "<strong>Insulin</strong> is a <span style='color: blue;'>gene</span> that codes for a peptide (sequence of <span style='color: red;'>amino acids</span>) that acts as a hormone to regulate metabolism",
+                "infourl": "https://www.cdc.gov/diabetes/basics/diabetes.html",
+                "imgurl": "./static/img/flashcard/insulin.png",
+            },
+            "knowledgepanel": {
+                "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
+                "imgurl": "./static/img/flashcard/promoter_dna.png",
+            },
+            "endMessage": "You just sequenced xxxxxxxxxxxxxx!"
+        },
 ```
 
 Here is a reference of what kind of properties each level can contain.
@@ -66,14 +74,17 @@ Here is a reference of what kind of properties each level can contain.
 | controls | A list of nucleotides that should be given to the players to choose from. They are not applicable to the `codon_transcription` level type as they are just being randomized anyways. |
 | unlocked | Should the level be playable? |
 | name | The name of the level. Should be clever and punny. |
+| description | The description of the level. There is an interpreter to take in hexcodes to color text (follow existing levels as examples of how to use it) |
+| process | The process the level is depicting. This is used for conditional rendering for game UI/graphics. Can be `dna replication`, `transcription`, or `translation`. |
 | speed | How much delay in milliseconds there should be before the game ticks by a step. The smaller the number, the faster the tick, thus a quicker pace. |
 | popups | What should the player be informed on during gameplay? Contains a javascript object with type of popup mapped to the popup text. Use `<style>` to style the popup text. Use mustache templates `{{ }}` to have the game fill in dynamic details. |
 | rotateNT | If the nucleotide buttons should be able to be rotated into the correct position before submitting. |
-| ntType | The level of details for the nucleotides that players see. Choose from `basic`, `hbonds`, or `backbone`. |
-| lvlType | The type of level that the game should souce from. `dna_replication` or `codon_transcription` |
+| ntType | The level of details for the nucleotides that players see. Choose from `basic`, `hbonds`, or `backbone`. (This hasn't been used for nearly a year, very likely it is obsolete or not functional anymore.)|
+| lvlType | The type of level that the game should souce from. `dna_replication` or `codon_transcription`. This is different from the previous `process` field because this changes the level type completely, not small graphical nuances. |
 | quiz | The quiz containing `question` and the avaliable `options` list for the question. The first option is correct, the others are wrong. |
 | sequencedinfo | Information regarding to what just has been sequenced. Containing the `name` of the molecule, html `description`, more information `infourl`, and related image `imgurl` |
 | knowledgepanel | Small knowledge panel that contains the `description` html and `imgurl` |
+| endMessage | An end message for the user. Intended for telling them what they sequenced, a less detailed version of the previous `sequencedinfo` field, and either this OR sequenced info should be used, not both. This is an optional field. |
 
 #### Popups
 
@@ -100,7 +111,7 @@ Of course, knowing what the templates contain would be important to designing a 
 
 | Property | Description | Example |
 | --- | --- | --- |
-| name | The ammino acid name | phenylalanine |
+| name | The amino acid name | phenylalanine |
 | color | The hex color of the nucleotide | #0055ff |
 
 
@@ -171,16 +182,11 @@ These are the various screen which contain and organize UI and graphic elements.
 ```
 
 
-### Level data
-...
 
-
-## JavaScript Documentation
-
-When developing on the game, do check the [JSDoc](https://baliga-lab.github.io/central-dogma-game/jsdoc/) which has the functions and objects properly documented. 
 
 ## Contributors
 
 - Jacob Valenzuela: Project Manager
 - Wei-Ju Wu: API Developer
 - [Jeremy Zhang](https://courses.cs.washington.edu/courses/cse154/19su/staff/about-me/jeremy-zhang/about.html): Game Developer
+- [Joshua Maza](http://joshuamaza.com/): Game Developer
