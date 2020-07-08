@@ -27,6 +27,7 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import AudioPlayer from "../audioplayer.js";
+import PopupManager from "../popupmanager.js";
 
 /**
  * Represents the list level scene
@@ -48,10 +49,14 @@ class ListLevels extends Phaser.Scene {
     init(data) {
         console.log(data);
         this.data = data;
+
         // Initialization
         this.camera = this.cameras.main;
         this.camera.setAlpha(0);
         this.graphics = this.add.graphics();
+
+        // Used later for vocab words.
+        this.popupmanager = new PopupManager(this);
 
         // Level Data
         this.levels = data.levels;
@@ -148,6 +153,7 @@ class ListLevels extends Phaser.Scene {
 
 
             if (this.levels[this.curLevel].unlocked == true) {
+                this.popupmanager.destroy(); // Clears list level popups for in game level popups.
                 if (this.areTheseBonusLevels()) {
                     this.startPrelevel(this.curLevel + 12); // skips regular levels 
                 } else {
@@ -175,6 +181,7 @@ class ListLevels extends Phaser.Scene {
         // Level Selection Descriptors
         this.levelBrowseTitle = this.add.text(180, 203, "",
             { fontFamily: 'Teko', fontSize: '32pt', color: '#000000', align: 'center' }).setOrigin(0.5, 0.5);
+        
 
         this.levelBrowseSubtitle = this.add.text(180, 263, "",
             { fontFamily: 'Teko', fontSize: '32pt', color: '#000000', align: 'center' }).setOrigin(0.5, 0.5);
@@ -192,6 +199,9 @@ class ListLevels extends Phaser.Scene {
             lineSpacing: 0
         });
 
+        // For vocab words, this will holds an array of rexBBCodeText objects, some of which are clickable.
+        this.levelBrowseDescWords = [];
+
         // Images to accompany level descriptions
         this.levelBrowseImage = null;
 
@@ -207,6 +217,52 @@ class ListLevels extends Phaser.Scene {
         this.fadeCover.addListener("pointerup", that.bindFn(that.dismissOverlay))
 
 
+        // Display initial description
+        this.displayDescription(this.levels[this.curLevel]);
+
+    }
+
+    /**
+     * Displays the appropriate description text for the displayed level.
+     * Will first check if the default description exists, and if so will use it,
+     * Otherwise will use "descriptionVocab" field, which will create interactable text.
+     * @param {object} level - The level object for a particular level.
+     */
+    displayDescription(level) {
+        this.levelBrowseDesc.text = "";
+        if (level.description) {
+            for (let i = 0; i &lt; this.levelBrowseDescWords.length; i++) {
+                if (this.levelBrowseDescWords[i]) {
+                    this.levelBrowseDescWords[i].destroy();
+                }
+            }
+
+            this.levelBrowseDesc.text = level.description;           
+
+        } else if (level.descriptionVocab) {
+            for (let i = 0; i &lt; level.descriptionVocab.length; i++) {
+
+                // Create the text object
+                let curTextObject = level.descriptionVocab[i];
+                this.levelBrowseDescWords[i] = this.add.rexBBCodeText(curTextObject.x, curTextObject.y, curTextObject.text, 
+                    {
+                        fontFamily: 'Teko',
+                        fontSize: "28px",
+                        color: "#000000",
+                        halign: "left",
+                        lineSpacing: 0
+                    }
+                );
+
+                // If the text object has popup information, give it clickable functionality
+                if (curTextObject.popup) {
+                    this.levelBrowseDescWords[i].setInteractive();
+                    this.levelBrowseDescWords[i].on("pointerdown", () => {
+                        this.popupmanager.displayPopupOutsideGame(curTextObject.popup);
+                    })
+                }
+            }
+        }
     }
 
     /**
@@ -542,6 +598,7 @@ class ListLevels extends Phaser.Scene {
             this.displayLevel(this.curLevel);
         }
         this.updateGoButton();
+        this.displayDescription(this.levels[this.curLevel]);
     }
 
     /**
@@ -553,6 +610,7 @@ class ListLevels extends Phaser.Scene {
             this.displayLevel(this.curLevel);
         }
         this.updateGoButton();
+        this.displayDescription(this.levels[this.curLevel]);
     }
 
     /**
@@ -594,11 +652,13 @@ class ListLevels extends Phaser.Scene {
             // Rendering text, testing if it is unlocked and/or has a description.
             this.levelBrowseTitle.text = title;
             if (this.levels[level].unlocked == true) {
+                /*
                 if (typeof this.levels[level].description === "undefined") {
                     this.levelBrowseDesc.text = "Description not available."
                 } else {
                     this.levelBrowseDesc.text = desc;
                 }
+                */
 
                 // if we're in bonus levels, it should have a different subtitle.
                 if (this.areTheseBonusLevels()) {
@@ -648,7 +708,7 @@ export default ListLevels;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun Jun 21 2020 22:02:41 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Tue Jun 30 2020 20:16:08 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

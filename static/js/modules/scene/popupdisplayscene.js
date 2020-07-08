@@ -18,7 +18,8 @@ class PopupDisplayScene extends Phaser.Scene {
      * @param {JSON} data 
      */
     init(data) {
-        this.manager = data.manager;
+        this.manager = data.manager; // Data of level passed along to popup.
+        this.ingame = data.ingame; // Boolean given to tell whether or not this popup is in game.
 
         this.camera = this.cameras.main;
         this.camera.setAlpha(0);
@@ -103,7 +104,11 @@ class PopupDisplayScene extends Phaser.Scene {
      * @param {Phaser.GameObjects} objClicked - the object clicked
      */
     exitPopup(inputPlugin, pointer, objClicked) {
-        this.scene.launch("countdownResumeScreen", this.manager.level);
+        if (this.ingame) {
+            this.scene.launch("countdownResumeScreen", this.manager.level);
+        } else {
+            this.scene.resume("listlevels");
+        }
         this.scene.stop();
     }
 }
