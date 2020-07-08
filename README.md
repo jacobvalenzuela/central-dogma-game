@@ -27,22 +27,69 @@ When developing on the game, do check the [JSDoc](https://baliga-lab.github.io/c
 Levels are defined in the main JavaScript file. They are contained in a JSON list with the levels in order. A sample level
 for the nucleotides level may look something like this.
 ```json
+        // Level 9
         {
-            "ntSequence": "A",
-            "controls": ["T", "A"],
+            "ntSequence": "AUGCCGGGUCAUGGGCCCACUGACCAUGGGUUUUAG",
             "unlocked": true,
-            "name": "A/T the Beginning",
-            "description": "The basics of DNA, [color=" + COLOR_A + "]A[/color] matches with [color=" + COLOR_T + "]T[/color].",
-            "process": "dna replication",
-            "speed": SPEED_MEDIUM,
+            "name": "Lost in Translation!",
+            "description": "Match the condon ([color=" + COLOR_RNA + "]RNA[/color]) with the anticodon. Anticodons code for specific amino acids to make [color=" + COLOR_PEPTIDE + "]protein[/color]!",
+            "descriptionVocab": [
+                {
+                    text: "Match the ",
+                    x: 20,
+                    y: 300
+                },
+                {
+                    text: "[color=" + COLOR_TERM + "]codon[/color] ",
+                    x: 105,
+                    y: 300,
+                    popup: "A triplet sequence of DNA or RNA nucleotides corresponding to a specific amino acid or a start/stop signal in translation."
+                },
+                {
+                    text: "(RNA) with the ",
+                    x: 162,
+                    y: 300
+                },
+                {
+                    text: "[color=" + COLOR_TERM + "]anticodon[/color]. ",
+                    x: 20,
+                    y: 330,
+                    popup: "Sequence of three nucleotides in tRNA that pairs with the corresponding codon in mRNA in translation."
+                },
+                {
+                    text: "Anticodons code for specific",
+                    x: 111,
+                    y: 330
+                },
+                {
+                    text: "[color=" + COLOR_TERM + "]amino acids[/color] ",
+                    x: 20,
+                    y: 360,
+                    popup: "Amino acids are small molecules that serve as building blocks of proteins."
+                },
+                {
+                    text: "to make protein!",
+                    x: 123,
+                    y: 360
+                },
+            ],
+            "description_image": {
+                "name": "level16_description",
+                "x": 200,
+                "y": 492,
+                "scale": 0.13
+            },
+            "process": "translation",
+            "speed": SPEED_SLOW,
             "popups": {
-                "intro": "Tap a <style='color:" + COLOR_TERM + "'>nucleotide</style> to match the correct <style='color:" + COLOR_TERM + "'>base pair</style>. You can also submit nucleotides by pushing its letter on a keyboard.",
-                "firstCorrectMatch": "Correct! In <style='color:" + COLOR_TERM + "'>DNA</style>, nucleotide 'A' or <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> only pairs with nucleotide 'T' or <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>.",
-                "error5Match": "Whoops! In <style='color:" + COLOR_TERM + "'>DNA</style>, nucleotide 'A' or <style='color: {{ nucleotide1.color }};'>{{ nucleotide1.name }}</style> only pairs with nucleotide 'T' or <style='color: {{ nucleotide2.color }};'>{{ nucleotide2.name }}</style>."
+                "intro": "Now that you know how to make DNA and RNA, lets make <style='color:" + COLOR_TERM + "'>protein</style>. Tap the codon to submit, or push 1 or 2 on a keyboard.",
+                "firstCorrectMatch": "Correct! Nucleotide pairing rules still apply.",
+                "error5Match": "Whoops! Nucleotide pairing rules still apply."
             },
             "rotateNT": false,
             "ntType": "basic",
-            "lvlType": "dna_replication",
+            "lvlType": "codon_transcription",
+            "maxButtons": 1,
             "quiz": {
                 "question": "Three base pairs are called a __________.",
                 "options": [
@@ -62,7 +109,6 @@ for the nucleotides level may look something like this.
                 "description": "<strong>Promoter sequences</strong> are <span style='color: forestgreen;'>DNA</span> sequences that define where transcription of a <span style='color: blue;'>gene starts</span>.",
                 "imgurl": "./static/img/flashcard/promoter_dna.png",
             },
-            "endMessage": "You just sequenced xxxxxxxxxxxxxx!"
         },
 ```
 
@@ -75,6 +121,8 @@ Here is a reference of what kind of properties each level can contain.
 | unlocked | Should the level be playable? |
 | name | The name of the level. Should be clever and punny. |
 | description | The description of the level. There is an interpreter to take in hexcodes to color text (follow existing levels as examples of how to use it) |
+| descriptionVocab | The description of the level, but seperated out into vocab words. Each group of words has a position, and optional popup. See included example above for how to use this system. Clicking on words with a `popup` field will show that popup when the word is clicked. This is an optional field, if omitted it will use the description field above instead. |
+| description_image | The image to accompany the description of the level. Typically a diagram of some sort. This is an optional field, if omitted, no image will appear. |
 | process | The process the level is depicting. This is used for conditional rendering for game UI/graphics. Can be `dna replication`, `transcription`, or `translation`. |
 | speed | How much delay in milliseconds there should be before the game ticks by a step. The smaller the number, the faster the tick, thus a quicker pace. |
 | popups | What should the player be informed on during gameplay? Contains a javascript object with type of popup mapped to the popup text. Use `<style>` to style the popup text. Use mustache templates `{{ }}` to have the game fill in dynamic details. |
