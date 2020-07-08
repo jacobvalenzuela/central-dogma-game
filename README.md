@@ -235,6 +235,6 @@ These are the various screen which contain and organize UI and graphic elements.
 ## Contributors
 
 - Jacob Valenzuela: Project Manager
-- [Joshua Maza](http://joshuamaza.com/): Game Developer
-- Wei-Ju Wu: API Developer
+- [Joshua Maza](http://joshuamaza.com/): Game Developer, Frontend Developer
+- Wei-Ju Wu: API Developer, Backend Developer, Database Engineer
 - [Jeremy Zhang](https://courses.cs.washington.edu/courses/cse154/19su/staff/about-me/jeremy-zhang/about.html): Game Developer
