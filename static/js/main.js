@@ -265,6 +265,7 @@ import Game from "./modules/game.js";
         // Level 5
         {
             "ntSequence": "TAGTCACTAGGAGCA",
+            "controls": ["T", "A", "G", "C"],
             "unlocked": true,
             "name": "Bases Loaded!!!",
             "description": "(A)ll (T)he (C)ool (G)enes have ATCG's!",
@@ -325,6 +326,7 @@ import Game from "./modules/game.js";
         // Level 6
         {
             "ntSequence": "TAGTCACTAGGAGCA",
+            "controls": ["T", "A", "G", "C"],
             "unlocked": true,
             "name": "#CanYouKeepUp!",
             "description": "You can't spell MATCHING without \n[color=" + COLOR_A + "]A[/color][color=" + COLOR_T + "]T[/color][color=" + COLOR_C + "]C[/color][color=" + COLOR_G + "]G[/color]! Don't make any mutations!",
