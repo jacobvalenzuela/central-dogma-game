@@ -117,7 +117,7 @@ Here is a reference of what kind of properties each level can contain.
 | Property | Description |
 | --- | --- |
 | ntSequence | Sequence of nucleotides that the level should provide for the player. They are the incoming nucleotides. For codons level, the length of the sequence must be divisible by 3. |
-| controls | A list of nucleotides that should be given to the players to choose from. They are not applicable to the `codon_transcription` level type as they are just being randomized anyways. |
+| controls | A list of nucleotides that should be given to the players to choose from. They are not applicable to the `codon_transcription` level type as they are just being randomized anyways. Valid control schemes for nucleotide levels are ["T", "A"], ["G", "C"], ["T", "A", "G", "C"], and ["U", "A", "G", "C"] |
 | unlocked | Should the level be playable? |
 | name | The name of the level. Should be clever and punny. |
 | description | The description of the level. There is an interpreter to take in hexcodes to color text (follow existing levels as examples of how to use it) |
