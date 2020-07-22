@@ -20,7 +20,7 @@ for the individual levels.
 
 ## JavaScript Documentation
 
-When developing on the game, do check the [JSDoc](https://baliga-lab.github.io/central-dogma-game/jsdoc/) which has all the functions and classes properly documented. Additionally, the code is full of in-line comments explaining potentially convoluted, lengthy, or nondescript sections.
+**When developing on the game, do check the [JSDoc](https://baliga-lab.github.io/central-dogma-game/jsdoc/) which has all the functions and classes properly documented. Additionally, the code is full of in-line comments explaining potentially convoluted, lengthy, or nondescript sections.**
 
 ### Programming Levels
 
@@ -184,7 +184,7 @@ These are the various screen which contain and organize UI and graphic elements.
 ## General workflow and tips
 - Adjusting the game's speed, object movement, path, and generally how movement occurs in this game in general is done in the positionmanger.js file.
 - The codon object uses the nucleotide object to construct itself.
-- Both nucleotide and codon classes have functions to render themselves as the small colored blocks that are seen in game before they grow to their actual size.
+- Both nucleotide and codon classes have functions to render themselves as the small colored blocks that are seen in game before they grow to their actual size, so the small blocks and the corresponding nucleotide/codon are actually a single object.
 - Moving between scenes means passing all the game data around and initializing the new scenes with it, and this is necessary to preserve global variables like SCORE and level performance. These global variables are initially found in game.js.
 - The quiz data is submitted right after the player finishes a quiz, and the level performance data is submitted right after the player reaches the level complete screen.
 
