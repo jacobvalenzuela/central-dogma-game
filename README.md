@@ -144,24 +144,6 @@ There are multiple popups variations to choose from. You may assign one popup va
 | errorMatch | When the player makes an incorrect match, inform them. | `nucleotide1` & `nucleotide2` -> the two nucleotides that the player has made |
 | error5Match | On every 5 incorrect matches made, show this popup. | `nucleotide1` & `nucleotide2` -> the two nucleotides that the player has made |
 
-##### Templates Object
-
-Of course, knowing what the templates contain would be important to designing a bold popup.
-
-###### Nucleotide
-
-| Property | Description | Example |
-| --- | --- | --- |
-| name | The name of the nucleotide | Thymine |
-| color | The hex color of the nucleotide | #31ace0 |
-
-###### Codon
-
-| Property | Description | Example |
-| --- | --- | --- |
-| name | The amino acid name | phenylalanine |
-| color | The hex color of the nucleotide | #0055ff |
-
 
 ## Summary of files
 
