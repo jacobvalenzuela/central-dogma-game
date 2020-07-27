@@ -20,7 +20,7 @@ for the individual levels.
 
 ## JavaScript Documentation
 
-**When developing on the game, do check the [JSDoc](https://baliga-lab.github.io/central-dogma-game/jsdoc/) which has all the functions and classes properly documented. Additionally, the code is full of in-line comments explaining potentially convoluted, lengthy, or nondescript sections.**
+**When developing on the game, do check the [JSDoc](https://jacobvalenzuela.github.io/central-dogma-game/jsdoc/) which has all the functions and classes properly documented. Additionally, the code is full of in-line comments explaining potentially convoluted, lengthy, or nondescript sections.**
 
 ### Programming Levels
 
