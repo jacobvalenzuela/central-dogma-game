@@ -196,7 +196,7 @@ import Game from "./modules/game.js";
             "controls": ["T", "A"],
             "unlocked": true,
             "name": "Double Bond (AT)tack",
-            "description": "Ok, expert! Try to keep up!\nFYI, A's & [color=" + COLOR_T + "]T[/color]'s make double bonds!",
+            "description": "Ok, expert! Try to keep up!\nFYI, [color=" + COLOR_A + "]A[/color]'s & [color=" + COLOR_T + "]T[/color]'s make double bonds!",
             "process": "dna replication",
             "speed": SPEED_FAST,
             "popups": {

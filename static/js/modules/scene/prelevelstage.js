@@ -25,6 +25,8 @@ class PreLevelStage extends Phaser.Scene {
         this.graphics.fillStyle(0x000, 1.0);
         this.graphics.fillRect(0, 0, 360, 740);
 
+        let fingerPressed = false; // The screen won't continue if the finger is pressed down.
+
         let lvlNumTxtLabel = "";
         if (data.lvlNum >= 12) {
             lvlNumTxtLabel = "Bonus Level " + (data.lvlNum + 1);
@@ -62,11 +64,13 @@ class PreLevelStage extends Phaser.Scene {
         let that = this;
         this.time.addEvent({
             delay: 5000,
-            loop: false,
-            callback: this.bindFn(this.startGame),
+            loop: true,
+            callback: this.bindFn(function() { if (!fingerPressed) {this.startGame()} }),
+            //callback: this.bindFn(this.startGame),
         });
 
-        this.input.on("pointerdown", this.bindFn(this.startGame));
+        this.input.on("pointerdown", this.bindFn(function() {fingerPressed = true}));
+        this.input.on("pointerup", this.bindFn(function() {fingerPressed = false}));
     }
 
     /**
@@ -82,6 +86,8 @@ class PreLevelStage extends Phaser.Scene {
             that.scene.manager.getScene("level" + that.lvlNum).start();
         });
     }
+
+
 
     /**
      * Fade out camera scene
