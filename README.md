@@ -20,7 +20,7 @@ for the individual levels.
 
 ## JavaScript Documentation
 
-When developing on the game, do check the [JSDoc](https://baliga-lab.github.io/central-dogma-game/jsdoc/) which has all the functions and classes properly documented. Additionally, the code is full of in-line comments explaining potentially convoluted, lengthy, or nondescript sections.
+**When developing on the game, do check the [JSDoc](https://jacobvalenzuela.github.io/central-dogma-game/jsdoc/) which has all the functions and classes properly documented. Additionally, the code is full of in-line comments explaining potentially convoluted, lengthy, or nondescript sections.**
 
 ### Programming Levels
 
@@ -117,7 +117,7 @@ Here is a reference of what kind of properties each level can contain.
 | Property | Description |
 | --- | --- |
 | ntSequence | Sequence of nucleotides that the level should provide for the player. They are the incoming nucleotides. For codons level, the length of the sequence must be divisible by 3. |
-| controls | A list of nucleotides that should be given to the players to choose from. They are not applicable to the `codon_transcription` level type as they are just being randomized anyways. |
+| controls | A list of nucleotides that should be given to the players to choose from. They are not applicable to the `codon_transcription` level type as they are just being randomized anyways. Valid control schemes for nucleotide levels are ["T", "A"], ["G", "C"], ["T", "A", "G", "C"], and ["U", "A", "G", "C"] |
 | unlocked | Should the level be playable? |
 | name | The name of the level. Should be clever and punny. |
 | description | The description of the level. There is an interpreter to take in hexcodes to color text (follow existing levels as examples of how to use it) |
@@ -143,24 +143,6 @@ There are multiple popups variations to choose from. You may assign one popup va
 | firstCorrectMatch | When the player makes a first correct match, compliment them with something! | `nucleotide1` & `nucleotide2` -> the two nucleotides that the player has made |
 | errorMatch | When the player makes an incorrect match, inform them. | `nucleotide1` & `nucleotide2` -> the two nucleotides that the player has made |
 | error5Match | On every 5 incorrect matches made, show this popup. | `nucleotide1` & `nucleotide2` -> the two nucleotides that the player has made |
-
-##### Templates Object
-
-Of course, knowing what the templates contain would be important to designing a bold popup.
-
-###### Nucleotide
-
-| Property | Description | Example |
-| --- | --- | --- |
-| name | The name of the nucleotide | Thymine |
-| color | The hex color of the nucleotide | #31ace0 |
-
-###### Codon
-
-| Property | Description | Example |
-| --- | --- | --- |
-| name | The amino acid name | phenylalanine |
-| color | The hex color of the nucleotide | #0055ff |
 
 
 ## Summary of files
@@ -202,7 +184,7 @@ These are the various screen which contain and organize UI and graphic elements.
 ## General workflow and tips
 - Adjusting the game's speed, object movement, path, and generally how movement occurs in this game in general is done in the positionmanger.js file.
 - The codon object uses the nucleotide object to construct itself.
-- Both nucleotide and codon classes have functions to render themselves as the small colored blocks that are seen in game before they grow to their actual size.
+- Both nucleotide and codon classes have functions to render themselves as the small colored blocks that are seen in game before they grow to their actual size, so the small blocks and the corresponding nucleotide/codon are actually a single object.
 - Moving between scenes means passing all the game data around and initializing the new scenes with it, and this is necessary to preserve global variables like SCORE and level performance. These global variables are initially found in game.js.
 - The quiz data is submitted right after the player finishes a quiz, and the level performance data is submitted right after the player reaches the level complete screen.
 
